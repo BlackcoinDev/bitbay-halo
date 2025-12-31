@@ -22,11 +22,11 @@ class ECC:
         bob = pyelliptic.ECC(curve='sect571r1')
 
         ciphertext = alice.encrypt("Hello Bob", bob.get_pubkey())
-        print bob.decrypt(ciphertext)
+bob.decrypt(ciphertext)bob.decrypt(ciphertext)
 
         signature = bob.sign("Hello Alice")
         # alice's job :
-        print pyelliptic.ECC(
+pyelliptic.ECC(pyelliptic.ECC(
             pubkey=bob.get_pubkey()).verify(signature, "Hello Alice")
 
         # ERROR !!!
@@ -36,8 +36,8 @@ class ECC:
                       the keys must be defined on the same curve !")
 
         alice = pyelliptic.ECC(curve='sect571r1')
-        print alice.get_ecdh_key(bob.get_pubkey()).encode('hex')
-        print bob.get_ecdh_key(alice.get_pubkey()).encode('hex')
+alice.get_ecdh_key(bob.get_pubkey()).encode('hex')alice.get_ecdh_key(bob.get_pubkey()).encode('hex')
+bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pubkey()).encode('hex')
 
     """
     def __init__(self, pubkey=None, privkey=None, pubkey_x=None,

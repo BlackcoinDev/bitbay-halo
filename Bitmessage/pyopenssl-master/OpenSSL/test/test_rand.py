@@ -5,13 +5,13 @@
 Unit tests for :py:obj:`OpenSSL.rand`.
 """
 
-from unittest import main
 import os
 import stat
 import sys
+from unittest import main
 
-from OpenSSL.test.util import TestCase, b
 from OpenSSL import rand
+from OpenSSL.test.util import TestCase, b
 
 
 class RandTests(TestCase):
@@ -24,14 +24,12 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.bytes, None)
         self.assertRaises(TypeError, rand.bytes, 3, None)
 
-
     def test_insufficientMemory(self):
         """
         :py:obj:`OpenSSL.rand.bytes` raises :py:obj:`MemoryError` if more bytes
         are requested than will fit in memory.
         """
         self.assertRaises(MemoryError, rand.bytes, sys.maxsize)
-
 
     def test_bytes(self):
         """
@@ -48,7 +46,6 @@ class RandTests(TestCase):
         exc = self.assertRaises(ValueError, rand.bytes, -1)
         self.assertEqual(str(exc), "num_bytes must not be negative")
 
-
     def test_add_wrong_args(self):
         """
         When called with the wrong number of arguments, or with arguments not of
@@ -59,13 +56,11 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.add, None, 3)
         self.assertRaises(TypeError, rand.add, b("foo"), 3, None)
 
-
     def test_add(self):
         """
         :py:obj:`OpenSSL.rand.add` adds entropy to the PRNG.
         """
-        rand.add(b('hamburger'), 3)
-
+        rand.add(b("hamburger"), 3)
 
     def test_seed_wrong_args(self):
         """
@@ -76,13 +71,11 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.seed, None)
         self.assertRaises(TypeError, rand.seed, b("foo"), None)
 
-
     def test_seed(self):
         """
         :py:obj:`OpenSSL.rand.seed` adds entropy to the PRNG.
         """
-        rand.seed(b('milk shake'))
-
+        rand.seed(b("milk shake"))
 
     def test_status_wrong_args(self):
         """
@@ -90,7 +83,6 @@ class RandTests(TestCase):
         arguments.
         """
         self.assertRaises(TypeError, rand.status, None)
-
 
     def test_status(self):
         """
@@ -101,7 +93,6 @@ class RandTests(TestCase):
         # OpenSSL random engines decide differently whether they have enough
         # entropy or not.
         self.assertTrue(rand.status() in (1, 2))
-
 
     def test_egd_wrong_args(self):
         """
@@ -114,7 +105,6 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.egd, None, 3)
         self.assertRaises(TypeError, rand.egd, "foo", 3, None)
 
-
     def test_egd_missing(self):
         """
         :py:obj:`OpenSSL.rand.egd` returns :py:obj:`0` or :py:obj:`-1` if the
@@ -122,10 +112,7 @@ class RandTests(TestCase):
         """
         result = rand.egd(self.mktemp())
         expected = (-1, 0)
-        self.assertTrue(
-            result in expected,
-            "%r not in %r" % (result, expected))
-
+        self.assertTrue(result in expected, "%r not in %r" % (result, expected))
 
     def test_egd_missing_and_bytes(self):
         """
@@ -135,10 +122,7 @@ class RandTests(TestCase):
         """
         result = rand.egd(self.mktemp(), 1024)
         expected = (-1, 0)
-        self.assertTrue(
-            result in expected,
-            "%r not in %r" % (result, expected))
-
+        self.assertTrue(result in expected, "%r not in %r" % (result, expected))
 
     def test_cleanup_wrong_args(self):
         """
@@ -147,14 +131,12 @@ class RandTests(TestCase):
         """
         self.assertRaises(TypeError, rand.cleanup, None)
 
-
     def test_cleanup(self):
         """
         :py:obj:`OpenSSL.rand.cleanup` releases the memory used by the PRNG and returns
         :py:obj:`None`.
         """
         self.assertIdentical(rand.cleanup(), None)
-
 
     def test_load_file_wrong_args(self):
         """
@@ -166,7 +148,6 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.load_file, None, 1)
         self.assertRaises(TypeError, rand.load_file, "foo", 1, None)
 
-
     def test_write_file_wrong_args(self):
         """
         :py:obj:`OpenSSL.rand.write_file` raises :py:obj:`TypeError` when called with the
@@ -176,7 +157,6 @@ class RandTests(TestCase):
         self.assertRaises(TypeError, rand.write_file, None)
         self.assertRaises(TypeError, rand.write_file, "foo", None)
 
-
     def test_files(self):
         """
         Test reading and writing of files via rand functions.
@@ -184,7 +164,7 @@ class RandTests(TestCase):
         # Write random bytes to a file
         tmpfile = self.mktemp()
         # Make sure it exists (so cleanup definitely succeeds)
-        fObj = open(tmpfile, 'w')
+        fObj = open(tmpfile, "w")
         fObj.close()
         try:
             rand.write_file(tmpfile)
@@ -199,5 +179,5 @@ class RandTests(TestCase):
             os.unlink(tmpfile)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

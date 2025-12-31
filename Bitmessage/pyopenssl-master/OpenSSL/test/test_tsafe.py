@@ -5,15 +5,16 @@
 Unit tests for :py:obj:`OpenSSL.tsafe`.
 """
 
-from OpenSSL.SSL import TLSv1_METHOD, Context
-from OpenSSL.tsafe import Connection
+from OpenSSL.SSL import Context, TLSv1_METHOD
 from OpenSSL.test.util import TestCase
+from OpenSSL.tsafe import Connection
 
 
 class ConnectionTest(TestCase):
     """
     Tests for :py:obj:`OpenSSL.tsafe.Connection`.
     """
+
     def test_instantiation(self):
         """
         :py:obj:`OpenSSL.tsafe.Connection` can be instantiated.

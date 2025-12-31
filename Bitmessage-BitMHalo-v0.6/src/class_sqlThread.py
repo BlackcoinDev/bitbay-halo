@@ -189,7 +189,7 @@ class sqlThread(threading.Thread):
         parameters = ''
         self.cur.execute(item, parameters)
         if int(self.cur.fetchall()[0][0]) == 1:
-            print 'upgrading database'
+'upgrading database''upgrading database'
             item = '''ALTER TABLE inventory ADD first20bytesofencryptedmessage blob DEFAULT '' '''
             parameters = ''
             self.cur.execute(item, parameters)

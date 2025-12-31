@@ -3,7 +3,6 @@ import sys
 import types
 
 import py
-
 import six
 
 
@@ -11,12 +10,14 @@ def test_add_doc():
     def f():
         """Icky doc"""
         pass
+
     six._add_doc(f, """New doc""")
     assert f.__doc__ == "New doc"
 
 
 def test_import_module():
     from logging import handlers
+
     m = six._import_module("logging.handlers")
     assert m is handlers
 
@@ -25,7 +26,7 @@ def test_integer_types():
     assert isinstance(1, six.integer_types)
     assert isinstance(-1, six.integer_types)
     assert isinstance(six.MAXSIZE + 23, six.integer_types)
-    assert not isinstance(.1, six.integer_types)
+    assert not isinstance(0.1, six.integer_types)
 
 
 def test_string_types():
@@ -37,8 +38,10 @@ def test_string_types():
 def test_class_types():
     class X:
         pass
+
     class Y(object):
         pass
+
     assert isinstance(X, six.class_types)
     assert isinstance(Y, six.class_types)
     assert not isinstance(X(), six.class_types)
@@ -59,9 +62,7 @@ def test_MAXSIZE():
     except AttributeError:
         # Before Python 2.6.
         pass
-    py.test.raises(
-        (ValueError, OverflowError),
-        operator.mul, [None], six.MAXSIZE + 1)
+    py.test.raises((ValueError, OverflowError), operator.mul, [None], six.MAXSIZE + 1)
 
 
 def test_lazy():
@@ -91,8 +92,8 @@ except ImportError:
     except ImportError:
         have_gdbm = False
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._moved_attributes])
+
+@py.test.mark.parametrize("item_name", [item.name for item in six._moved_attributes])
 def test_move_items(item_name):
     """Ensure that everything loads correctly."""
     try:
@@ -117,8 +118,7 @@ def test_move_items(item_name):
         assert item_name in dir(six.moves)
 
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._urllib_parse_moved_attributes])
+@py.test.mark.parametrize("item_name", [item.name for item in six._urllib_parse_moved_attributes])
 def test_move_items_urllib_parse(item_name):
     """Ensure that everything loads correctly."""
     if item_name == "ParseResult" and sys.version_info < (2, 5):
@@ -130,8 +130,7 @@ def test_move_items_urllib_parse(item_name):
     getattr(six.moves.urllib.parse, item_name)
 
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._urllib_error_moved_attributes])
+@py.test.mark.parametrize("item_name", [item.name for item in six._urllib_error_moved_attributes])
 def test_move_items_urllib_error(item_name):
     """Ensure that everything loads correctly."""
     if sys.version_info[:2] >= (2, 6):
@@ -139,8 +138,7 @@ def test_move_items_urllib_error(item_name):
     getattr(six.moves.urllib.error, item_name)
 
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._urllib_request_moved_attributes])
+@py.test.mark.parametrize("item_name", [item.name for item in six._urllib_request_moved_attributes])
 def test_move_items_urllib_request(item_name):
     """Ensure that everything loads correctly."""
     if sys.version_info[:2] >= (2, 6):
@@ -148,8 +146,7 @@ def test_move_items_urllib_request(item_name):
     getattr(six.moves.urllib.request, item_name)
 
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._urllib_response_moved_attributes])
+@py.test.mark.parametrize("item_name", [item.name for item in six._urllib_response_moved_attributes])
 def test_move_items_urllib_response(item_name):
     """Ensure that everything loads correctly."""
     if sys.version_info[:2] >= (2, 6):
@@ -157,8 +154,7 @@ def test_move_items_urllib_response(item_name):
     getattr(six.moves.urllib.response, item_name)
 
 
-@py.test.mark.parametrize("item_name",
-                          [item.name for item in six._urllib_robotparser_moved_attributes])
+@py.test.mark.parametrize("item_name", [item.name for item in six._urllib_robotparser_moved_attributes])
 def test_move_items_urllib_robotparser(item_name):
     """Ensure that everything loads correctly."""
     if sys.version_info[:2] >= (2, 6):
@@ -167,14 +163,16 @@ def test_move_items_urllib_robotparser(item_name):
 
 
 def test_import_moves_error_1():
-    from six.moves.urllib.parse import urljoin
     from six import moves
+    from six.moves.urllib.parse import urljoin
+
     # In 1.4.1: AttributeError: 'Module_six_moves_urllib_parse' object has no attribute 'urljoin'
     assert moves.urllib.parse.urljoin
 
 
 def test_import_moves_error_2():
     from six import moves
+
     assert moves.urllib.parse.urljoin
     # In 1.4.1: ImportError: cannot import name urljoin
     from six.moves.urllib.parse import urljoin
@@ -182,43 +180,52 @@ def test_import_moves_error_2():
 
 def test_import_moves_error_3():
     from six.moves.urllib.parse import urljoin
+
     # In 1.4.1: ImportError: cannot import name urljoin
     from six.moves.urllib_parse import urljoin
 
 
 def test_from_imports():
     from six.moves.queue import Queue
+
     assert isinstance(Queue, six.class_types)
     from six.moves.configparser import ConfigParser
+
     assert isinstance(ConfigParser, six.class_types)
 
 
 def test_filter():
     from six.moves import filter
+
     f = [x for x in range(10) if x % 2]
     assert six.advance_iterator(f) == 1
 
 
 def test_filter_false():
     from six.moves import filterfalse
+
     f = filterfalse(lambda x: x % 3, list(range(10)))
     assert six.advance_iterator(f) == 0
     assert six.advance_iterator(f) == 3
     assert six.advance_iterator(f) == 6
 
+
 def test_map():
     from six.moves import map
+
     assert six.advance_iterator([x + 1 for x in range(2)]) == 1
 
 
 def test_zip():
     from six.moves import zip
+
     assert six.advance_iterator(list(zip(list(range(2)), list(range(2))))) == (0, 0)
 
 
 @py.test.mark.skipif("sys.version_info < (2, 6)")
 def test_zip_longest():
     from six.moves import zip_longest
+
     it = zip_longest(list(range(2)), list(range(1)))
 
     assert six.advance_iterator(it) == (0, 0)
@@ -237,7 +244,6 @@ class TestCustomizedMoves:
         except KeyError:
             pass
 
-
     def test_moved_attribute(self):
         attr = six.MovedAttribute("spam", "foo", "bar")
         if six.PY3:
@@ -253,7 +259,6 @@ class TestCustomizedMoves:
         else:
             assert attr.attr == "lemma"
 
-
     def test_moved_module(self):
         attr = six.MovedModule("spam", "foo")
         if six.PY3:
@@ -266,7 +271,6 @@ class TestCustomizedMoves:
         else:
             assert attr.mod == "foo"
 
-
     def test_custom_move_module(self):
         attr = six.MovedModule("spam", "six", "six")
         six.add_move(attr)
@@ -275,10 +279,10 @@ class TestCustomizedMoves:
         attr = six.MovedModule("spam", "six", "six")
         six.add_move(attr)
         from six.moves import spam
+
         assert spam is six
         six.remove_move("spam")
         assert not hasattr(six.moves, "spam")
-
 
     def test_custom_move_attribute(self):
         attr = six.MovedAttribute("spam", "six", "six", "u", "u")
@@ -288,10 +292,10 @@ class TestCustomizedMoves:
         attr = six.MovedAttribute("spam", "six", "six", "u", "u")
         six.add_move(attr)
         from six.moves import spam
+
         assert spam is six.u
         six.remove_move("spam")
         assert not hasattr(six.moves, "spam")
-
 
     def test_empty_remove(self):
         py.test.raises(AttributeError, six.remove_move, "eggs")
@@ -301,6 +305,7 @@ def test_get_unbound_function():
     class X(object):
         def m(self):
             pass
+
     assert six.get_unbound_function(X.m) is X.__dict__["m"]
 
 
@@ -308,6 +313,7 @@ def test_get_method_self():
     class X(object):
         def m(self):
             pass
+
     x = X()
     assert six.get_method_self(x.m) is x
     py.test.raises(AttributeError, six.get_method_self, 42)
@@ -317,6 +323,7 @@ def test_get_method_function():
     class X(object):
         def m(self):
             pass
+
     x = X()
     assert six.get_method_function(x.m) is X.__dict__["m"]
     py.test.raises(AttributeError, six.get_method_function, hasattr)
@@ -325,9 +332,12 @@ def test_get_method_function():
 def test_get_function_closure():
     def f():
         x = 42
+
         def g():
             return x
+
         return g
+
     cell = six.get_function_closure(f())[0]
     assert type(cell).__name__ == "cell"
 
@@ -335,6 +345,7 @@ def test_get_function_closure():
 def test_get_function_code():
     def f():
         pass
+
     assert isinstance(six.get_function_code(f), types.CodeType)
     if not hasattr(sys, "pypy_version_info"):
         py.test.raises(AttributeError, six.get_function_code, hasattr)
@@ -343,22 +354,27 @@ def test_get_function_code():
 def test_get_function_defaults():
     def f(x, y=3, b=4):
         pass
+
     assert six.get_function_defaults(f) == (3, 4)
 
 
 def test_get_function_globals():
     def f():
         pass
+
     assert six.get_function_globals(f) is globals()
 
 
 def test_dictionary_iterators(monkeypatch):
     class MyDict(dict):
         if not six.PY3:
+
             def lists(self, **kw):
                 return [1, 2, 3]
+
         def iterlists(self, **kw):
             return iter([1, 2, 3])
+
     f = MyDict.iterlists
     del MyDict.iterlists
     setattr(MyDict, six._iterlists, f)
@@ -370,9 +386,11 @@ def test_dictionary_iterators(monkeypatch):
         assert list(it) == list(getattr(d, name)())
         py.test.raises(StopIteration, six.advance_iterator, it)
         record = []
+
         def with_kw(*args, **kw):
             record.append(kw["kw"])
             return old(*args)
+
         old = getattr(MyDict, getattr(six, "_iter" + name))
         monkeypatch.setattr(MyDict, getattr(six, "_iter" + name), with_kw)
         meth(d, kw=42)
@@ -394,10 +412,13 @@ def test_iterator():
     class myiter(six.Iterator):
         def __next__(self):
             return 13
+
     assert six.advance_iterator(myiter()) == 13
+
     class myitersub(myiter):
         def __next__(self):
             return 14
+
     assert six.advance_iterator(myitersub()) == 14
 
 
@@ -405,8 +426,10 @@ def test_callable():
     class X:
         def __call__(self):
             pass
+
         def method(self):
             pass
+
     assert six.callable(X)
     assert six.callable(X())
     assert six.callable(test_callable)
@@ -420,8 +443,10 @@ def test_callable():
 def test_create_bound_method():
     class X(object):
         pass
+
     def f(self):
         return self
+
     x = X()
     b = six.create_bound_method(f, x)
     assert isinstance(b, types.MethodType)
@@ -436,7 +461,6 @@ if six.PY3:
         assert len(data) == 1
         assert data == bytes([255])
 
-
     def test_u():
         s = six.u("hi \\u0439 \\U00000439 \\ \\\\ \n")
         assert isinstance(s, str)
@@ -449,7 +473,6 @@ else:
         assert isinstance(data, str)
         assert len(data) == 1
         assert data == "\xff"
-
 
     def test_u():
         s = six.u("hi \\u0439 \\U00000439 \\ \\\\ \n")
@@ -506,6 +529,7 @@ def test_exec_():
         l = []
         six.exec_("l.append(1)")
         assert l == [1]
+
     f()
     ns = {}
     six.exec_("x = 42", ns)
@@ -525,6 +549,7 @@ def test_reraise():
             return tb.tb_next.tb_next
         else:
             return tb.tb_next
+
     e = Exception("blah")
     try:
         raise e
@@ -575,7 +600,7 @@ def test_print_():
     result = out.getvalue()
     assert isinstance(result, six.text_type)
     assert result == six.u("Hello, person!\n")
-    six.print_("Hello", file=None) # This works.
+    six.print_("Hello", file=None)  # This works.
     out = six.StringIO()
     six.print_(None, file=out)
     assert out.getvalue() == "None\n"
@@ -608,20 +633,28 @@ def test_print_exceptions():
 def test_with_metaclass():
     class Meta(type):
         pass
+
     class X(six.with_metaclass(Meta)):
         pass
+
     assert type(X) is Meta
     assert issubclass(X, object)
+
     class Base(object):
         pass
+
     class X(six.with_metaclass(Meta, Base)):
         pass
+
     assert type(X) is Meta
     assert issubclass(X, Base)
+
     class Base2(object):
         pass
+
     class X(six.with_metaclass(Meta, Base, Base2)):
         pass
+
     assert type(X) is Meta
     assert issubclass(X, Base)
     assert issubclass(X, Base2)
@@ -630,24 +663,32 @@ def test_with_metaclass():
 def test_add_metaclass():
     class Meta(type):
         pass
+
     class X:
         "success"
+
     X = six.add_metaclass(Meta)(X)
     assert type(X) is Meta
     assert issubclass(X, object)
     assert X.__module__ == __name__
     assert X.__doc__ == "success"
+
     class Base(object):
         pass
+
     class X(Base):
         pass
+
     X = six.add_metaclass(Meta)(X)
     assert type(X) is Meta
     assert issubclass(X, Base)
+
     class Base2(object):
         pass
+
     class X(Base, Base2):
         pass
+
     X = six.add_metaclass(Meta)(X)
     assert type(X) is Meta
     assert issubclass(X, Base)
@@ -656,13 +697,18 @@ def test_add_metaclass():
     # Test a second-generation subclass of a type.
     class Meta1(type):
         m1 = "m1"
+
     class Meta2(Meta1):
         m2 = "m2"
+
     class Base:
         b = "b"
+
     Base = six.add_metaclass(Meta1)(Base)
+
     class X(Base):
         x = "x"
+
     X = six.add_metaclass(Meta2)(X)
     assert type(X) is Meta2
     assert issubclass(X, Base)
@@ -677,6 +723,7 @@ def test_add_metaclass():
     # Test a class with slots.
     class MySlots(object):
         __slots__ = ["a", "b"]
+
     MySlots = six.add_metaclass(Meta1)(MySlots)
 
     assert MySlots.__slots__ == ["a", "b"]
@@ -687,10 +734,10 @@ def test_add_metaclass():
     # Test a class with string for slots.
     class MyStringSlots(object):
         __slots__ = "ab"
+
     MyStringSlots = six.add_metaclass(Meta1)(MyStringSlots)
     assert MyStringSlots.__slots__ == "ab"
     instance = MyStringSlots()
     instance.ab = "foo"
     py.test.raises(AttributeError, setattr, instance, "a", "baz")
     py.test.raises(AttributeError, setattr, instance, "b", "baz")
-

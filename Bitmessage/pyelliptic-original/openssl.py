@@ -6,8 +6,8 @@
 #
 #  Software slightly changed by Jonathan Warren <bitmessage at-symbol jonwarren.org>
 
-import sys
 import ctypes
+import sys
 
 OpenSSL = None
 
@@ -19,7 +19,14 @@ class CipherName:
         self._blocksize = blocksize
 
     def __str__(self):
-        return "Cipher : " + self._name + " | Blocksize : " + str(self._blocksize) + " | Fonction pointer : " + str(self._pointer)
+        return (
+            "Cipher : "
+            + self._name
+            + " | Blocksize : "
+            + str(self._blocksize)
+            + " | Fonction pointer : "
+            + str(self._pointer)
+        )
 
     def get_pointer(self):
         return self._pointer()
@@ -35,6 +42,7 @@ class _OpenSSL:
     """
     Wrapper for OpenSSL using ctypes
     """
+
     def __init__(self, library):
         """
         Build the wrapper
@@ -64,8 +72,7 @@ class _OpenSSL:
 
         self.BN_bin2bn = self._lib.BN_bin2bn
         self.BN_bin2bn.restype = ctypes.c_void_p
-        self.BN_bin2bn.argtypes = [ctypes.c_void_p, ctypes.c_int,
-                                   ctypes.c_void_p]
+        self.BN_bin2bn.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
 
         self.EC_KEY_free = self._lib.EC_KEY_free
         self.EC_KEY_free.restype = None
@@ -97,17 +104,21 @@ class _OpenSSL:
 
         self.EC_POINT_get_affine_coordinates_GFp = self._lib.EC_POINT_get_affine_coordinates_GFp
         self.EC_POINT_get_affine_coordinates_GFp.restype = ctypes.c_int
-        self.EC_POINT_get_affine_coordinates_GFp.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        self.EC_POINT_get_affine_coordinates_GFp.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
 
         self.EC_KEY_set_private_key = self._lib.EC_KEY_set_private_key
         self.EC_KEY_set_private_key.restype = ctypes.c_int
-        self.EC_KEY_set_private_key.argtypes = [ctypes.c_void_p,
-                                                ctypes.c_void_p]
+        self.EC_KEY_set_private_key.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
         self.EC_KEY_set_public_key = self._lib.EC_KEY_set_public_key
         self.EC_KEY_set_public_key.restype = ctypes.c_int
-        self.EC_KEY_set_public_key.argtypes = [ctypes.c_void_p,
-                                               ctypes.c_void_p]
+        self.EC_KEY_set_public_key.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
         self.EC_KEY_set_group = self._lib.EC_KEY_set_group
         self.EC_KEY_set_group.restype = ctypes.c_int
@@ -115,7 +126,13 @@ class _OpenSSL:
 
         self.EC_POINT_set_affine_coordinates_GFp = self._lib.EC_POINT_set_affine_coordinates_GFp
         self.EC_POINT_set_affine_coordinates_GFp.restype = ctypes.c_int
-        self.EC_POINT_set_affine_coordinates_GFp.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        self.EC_POINT_set_affine_coordinates_GFp.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
 
         self.EC_POINT_new = self._lib.EC_POINT_new
         self.EC_POINT_new.restype = ctypes.c_void_p
@@ -131,12 +148,17 @@ class _OpenSSL:
 
         self.EC_POINT_mul = self._lib.EC_POINT_mul
         self.EC_POINT_mul.restype = None
-        self.EC_POINT_mul.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        self.EC_POINT_mul.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
 
         self.EC_KEY_set_private_key = self._lib.EC_KEY_set_private_key
         self.EC_KEY_set_private_key.restype = ctypes.c_int
-        self.EC_KEY_set_private_key.argtypes = [ctypes.c_void_p,
-                                                ctypes.c_void_p]
+        self.EC_KEY_set_private_key.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
         self.ECDH_OpenSSL = self._lib.ECDH_OpenSSL
         self._lib.ECDH_OpenSSL.restype = ctypes.c_void_p
@@ -152,13 +174,11 @@ class _OpenSSL:
 
         self.ECDH_compute_key = self._lib.ECDH_compute_key
         self.ECDH_compute_key.restype = ctypes.c_int
-        self.ECDH_compute_key.argtypes = [ctypes.c_void_p,
-                                          ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p]
+        self.ECDH_compute_key.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p]
 
         self.EVP_CipherInit_ex = self._lib.EVP_CipherInit_ex
         self.EVP_CipherInit_ex.restype = ctypes.c_int
-        self.EVP_CipherInit_ex.argtypes = [ctypes.c_void_p,
-                                           ctypes.c_void_p, ctypes.c_void_p]
+        self.EVP_CipherInit_ex.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 
         self.EVP_CIPHER_CTX_new = self._lib.EVP_CIPHER_CTX_new
         self.EVP_CIPHER_CTX_new.restype = ctypes.c_void_p
@@ -181,13 +201,13 @@ class _OpenSSL:
         self.EVP_aes_256_cbc.restype = ctypes.c_void_p
         self.EVP_aes_256_cbc.argtypes = []
 
-        #self.EVP_aes_128_ctr = self._lib.EVP_aes_128_ctr
-        #self.EVP_aes_128_ctr.restype = ctypes.c_void_p
-        #self.EVP_aes_128_ctr.argtypes = []
+        # self.EVP_aes_128_ctr = self._lib.EVP_aes_128_ctr
+        # self.EVP_aes_128_ctr.restype = ctypes.c_void_p
+        # self.EVP_aes_128_ctr.argtypes = []
 
-        #self.EVP_aes_256_ctr = self._lib.EVP_aes_256_ctr
-        #self.EVP_aes_256_ctr.restype = ctypes.c_void_p
-        #self.EVP_aes_256_ctr.argtypes = []
+        # self.EVP_aes_256_ctr = self._lib.EVP_aes_256_ctr
+        # self.EVP_aes_256_ctr.restype = ctypes.c_void_p
+        # self.EVP_aes_256_ctr.argtypes = []
 
         self.EVP_aes_128_ofb = self._lib.EVP_aes_128_ofb
         self.EVP_aes_128_ofb.restype = ctypes.c_void_p
@@ -219,13 +239,17 @@ class _OpenSSL:
 
         self.EVP_CipherUpdate = self._lib.EVP_CipherUpdate
         self.EVP_CipherUpdate.restype = ctypes.c_int
-        self.EVP_CipherUpdate.argtypes = [ctypes.c_void_p,
-                                          ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int]
+        self.EVP_CipherUpdate.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_int,
+        ]
 
         self.EVP_CipherFinal_ex = self._lib.EVP_CipherFinal_ex
         self.EVP_CipherFinal_ex.restype = ctypes.c_int
-        self.EVP_CipherFinal_ex.argtypes = [ctypes.c_void_p,
-                                            ctypes.c_void_p, ctypes.c_void_p]
+        self.EVP_CipherFinal_ex.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 
         self.EVP_DigestInit = self._lib.EVP_DigestInit
         self.EVP_DigestInit.restype = ctypes.c_int
@@ -233,13 +257,11 @@ class _OpenSSL:
 
         self.EVP_DigestUpdate = self._lib.EVP_DigestUpdate
         self.EVP_DigestUpdate.restype = ctypes.c_int
-        self.EVP_DigestUpdate.argtypes = [ctypes.c_void_p,
-                                          ctypes.c_void_p, ctypes.c_int]
+        self.EVP_DigestUpdate.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int]
 
         self.EVP_DigestFinal = self._lib.EVP_DigestFinal
         self.EVP_DigestFinal.restype = ctypes.c_int
-        self.EVP_DigestFinal.argtypes = [ctypes.c_void_p,
-                                         ctypes.c_void_p, ctypes.c_void_p]
+        self.EVP_DigestFinal.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 
         self.EVP_ecdsa = self._lib.EVP_ecdsa
         self._lib.EVP_ecdsa.restype = ctypes.c_void_p
@@ -247,13 +269,25 @@ class _OpenSSL:
 
         self.ECDSA_sign = self._lib.ECDSA_sign
         self.ECDSA_sign.restype = ctypes.c_int
-        self.ECDSA_sign.argtypes = [ctypes.c_int, ctypes.c_void_p,
-                                    ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
+        self.ECDSA_sign.argtypes = [
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
 
         self.ECDSA_verify = self._lib.ECDSA_verify
         self.ECDSA_verify.restype = ctypes.c_int
-        self.ECDSA_verify.argtypes = [ctypes.c_int, ctypes.c_void_p,
-                                      ctypes.c_int, ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
+        self.ECDSA_verify.argtypes = [
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+        ]
 
         self.EVP_MD_CTX_create = self._lib.EVP_MD_CTX_create
         self.EVP_MD_CTX_create.restype = ctypes.c_void_p
@@ -271,7 +305,6 @@ class _OpenSSL:
         self.RAND_bytes.restype = ctypes.c_int
         self.RAND_bytes.argtypes = [ctypes.c_void_p, ctypes.c_int]
 
-
         self.EVP_sha256 = self._lib.EVP_sha256
         self.EVP_sha256.restype = ctypes.c_void_p
         self.EVP_sha256.argtypes = []
@@ -286,72 +319,85 @@ class _OpenSSL:
 
         self.HMAC = self._lib.HMAC
         self.HMAC.restype = ctypes.c_void_p
-        self.HMAC.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int,
-                              ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p]
+        self.HMAC.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_void_p,
+        ]
 
         try:
             self.PKCS5_PBKDF2_HMAC = self._lib.PKCS5_PBKDF2_HMAC
         except:
             # The above is not compatible with all versions of OSX.
             self.PKCS5_PBKDF2_HMAC = self._lib.PKCS5_PBKDF2_HMAC_SHA1
-            
+
         self.PKCS5_PBKDF2_HMAC.restype = ctypes.c_int
-        self.PKCS5_PBKDF2_HMAC.argtypes = [ctypes.c_void_p, ctypes.c_int,
-                                           ctypes.c_void_p, ctypes.c_int,
-                                           ctypes.c_int, ctypes.c_void_p,
-                                           ctypes.c_int, ctypes.c_void_p]
+        self.PKCS5_PBKDF2_HMAC.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            ctypes.c_int,
+            ctypes.c_void_p,
+        ]
 
         self._set_ciphers()
         self._set_curves()
 
     def _set_ciphers(self):
         self.cipher_algo = {
-            'aes-128-cbc': CipherName('aes-128-cbc', self.EVP_aes_128_cbc, 16),
-            'aes-256-cbc': CipherName('aes-256-cbc', self.EVP_aes_256_cbc, 16),
-            'aes-128-cfb': CipherName('aes-128-cfb', self.EVP_aes_128_cfb128, 16),
-            'aes-256-cfb': CipherName('aes-256-cfb', self.EVP_aes_256_cfb128, 16),
-            'aes-128-ofb': CipherName('aes-128-ofb', self._lib.EVP_aes_128_ofb, 16),
-            'aes-256-ofb': CipherName('aes-256-ofb', self._lib.EVP_aes_256_ofb, 16),
+            "aes-128-cbc": CipherName("aes-128-cbc", self.EVP_aes_128_cbc, 16),
+            "aes-256-cbc": CipherName("aes-256-cbc", self.EVP_aes_256_cbc, 16),
+            "aes-128-cfb": CipherName("aes-128-cfb", self.EVP_aes_128_cfb128, 16),
+            "aes-256-cfb": CipherName("aes-256-cfb", self.EVP_aes_256_cfb128, 16),
+            "aes-128-ofb": CipherName("aes-128-ofb", self._lib.EVP_aes_128_ofb, 16),
+            "aes-256-ofb": CipherName("aes-256-ofb", self._lib.EVP_aes_256_ofb, 16),
             #'aes-128-ctr': CipherName('aes-128-ctr', self._lib.EVP_aes_128_ctr, 16),
             #'aes-256-ctr': CipherName('aes-256-ctr', self._lib.EVP_aes_256_ctr, 16),
-            'bf-cfb': CipherName('bf-cfb', self.EVP_bf_cfb64, 8),
-            'bf-cbc': CipherName('bf-cbc', self.EVP_bf_cbc, 8),
-            'rc4': CipherName('rc4', self.EVP_rc4, 128), # 128 is the initialisation size not block size
+            "bf-cfb": CipherName("bf-cfb", self.EVP_bf_cfb64, 8),
+            "bf-cbc": CipherName("bf-cbc", self.EVP_bf_cbc, 8),
+            "rc4": CipherName("rc4", self.EVP_rc4, 128),  # 128 is the initialisation size not block size
         }
 
     def _set_curves(self):
         self.curves = {
-            'secp112r1': 704,
-            'secp112r2': 705,
-            'secp128r1': 706,
-            'secp128r2': 707,
-            'secp160k1': 708,
-            'secp160r1': 709,
-            'secp160r2': 710,
-            'secp192k1': 711,
-            'secp224k1': 712,
-            'secp224r1': 713,
-            'secp256k1': 714,
-            'secp384r1': 715,
-            'secp521r1': 716,
-            'sect113r1': 717,
-            'sect113r2': 718,
-            'sect131r1': 719,
-            'sect131r2': 720,
-            'sect163k1': 721,
-            'sect163r1': 722,
-            'sect163r2': 723,
-            'sect193r1': 724,
-            'sect193r2': 725,
-            'sect233k1': 726,
-            'sect233r1': 727,
-            'sect239k1': 728,
-            'sect283k1': 729,
-            'sect283r1': 730,
-            'sect409k1': 731,
-            'sect409r1': 732,
-            'sect571k1': 733,
-            'sect571r1': 734,
+            "secp112r1": 704,
+            "secp112r2": 705,
+            "secp128r1": 706,
+            "secp128r2": 707,
+            "secp160k1": 708,
+            "secp160r1": 709,
+            "secp160r2": 710,
+            "secp192k1": 711,
+            "secp224k1": 712,
+            "secp224r1": 713,
+            "secp256k1": 714,
+            "secp384r1": 715,
+            "secp521r1": 716,
+            "sect113r1": 717,
+            "sect113r2": 718,
+            "sect131r1": 719,
+            "sect131r2": 720,
+            "sect163k1": 721,
+            "sect163r1": 722,
+            "sect163r2": 723,
+            "sect193r1": 724,
+            "sect193r2": 725,
+            "sect233k1": 726,
+            "sect233r1": 727,
+            "sect239k1": 728,
+            "sect283k1": 729,
+            "sect283r1": 730,
+            "sect409k1": 731,
+            "sect409r1": 732,
+            "sect571k1": 733,
+            "sect571r1": 734,
         }
 
     def BN_num_bytes(self, x):
@@ -394,14 +440,15 @@ class _OpenSSL:
         OpenSSL random function
         """
         buffer = self.malloc(0, size)
-        # This pyelliptic library, by default, didn't check the return value of RAND_bytes. It is 
+        # This pyelliptic library, by default, didn't check the return value of RAND_bytes. It is
         # evidently possible that it returned an error and not-actually-random data. However, in
-        # tests on various operating systems, while generating hundreds of gigabytes of random 
+        # tests on various operating systems, while generating hundreds of gigabytes of random
         # strings of various sizes I could not get an error to occur. Also Bitcoin doesn't check
-        # the return value of RAND_bytes either. 
+        # the return value of RAND_bytes either.
         # Fixed in Bitmessage version 0.4.2 (in source code on 2013-10-13)
         while self.RAND_bytes(buffer, size) != 1:
             import time
+
             time.sleep(1)
         return buffer.raw
 
@@ -411,42 +458,48 @@ class _OpenSSL:
         """
         buffer = None
         if data != 0:
-            if sys.version_info.major == 3 and isinstance(data, type('')):
+            if sys.version_info.major == 3 and isinstance(data, type("")):
                 data = data.encode()
             buffer = self.create_string_buffer(data, size)
         else:
             buffer = self.create_string_buffer(size)
         return buffer
 
+
 try:
-    OpenSSL = _OpenSSL('libcrypto.so')
+    OpenSSL = _OpenSSL("libcrypto.so")
 except:
     try:
-        OpenSSL = _OpenSSL('libeay32.dll')
+        OpenSSL = _OpenSSL("libeay32.dll")
     except:
         try:
-            OpenSSL = _OpenSSL('libcrypto.dylib')
+            OpenSSL = _OpenSSL("libcrypto.dylib")
         except:
             try:
                 # try homebrew installation
-                OpenSSL = _OpenSSL('/usr/local/opt/openssl/lib/libcrypto.dylib')
+                OpenSSL = _OpenSSL("/usr/local/opt/openssl/lib/libcrypto.dylib")
             except:
                 try:
-                  # Load it from an Bitmessage.app on OSX
-                  OpenSSL = _OpenSSL('././Frameworks/libcrypto.dylib')
+                    # Load it from an Bitmessage.app on OSX
+                    OpenSSL = _OpenSSL("././Frameworks/libcrypto.dylib")
                 except:
-                  try:
-                      from os import path
-                      lib_path = path.join(sys._MEIPASS, "libeay32.dll")
-                      OpenSSL = _OpenSSL(lib_path)
-                  except:
-                      if 'linux' in sys.platform or 'darwin' in sys.platform or 'freebsd' in sys.platform:
-                          try:
-                              from ctypes.util import find_library
-                              OpenSSL = _OpenSSL(find_library('ssl'))
-                          except Exception as err:
-                              sys.stderr.write('(On Linux) Couldn\'t find and load the OpenSSL library. You must install it. If you believe that you already have it installed, this exception information might be of use:\n')
-                              from ctypes.util import find_library
-                              OpenSSL = _OpenSSL(find_library('ssl'))
-                      else:
-                          raise Exception("Couldn't find and load the OpenSSL library. You must install it.")
+                    try:
+                        from os import path
+
+                        lib_path = path.join(sys._MEIPASS, "libeay32.dll")
+                        OpenSSL = _OpenSSL(lib_path)
+                    except:
+                        if "linux" in sys.platform or "darwin" in sys.platform or "freebsd" in sys.platform:
+                            try:
+                                from ctypes.util import find_library
+
+                                OpenSSL = _OpenSSL(find_library("ssl"))
+                            except Exception as err:
+                                sys.stderr.write(
+                                    "(On Linux) Couldn't find and load the OpenSSL library. You must install it. If you believe that you already have it installed, this exception information might be of use:\n"
+                                )
+                                from ctypes.util import find_library
+
+                                OpenSSL = _OpenSSL(find_library("ssl"))
+                        else:
+                            raise Exception("Couldn't find and load the OpenSSL library. You must install it.")

@@ -57,7 +57,7 @@ def readDefaultKnownNodes(appdata):
                 # New knownNodes format.
                 host, port = host
                 storedtime = value
-            print host, '\t', port, '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')
+host, '\t', port, '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')host, '\t', port, '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')
 
 if __name__ == "__main__":
 
@@ -76,7 +76,7 @@ if __name__ == "__main__":
         appdata = path.expanduser(path.join("~", "." + APPNAME + "/"))
 
 
-    print 'New list of all known nodes:', createDefaultKnownNodes(appdata)
+'New list of all known nodes:', createDefaultKnownNodes(appdata)'New list of all known nodes:', createDefaultKnownNodes(appdata)
     readDefaultKnownNodes(appdata)
 
 

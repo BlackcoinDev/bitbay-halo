@@ -108,20 +108,20 @@ if __name__ == '__main__':
 #    for i in range(50000):
 #        d[randString()] = True
 #    a.append(time())
-    print "populating random tracking dict"
+"populating random tracking dict""populating random tracking dict"
     a.append(time())
     for i in range(50000):
         k[randString()] = True
     a.append(time())
-    print "done"
+"done""done"
     while len(k) > 0:
         retval = k.randomKeys(1000)
         if not retval:
-            print "error getting random keys"
+"error getting random keys""error getting random keys"
         #a.append(time())
         try:
             k.randomKeys(100)
-            print "bad"
+"bad""bad"
         except KeyError:
             pass
         #a.append(time())
@@ -131,4 +131,4 @@ if __name__ == '__main__':
     a.append(time())
 
     for x in range(len(a) - 1):
-        print "%i: %.3f" % (x, a[x+1] - a[x])
+"%i: %.3f" % (x, a[x+1] - a[x])"%i: %.3f" % (x, a[x+1] - a[x])

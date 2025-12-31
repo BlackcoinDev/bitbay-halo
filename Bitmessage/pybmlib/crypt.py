@@ -1,9 +1,12 @@
-import hashlib, ctypes
+import ctypes
+import hashlib
+
 from . import protocol
 from .pyelliptic import arithmetic
 from .pyelliptic.openssl import OpenSSL
 
 BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
 
 def encodeBase(num, alphabet):
     if num == 0:
@@ -16,9 +19,12 @@ def encodeBase(num, alphabet):
         num = num // base
         a.append(alphabet[i])
     a.reverse()
-    return ''.join(a)
+    return "".join(a)
+
+
 def encodeBase58(num):
     return encodeBase(num, BASE58_ALPHABET)
+
 
 def decodeBase(s, alphabet):
     base = len(alphabet)
@@ -28,39 +34,46 @@ def decodeBase(s, alphabet):
     try:
         p = length - 1
         for c in s:
-            num += alphabet.index(c) * (base ** p)
+            num += alphabet.index(c) * (base**p)
             p -= 1
     except:
         return 0
     return num
+
+
 def decodeBase58(s):
     return decodeBase(s, BASE58_ALPHABET)
+
 
 def shash(algorithm, data):
     m = hashlib.new(algorithm)
     m.update(data)
     return m.digest()
 
+
 def checksum(data):
-    return shash('sha512', data)[0:4]
+    return shash("sha512", data)[0:4]
+
 
 def pow(data):
-    data = shash('sha512', data)
-    return shash('sha512', data)
+    data = shash("sha512", data)
+    return shash("sha512", data)
+
 
 def addr(data):
-    data = shash('sha512', data)
-    return shash('ripemd160', data)
+    data = shash("sha512", data)
+    return shash("ripemd160", data)
 
-def encodeAddress(ripe, stream = 1, version = 2):
+
+def encodeAddress(ripe, stream=1, version=2):
     if version >= 2:
         if len(ripe) != 20:
-            raise Exception('Ripe length not equels to 20')
-        if ripe[:2] == b'\x00\x00':
+            raise Exception("Ripe length not equels to 20")
+        if ripe[:2] == b"\x00\x00":
             ripe = ripe[2:]
-        elif ripe[:1] == b'\x00':
+        elif ripe[:1] == b"\x00":
             ripe = ripe[1:]
-    a = b''
+    a = b""
 
     a += protocol.encodeVarInt(version)
     a += protocol.encodeVarInt(stream)
@@ -71,21 +84,23 @@ def encodeAddress(ripe, stream = 1, version = 2):
     a += h
 
     v = int(a.hex(), 16)
-    return 'BM-%s' % (encodeBase58(v))
+    return "BM-%s" % (encodeBase58(v))
+
+
 def decodeAddress(address):
     address = str(address).strip()
 
-    if address[:3] == 'BM-':
+    if address[:3] == "BM-":
         i = decodeBase58(address[3:])
     else:
         i = decodeBase58(address)
     if i == 0:
-        return ('invalidcharacters', 0, 0, 0)
+        return ("invalidcharacters", 0, 0, 0)
 
     hexdata = hex(i)[2:]
 
     if len(hexdata) % 2 != 0:
-        hexdata = '0' + hexdata
+        hexdata = "0" + hexdata
 
     data = bytes.fromhex(hexdata)
     checksum = data[-4:]
@@ -94,29 +109,30 @@ def decodeAddress(address):
     h = pow(a)[0:4]
 
     if checksum != h:
-        return ('checksumfailed', 0, 0, 0)
+        return ("checksumfailed", 0, 0, 0)
 
     (version, size) = protocol.decodeVarInt(data[:9])
 
     if version == 0 or version > 3:
-        return ('versiontoohigh', 0, 0, 0)
+        return ("versiontoohigh", 0, 0, 0)
 
     (stream, isize) = protocol.decodeVarInt(data[size:])
 
-    ripe = data[size + isize:-4]
+    ripe = data[size + isize : -4]
 
     if 2 <= version <= 3:
         if len(ripe) == 19:
-            ripe = b'\x00' + ripe
+            ripe = b"\x00" + ripe
         elif len(ripe) == 18:
-            ripe = b'\x00\x00' + ripe
+            ripe = b"\x00\x00" + ripe
         elif len(ripe) != 20:
-            return ('badripe', 0, 0, 0)
+            return ("badripe", 0, 0, 0)
 
-    return ('success', version, stream, ripe)
+    return ("success", version, stream, ripe)
+
 
 def pointMul(privKey):
-    ecKey = OpenSSL.EC_KEY_new_by_curve_name(OpenSSL.get_curve('secp256k1'))
+    ecKey = OpenSSL.EC_KEY_new_by_curve_name(OpenSSL.get_curve("secp256k1"))
     priv_key = OpenSSL.BN_bin2bn(privKey, 32, 0)
     group = OpenSSL.EC_KEY_get0_group(ecKey)
     pub_key = OpenSSL.EC_POINT_new(group)
@@ -134,7 +150,8 @@ def pointMul(privKey):
     OpenSSL.EC_KEY_free(ecKey)
     return mb.raw
 
+
 class KeyPair:
-    def __init__(self, size = 32):
+    def __init__(self, size=32):
         self.privKey = OpenSSL.rand(size)
         self.pubKey = pointMul(self.privKey)

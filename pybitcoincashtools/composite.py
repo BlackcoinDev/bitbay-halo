@@ -1,8 +1,8 @@
+from .bci import *
+from .blocks import *
+from .deterministic import *
 from .main import *
 from .transaction import *
-from .bci import *
-from .deterministic import *
-from .blocks import *
 
 
 # Takes privkey, address, value (satoshis), fee (satoshis)
@@ -20,7 +20,7 @@ def sendmultitx(frm, *args, **kwargs):
         outvalue += int(a.split(":")[1])
 
     u = unspent(privtoaddr(frm), **kwargs)
-    u2 = select(u, int(outvalue)+int(fee))
+    u2 = select(u, int(outvalue) + int(fee))
     argz = u2 + outs + [privtoaddr(frm), fee]
     tx = mksend(*argz)
     tx2 = signall(tx, frm)
@@ -43,7 +43,7 @@ def preparemultitx(frm, *args, **kwargs):
         outvalue += int(a.split(":")[1])
 
     u = unspent(frm, **kwargs)
-    u2 = select(u, int(outvalue)+int(fee))
+    u2 = select(u, int(outvalue) + int(fee))
     argz = u2 + outs + [frm, fee]
     return mksend(*argz, **kwargs)
 
@@ -58,7 +58,7 @@ def bip32_hdm_script(*args):
             keys.append(args[i])
             i += 1
         req = int(args[i])
-        path = list(map(int, args[i+1:]))
+        path = list(map(int, args[i + 1 :]))
     pubs = sorted([bip32_descend(x, path) for x in keys])
     return mk_multisig_script(pubs, req)
 
@@ -73,7 +73,7 @@ def setup_coinvault_tx(tx, script):
     txobj = deserialize(tx)
     N = deserialize_script(script)[-2]
     for inp in txobj["ins"]:
-        inp["script"] = serialize_script([None] * (N+1) + [script])
+        inp["script"] = serialize_script([None] * (N + 1) + [script])
     return serialize(txobj)
 
 
@@ -81,17 +81,17 @@ def setup_coinvault_tx(tx, script):
 def sign_coinvault_tx(tx, priv):
     pub = privtopub(priv)
     txobj = deserialize(tx)
-    subscript = deserialize_script(txobj['ins'][0]['script'])
+    subscript = deserialize_script(txobj["ins"][0]["script"])
     oscript = deserialize_script(subscript[-1])
     k, pubs = oscript[0], oscript[1:-2]
-    for j in range(len(txobj['ins'])):
-        scr = deserialize_script(txobj['ins'][j]['script'])
+    for j in range(len(txobj["ins"])):
+        scr = deserialize_script(txobj["ins"][j]["script"])
         for i, p in enumerate(pubs):
             if p == pub:
-                scr[i+1] = multisign(tx, j, subscript[-1], priv)
+                scr[i + 1] = multisign(tx, j, subscript[-1], priv)
         if len([x for x in scr[1:-1] if x]) >= k:
             scr = [None] + [x for x in scr[1:-1] if x][:k] + [scr[-1]]
-        txobj['ins'][j]['script'] = serialize_script(scr)
+        txobj["ins"][j]["script"] = serialize_script(scr)
     return serialize(txobj)
 
 
@@ -100,24 +100,19 @@ def inspect(tx, **kwargs):
     d = deserialize(tx)
     isum = 0
     ins = {}
-    for _in in d['ins']:
-        h = _in['outpoint']['hash']
-        i = _in['outpoint']['index']
-        prevout = deserialize(fetchtx(h, **kwargs))['outs'][i]
-        isum += prevout['value']
-        a = script_to_address(prevout['script'])
-        ins[a] = ins.get(a, 0) + prevout['value']
+    for _in in d["ins"]:
+        h = _in["outpoint"]["hash"]
+        i = _in["outpoint"]["index"]
+        prevout = deserialize(fetchtx(h, **kwargs))["outs"][i]
+        isum += prevout["value"]
+        a = script_to_address(prevout["script"])
+        ins[a] = ins.get(a, 0) + prevout["value"]
     outs = []
     osum = 0
-    for _out in d['outs']:
-        outs.append({'address': script_to_address(_out['script']),
-                     'value': _out['value']})
-        osum += _out['value']
-    return {
-        'fee': isum - osum,
-        'outs': outs,
-        'ins': ins
-    }
+    for _out in d["outs"]:
+        outs.append({"address": script_to_address(_out["script"]), "value": _out["value"]})
+        osum += _out["value"]
+    return {"fee": isum - osum, "outs": outs, "ins": ins}
 
 
 def merkle_prove(txhash):

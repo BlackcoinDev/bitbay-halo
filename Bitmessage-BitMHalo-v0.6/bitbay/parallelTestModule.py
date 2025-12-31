@@ -8,7 +8,7 @@ class ThreadRunner(threading.Thread):
         threading.Thread.__init__(self)
         self.name = name
     def run(self):
-        print self.name,'\n'
+self.name,'\n'self.name,'\n'
 
 class ProcessRunner:
     """ This class represents a single instance of a running process """

@@ -108,7 +108,7 @@ class FilesystemInventory(InventoryStorage):
                     newInventory[streamNumber] = {}
                     newInventory[streamNumber][hashId] = InventoryItem(objectType, streamNumber, None, expiresTime, tag)
             except KeyError:
-                print "error loading %s" % (hexlify(hashId))
+"error loading %s" % (hexlify(hashId))"error loading %s" % (hexlify(hashId))
                 pass
         self._inventory = newInventory
 #        for i, v in self._inventory.items():

@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_iconGlossaryDialog(object):
     def setupUi(self, iconGlossaryDialog):
@@ -47,11 +53,15 @@ class Ui_iconGlossaryDialog(object):
         self.label_3.setObjectName("label_3")
         self.gridLayout_2.addWidget(self.label_3, 1, 0, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
+        self.label_4.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
+        )
         self.label_4.setWordWrap(True)
         self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 1, 1, 2, 1)
-        spacerItem = QtWidgets.QSpacerItem(20, 73, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 73, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_2.addItem(spacerItem, 2, 0, 2, 1)
         self.labelPortNumber = QtWidgets.QLabel(self.groupBox)
         self.labelPortNumber.setObjectName("labelPortNumber")
@@ -81,18 +91,33 @@ class Ui_iconGlossaryDialog(object):
         iconGlossaryDialog.setWindowTitle(_translate("iconGlossaryDialog", "Icon Glossary", None))
         self.groupBox.setTitle(_translate("iconGlossaryDialog", "Icon Glossary", None))
         self.label_2.setText(_translate("iconGlossaryDialog", "You have no connections with other peers. ", None))
-        self.label_4.setText(_translate("iconGlossaryDialog", "You have made at least one connection to a peer using an outgoing connection but you have not yet received any incoming connections. Your firewall or home router probably isn\'t configured to forward incoming TCP connections to your computer. Bitmessage will work just fine but it would help the Bitmessage network if you allowed for incoming connections and will help you be a better-connected node.", None))
-        self.labelPortNumber.setText(_translate("iconGlossaryDialog", "You are using TCP port ?. (This can be changed in the settings).", None))
-        self.label_6.setText(_translate("iconGlossaryDialog", "You do have connections with other peers and your firewall is correctly configured.", None))
+        self.label_4.setText(
+            _translate(
+                "iconGlossaryDialog",
+                "You have made at least one connection to a peer using an outgoing connection but you have not yet received any incoming connections. Your firewall or home router probably isn't configured to forward incoming TCP connections to your computer. Bitmessage will work just fine but it would help the Bitmessage network if you allowed for incoming connections and will help you be a better-connected node.",
+                None,
+            )
+        )
+        self.labelPortNumber.setText(
+            _translate("iconGlossaryDialog", "You are using TCP port ?. (This can be changed in the settings).", None)
+        )
+        self.label_6.setText(
+            _translate(
+                "iconGlossaryDialog",
+                "You do have connections with other peers and your firewall is correctly configured.",
+                None,
+            )
+        )
+
 
 from . import bitmessage_icons_rc
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     iconGlossaryDialog = QtWidgets.QDialog()
     ui = Ui_iconGlossaryDialog()
     ui.setupUi(iconGlossaryDialog)
     iconGlossaryDialog.show()
     sys.exit(app.exec())
-

@@ -19,7 +19,7 @@ class Cipher:
         ciphertext += ctx.final()
 
         ctx2 = pyelliptic.Cipher("secretkey", iv, 0, ciphername='aes-256-cfb')
-        print ctx2.ciphering(ciphertext)
+ctx2.ciphering(ciphertext)ctx2.ciphering(ciphertext)
     """
     def __init__(self, key, iv, do, ciphername='aes-256-cbc'):
         """

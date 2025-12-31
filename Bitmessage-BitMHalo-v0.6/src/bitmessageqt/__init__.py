@@ -869,7 +869,7 @@ class MyForm(settingsmixin.SMainWindow):
     def appIndicatorShowBitmessage(self):
         #if self.actionShow == None:
         #    return
-        print self.actionShow.isChecked()
+self.actionShow.isChecked()self.actionShow.isChecked()
         if not self.actionShow.isChecked():
             self.hide()
             #self.setWindowState(self.windowState() & QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized)

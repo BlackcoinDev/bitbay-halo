@@ -1,14 +1,15 @@
-from . import shared
-import socket
-from . import defaultKnownNodes
 import pickle
+import socket
 import time
+
+from . import defaultKnownNodes, shared
+
 
 def knownNodes():
     try:
         # We shouldn't have to use the shared.knownNodesLock because this had
         # better be the only thread accessing knownNodes right now.
-        pickleFile = open(shared.appdata + 'knownnodes.dat', 'rb')
+        pickleFile = open(shared.appdata + "knownnodes.dat", "rb")
         loadedKnownNodes = pickle.load(pickleFile)
         pickleFile.close()
         # The old format of storing knownNodes was as a 'host: (port, time)'
@@ -25,14 +26,19 @@ def knownNodes():
                 shared.knownNodes[stream][peer] = time
     except Exception as err:
         if "keys.dat" in str(err):
-            print('Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage.')
-            # We have to kill the process because the error will happen in a loop 
+            print(
+                "Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage."
+            )
+            # We have to kill the process because the error will happen in a loop
             # if we don't.
             raise SystemExit
         shared.knownNodes = defaultKnownNodes.createDefaultKnownNodes(shared.appdata)
-    if shared.config.getint('bitmessagesettings', 'settingsversion') > 10:
-        print('Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage.')
+    if shared.config.getint("bitmessagesettings", "settingsversion") > 10:
+        print(
+            "Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage."
+        )
         raise SystemExit
+
 
 def dns():
     # DNS bootstrap. This could be programmed to use the SOCKS proxy to do the
@@ -41,18 +47,18 @@ def dns():
     # has run Bitmessage recently without SOCKS turned on and received good
     # bootstrap nodes using that method.
     with shared.printLock:
-        if shared.config.get('bitmessagesettings', 'socksproxytype') == 'none':
+        if shared.config.get("bitmessagesettings", "socksproxytype") == "none":
             try:
-                for item in socket.getaddrinfo('bootstrap8080.bitmessage.org', 80):
-                    print(('Adding', item[4][0], 'to knownNodes based on DNS boostrap method'))
+                for item in socket.getaddrinfo("bootstrap8080.bitmessage.org", 80):
+                    print(("Adding", item[4][0], "to knownNodes based on DNS boostrap method"))
                     shared.knownNodes[1][shared.Peer(item[4][0], 8080)] = int(time.time())
             except:
-                print('bootstrap8080.bitmessage.org DNS bootstrapping failed.')
+                print("bootstrap8080.bitmessage.org DNS bootstrapping failed.")
             try:
-                for item in socket.getaddrinfo('bootstrap8444.bitmessage.org', 80):
-                    print(('Adding', item[4][0], 'to knownNodes based on DNS boostrap method'))
+                for item in socket.getaddrinfo("bootstrap8444.bitmessage.org", 80):
+                    print(("Adding", item[4][0], "to knownNodes based on DNS boostrap method"))
                     shared.knownNodes[1][shared.Peer(item[4][0], 8444)] = int(time.time())
             except:
-                print('bootstrap8444.bitmessage.org DNS bootstrapping failed.')
+                print("bootstrap8444.bitmessage.org DNS bootstrapping failed.")
         else:
-            print('DNS bootstrap skipped because SOCKS is used.')
+            print("DNS bootstrap skipped because SOCKS is used.")

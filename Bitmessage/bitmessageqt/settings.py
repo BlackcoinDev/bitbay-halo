@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_settingsDialog(object):
     def setupUi(self, settingsDialog):
@@ -31,7 +37,9 @@ class Ui_settingsDialog(object):
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtWidgets.QDialogButtonBox(settingsDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
         self.tabWidgetSettings = QtWidgets.QTabWidget(settingsDialog)
@@ -118,7 +126,9 @@ class Ui_settingsDialog(object):
         self.groupBox1.setObjectName("groupBox1")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBox1)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        spacerItem = QtWidgets.QSpacerItem(125, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            125, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_3.addItem(spacerItem, 0, 0, 1, 1)
         self.label = QtWidgets.QLabel(self.groupBox1)
         self.label.setObjectName("label")
@@ -162,7 +172,9 @@ class Ui_settingsDialog(object):
         self.gridLayout_2.addWidget(self.label_6, 2, 4, 1, 1)
         self.lineEditSocksPassword = QtWidgets.QLineEdit(self.groupBox_2)
         self.lineEditSocksPassword.setEnabled(False)
-        self.lineEditSocksPassword.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText)
+        self.lineEditSocksPassword.setInputMethodHints(
+            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText
+        )
         self.lineEditSocksPassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEditSocksPassword.setObjectName("lineEditSocksPassword")
         self.gridLayout_2.addWidget(self.lineEditSocksPassword, 2, 5, 1, 1)
@@ -176,7 +188,9 @@ class Ui_settingsDialog(object):
         self.comboBoxProxyType.addItem(_fromUtf8(""))
         self.gridLayout_2.addWidget(self.comboBoxProxyType, 0, 1, 1, 1)
         self.gridLayout_4.addWidget(self.groupBox_2, 1, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 70, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            20, 70, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_4.addItem(spacerItem1, 2, 0, 1, 1)
         self.tabWidgetSettings.addTab(self.tabNetworkSettings, _fromUtf8(""))
         self.tabDemandedDifficulty = QtWidgets.QWidget()
@@ -184,7 +198,11 @@ class Ui_settingsDialog(object):
         self.gridLayout_6 = QtWidgets.QGridLayout(self.tabDemandedDifficulty)
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.label_9 = QtWidgets.QLabel(self.tabDemandedDifficulty)
-        self.label_9.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_9.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_9.setObjectName("label_9")
         self.gridLayout_6.addWidget(self.label_9, 1, 1, 1, 1)
         self.label_10 = QtWidgets.QLabel(self.tabDemandedDifficulty)
@@ -192,14 +210,20 @@ class Ui_settingsDialog(object):
         self.label_10.setObjectName("label_10")
         self.gridLayout_6.addWidget(self.label_10, 2, 0, 1, 3)
         self.label_11 = QtWidgets.QLabel(self.tabDemandedDifficulty)
-        self.label_11.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_11.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_11.setObjectName("label_11")
         self.gridLayout_6.addWidget(self.label_11, 3, 1, 1, 1)
         self.label_8 = QtWidgets.QLabel(self.tabDemandedDifficulty)
         self.label_8.setWordWrap(True)
         self.label_8.setObjectName("label_8")
         self.gridLayout_6.addWidget(self.label_8, 0, 0, 1, 3)
-        spacerItem2 = QtWidgets.QSpacerItem(203, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            203, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_6.addItem(spacerItem2, 1, 0, 1, 1)
         self.label_12 = QtWidgets.QLabel(self.tabDemandedDifficulty)
         self.label_12.setWordWrap(True)
@@ -223,9 +247,13 @@ class Ui_settingsDialog(object):
         self.lineEditTotalDifficulty.setMaximumSize(QtCore.QSize(70, 16777215))
         self.lineEditTotalDifficulty.setObjectName("lineEditTotalDifficulty")
         self.gridLayout_6.addWidget(self.lineEditTotalDifficulty, 1, 2, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(203, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            203, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_6.addItem(spacerItem3, 3, 0, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_6.addItem(spacerItem4, 5, 0, 1, 1)
         self.tabWidgetSettings.addTab(self.tabDemandedDifficulty, _fromUtf8(""))
         self.tabMaxAcceptableDifficulty = QtWidgets.QWidget()
@@ -236,11 +264,17 @@ class Ui_settingsDialog(object):
         self.label_15.setWordWrap(True)
         self.label_15.setObjectName("label_15")
         self.gridLayout_7.addWidget(self.label_15, 0, 0, 1, 3)
-        spacerItem5 = QtWidgets.QSpacerItem(102, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            102, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_7.addItem(spacerItem5, 1, 0, 1, 1)
         self.label_13 = QtWidgets.QLabel(self.tabMaxAcceptableDifficulty)
         self.label_13.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
-        self.label_13.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_13.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_13.setObjectName("label_13")
         self.gridLayout_7.addWidget(self.label_13, 1, 1, 1, 1)
         self.lineEditMaxAcceptableTotalDifficulty = QtWidgets.QLineEdit(self.tabMaxAcceptableDifficulty)
@@ -252,10 +286,16 @@ class Ui_settingsDialog(object):
         self.lineEditMaxAcceptableTotalDifficulty.setMaximumSize(QtCore.QSize(70, 16777215))
         self.lineEditMaxAcceptableTotalDifficulty.setObjectName("lineEditMaxAcceptableTotalDifficulty")
         self.gridLayout_7.addWidget(self.lineEditMaxAcceptableTotalDifficulty, 1, 2, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(102, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(
+            102, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_7.addItem(spacerItem6, 2, 0, 1, 1)
         self.label_14 = QtWidgets.QLabel(self.tabMaxAcceptableDifficulty)
-        self.label_14.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_14.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_14.setObjectName("label_14")
         self.gridLayout_7.addWidget(self.label_14, 2, 1, 1, 1)
         self.lineEditMaxAcceptableSmallMessageDifficulty = QtWidgets.QLineEdit(self.tabMaxAcceptableDifficulty)
@@ -267,55 +307,85 @@ class Ui_settingsDialog(object):
         self.lineEditMaxAcceptableSmallMessageDifficulty.setMaximumSize(QtCore.QSize(70, 16777215))
         self.lineEditMaxAcceptableSmallMessageDifficulty.setObjectName("lineEditMaxAcceptableSmallMessageDifficulty")
         self.gridLayout_7.addWidget(self.lineEditMaxAcceptableSmallMessageDifficulty, 2, 2, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(20, 147, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem7 = QtWidgets.QSpacerItem(
+            20, 147, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_7.addItem(spacerItem7, 3, 1, 1, 1)
         self.tabWidgetSettings.addTab(self.tabMaxAcceptableDifficulty, _fromUtf8(""))
         self.tabNamecoin = QtWidgets.QWidget()
         self.tabNamecoin.setObjectName("tabNamecoin")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.tabNamecoin)
         self.gridLayout_8.setObjectName("gridLayout_8")
-        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem8 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_8.addItem(spacerItem8, 2, 0, 1, 1)
         self.label_16 = QtWidgets.QLabel(self.tabNamecoin)
         self.label_16.setWordWrap(True)
         self.label_16.setObjectName("label_16")
         self.gridLayout_8.addWidget(self.label_16, 0, 0, 1, 3)
         self.label_17 = QtWidgets.QLabel(self.tabNamecoin)
-        self.label_17.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_17.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_17.setObjectName("label_17")
         self.gridLayout_8.addWidget(self.label_17, 2, 1, 1, 1)
         self.lineEditNamecoinHost = QtWidgets.QLineEdit(self.tabNamecoin)
         self.lineEditNamecoinHost.setObjectName("lineEditNamecoinHost")
         self.gridLayout_8.addWidget(self.lineEditNamecoinHost, 2, 2, 1, 1)
-        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem9 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_8.addItem(spacerItem9, 3, 0, 1, 1)
-        spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem10 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_8.addItem(spacerItem10, 4, 0, 1, 1)
         self.label_18 = QtWidgets.QLabel(self.tabNamecoin)
         self.label_18.setEnabled(True)
-        self.label_18.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_18.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_18.setObjectName("label_18")
         self.gridLayout_8.addWidget(self.label_18, 3, 1, 1, 1)
         self.lineEditNamecoinPort = QtWidgets.QLineEdit(self.tabNamecoin)
         self.lineEditNamecoinPort.setObjectName("lineEditNamecoinPort")
         self.gridLayout_8.addWidget(self.lineEditNamecoinPort, 3, 2, 1, 1)
-        spacerItem11 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem11 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_8.addItem(spacerItem11, 8, 1, 1, 1)
         self.labelNamecoinUser = QtWidgets.QLabel(self.tabNamecoin)
-        self.labelNamecoinUser.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelNamecoinUser.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.labelNamecoinUser.setObjectName("labelNamecoinUser")
         self.gridLayout_8.addWidget(self.labelNamecoinUser, 4, 1, 1, 1)
         self.lineEditNamecoinUser = QtWidgets.QLineEdit(self.tabNamecoin)
         self.lineEditNamecoinUser.setObjectName("lineEditNamecoinUser")
         self.gridLayout_8.addWidget(self.lineEditNamecoinUser, 4, 2, 1, 1)
-        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem12 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_8.addItem(spacerItem12, 5, 0, 1, 1)
         self.labelNamecoinPassword = QtWidgets.QLabel(self.tabNamecoin)
-        self.labelNamecoinPassword.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelNamecoinPassword.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.labelNamecoinPassword.setObjectName("labelNamecoinPassword")
         self.gridLayout_8.addWidget(self.labelNamecoinPassword, 5, 1, 1, 1)
         self.lineEditNamecoinPassword = QtWidgets.QLineEdit(self.tabNamecoin)
-        self.lineEditNamecoinPassword.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText)
+        self.lineEditNamecoinPassword.setInputMethodHints(
+            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText
+        )
         self.lineEditNamecoinPassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEditNamecoinPassword.setObjectName("lineEditNamecoinPassword")
         self.gridLayout_8.addWidget(self.lineEditNamecoinPassword, 5, 2, 1, 1)
@@ -347,18 +417,28 @@ class Ui_settingsDialog(object):
         self.label_7.setWordWrap(True)
         self.label_7.setObjectName("label_7")
         self.gridLayout_5.addWidget(self.label_7, 0, 0, 1, 3)
-        spacerItem13 = QtWidgets.QSpacerItem(212, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem13 = QtWidgets.QSpacerItem(
+            212, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_5.addItem(spacerItem13, 1, 0, 1, 1)
         self.widget = QtWidgets.QWidget(self.tabResendsExpire)
         self.widget.setMinimumSize(QtCore.QSize(231, 75))
         self.widget.setObjectName("widget")
         self.label_19 = QtWidgets.QLabel(self.widget)
         self.label_19.setGeometry(QtCore.QRect(10, 20, 101, 20))
-        self.label_19.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_19.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_19.setObjectName("label_19")
         self.label_20 = QtWidgets.QLabel(self.widget)
         self.label_20.setGeometry(QtCore.QRect(30, 40, 80, 16))
-        self.label_20.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.label_20.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight
+            | QtCore.Qt.AlignmentFlag.AlignTrailing
+            | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.label_20.setObjectName("label_20")
         self.lineEditDays = QtWidgets.QLineEdit(self.widget)
         self.lineEditDays.setGeometry(QtCore.QRect(113, 20, 51, 20))
@@ -373,7 +453,9 @@ class Ui_settingsDialog(object):
         self.label_23.setGeometry(QtCore.QRect(170, 41, 71, 16))
         self.label_23.setObjectName("label_23")
         self.gridLayout_5.addWidget(self.widget, 1, 2, 1, 1)
-        spacerItem14 = QtWidgets.QSpacerItem(20, 129, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem14 = QtWidgets.QSpacerItem(
+            20, 129, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.gridLayout_5.addItem(spacerItem14, 2, 1, 1, 1)
         self.tabWidgetSettings.addTab(self.tabResendsExpire, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidgetSettings, 0, 0, 1, 1)
@@ -401,19 +483,37 @@ class Ui_settingsDialog(object):
     def retranslateUi(self, settingsDialog):
         settingsDialog.setWindowTitle(_translate("settingsDialog", "Settings", None))
         self.checkBoxStartOnLogon.setText(_translate("settingsDialog", "Start Bitmessage on user login", None))
-        self.checkBoxStartInTray.setText(_translate("settingsDialog", "Start Bitmessage in the tray (don\'t show main window)", None))
+        self.checkBoxStartInTray.setText(
+            _translate("settingsDialog", "Start Bitmessage in the tray (don't show main window)", None)
+        )
         self.checkBoxMinimizeToTray.setText(_translate("settingsDialog", "Minimize to tray", None))
-        self.checkBoxShowTrayNotifications.setText(_translate("settingsDialog", "Show notification when message received", None))
+        self.checkBoxShowTrayNotifications.setText(
+            _translate("settingsDialog", "Show notification when message received", None)
+        )
         self.checkBoxPortableMode.setText(_translate("settingsDialog", "Run in Portable Mode", None))
-        self.PortableModeDescription.setText(_translate("settingsDialog", "In Portable Mode, messages and config files are stored in the same directory as the program rather than the normal application-data folder. This makes it convenient to run Bitmessage from a USB thumb drive.", None))
-        self.checkBoxWillinglySendToMobile.setText(_translate("settingsDialog", "Willingly include unencrypted destination address when sending to a mobile device", None))
+        self.PortableModeDescription.setText(
+            _translate(
+                "settingsDialog",
+                "In Portable Mode, messages and config files are stored in the same directory as the program rather than the normal application-data folder. This makes it convenient to run Bitmessage from a USB thumb drive.",
+                None,
+            )
+        )
+        self.checkBoxWillinglySendToMobile.setText(
+            _translate(
+                "settingsDialog",
+                "Willingly include unencrypted destination address when sending to a mobile device",
+                None,
+            )
+        )
         self.checkBoxUseIdenticons.setText(_translate("settingsDialog", "Use Identicons", None))
         self.checkBoxReplyBelow.setText(_translate("settingsDialog", "Reply below Quote", None))
         self.groupBox.setTitle(_translate("settingsDialog", "Interface Language", None))
         self.languageComboBox.setItemText(0, _translate("settingsDialog", "System Settings", "system"))
         self.languageComboBox.setItemText(12, _translate("settingsDialog", "Pirate English", "en_pirate"))
         self.languageComboBox.setItemText(13, _translate("settingsDialog", "Other (set in keys.dat)", "other"))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabUserInterface), _translate("settingsDialog", "User Interface", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabUserInterface), _translate("settingsDialog", "User Interface", None)
+        )
         self.groupBox1.setTitle(_translate("settingsDialog", "Listening port", None))
         self.label.setText(_translate("settingsDialog", "Listen for connections on port:", None))
         self.groupBox_2.setTitle(_translate("settingsDialog", "Proxy server / Tor", None))
@@ -423,22 +523,63 @@ class Ui_settingsDialog(object):
         self.checkBoxAuthentication.setText(_translate("settingsDialog", "Authentication", None))
         self.label_5.setText(_translate("settingsDialog", "Username:", None))
         self.label_6.setText(_translate("settingsDialog", "Pass:", None))
-        self.checkBoxSocksListen.setText(_translate("settingsDialog", "Listen for incoming connections when using proxy", None))
+        self.checkBoxSocksListen.setText(
+            _translate("settingsDialog", "Listen for incoming connections when using proxy", None)
+        )
         self.comboBoxProxyType.setItemText(0, _translate("settingsDialog", "none", None))
         self.comboBoxProxyType.setItemText(1, _translate("settingsDialog", "SOCKS4a", None))
         self.comboBoxProxyType.setItemText(2, _translate("settingsDialog", "SOCKS5", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabNetworkSettings), _translate("settingsDialog", "Network Settings", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabNetworkSettings),
+            _translate("settingsDialog", "Network Settings", None),
+        )
         self.label_9.setText(_translate("settingsDialog", "Total difficulty:", None))
-        self.label_10.setText(_translate("settingsDialog", "The \'Total difficulty\' affects the absolute amount of work the sender must complete. Doubling this value doubles the amount of work.", None))
+        self.label_10.setText(
+            _translate(
+                "settingsDialog",
+                "The 'Total difficulty' affects the absolute amount of work the sender must complete. Doubling this value doubles the amount of work.",
+                None,
+            )
+        )
         self.label_11.setText(_translate("settingsDialog", "Small message difficulty:", None))
-        self.label_8.setText(_translate("settingsDialog", "When someone sends you a message, their computer must first complete some work. The difficulty of this work, by default, is 1. You may raise this default for new addresses you create by changing the values here. Any new addresses you create will require senders to meet the higher difficulty. There is one exception: if you add a friend or acquaintance to your address book, Bitmessage will automatically notify them when you next send a message that they need only complete the minimum amount of work: difficulty 1. ", None))
-        self.label_12.setText(_translate("settingsDialog", "The \'Small message difficulty\' mostly only affects the difficulty of sending small messages. Doubling this value makes it almost twice as difficult to send a small message but doesn\'t really affect large messages.", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabDemandedDifficulty), _translate("settingsDialog", "Demanded difficulty", None))
-        self.label_15.setText(_translate("settingsDialog", "Here you may set the maximum amount of work you are willing to do to send a message to another person. Setting these values to 0 means that any value is acceptable.", None))
+        self.label_8.setText(
+            _translate(
+                "settingsDialog",
+                "When someone sends you a message, their computer must first complete some work. The difficulty of this work, by default, is 1. You may raise this default for new addresses you create by changing the values here. Any new addresses you create will require senders to meet the higher difficulty. There is one exception: if you add a friend or acquaintance to your address book, Bitmessage will automatically notify them when you next send a message that they need only complete the minimum amount of work: difficulty 1. ",
+                None,
+            )
+        )
+        self.label_12.setText(
+            _translate(
+                "settingsDialog",
+                "The 'Small message difficulty' mostly only affects the difficulty of sending small messages. Doubling this value makes it almost twice as difficult to send a small message but doesn't really affect large messages.",
+                None,
+            )
+        )
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabDemandedDifficulty),
+            _translate("settingsDialog", "Demanded difficulty", None),
+        )
+        self.label_15.setText(
+            _translate(
+                "settingsDialog",
+                "Here you may set the maximum amount of work you are willing to do to send a message to another person. Setting these values to 0 means that any value is acceptable.",
+                None,
+            )
+        )
         self.label_13.setText(_translate("settingsDialog", "Maximum acceptable total difficulty:", None))
         self.label_14.setText(_translate("settingsDialog", "Maximum acceptable small message difficulty:", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabMaxAcceptableDifficulty), _translate("settingsDialog", "Max acceptable difficulty", None))
-        self.label_16.setText(_translate("settingsDialog", "<html><head/><body><p>Bitmessage can utilize a different Bitcoin-based program called Namecoin to make addresses human-friendly. For example, instead of having to tell your friend your long Bitmessage address, you can simply tell him to send a message to <span style=\" font-style:italic;\">test. </span></p><p>(Getting your own Bitmessage address into Namecoin is still rather difficult).</p><p>Bitmessage can use either namecoind directly or a running nmcontrol instance.</p></body></html>", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabMaxAcceptableDifficulty),
+            _translate("settingsDialog", "Max acceptable difficulty", None),
+        )
+        self.label_16.setText(
+            _translate(
+                "settingsDialog",
+                '<html><head/><body><p>Bitmessage can utilize a different Bitcoin-based program called Namecoin to make addresses human-friendly. For example, instead of having to tell your friend your long Bitmessage address, you can simply tell him to send a message to <span style=" font-style:italic;">test. </span></p><p>(Getting your own Bitmessage address into Namecoin is still rather difficult).</p><p>Bitmessage can use either namecoind directly or a running nmcontrol instance.</p></body></html>',
+                None,
+            )
+        )
         self.label_17.setText(_translate("settingsDialog", "Host:", None))
         self.label_18.setText(_translate("settingsDialog", "Port:", None))
         self.labelNamecoinUser.setText(_translate("settingsDialog", "Username:", None))
@@ -447,12 +588,23 @@ class Ui_settingsDialog(object):
         self.label_21.setText(_translate("settingsDialog", "Connect to:", None))
         self.radioButtonNamecoinNamecoind.setText(_translate("settingsDialog", "Namecoind", None))
         self.radioButtonNamecoinNmcontrol.setText(_translate("settingsDialog", "NMControl", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabNamecoin), _translate("settingsDialog", "Namecoin integration", None))
-        self.label_7.setText(_translate("settingsDialog", "<html><head/><body><p>By default, if you send a message to someone and he is offline for more than two days, Bitmessage will send the message again after an additional two days. This will be continued with exponential backoff forever; messages will be resent after 5, 10, 20 days ect. until the receiver acknowledges them. Here you may change that behavior by having Bitmessage give up after a certain number of days or months.</p><p>Leave these input fields blank for the default behavior. </p></body></html>", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabNamecoin), _translate("settingsDialog", "Namecoin integration", None)
+        )
+        self.label_7.setText(
+            _translate(
+                "settingsDialog",
+                "<html><head/><body><p>By default, if you send a message to someone and he is offline for more than two days, Bitmessage will send the message again after an additional two days. This will be continued with exponential backoff forever; messages will be resent after 5, 10, 20 days ect. until the receiver acknowledges them. Here you may change that behavior by having Bitmessage give up after a certain number of days or months.</p><p>Leave these input fields blank for the default behavior. </p></body></html>",
+                None,
+            )
+        )
         self.label_19.setText(_translate("settingsDialog", "Give up after", None))
         self.label_20.setText(_translate("settingsDialog", "and", None))
         self.label_22.setText(_translate("settingsDialog", "days", None))
         self.label_23.setText(_translate("settingsDialog", "months.", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabResendsExpire), _translate("settingsDialog", "Resends Expire", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabResendsExpire), _translate("settingsDialog", "Resends Expire", None)
+        )
+
 
 from . import bitmessage_icons_rc

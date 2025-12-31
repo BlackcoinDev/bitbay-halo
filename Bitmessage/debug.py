@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Logging and debuging facility
 =============================
 
@@ -15,67 +15,65 @@ There are three loggers: `console_only`, `file_only` and `both`.
 
 Use: `from debug import logger` to import this facility into whatever module you wish to log messages from.
      Logging is thread-safe so you don't have to worry about locks, just import and log.
-'''
+"""
 import logging
 import logging.config
-from . import shared
 import sys
-from . import helper_startup
+
+from . import helper_startup, shared
+
 helper_startup.loadConfig()
 
 # TODO(xj9): Get from a config file.
-log_level = 'DEBUG'
+log_level = "DEBUG"
+
 
 def configureLogging():
-    logging.config.dictConfig({
-        'version': 1,
-        'formatters': {
-            'default': {
-                'format': '%(asctime)s - %(levelname)s - %(message)s',
+    logging.config.dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "%(asctime)s - %(levelname)s - %(message)s",
+                },
             },
-        },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'default',
-                'level': log_level,
-                'stream': 'ext://sys.stdout'
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "formatter": "default",
+                    "level": log_level,
+                    "stream": "ext://sys.stdout",
+                },
+                "file": {
+                    "class": "logging.handlers.RotatingFileHandler",
+                    "formatter": "default",
+                    "level": log_level,
+                    "filename": shared.appdata + "debug.log",
+                    "maxBytes": 2097152,  # 2 MiB
+                    "backupCount": 1,
+                },
             },
-            'file': {
-                'class': 'logging.handlers.RotatingFileHandler',
-                'formatter': 'default',
-                'level': log_level,
-                'filename': shared.appdata + 'debug.log',
-                'maxBytes': 2097152, # 2 MiB
-                'backupCount': 1,
-            }
-        },
-        'loggers': {
-            'console_only': {
-                'handlers': ['console'],
-                'propagate' : 0
+            "loggers": {
+                "console_only": {"handlers": ["console"], "propagate": 0},
+                "file_only": {"handlers": ["file"], "propagate": 0},
+                "both": {"handlers": ["console", "file"], "propagate": 0},
             },
-            'file_only': {
-                'handlers': ['file'],
-                'propagate' : 0
+            "root": {
+                "level": log_level,
+                "handlers": ["console"],
             },
-            'both': {
-                'handlers': ['console', 'file'],
-                'propagate' : 0
-            },
-        },
-        'root': {
-            'level': log_level,
-            'handlers': ['console'],
-        },
-    })
+        }
+    )
+
+
 # TODO (xj9): Get from a config file.
-#logger = logging.getLogger('console_only')
+# logger = logging.getLogger('console_only')
 configureLogging()
-if '-c' in sys.argv:
-    logger = logging.getLogger('file_only')
+if "-c" in sys.argv:
+    logger = logging.getLogger("file_only")
 else:
-    logger = logging.getLogger('both')
+    logger = logging.getLogger("both")
+
 
 def restartLoggingInUpdatedAppdataLocation():
     global logger
@@ -84,8 +82,7 @@ def restartLoggingInUpdatedAppdataLocation():
         i.flush()
         i.close()
     configureLogging()
-    if '-c' in sys.argv:
-        logger = logging.getLogger('file_only')
+    if "-c" in sys.argv:
+        logger = logging.getLogger("file_only")
     else:
-        logger = logging.getLogger('both')
-
+        logger = logging.getLogger("both")

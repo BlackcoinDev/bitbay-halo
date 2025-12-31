@@ -14,10 +14,10 @@ if __name__ == '__main__':
     try:
         msgType = data[""]
     except KeyError:
-        print "Message type missing"
+"Message type missing""Message type missing"
         sys.exit(1)
     else:
-        print "Message type: %s" % (msgType)
+"Message type: %s" % (msgType)"Message type: %s" % (msgType)
     msgObj = messagetypes.constructObject(data)
     if msgObj is None:
         sys.exit(1)

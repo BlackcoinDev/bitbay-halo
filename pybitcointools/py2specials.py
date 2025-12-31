@@ -1,9 +1,8 @@
-import sys
-import re
 import binascii
-import os
 import hashlib
-
+import os
+import re
+import sys
 
 if sys.version_info.major == 2:
     string_types = (str, str)
@@ -12,12 +11,12 @@ if sys.version_info.major == 2:
 
     # Base switching
     code_strings = {
-        2: '01',
-        10: '0123456789',
-        16: '0123456789abcdef',
-        32: 'abcdefghijklmnopqrstuvwxyz234567',
-        58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-        256: ''.join([chr(x) for x in range(256)])
+        2: "01",
+        10: "0123456789",
+        16: "0123456789abcdef",
+        32: "abcdefghijklmnopqrstuvwxyz234567",
+        58: "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
+        256: "".join([chr(x) for x in range(256)]),
     }
 
     def bin_dbl_sha256(s):
@@ -42,15 +41,15 @@ if sys.version_info.major == 2:
 
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = chr(int(magicbyte)) + inp
-        leadingzbytes = len(re.match('^\x00*', inp_fmtd).group(0))
+        leadingzbytes = len(re.match("^\x00*", inp_fmtd).group(0))
         checksum = bin_dbl_sha256(inp_fmtd)[:4]
-        return '1' * leadingzbytes + changebase(inp_fmtd+checksum, 256, 58)
+        return "1" * leadingzbytes + changebase(inp_fmtd + checksum, 256, 58)
 
     def bytes_to_hex_string(b):
-        return b.encode('hex')
+        return b.encode("hex")
 
     def safe_from_hex(s):
-        return s.decode('hex')
+        return s.decode("hex")
 
     def from_int_representation_to_bytes(a):
         return str(a)
@@ -95,4 +94,4 @@ if sys.version_info.major == 2:
         return os.urandom(x)
 
     def is_hexilified(tx):
-        return isinstance(tx, str) and re.match('^[0-9a-fA-F]*$', tx)
+        return isinstance(tx, str) and re.match("^[0-9a-fA-F]*$", tx)

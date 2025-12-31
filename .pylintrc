@@ -1,0 +1,32 @@
+[MASTER]
+ignore=.git,__pycache__,venv,.venv,BitMData,Bitmessage/site-packages
+load-plugins=pylint.extensions.no_self_use
+
+[MESSAGES CONTROL]
+# Disable all messages first, then enable specific ones
+disable=all
+# Enable only Error (E) and Fatal (F) messages
+enable=E,F
+
+# Specific ignores if needed (example)
+# disable=no-member
+
+[TYPECHECK]
+# List of members which are set dynamically and missed by pylint inference system,
+# and so shouldn't trigger E1101 when accessed.
+generated-members=cv2.*, torch.*
+
+# List of decorators that produce context managers
+contextmanager-decorators=contextlib.contextmanager
+
+[BASIC]
+# Good variable names which should always be accepted, separated by comma.
+good-names=i,j,k,ex,Run,_
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=120
+
+[DESIGN]
+# Maximum number of arguments for function / method.
+max-args=10

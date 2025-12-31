@@ -7,12 +7,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
+
 
 class Ui_SpecialAddressBehaviorDialog(object):
     def setupUi(self, SpecialAddressBehaviorDialog):
@@ -41,7 +42,9 @@ class Ui_SpecialAddressBehaviorDialog(object):
         self.buttonBox = QtWidgets.QDialogButtonBox(SpecialAddressBehaviorDialog)
         self.buttonBox.setMinimumSize(QtCore.QSize(368, 0))
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 
@@ -51,14 +54,44 @@ class Ui_SpecialAddressBehaviorDialog(object):
         self.radioButtonBehaviorMailingList.clicked.connect(self.lineEditMailingListName.setEnabled)
         self.radioButtonBehaveNormalAddress.clicked.connect(self.lineEditMailingListName.setDisabled)
         QtCore.QMetaObject.connectSlotsByName(SpecialAddressBehaviorDialog)
-        SpecialAddressBehaviorDialog.setTabOrder(self.radioButtonBehaveNormalAddress, self.radioButtonBehaviorMailingList)
+        SpecialAddressBehaviorDialog.setTabOrder(
+            self.radioButtonBehaveNormalAddress, self.radioButtonBehaviorMailingList
+        )
         SpecialAddressBehaviorDialog.setTabOrder(self.radioButtonBehaviorMailingList, self.lineEditMailingListName)
         SpecialAddressBehaviorDialog.setTabOrder(self.lineEditMailingListName, self.buttonBox)
 
     def retranslateUi(self, SpecialAddressBehaviorDialog):
-        SpecialAddressBehaviorDialog.setWindowTitle(QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Special Address Behavior", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.radioButtonBehaveNormalAddress.setText(QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Behave as a normal address", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.radioButtonBehaviorMailingList.setText(QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Behave as a pseudo-mailing-list address", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.label.setText(QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Mail received to a pseudo-mailing-list address will be automatically broadcast to subscribers (and thus will be public).", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Name of the pseudo-mailing-list:", None, QtWidgets.QApplication.UnicodeUTF8))
-
+        SpecialAddressBehaviorDialog.setWindowTitle(
+            QtWidgets.QApplication.translate(
+                "SpecialAddressBehaviorDialog", "Special Address Behavior", None, QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.radioButtonBehaveNormalAddress.setText(
+            QtWidgets.QApplication.translate(
+                "SpecialAddressBehaviorDialog", "Behave as a normal address", None, QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.radioButtonBehaviorMailingList.setText(
+            QtWidgets.QApplication.translate(
+                "SpecialAddressBehaviorDialog",
+                "Behave as a pseudo-mailing-list address",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8,
+            )
+        )
+        self.label.setText(
+            QtWidgets.QApplication.translate(
+                "SpecialAddressBehaviorDialog",
+                "Mail received to a pseudo-mailing-list address will be automatically broadcast to subscribers (and thus will be public).",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8,
+            )
+        )
+        self.label_2.setText(
+            QtWidgets.QApplication.translate(
+                "SpecialAddressBehaviorDialog",
+                "Name of the pseudo-mailing-list:",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8,
+            )
+        )

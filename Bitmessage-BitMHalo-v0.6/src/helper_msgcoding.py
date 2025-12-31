@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3.14
 
 try:
     import msgpack
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     obj1 = MsgEncode(messageData, 1)
     obj2 = MsgEncode(messageData, 2)
     obj3 = MsgEncode(messageData, 3)
-    print "1:%i 2:%i 3:%i" %(len(obj1.data), len(obj2.data), len(obj3.data))
+"1:%i 2:%i 3:%i" %(len(obj1.data), len(obj2.data), len(obj3.data))"1:%i 2:%i 3:%i" %(len(obj1.data), len(obj2.data), len(obj3.data))
 
     obj1e = MsgDecode(1, obj1.data)
     # no subject in trivial encoding

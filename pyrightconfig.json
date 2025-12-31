@@ -1,0 +1,18 @@
+{
+    "include": [
+        "Bitmessage",
+        "Halo.py",
+        "tests"
+    ],
+    "exclude": [
+        "**/__pycache__",
+        ".venv",
+        "venv",
+        "BitMData",
+        "Bitmessage/site-packages"
+    ],
+    "typeCheckingMode": "basic",
+    "pythonVersion": "3.14",
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false
+}

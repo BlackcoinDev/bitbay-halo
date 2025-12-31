@@ -10,56 +10,51 @@
 # The software version variable is now held in shared.py
 
 
-import sys
-#Version check
-import sys
-import signal  # Used to capture a Ctrl-C keypress so that Bitmessage can shutdown gracefully.
-# The next 3 are used for the API
-from . import singleton
-import os
-import socket
 import ctypes
-from struct import pack
+import os
+import signal  # Used to capture a Ctrl-C keypress so that Bitmessage can shutdown gracefully.
+import socket
 
-from xmlrpc.server import SimpleXMLRPCServer
-from .api import MySimpleXMLRPCRequestHandler
-from .helper_startup import isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections
-
-from . import shared
-from .helper_sql import sqlQuery
+# Version check
+import sys
 import threading
-
-# Classes
-#from helper_sql import *
-#from class_sqlThread import *
-from .class_sqlThread import sqlThread
-from .class_singleCleaner import singleCleaner
-#from class_singleWorker import *
-from .class_objectProcessor import objectProcessor
-from .class_outgoingSynSender import outgoingSynSender
-from .class_singleListener import singleListener
-from .class_singleWorker import singleWorker
-#from class_addressGenerator import *
-from .class_addressGenerator import addressGenerator
-from .debug import logger
+import time
+from struct import pack
+from subprocess import call
+from xmlrpc.server import SimpleXMLRPCServer
 
 # Helper Functions
-from . import helper_bootstrap
-from . import helper_generic
+# The next 3 are used for the API
+from . import helper_bootstrap, helper_generic, shared, singleton
+from .api import MySimpleXMLRPCRequestHandler
 
-from subprocess import call
-import time
-    
+# from class_addressGenerator import *
+from .class_addressGenerator import addressGenerator
+
+# from class_singleWorker import *
+from .class_objectProcessor import objectProcessor
+from .class_outgoingSynSender import outgoingSynSender
+from .class_singleCleaner import singleCleaner
+from .class_singleListener import singleListener
+from .class_singleWorker import singleWorker
+
+# Classes
+# from helper_sql import *
+# from class_sqlThread import *
+from .class_sqlThread import sqlThread
+from .debug import logger
+from .helper_sql import sqlQuery
+from .helper_startup import isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections
+
 
 def connectToStream(streamNumber):
-    shared.streamsInWhichIAmParticipating[streamNumber] = 'no data'
+    shared.streamsInWhichIAmParticipating[streamNumber] = "no data"
     selfInitiatedConnections[streamNumber] = {}
     shared.inventorySets[streamNumber] = set()
-    queryData = sqlQuery('''SELECT hash FROM inventory WHERE streamnumber=?''', streamNumber)
+    queryData = sqlQuery("""SELECT hash FROM inventory WHERE streamnumber=?""", streamNumber)
     for row in queryData:
         shared.inventorySets[streamNumber].add(row[0])
 
-    
     if isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections():
         # Some XP and Vista systems can only have 10 outgoing connections at a time.
         maximumNumberOfHalfOpenConnections = 9
@@ -70,14 +65,16 @@ def connectToStream(streamNumber):
         a.setup(streamNumber, selfInitiatedConnections)
         a.start()
 
+
 def _fixWinsock():
-    if not ('win32' in sys.platform) and not ('win64' in sys.platform):
+    if not ("win32" in sys.platform) and not ("win64" in sys.platform):
         return
 
     # Python 2 on Windows doesn't define a wrapper for
     # socket.inet_ntop but we can make one ourselves using ctypes
-    if not hasattr(socket, 'inet_ntop'):
+    if not hasattr(socket, "inet_ntop"):
         addressToString = ctypes.windll.ws2_32.WSAAddressToStringA
+
         def inet_ntop(family, host):
             if family == socket.AF_INET:
                 if len(host) != 4:
@@ -92,20 +89,18 @@ def _fixWinsock():
             buf = "\0" * 64
             lengthBuf = pack("I", len(buf))
             addressToString(host, len(host), None, buf, lengthBuf)
-            return buf[0:buf.index("\0")]
+            return buf[0 : buf.index("\0")]
+
         socket.inet_ntop = inet_ntop
 
     # Same for inet_pton
-    if not hasattr(socket, 'inet_pton'):
+    if not hasattr(socket, "inet_pton"):
         stringToAddress = ctypes.windll.ws2_32.WSAStringToAddressA
+
         def inet_pton(family, host):
             buf = "\0" * 28
             lengthBuf = pack("I", len(buf))
-            if stringToAddress(str(host),
-                               int(family),
-                               None,
-                               buf,
-                               lengthBuf) != 0:
+            if stringToAddress(str(host), int(family), None, buf, lengthBuf) != 0:
                 raise socket.error("illegal IP address passed to inet_pton")
             if family == socket.AF_INET:
                 return buf[4:8]
@@ -113,13 +108,15 @@ def _fixWinsock():
                 return buf[8:24]
             else:
                 raise ValueError("invalid address family")
+
         socket.inet_pton = inet_pton
 
     # These sockopts are needed on for IPv6 support
-    if not hasattr(socket, 'IPPROTO_IPV6'):
+    if not hasattr(socket, "IPPROTO_IPV6"):
         socket.IPPROTO_IPV6 = 41
-    if not hasattr(socket, 'IPV6_V6ONLY'):
+    if not hasattr(socket, "IPV6_V6ONLY"):
         socket.IPV6_V6ONLY = 27
+
 
 # This thread, of which there is only one, runs the API.
 class singleAPI(threading.Thread):
@@ -128,19 +125,26 @@ class singleAPI(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        se = SimpleXMLRPCServer((shared.config.get('bitmessagesettings', 'apiinterface'), shared.config.getint(
-            'bitmessagesettings', 'apiport')), MySimpleXMLRPCRequestHandler, True, True)
+        se = SimpleXMLRPCServer(
+            (
+                shared.config.get("bitmessagesettings", "apiinterface"),
+                shared.config.getint("bitmessagesettings", "apiport"),
+            ),
+            MySimpleXMLRPCRequestHandler,
+            True,
+            True,
+        )
         se.register_introspection_functions()
         se.serve_forever()
+
 
 # This is a list of current connections (the thread pointers at least)
 selfInitiatedConnections = {}
 
 if shared.useVeryEasyProofOfWorkForTesting:
-    shared.networkDefaultProofOfWorkNonceTrialsPerByte = int(
-        shared.networkDefaultProofOfWorkNonceTrialsPerByte / 100)
-    shared.networkDefaultPayloadLengthExtraBytes = int(
-        shared.networkDefaultPayloadLengthExtraBytes / 100)
+    shared.networkDefaultProofOfWorkNonceTrialsPerByte = int(shared.networkDefaultProofOfWorkNonceTrialsPerByte / 100)
+    shared.networkDefaultPayloadLengthExtraBytes = int(shared.networkDefaultPayloadLengthExtraBytes / 100)
+
 
 class Main:
     def start(self, daemon=False, workingdir=""):
@@ -153,7 +157,7 @@ class Main:
 
         # get curses flag
         curses = False
-        if '-c' in sys.argv:
+        if "-c" in sys.argv:
             curses = True
 
         signal.signal(signal.SIGINT, helper_generic.signal_handler)
@@ -188,15 +192,14 @@ class Main:
         shared.reloadMyAddressHashes()
         shared.reloadBroadcastSendersForWhichImWatching()
 
-        if shared.safeConfigGetBoolean('bitmessagesettings', 'apienabled'):
+        if shared.safeConfigGetBoolean("bitmessagesettings", "apienabled"):
             try:
-                apiNotifyPath = shared.config.get(
-                    'bitmessagesettings', 'apinotifypath')
+                apiNotifyPath = shared.config.get("bitmessagesettings", "apinotifypath")
             except:
-                apiNotifyPath = ''
-            if apiNotifyPath != '':
+                apiNotifyPath = ""
+            if apiNotifyPath != "":
                 with shared.printLock:
-                    print(('Trying to call', apiNotifyPath))
+                    print(("Trying to call", apiNotifyPath))
 
                 call([apiNotifyPath, "startingUp"])
             singleAPIThread = singleAPI()
@@ -210,47 +213,53 @@ class Main:
         singleListenerThread.daemon = True  # close the main program even if there are threads left
         singleListenerThread.start()
 
-        if daemon == False and shared.safeConfigGetBoolean('bitmessagesettings', 'daemon') == False:
+        if daemon == False and shared.safeConfigGetBoolean("bitmessagesettings", "daemon") == False:
             if curses == False:
                 try:
                     from PyQt6 import QtCore, QtGui
                 except Exception as err:
-                    print('PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. You can download PyQt from http://www.riverbankcomputing.com/software/pyqt/download   or by searching Google for \'PyQt Download\'. If you want to run in daemon mode, see https://bitmessage.org/wiki/Daemon')
-                    print(('Error message:', err))
-                    print('You can also run PyBitmessage with the new curses interface by providing \'-c\' as a commandline argument.')
+                    print(
+                        "PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. You can download PyQt from http://www.riverbankcomputing.com/software/pyqt/download   or by searching Google for 'PyQt Download'. If you want to run in daemon mode, see https://bitmessage.org/wiki/Daemon"
+                    )
+                    print(("Error message:", err))
+                    print(
+                        "You can also run PyBitmessage with the new curses interface by providing '-c' as a commandline argument."
+                    )
                     os._exit(0)
 
                 from . import bitmessageqt
+
                 bitmessageqt.run()
             else:
-                print('Running with curses')
+                print("Running with curses")
                 from . import bitmessagecurses
+
                 bitmessagecurses.runwrapper()
         else:
-            shared.config.remove_option('bitmessagesettings', 'dontconnect')
+            shared.config.remove_option("bitmessagesettings", "dontconnect")
 
             if daemon:
                 with shared.printLock:
-                    print('Running as a daemon. The main program should exit this thread.')
+                    print("Running as a daemon. The main program should exit this thread.")
             else:
                 with shared.printLock:
-                    print('Running as a daemon. You can use Ctrl+C to exit.')
+                    print("Running as a daemon. You can use Ctrl+C to exit.")
                 while True:
                     time.sleep(20)
 
     def stop(self):
         with shared.printLock:
-            print('Stopping Bitmessage Deamon.')
+            print("Stopping Bitmessage Deamon.")
         shared.doCleanShutdown()
 
-
-    #TODO: nice function but no one is using this 
+    # TODO: nice function but no one is using this
     def getApiAddress(self):
-        if not shared.safeConfigGetBoolean('bitmessagesettings', 'apienabled'):
+        if not shared.safeConfigGetBoolean("bitmessagesettings", "apienabled"):
             return None
-        address = shared.config.get('bitmessagesettings', 'apiinterface')
-        port = shared.config.getint('bitmessagesettings', 'apiport')
-        return {'address':address,'port':port}
+        address = shared.config.get("bitmessagesettings", "apiinterface")
+        port = shared.config.getint("bitmessagesettings", "apiport")
+        return {"address": address, "port": port}
+
 
 if __name__ == "__main__":
     mainprogram = Main()

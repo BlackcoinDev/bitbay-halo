@@ -15,53 +15,50 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-'''Python image steganography
+"""Python image steganography
 
 Stepic hides arbitrary data inside PIL images.
 
 Stepic uses the Python Image Library
 (apt: python-imaging, web: <http://www.pythonware.com/products/pil/>).
-'''
+"""
 
-__author__ = 'Lenny Domnitser <http://domnit.org/>'
-__version__ = '0.3'
+__author__ = "Lenny Domnitser <http://domnit.org/>"
+__version__ = "0.3"
 
 
 import warnings
+
 try:
     from PIL import Image
 except:
-    warnings.warn('Could not find PIL. Only encode_imdata and decode_imdata will work.',
-                  ImportWarning, stacklevel=2)
+    warnings.warn("Could not find PIL. Only encode_imdata and decode_imdata will work.", ImportWarning, stacklevel=2)
 
 
-__all__ = ('encode_imdata','encode_inplace', 'encode',
-           'decode_imdata', 'decode',
-           'Steganographer')
+__all__ = ("encode_imdata", "encode_inplace", "encode", "decode_imdata", "decode", "Steganographer")
 
 
 def encode_imdata(imdata, data):
-    '''given a sequence of pixels, returns an iterator of pixels with
-    encoded data'''
+    """given a sequence of pixels, returns an iterator of pixels with
+    encoded data"""
     datalen = len(data)
     if datalen == 0:
-        raise ValueError('data is empty')
+        raise ValueError("data is empty")
     if datalen * 3 > len(imdata):
-        raise ValueError('data is too large for image')
+        raise ValueError("data is too large for image")
 
     imdata = iter(imdata)
 
     for i in range(datalen):
-        pixels = [value & ~1 for value in
-                  list(next(imdata)[:3] + next(imdata)[:3] + next(imdata)[:3])]
-        
+        pixels = [value & ~1 for value in list(next(imdata)[:3] + next(imdata)[:3] + next(imdata)[:3])]
+
         # Py3 compatibility: data[i] might be int (if bytes) or str (need ord)
         item = data[i]
         if isinstance(item, int):
             byte = item
         else:
             byte = ord(item)
-            
+
         for j in range(7, -1, -1):
             pixels[j] |= byte & 1
             byte >>= 1
@@ -74,7 +71,7 @@ def encode_imdata(imdata, data):
 
 
 def encode_inplace(image, data):
-    '''hides data in an image'''
+    """hides data in an image"""
 
     w = image.size[0]
     (x, y) = (0, 0)
@@ -88,8 +85,8 @@ def encode_inplace(image, data):
 
 
 def encode(image, data):
-    '''generates an image with hidden data, starting with an existing
-    image and arbitrary data'''
+    """generates an image with hidden data, starting with an existing
+    image and arbitrary data"""
 
     image = image.copy()
     encode_inplace(image, data)
@@ -97,8 +94,8 @@ def encode(image, data):
 
 
 def decode_imdata(imdata):
-    '''Given a sequence of pixels, returns an iterator of characters
-    encoded in the image'''
+    """Given a sequence of pixels, returns an iterator of characters
+    encoded in the image"""
 
     imdata = iter(imdata)
     while True:
@@ -108,28 +105,32 @@ def decode_imdata(imdata):
             byte |= pixels[c] & 1
             byte <<= 1
         byte |= pixels[7] & 1
-        
+
         # In Py3, standardizing on bytes return would be best, but legacy might expect str
         # For now, yield bytes to ensure binary data isn't mangled by decoding
         yield bytes([byte])
-        
+
         if pixels[-1] & 1:
             break
 
 
 def decode(image):
-    '''extracts data from an image'''
+    """extracts data from an image"""
     # Joining bytes
-    return b''.join(decode_imdata(image.getdata()))
+    return b"".join(decode_imdata(image.getdata()))
 
 
 class Steganographer:
-    'deprecated'
+    "deprecated"
+
     def __init__(self, image):
         self.image = image
-        warnings.warn('Steganographer class is deprecated, and will be removed before 1.0',
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "Steganographer class is deprecated, and will be removed before 1.0", DeprecationWarning, stacklevel=2
+        )
+
     def encode(self, data):
         return encode(self.image, data)
+
     def decode(self):
         return decode(self.image)

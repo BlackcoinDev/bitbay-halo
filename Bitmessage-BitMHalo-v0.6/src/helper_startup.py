@@ -32,7 +32,7 @@ def loadConfig():
         #state.appdata must have been specified as a startup option.
         try:
             BMConfigParser().get('bitmessagesettings', 'settingsversion')
-            print 'Loading config files from directory specified on startup: ' + state.appdata
+'Loading config files from directory specified on startup: ' + state.appdata'Loading config files from directory specified on startup: ' + state.appdata
             needToCreateKeysFile = False
         except:
             needToCreateKeysFile = True
@@ -41,7 +41,7 @@ def loadConfig():
         BMConfigParser().read(paths.lookupExeFolder() + 'keys.dat')
         try:
             BMConfigParser().get('bitmessagesettings', 'settingsversion')
-            print 'Loading config files from same directory as program.'
+'Loading config files from same directory as program.''Loading config files from same directory as program.'
             needToCreateKeysFile = False
             state.appdata = paths.lookupExeFolder()
         except:
@@ -51,7 +51,7 @@ def loadConfig():
             BMConfigParser().read(state.appdata + 'keys.dat')
             try:
                 BMConfigParser().get('bitmessagesettings', 'settingsversion')
-                print 'Loading existing config files from', state.appdata
+'Loading existing config files from', state.appdata'Loading existing config files from', state.appdata
                 needToCreateKeysFile = False
             except:
                 needToCreateKeysFile = True
@@ -131,9 +131,9 @@ def loadConfig():
             # Just use the same directory as the program and forget about
             # the appdata folder
             state.appdata = ''
-            print 'Creating new config files in same directory as program.'
+'Creating new config files in same directory as program.''Creating new config files in same directory as program.'
         else:
-            print 'Creating new config files in', state.appdata
+'Creating new config files in', state.appdata'Creating new config files in', state.appdata
             if not os.path.exists(state.appdata):
                 os.makedirs(state.appdata)
         if not sys.platform.startswith('win'):

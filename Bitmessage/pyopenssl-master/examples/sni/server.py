@@ -1,22 +1,22 @@
 # Copyright (C) Jean-Paul Calderone
 # See LICENSE for details.
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import server
+
     raise SystemExit(server.main())
 
+from socket import SO_REUSEADDR, SOL_SOCKET, socket
 from sys import stdout
-from socket import SOL_SOCKET, SO_REUSEADDR, socket
 
-from OpenSSL.crypto import FILETYPE_PEM, load_privatekey, load_certificate
-from OpenSSL.SSL import TLSv1_METHOD, Context, Connection
+from OpenSSL.crypto import FILETYPE_PEM, load_certificate, load_privatekey
+from OpenSSL.SSL import Connection, Context, TLSv1_METHOD
+
 
 def load(domain):
     crt = open(domain + ".crt")
     key = open(domain + ".key")
-    result = (
-        load_privatekey(FILETYPE_PEM, key.read()),
-        load_certificate(FILETYPE_PEM, crt.read()))
+    result = (load_privatekey(FILETYPE_PEM, key.read()), load_certificate(FILETYPE_PEM, crt.read()))
     crt.close()
     key.close()
     return result
@@ -29,13 +29,13 @@ def main():
     """
     port = socket()
     port.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-    port.bind(('', 8443))
+    port.bind(("", 8443))
     port.listen(3)
 
-    print('Accepting.', end=' ')
+    print("Accepting.", end=" ")
     stdout.flush()
     server, addr = port.accept()
-    print('accepted', addr)
+    print("accepted", addr)
 
     server_context = Context(TLSv1_METHOD)
     server_context.set_tlsext_servername_callback(pick_certificate)
@@ -49,7 +49,7 @@ def main():
 certificates = {
     "example.invalid": load("example.invalid"),
     "another.invalid": load("another.invalid"),
-    }
+}
 
 
 def pick_certificate(connection):

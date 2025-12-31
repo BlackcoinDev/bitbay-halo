@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3.14
 
 import ctypes
 import fnmatch
@@ -19,5 +19,5 @@ for filename in matches:
         if 'win' in sys.platform:
             ctypes.windll.user32.MessageBoxA(0, traceback.format_exc(), "Exception in " + filename, 1)
         else:
-            print "Exception in %s: %s" % (filename, traceback.format_exc())
+"Exception in %s: %s" % (filename, traceback.format_exc())"Exception in %s: %s" % (filename, traceback.format_exc())
         sys.exit(1)

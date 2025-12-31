@@ -1,9 +1,10 @@
+from cryptography.hazmat.bindings.openssl.binding import Binding
 from six import PY3, binary_type, text_type
 
-from cryptography.hazmat.bindings.openssl.binding import Binding
 binding = Binding()
 ffi = binding.ffi
 lib = binding.lib
+
 
 def exception_from_error_queue(exceptionType):
     def text(charp):
@@ -14,13 +15,15 @@ def exception_from_error_queue(exceptionType):
         error = lib.ERR_get_error()
         if error == 0:
             break
-        errors.append((
+        errors.append(
+            (
                 text(lib.ERR_lib_error_string(error)),
                 text(lib.ERR_func_error_string(error)),
-                text(lib.ERR_reason_error_string(error))))
+                text(lib.ERR_reason_error_string(error)),
+            )
+        )
 
     raise exceptionType(errors)
-
 
 
 def native(s):
@@ -44,10 +47,12 @@ def native(s):
     return s
 
 
-
 if PY3:
+
     def byte_string(s):
         return s.encode("charmap")
+
 else:
+
     def byte_string(s):
         return s

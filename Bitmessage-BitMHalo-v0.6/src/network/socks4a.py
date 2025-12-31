@@ -108,4 +108,4 @@ class Socks4aResolver(Socks4a):
         return True
 
     def resolved(self):
-        print "Resolved %s as %s" % (self.host, self.proxy_sock_name())
+"Resolved %s as %s" % (self.host, self.proxy_sock_name())"Resolved %s as %s" % (self.host, self.proxy_sock_name())

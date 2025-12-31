@@ -1,14 +1,15 @@
-import sys
 import os
+import sys
 
 # Add parent directory to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
 
 print("Testing pyelliptic.")
 try:
     import pyelliptic
+
     print(f"pyelliptic imported. OpenSSL version: {pyelliptic.OpenSSL._version}")
-    
+
     # Test ECC
     print("Testing ECC generation.")
     alice = pyelliptic.ECC()
@@ -36,4 +37,5 @@ try:
 except Exception as e:
     print(f"FAILED: {e}")
     import traceback
+
     traceback.print_exc()

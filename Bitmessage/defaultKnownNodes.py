@@ -1,28 +1,30 @@
 import pickle
-import socket
-from struct import *
-import time
 import random
+import socket
 import sys
-from time import strftime, localtime
+import time
+from struct import *
+from time import localtime, strftime
+
 from . import shared
+
 
 def createDefaultKnownNodes(appdata):
     ############## Stream 1 ################
     stream1 = {}
 
-    #stream1[shared.Peer('2604:2000:1380:9f:82e:148b:2746:d0c7', 8080)] = int(time.time())
-    stream1[shared.Peer('23.239.9.147', 8444)] = int(time.time())
-    stream1[shared.Peer('98.218.125.214', 8444)] = int(time.time())
-    stream1[shared.Peer('192.121.170.162', 8444)] = int(time.time())
-    stream1[shared.Peer('108.61.72.12', 28444)] = int(time.time())
-    stream1[shared.Peer('158.222.211.81', 8080)] = int(time.time())
-    stream1[shared.Peer('79.163.240.110', 8446)] = int(time.time())
-    stream1[shared.Peer('178.62.154.250', 8444)] = int(time.time())
-    stream1[shared.Peer('178.62.155.6', 8444)] = int(time.time())
-    stream1[shared.Peer('178.62.155.8', 8444)] = int(time.time())
-    stream1[shared.Peer('68.42.42.120', 8444)] = int(time.time())
-    
+    # stream1[shared.Peer('2604:2000:1380:9f:82e:148b:2746:d0c7', 8080)] = int(time.time())
+    stream1[shared.Peer("23.239.9.147", 8444)] = int(time.time())
+    stream1[shared.Peer("98.218.125.214", 8444)] = int(time.time())
+    stream1[shared.Peer("192.121.170.162", 8444)] = int(time.time())
+    stream1[shared.Peer("108.61.72.12", 28444)] = int(time.time())
+    stream1[shared.Peer("158.222.211.81", 8080)] = int(time.time())
+    stream1[shared.Peer("79.163.240.110", 8446)] = int(time.time())
+    stream1[shared.Peer("178.62.154.250", 8444)] = int(time.time())
+    stream1[shared.Peer("178.62.155.6", 8444)] = int(time.time())
+    stream1[shared.Peer("178.62.155.8", 8444)] = int(time.time())
+    stream1[shared.Peer("68.42.42.120", 8444)] = int(time.time())
+
     ############# Stream 2 #################
     stream2 = {}
     # None yet
@@ -36,21 +38,22 @@ def createDefaultKnownNodes(appdata):
     allKnownNodes[2] = stream2
     allKnownNodes[3] = stream3
 
-    #print stream1
-    #print allKnownNodes
+    # print stream1
+    # print allKnownNodes
 
-    with open(appdata + 'knownnodes.dat', 'wb') as output:
+    with open(appdata + "knownnodes.dat", "wb") as output:
         # Pickle dictionary using protocol 0.
         pickle.dump(allKnownNodes, output)
 
     return allKnownNodes
 
+
 def readDefaultKnownNodes(appdata):
-    pickleFile = open(appdata + 'knownnodes.dat', 'rb')
+    pickleFile = open(appdata + "knownnodes.dat", "rb")
     knownNodes = pickle.load(pickleFile)
     pickleFile.close()
     for stream, storedValue in list(knownNodes.items()):
-        for host,value in list(storedValue.items()):
+        for host, value in list(storedValue.items()):
             try:
                 # Old knownNodes format.
                 port, storedtime = value
@@ -58,26 +61,26 @@ def readDefaultKnownNodes(appdata):
                 # New knownNodes format.
                 host, port = host
                 storedtime = value
-            print((host, '\t', port, '\t', str(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')))
+            print((host, "\t", port, "\t", str(strftime("%a, %d %b %Y  %I:%M %p", localtime(storedtime)), "utf-8")))
+
 
 if __name__ == "__main__":
 
     APPNAME = "PyBitmessage"
-    from os import path, environ
-    if sys.platform == 'darwin':
+    from os import environ, path
+
+    if sys.platform == "darwin":
         from AppKit import NSSearchPathForDirectoriesInDomains  # @UnresolvedImport
+
         # http://developer.apple.com/DOCUMENTATION/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Functions/Reference/reference.html#//apple_ref/c/func/NSSearchPathForDirectoriesInDomains
         # NSApplicationSupportDirectory = 14
         # NSUserDomainMask = 1
         # True for expanding the tilde into a fully qualified path
-        appdata = path.join(NSSearchPathForDirectoriesInDomains(14, 1, True)[0], APPNAME) + '/'
-    elif 'win' in sys.platform:
-        appdata = path.join(environ['APPDATA'], APPNAME) + '\\'
+        appdata = path.join(NSSearchPathForDirectoriesInDomains(14, 1, True)[0], APPNAME) + "/"
+    elif "win" in sys.platform:
+        appdata = path.join(environ["APPDATA"], APPNAME) + "\\"
     else:
         appdata = path.expanduser(path.join("~", "." + APPNAME + "/"))
 
-
-    print(('New list of all known nodes:', createDefaultKnownNodes(appdata)))
+    print(("New list of all known nodes:", createDefaultKnownNodes(appdata)))
     readDefaultKnownNodes(appdata)
-
-

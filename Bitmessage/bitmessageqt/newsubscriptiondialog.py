@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_NewSubscriptionDialog(object):
     def setupUi(self, NewSubscriptionDialog):
@@ -49,10 +55,14 @@ class Ui_NewSubscriptionDialog(object):
         self.checkBoxDisplayMessagesAlreadyInInventory = QtWidgets.QCheckBox(NewSubscriptionDialog)
         self.checkBoxDisplayMessagesAlreadyInInventory.setEnabled(False)
         self.checkBoxDisplayMessagesAlreadyInInventory.setObjectName("checkBoxDisplayMessagesAlreadyInInventory")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.checkBoxDisplayMessagesAlreadyInInventory)
+        self.formLayout.setWidget(
+            5, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.checkBoxDisplayMessagesAlreadyInInventory
+        )
         self.buttonBox = QtWidgets.QDialogButtonBox(NewSubscriptionDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
@@ -66,4 +76,3 @@ class Ui_NewSubscriptionDialog(object):
         self.label_2.setText(_translate("NewSubscriptionDialog", "Label", None))
         self.label.setText(_translate("NewSubscriptionDialog", "Address", None))
         self.checkBoxDisplayMessagesAlreadyInInventory.setText(_translate("NewSubscriptionDialog", "CheckBox", None))
-

@@ -19,9 +19,10 @@ class Cipher:
         ciphertext += ctx.final()
 
         ctx2 = pyelliptic.Cipher("secretkey", iv, 0, ciphername='aes-256-cfb')
-        print ctx2.ciphering(ciphertext)
+ctx2.ciphering(ciphertext)ctx2.ciphering(ciphertext)
     """
-    def __init__(self, key, iv, do, ciphername='aes-256-cbc'):
+
+    def __init__(self, key, iv, do, ciphername="aes-256-cbc"):
         """
         do == 1 => Encrypt; do == 0 => Decrypt
         """
@@ -30,8 +31,7 @@ class Cipher:
         if do == 1 or do == 0:
             k = OpenSSL.malloc(key, len(key))
             IV = OpenSSL.malloc(iv, len(iv))
-            OpenSSL.EVP_CipherInit_ex(
-                self.ctx, self.cipher.get_pointer(), 0, k, IV, do)
+            OpenSSL.EVP_CipherInit_ex(self.ctx, self.cipher.get_pointer(), 0, k, IV, do)
         else:
             raise Exception("RTFM .")
 
@@ -56,18 +56,16 @@ class Cipher:
         i = OpenSSL.c_int(0)
         buffer = OpenSSL.malloc(b"", len(input) + self.cipher.get_blocksize())
         inp = OpenSSL.malloc(input, len(input))
-        if OpenSSL.EVP_CipherUpdate(self.ctx, OpenSSL.byref(buffer),
-                                    OpenSSL.byref(i), inp, len(input)) == 0:
+        if OpenSSL.EVP_CipherUpdate(self.ctx, OpenSSL.byref(buffer), OpenSSL.byref(i), inp, len(input)) == 0:
             raise Exception("[OpenSSL] EVP_CipherUpdate FAIL .")
-        return buffer.raw[0:i.value]
+        return buffer.raw[0 : i.value]
 
     def final(self):
         i = OpenSSL.c_int(0)
         buffer = OpenSSL.malloc(b"", self.cipher.get_blocksize())
-        if (OpenSSL.EVP_CipherFinal_ex(self.ctx, OpenSSL.byref(buffer),
-                                       OpenSSL.byref(i))) == 0:
+        if (OpenSSL.EVP_CipherFinal_ex(self.ctx, OpenSSL.byref(buffer), OpenSSL.byref(i))) == 0:
             raise Exception("[OpenSSL] EVP_CipherFinal_ex FAIL .")
-        return buffer.raw[0:i.value]
+        return buffer.raw[0 : i.value]
 
     def ciphering(self, input):
         """

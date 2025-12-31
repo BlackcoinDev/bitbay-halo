@@ -1,5 +1,3 @@
-
-
 try:
     from setuptools import setup
 except ImportError:
@@ -19,14 +17,15 @@ six_classifiers = [
 with open("README", "r") as fp:
     six_long_description = fp.read()
 
-setup(name="six",
-      version=six.__version__,
-      author="Benjamin Peterson",
-      author_email="benjamin@python.org",
-      url="http://pypi.python.org/pypi/six/",
-      py_modules=["six"],
-      description="Python 2 and 3 compatibility utilities",
-      long_description=six_long_description,
-      license="MIT",
-      classifiers=six_classifiers
-      )
+setup(
+    name="six",
+    version=six.__version__,
+    author="Benjamin Peterson",
+    author_email="benjamin@python.org",
+    url="http://pypi.python.org/pypi/six/",
+    py_modules=["six"],
+    description="Python 2 and 3 compatibility utilities",
+    long_description=six_long_description,
+    license="MIT",
+    classifiers=six_classifiers,
+)

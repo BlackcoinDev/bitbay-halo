@@ -115,9 +115,9 @@ def DecryptWithAES(SECRET_KEY, encrypted_data):
 SECRET_KEY = 'password'
 our_data_to_encrypt = 'secret'
 encrypted_data = EncryptWithAES(SECRET_KEY, our_data_to_encrypt)
-print ('Encrypted string:', encrypted_data)
+('Encrypted string:', encrypted_data)('Encrypted string:', encrypted_data)
 
 # And let's decrypt our data
 decrypted_data = DecryptWithAES(SECRET_KEY, encrypted_data)
-print ('Decrypted string:', decrypted_data)
+('Decrypted string:', decrypted_data)('Decrypted string:', decrypted_data)
 """

@@ -38,6 +38,7 @@ PythonVirtualEnv*
 .vscode/
 *.sublime-workspace
 *.sublime-project
+*.code-workspace
 
 # OS generated files
 Thumbs.db
@@ -48,6 +49,7 @@ Desktop.ini
 *.log
 
 # Test artifacts
+.pytest_cache/
 *.coverage
 htmlcov/
 nosetests.xml

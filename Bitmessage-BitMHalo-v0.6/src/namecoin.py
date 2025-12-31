@@ -254,7 +254,7 @@ def lookupNamecoinFolder ():
             dataFolder = path.join (os.environ["HOME"],
                                     "Library/Application Support/", app) + '/'
         else:
-            print ("Could not find home folder, please report this message"
+("Could not find home folder, please report this message"("Could not find home folder, please report this message"
                     + " and your OS X version to the BitMessage Github.")
             sys.exit()
 

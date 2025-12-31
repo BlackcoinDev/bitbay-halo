@@ -7,12 +7,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
+
 
 class Ui_helpDialog(object):
     def setupUi(self, helpDialog):
@@ -28,7 +29,9 @@ class Ui_helpDialog(object):
         self.label.setWordWrap(True)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.label)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.formLayout.setItem(2, QtWidgets.QFormLayout.ItemRole.LabelRole, spacerItem)
         self.buttonBox = QtWidgets.QDialogButtonBox(helpDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
@@ -42,7 +45,22 @@ class Ui_helpDialog(object):
         QtCore.QMetaObject.connectSlotsByName(helpDialog)
 
     def retranslateUi(self, helpDialog):
-        helpDialog.setWindowTitle(QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.labelHelpURI.setText(QtWidgets.QApplication.translate("helpDialog", "<a href=\"http://Bitmessage.org/wiki/PyBitmessage_Help\">http://Bitmessage.org/wiki/PyBitmessage_Help</a>", None, QtWidgets.QApplication.UnicodeUTF8))
-        self.label.setText(QtWidgets.QApplication.translate("helpDialog", "As Bitmessage is a collaborative project, help can be found online in the Bitmessage Wiki:", None, QtWidgets.QApplication.UnicodeUTF8))
-
+        helpDialog.setWindowTitle(
+            QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8)
+        )
+        self.labelHelpURI.setText(
+            QtWidgets.QApplication.translate(
+                "helpDialog",
+                '<a href="http://Bitmessage.org/wiki/PyBitmessage_Help">http://Bitmessage.org/wiki/PyBitmessage_Help</a>',
+                None,
+                QtWidgets.QApplication.UnicodeUTF8,
+            )
+        )
+        self.label.setText(
+            QtWidgets.QApplication.translate(
+                "helpDialog",
+                "As Bitmessage is a collaborative project, help can be found online in the Bitmessage Wiki:",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8,
+            )
+        )

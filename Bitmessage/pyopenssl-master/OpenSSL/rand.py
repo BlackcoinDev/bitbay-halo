@@ -6,12 +6,10 @@ See the file RATIONALE for a short explanation of why this module was written.
 
 from functools import partial
 
+from OpenSSL._util import exception_from_error_queue as _exception_from_error_queue
+from OpenSSL._util import ffi as _ffi
+from OpenSSL._util import lib as _lib
 from six import integer_types as _integer_types
-
-from OpenSSL._util import (
-    ffi as _ffi,
-    lib as _lib,
-    exception_from_error_queue as _exception_from_error_queue)
 
 
 class Error(Exception):
@@ -19,11 +17,13 @@ class Error(Exception):
     An error occurred in an `OpenSSL.rand` API.
     """
 
+
 _raise_current_error = partial(_exception_from_error_queue, Error)
 
 _unspecified = object()
 
 _builtin_bytes = bytes
+
 
 def bytes(num_bytes):
     """
@@ -48,7 +48,6 @@ def bytes(num_bytes):
     return _ffi.buffer(result_buffer)[:]
 
 
-
 def add(buffer, entropy):
     """
     Add data with a given entropy to the PRNG
@@ -67,7 +66,6 @@ def add(buffer, entropy):
     _lib.RAND_add(buffer, len(buffer), entropy)
 
 
-
 def seed(buffer):
     """
     Alias for rand_add, with entropy equal to length
@@ -82,7 +80,6 @@ def seed(buffer):
     _lib.RAND_seed(buffer, len(buffer))
 
 
-
 def status():
     """
     Retrieve the status of the PRNG
@@ -90,7 +87,6 @@ def status():
     :return: True if the PRNG is seeded enough, false otherwise
     """
     return _lib.RAND_status()
-
 
 
 def egd(path, bytes=_unspecified):
@@ -115,7 +111,6 @@ def egd(path, bytes=_unspecified):
     return _lib.RAND_egd_bytes(path, bytes)
 
 
-
 def cleanup():
     """
     Erase the memory used by the PRNG.
@@ -124,7 +119,6 @@ def cleanup():
     """
     # TODO Nothing tests this call actually being made, or made properly.
     _lib.RAND_cleanup()
-
 
 
 def load_file(filename, maxbytes=_unspecified):
@@ -145,7 +139,6 @@ def load_file(filename, maxbytes=_unspecified):
         raise TypeError("maxbytes must be an integer")
 
     return _lib.RAND_load_file(filename, maxbytes)
-
 
 
 def write_file(filename):
@@ -171,7 +164,8 @@ def screen():
     """
     _lib.RAND_screen()
 
-if getattr(_lib, 'RAND_screen', None) is None:
+
+if getattr(_lib, "RAND_screen", None) is None:
     del screen
 
 

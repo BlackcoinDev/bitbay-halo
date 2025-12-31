@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_regenerateAddressesDialog(object):
     def setupUi(self, regenerateAddressesDialog):
@@ -31,7 +37,9 @@ class Ui_regenerateAddressesDialog(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.buttonBox = QtWidgets.QDialogButtonBox(regenerateAddressesDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
         self.groupBox = QtWidgets.QGroupBox(regenerateAddressesDialog)
@@ -42,7 +50,9 @@ class Ui_regenerateAddressesDialog(object):
         self.label_6.setObjectName("label_6")
         self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
         self.lineEditPassphrase = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEditPassphrase.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText)
+        self.lineEditPassphrase.setInputMethodHints(
+            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText
+        )
         self.lineEditPassphrase.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEditPassphrase.setObjectName("lineEditPassphrase")
         self.gridLayout.addWidget(self.lineEditPassphrase, 2, 0, 1, 5)
@@ -59,7 +69,9 @@ class Ui_regenerateAddressesDialog(object):
         self.spinBoxNumberOfAddressesToMake.setProperty("value", 8)
         self.spinBoxNumberOfAddressesToMake.setObjectName("spinBoxNumberOfAddressesToMake")
         self.gridLayout.addWidget(self.spinBoxNumberOfAddressesToMake, 3, 3, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(132, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            132, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout.addItem(spacerItem, 3, 4, 1, 1)
         self.label_2 = QtWidgets.QLabel(self.groupBox)
         self.label_2.setObjectName("label_2")
@@ -75,7 +87,9 @@ class Ui_regenerateAddressesDialog(object):
         self.lineEditAddressVersionNumber.setText(_fromUtf8(""))
         self.lineEditAddressVersionNumber.setObjectName("lineEditAddressVersionNumber")
         self.gridLayout.addWidget(self.lineEditAddressVersionNumber, 4, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout.addItem(spacerItem1, 4, 2, 1, 1)
         self.label_3 = QtWidgets.QLabel(self.groupBox)
         self.label_3.setObjectName("label_3")
@@ -90,7 +104,9 @@ class Ui_regenerateAddressesDialog(object):
         self.lineEditStreamNumber.setMaximumSize(QtCore.QSize(31, 16777215))
         self.lineEditStreamNumber.setObjectName("lineEditStreamNumber")
         self.gridLayout.addWidget(self.lineEditStreamNumber, 5, 1, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(325, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            325, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout.addItem(spacerItem2, 5, 2, 1, 3)
         self.checkBoxEighteenByteRipe = QtWidgets.QCheckBox(self.groupBox)
         self.checkBoxEighteenByteRipe.setObjectName("checkBoxEighteenByteRipe")
@@ -111,14 +127,35 @@ class Ui_regenerateAddressesDialog(object):
         QtCore.QMetaObject.connectSlotsByName(regenerateAddressesDialog)
 
     def retranslateUi(self, regenerateAddressesDialog):
-        regenerateAddressesDialog.setWindowTitle(_translate("regenerateAddressesDialog", "Regenerate Existing Addresses", None))
+        regenerateAddressesDialog.setWindowTitle(
+            _translate("regenerateAddressesDialog", "Regenerate Existing Addresses", None)
+        )
         self.groupBox.setTitle(_translate("regenerateAddressesDialog", "Regenerate existing addresses", None))
         self.label_6.setText(_translate("regenerateAddressesDialog", "Passphrase", None))
-        self.label_11.setText(_translate("regenerateAddressesDialog", "Number of addresses to make based on your passphrase:", None))
+        self.label_11.setText(
+            _translate("regenerateAddressesDialog", "Number of addresses to make based on your passphrase:", None)
+        )
         self.label_2.setText(_translate("regenerateAddressesDialog", "Address version number:", None))
         self.label_3.setText(_translate("regenerateAddressesDialog", "Stream number:", None))
         self.lineEditStreamNumber.setText(_translate("regenerateAddressesDialog", "1", None))
-        self.checkBoxEighteenByteRipe.setText(_translate("regenerateAddressesDialog", "Spend several minutes of extra computing time to make the address(es) 1 or 2 characters shorter", None))
-        self.label_4.setText(_translate("regenerateAddressesDialog", "You must check (or not check) this box just like you did (or didn\'t) when you made your addresses the first time.", None))
-        self.label.setText(_translate("regenerateAddressesDialog", "If you have previously made deterministic addresses but lost them due to an accident (like hard drive failure), you can regenerate them here. If you used the random number generator to make your addresses then this form will be of no use to you.", None))
-
+        self.checkBoxEighteenByteRipe.setText(
+            _translate(
+                "regenerateAddressesDialog",
+                "Spend several minutes of extra computing time to make the address(es) 1 or 2 characters shorter",
+                None,
+            )
+        )
+        self.label_4.setText(
+            _translate(
+                "regenerateAddressesDialog",
+                "You must check (or not check) this box just like you did (or didn't) when you made your addresses the first time.",
+                None,
+            )
+        )
+        self.label.setText(
+            _translate(
+                "regenerateAddressesDialog",
+                "If you have previously made deterministic addresses but lost them due to an accident (like hard drive failure), you can regenerate them here. If you used the random number generator to make your addresses then this form will be of no use to you.",
+                None,
+            )
+        )

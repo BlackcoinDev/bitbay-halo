@@ -17,52 +17,52 @@ conn.text_factory = str
 cur = conn.cursor()
 
 def readInbox():
-    print 'Printing everything in inbox table:'
+'Printing everything in inbox table:''Printing everything in inbox table:'
     item = '''select * from inbox'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
-        print row
+rowrow
 
 def readSent():
-    print 'Printing everything in Sent table:'
+'Printing everything in Sent table:''Printing everything in Sent table:'
     item = '''select * from sent where folder !='trash' '''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         msgid, toaddress, toripe, fromaddress, subject, message, ackdata, lastactiontime, sleeptill, status, retrynumber, folder, encodingtype, ttl = row
-        print hexlify(msgid), toaddress, 'toripe:', hexlify(toripe), 'fromaddress:', fromaddress, 'ENCODING TYPE:', encodingtype, 'SUBJECT:', repr(subject), 'MESSAGE:', repr(message), 'ACKDATA:', hexlify(ackdata), lastactiontime, status, retrynumber, folder
+hexlify(msgid), toaddress, 'toripe:', hexlify(toripe), 'fromaddress:', fromaddress, 'ENCODING TYPE:', encodingtype, 'SUBJECT:', repr(subject), 'MESSAGE:', repr(message), 'ACKDATA:', hexlify(ackdata), lastactiontime, status, retrynumber, folderhexlify(msgid), toaddress, 'toripe:', hexlify(toripe), 'fromaddress:', fromaddress, 'ENCODING TYPE:', encodingtype, 'SUBJECT:', repr(subject), 'MESSAGE:', repr(message), 'ACKDATA:', hexlify(ackdata), lastactiontime, status, retrynumber, folder
 
 def readSubscriptions():
-    print 'Printing everything in subscriptions table:'
+'Printing everything in subscriptions table:''Printing everything in subscriptions table:'
     item = '''select * from subscriptions'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
-        print row
+rowrow
 
 def readPubkeys():
-    print 'Printing everything in pubkeys table:'
+'Printing everything in pubkeys table:''Printing everything in pubkeys table:'
     item = '''select address, transmitdata, time, usedpersonally from pubkeys'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         address, transmitdata, time, usedpersonally = row
-        print 'Address:', address, '\tTime first broadcast:', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(time)),'utf-8'), '\tUsed by me personally:', usedpersonally, '\tFull pubkey message:', hexlify(transmitdata)
+'Address:', address, '\tTime first broadcast:', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(time)),'utf-8'), '\tUsed by me personally:', usedpersonally, '\tFull pubkey message:', hexlify(transmitdata)'Address:', address, '\tTime first broadcast:', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(time)),'utf-8'), '\tUsed by me personally:', usedpersonally, '\tFull pubkey message:', hexlify(transmitdata)
 
 def readInventory():
-    print 'Printing everything in inventory table:'
+'Printing everything in inventory table:''Printing everything in inventory table:'
     item = '''select hash, objecttype, streamnumber, payload, expirestime from inventory'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         hash, objecttype, streamnumber, payload, expirestime = row
-        print 'Hash:', hexlify(hash), objecttype, streamnumber, '\t', hexlify(payload), '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(expirestime)),'utf-8')
+'Hash:', hexlify(hash), objecttype, streamnumber, '\t', hexlify(payload), '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(expirestime)),'utf-8')'Hash:', hexlify(hash), objecttype, streamnumber, '\t', hexlify(payload), '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(expirestime)),'utf-8')
 
 
 def takeInboxMessagesOutOfTrash():
@@ -71,7 +71,7 @@ def takeInboxMessagesOutOfTrash():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+'done''done'
 
 def takeSentMessagesOutOfTrash():
     item = '''update sent set folder='sent' where folder='trash' '''
@@ -79,7 +79,7 @@ def takeSentMessagesOutOfTrash():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+'done''done'
 
 def markAllInboxMessagesAsUnread():
     item = '''update inbox set read='0' '''
@@ -88,7 +88,7 @@ def markAllInboxMessagesAsUnread():
     output = cur.fetchall()
     conn.commit()
     queues.UISignalQueue.put(('changedInboxUnread', None))
-    print 'done'
+'done''done'
 
 def vacuum():
     item = '''VACUUM'''
@@ -96,7 +96,7 @@ def vacuum():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+'done''done'
 
 #takeInboxMessagesOutOfTrash()
 #takeSentMessagesOutOfTrash()

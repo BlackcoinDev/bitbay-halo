@@ -147,14 +147,14 @@ def detectPrereqs(missing=True):
 def prereqToPackages():
     if not detectPrereqs():
         return
-    print "%s %s" % (
+"%s %s" % ("%s %s" % (
         PACKAGE_MANAGER[detectOS()], " ".join(
             PACKAGES[x][detectOS()] for x in detectPrereqs()))
 
 def compilerToPackages():
     if not detectOS() in COMPILING:
         return
-    print "%s %s" % (
+"%s %s" % ("%s %s" % (
         PACKAGE_MANAGER[detectOS.result], COMPILING[detectOS.result])
 
 def testCompiler():
@@ -188,28 +188,28 @@ prereqs = detectPrereqs()
 compiler = testCompiler()
 
 if (not compiler or prereqs) and detectOS() in PACKAGE_MANAGER:
-    print "It looks like you're using %s. " \
+"It looks like you're using %s. " \"It looks like you're using %s. " \
     "It is highly recommended to use the package manager\n" \
     "to install the missing dependencies." % (detectOS.result)
 
 if not compiler:
-    print "Building the bitmsghash module failed.\n" \
+"Building the bitmsghash module failed.\n" \"Building the bitmsghash module failed.\n" \
         "You may be missing a C++ compiler and/or the OpenSSL headers."
 
 if prereqs:
     mandatory = list(x for x in prereqs if "optional" not in PACKAGES[x] or not PACKAGES[x]["optional"])
     optional = list(x for x in prereqs if "optional" in PACKAGES[x] and PACKAGES[x]["optional"])
     if mandatory:
-        print "Missing mandatory dependencies: %s" % (" ".join(mandatory))
+"Missing mandatory dependencies: %s" % (" ".join(mandatory))"Missing mandatory dependencies: %s" % (" ".join(mandatory))
     if optional:
-        print "Missing optional dependencies: %s" % (" ".join(optional))
+"Missing optional dependencies: %s" % (" ".join(optional))"Missing optional dependencies: %s" % (" ".join(optional))
         for package in optional:
-            print PACKAGES[package].get('description')
+PACKAGES[package].get('description')PACKAGES[package].get('description')
 
 if (not compiler or prereqs) and detectOS() in PACKAGE_MANAGER:
-    print "You can install the missing dependencies by running, as root:"
+"You can install the missing dependencies by running, as root:""You can install the missing dependencies by running, as root:"
     if not compiler:
         compilerToPackages()
     prereqToPackages()
 else:
-    print "All the dependencies satisfied, you can install PyBitmessage"
+"All the dependencies satisfied, you can install PyBitmessage""All the dependencies satisfied, you can install PyBitmessage"

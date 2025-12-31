@@ -14,26 +14,34 @@ been extensively tested.
 This code is in the public domain.
 It is provided AS-IS WITH NO WARRANTY WHATSOEVER.
 """
+
+import os
+import socket
 import socketserver
-import os, socket
 import xmlrpc.server
+
 from OpenSSL import SSL
+
 
 class SSLWrapper:
     """
     This whole class exists just to filter out a parameter
     passed in to the shutdown() method in SimpleXMLRPC.doPOST()
     """
+
     def __init__(self, conn):
         """
         Connection is not yet a new-style class,
         so I'm making a proxy instead of subclassing.
         """
         self.__dict__["conn"] = conn
-    def __getattr__(self,name):
+
+    def __getattr__(self, name):
         return getattr(self.__dict__["conn"], name)
-    def __setattr__(self,name, value):
+
+    def __setattr__(self, name, value):
         setattr(self.__dict__["conn"], name, value)
+
     def shutdown(self, how=1):
         """
         SimpleXMLRpcServer.doPOST calls shutdown(1),
@@ -41,6 +49,7 @@ class SSLWrapper:
         an argument. So we just discard the argument.
         """
         self.__dict__["conn"].shutdown()
+
     def accept(self):
         """
         This is the other part of the shutdown() workaround.
@@ -51,12 +60,12 @@ class SSLWrapper:
         return (SSLWrapper(c), a)
 
 
-
 class SecureTCPServer(socketserver.TCPServer):
     """
     Just like TCPServer, but use a socket.
     This really ought to let you specify the key and certificate files.
     """
+
     def __init__(self, server_address, RequestHandlerClass):
         socketserver.BaseServer.__init__(self, server_address, RequestHandlerClass)
 
@@ -65,11 +74,10 @@ class SecureTCPServer(socketserver.TCPServer):
         ctx.set_options(SSL.OP_NO_SSLv2)
 
         dir = os.curdir
-        ctx.use_privatekey_file (os.path.join(dir, 'server.pkey'))
-        ctx.use_certificate_file(os.path.join(dir, 'server.cert'))
+        ctx.use_privatekey_file(os.path.join(dir, "server.pkey"))
+        ctx.use_certificate_file(os.path.join(dir, "server.cert"))
 
-        self.socket = SSLWrapper(SSL.Connection(ctx, socket.socket(self.address_family,
-                                                                  self.socket_type)))
+        self.socket = SSLWrapper(SSL.Connection(ctx, socket.socket(self.address_family, self.socket_type)))
         self.server_bind()
         self.server_activate()
 
@@ -81,15 +89,13 @@ class SecureXMLRPCRequestHandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
         doesn't have a 'dup'. Not exactly sure WHY this is, but
         this is backed up by comments in socket.py and SSL/connection.c
         """
-        self.connection = self.request # for doPOST
+        self.connection = self.request  # for doPOST
         self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
-    
+
 
 class SecureXMLRPCServer(xmlrpc.server.SimpleXMLRPCServer, SecureTCPServer):
-    def __init__(self, addr,
-                 requestHandler=SecureXMLRPCRequestHandler,
-                 logRequests=1):
+    def __init__(self, addr, requestHandler=SecureXMLRPCRequestHandler, logRequests=1):
         """
         This is the exact same code as SimpleXMLRPCServer.__init__
         except it calls SecureTCPServer.__init__ instead of plain
@@ -99,4 +105,3 @@ class SecureXMLRPCServer(xmlrpc.server.SimpleXMLRPCServer, SecureTCPServer):
         self.logRequests = logRequests
         self.instance = None
         SecureTCPServer.__init__(self, addr, requestHandler)
-

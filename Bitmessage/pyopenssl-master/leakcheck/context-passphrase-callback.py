@@ -10,22 +10,26 @@
 from itertools import count
 from threading import Thread
 
+from OpenSSL.crypto import FILETYPE_PEM, TYPE_RSA, PKey, dump_privatekey
 from OpenSSL.SSL import Context, TLSv1_METHOD
-from OpenSSL.crypto import TYPE_RSA, FILETYPE_PEM, PKey, dump_privatekey
 
 k = PKey()
 k.generate_key(TYPE_RSA, 128)
-file('pkey.pem', 'w').write(dump_privatekey(FILETYPE_PEM, k, "blowfish", "foobar"))
+file("pkey.pem", "w").write(dump_privatekey(FILETYPE_PEM, k, "blowfish", "foobar"))
 
 count = count()
+
+
 def go():
     def cb(a, b, c):
         print(next(count))
         return "foobar"
+
     c = Context(TLSv1_METHOD)
     c.set_passwd_cb(cb)
     while 1:
-        c.use_privatekey_file('pkey.pem')
+        c.use_privatekey_file("pkey.pem")
+
 
 threads = [Thread(target=go, args=()) for i in range(2)]
 for th in threads:

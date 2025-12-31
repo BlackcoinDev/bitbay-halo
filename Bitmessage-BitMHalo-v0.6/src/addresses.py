@@ -246,18 +246,18 @@ def addBMIfNotPresent(address):
         return address
 
 if __name__ == "__main__":
-    print 'Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:'
+'Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:''Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:'
     privateSigningKey = '93d0b61371a54b53df143b954035d612f8efa8a3ed1cf842c2186bfd8f876665'
     privateEncryptionKey = '4b0b73a54e19b059dc274ab69df095fe699f43b17397bca26fdf40f4d7400a3a'
-    print 'privateSigningKey =', privateSigningKey
-    print 'privateEncryptionKey =', privateEncryptionKey
-    print 'Now let us convert them to public keys by doing an elliptic curve point multiplication.'
+'privateSigningKey =', privateSigningKey'privateSigningKey =', privateSigningKey
+'privateEncryptionKey =', privateEncryptionKey'privateEncryptionKey =', privateEncryptionKey
+'Now let us convert them to public keys by doing an elliptic curve point multiplication.''Now let us convert them to public keys by doing an elliptic curve point multiplication.'
     publicSigningKey = arithmetic.privtopub(privateSigningKey)
     publicEncryptionKey = arithmetic.privtopub(privateEncryptionKey)
-    print 'publicSigningKey =', publicSigningKey
-    print 'publicEncryptionKey =', publicEncryptionKey
+'publicSigningKey =', publicSigningKey'publicSigningKey =', publicSigningKey
+'publicEncryptionKey =', publicEncryptionKey'publicEncryptionKey =', publicEncryptionKey
 
-    print 'Notice that they both begin with the \\x04 which specifies the encoding type. This prefix is not send over the wire. You must strip if off before you send your public key across the wire, and you must add it back when you receive a public key.'
+'Notice that they both begin with the \\x04 which specifies the encoding type. This prefix is not send over the wire. You must strip if off before you send your public key across the wire, and you must add it back when you receive a public key.''Notice that they both begin with the \\x04 which specifies the encoding type. This prefix is not send over the wire. You must strip if off before you send your public key across the wire, and you must add it back when you receive a public key.'
 
     publicSigningKeyBinary = arithmetic.changebase(publicSigningKey,16,256,minlen=64)
     publicEncryptionKeyBinary = arithmetic.changebase(publicEncryptionKey,16,256,minlen=64)
@@ -269,14 +269,14 @@ if __name__ == "__main__":
     ripe.update(sha.digest())
     addressVersionNumber = 2
     streamNumber = 1
-    print 'Ripe digest that we will encode in the address:', hexlify(ripe.digest())
+'Ripe digest that we will encode in the address:', hexlify(ripe.digest())'Ripe digest that we will encode in the address:', hexlify(ripe.digest())
     returnedAddress = encodeAddress(addressVersionNumber,streamNumber,ripe.digest())
-    print 'Encoded address:', returnedAddress
+'Encoded address:', returnedAddress'Encoded address:', returnedAddress
     status,addressVersionNumber,streamNumber,data = decodeAddress(returnedAddress)
-    print '\nAfter decoding address:'
-    print 'Status:', status
-    print 'addressVersionNumber', addressVersionNumber
-    print 'streamNumber', streamNumber
-    print 'length of data(the ripe hash):', len(data)
-    print 'ripe data:', hexlify(data)
+'\nAfter decoding address:''\nAfter decoding address:'
+'Status:', status'Status:', status
+'addressVersionNumber', addressVersionNumber'addressVersionNumber', addressVersionNumber
+'streamNumber', streamNumber'streamNumber', streamNumber
+'length of data(the ripe hash):', len(data)'length of data(the ripe hash):', len(data)
+'ripe data:', hexlify(data)'ripe data:', hexlify(data)
 

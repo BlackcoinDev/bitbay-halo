@@ -42,7 +42,7 @@ def allThreadTraceback(frame):
             code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
             if line:
                 code.append("  %s" % (line.strip()))
-    print "\n".join(code)
+"\n".join(code)"\n".join(code)
 
 def signal_handler(signal, frame):
     logger.error("Got signal %i in %s/%s", signal, current_process().name, current_thread().name)
@@ -58,7 +58,7 @@ def signal_handler(signal, frame):
         shutdown.doCleanShutdown()
     else:
         allThreadTraceback(frame)
-        print 'Unfortunately you cannot use Ctrl+C when running the UI because the UI captures the signal.'
+'Unfortunately you cannot use Ctrl+C when running the UI because the UI captures the signal.''Unfortunately you cannot use Ctrl+C when running the UI because the UI captures the signal.'
 
 def isHostInPrivateIPRange(host):
     if ":" in host: #IPv6

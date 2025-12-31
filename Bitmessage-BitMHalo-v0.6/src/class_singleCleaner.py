@@ -109,7 +109,7 @@ class singleCleaner(threading.Thread, StoppableThread):
                                 del knownnodes.knownNodes[stream][node]
                                 continue
                         except TypeError:
-                            print "Error in %s" % (str(node))
+"Error in %s" % (str(node))"Error in %s" % (str(node))
                     keys = []
 
             # Let us write out the knowNodes to disk if there is anything new to write out.

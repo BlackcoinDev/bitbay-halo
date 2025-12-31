@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_NewAddressDialog(object):
     def setupUi(self, NewAddressDialog):
@@ -31,7 +37,11 @@ class Ui_NewAddressDialog(object):
         self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(NewAddressDialog)
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignBottom|QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.label.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignBottom
+            | QtCore.Qt.AlignmentFlag.AlignLeading
+            | QtCore.Qt.AlignmentFlag.AlignLeft
+        )
         self.label.setWordWrap(True)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.label)
@@ -85,12 +95,16 @@ class Ui_NewAddressDialog(object):
         self.label_11 = QtWidgets.QLabel(self.groupBoxDeterministic)
         self.label_11.setObjectName("label_11")
         self.gridLayout.addWidget(self.label_11, 4, 0, 1, 3)
-        spacerItem = QtWidgets.QSpacerItem(73, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            73, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout.addItem(spacerItem, 6, 1, 1, 1)
         self.label_10 = QtWidgets.QLabel(self.groupBoxDeterministic)
         self.label_10.setObjectName("label_10")
         self.gridLayout.addWidget(self.label_10, 6, 2, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(42, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            42, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout.addItem(spacerItem1, 6, 3, 1, 1)
         self.label_7 = QtWidgets.QLabel(self.groupBoxDeterministic)
         self.label_7.setObjectName("label_7")
@@ -100,7 +114,9 @@ class Ui_NewAddressDialog(object):
         self.lineEditPassphraseAgain.setObjectName("lineEditPassphraseAgain")
         self.gridLayout.addWidget(self.lineEditPassphraseAgain, 3, 0, 1, 4)
         self.lineEditPassphrase = QtWidgets.QLineEdit(self.groupBoxDeterministic)
-        self.lineEditPassphrase.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText)
+        self.lineEditPassphrase.setInputMethodHints(
+            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText
+        )
         self.lineEditPassphrase.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEditPassphrase.setObjectName("lineEditPassphrase")
         self.gridLayout.addWidget(self.lineEditPassphrase, 1, 0, 1, 4)
@@ -120,7 +136,9 @@ class Ui_NewAddressDialog(object):
         self.radioButtonMostAvailable.setObjectName("radioButtonMostAvailable")
         self.gridLayout_2.addWidget(self.radioButtonMostAvailable, 2, 0, 1, 2)
         self.label_3 = QtWidgets.QLabel(self.groupBox)
-        self.label_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
+        self.label_3.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
+        )
         self.label_3.setObjectName("label_3")
         self.gridLayout_2.addWidget(self.label_3, 3, 1, 1, 1)
         self.radioButtonExisting = QtWidgets.QRadioButton(self.groupBox)
@@ -128,10 +146,14 @@ class Ui_NewAddressDialog(object):
         self.radioButtonExisting.setObjectName("radioButtonExisting")
         self.gridLayout_2.addWidget(self.radioButtonExisting, 4, 0, 1, 2)
         self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
+        self.label_4.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
+        )
         self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 5, 1, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(13, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            13, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
         self.gridLayout_2.addItem(spacerItem2, 6, 0, 1, 1)
         self.comboBoxExisting = QtWidgets.QComboBox(self.groupBox)
         self.comboBoxExisting.setEnabled(False)
@@ -140,14 +162,18 @@ class Ui_NewAddressDialog(object):
         self.gridLayout_2.addWidget(self.comboBoxExisting, 6, 1, 1, 1)
         self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.LabelRole, self.groupBox)
         self.buttonBox = QtWidgets.QDialogButtonBox(NewAddressDialog)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.buttonBox.sizePolicy().hasHeightForWidth())
         self.buttonBox.setSizePolicy(sizePolicy)
         self.buttonBox.setMinimumSize(QtCore.QSize(160, 0))
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(10, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.buttonBox)
 
@@ -171,23 +197,52 @@ class Ui_NewAddressDialog(object):
 
     def retranslateUi(self, NewAddressDialog):
         NewAddressDialog.setWindowTitle(_translate("NewAddressDialog", "Create new Address", None))
-        self.label.setText(_translate("NewAddressDialog", "Here you may generate as many addresses as you like. Indeed, creating and abandoning addresses is encouraged. You may generate addresses by using either random numbers or by using a passphrase. If you use a passphrase, the address is called a \"deterministic\" address.\n"
-"The \'Random Number\' option is selected by default but deterministic addresses have several pros and cons:", None))
-        self.label_5.setText(_translate("NewAddressDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Pros:<br/></span>You can recreate your addresses on any computer from memory. <br/>You need-not worry about backing up your keys.dat file as long as you can remember your passphrase. <br/><span style=\" font-weight:600;\">Cons:<br/></span>You must remember (or write down) your passphrase if you expect to be able to recreate your keys if they are lost. <br/>You must remember the address version number and the stream number along with your passphrase. <br/>If you choose a weak passphrase and someone on the Internet can brute-force it, they can read your messages and send messages as you.</p></body></html>", None))
-        self.radioButtonRandomAddress.setText(_translate("NewAddressDialog", "Use a random number generator to make an address", None))
-        self.radioButtonDeterministicAddress.setText(_translate("NewAddressDialog", "Use a passphrase to make addresses", None))
-        self.checkBoxEighteenByteRipe.setText(_translate("NewAddressDialog", "Spend several minutes of extra computing time to make the address(es) 1 or 2 characters shorter", None))
+        self.label.setText(
+            _translate(
+                "NewAddressDialog",
+                'Here you may generate as many addresses as you like. Indeed, creating and abandoning addresses is encouraged. You may generate addresses by using either random numbers or by using a passphrase. If you use a passphrase, the address is called a "deterministic" address.\n'
+                "The 'Random Number' option is selected by default but deterministic addresses have several pros and cons:",
+                None,
+            )
+        )
+        self.label_5.setText(
+            _translate(
+                "NewAddressDialog",
+                '<html><head/><body><p><span style=" font-weight:600;">Pros:<br/></span>You can recreate your addresses on any computer from memory. <br/>You need-not worry about backing up your keys.dat file as long as you can remember your passphrase. <br/><span style=" font-weight:600;">Cons:<br/></span>You must remember (or write down) your passphrase if you expect to be able to recreate your keys if they are lost. <br/>You must remember the address version number and the stream number along with your passphrase. <br/>If you choose a weak passphrase and someone on the Internet can brute-force it, they can read your messages and send messages as you.</p></body></html>',
+                None,
+            )
+        )
+        self.radioButtonRandomAddress.setText(
+            _translate("NewAddressDialog", "Use a random number generator to make an address", None)
+        )
+        self.radioButtonDeterministicAddress.setText(
+            _translate("NewAddressDialog", "Use a passphrase to make addresses", None)
+        )
+        self.checkBoxEighteenByteRipe.setText(
+            _translate(
+                "NewAddressDialog",
+                "Spend several minutes of extra computing time to make the address(es) 1 or 2 characters shorter",
+                None,
+            )
+        )
         self.groupBoxDeterministic.setTitle(_translate("NewAddressDialog", "Make deterministic addresses", None))
         self.label_9.setText(_translate("NewAddressDialog", "Address version number: 4", None))
-        self.label_8.setText(_translate("NewAddressDialog", "In addition to your passphrase, you must remember these numbers:", None))
+        self.label_8.setText(
+            _translate("NewAddressDialog", "In addition to your passphrase, you must remember these numbers:", None)
+        )
         self.label_6.setText(_translate("NewAddressDialog", "Passphrase", None))
-        self.label_11.setText(_translate("NewAddressDialog", "Number of addresses to make based on your passphrase:", None))
+        self.label_11.setText(
+            _translate("NewAddressDialog", "Number of addresses to make based on your passphrase:", None)
+        )
         self.label_10.setText(_translate("NewAddressDialog", "Stream number: 1", None))
         self.label_7.setText(_translate("NewAddressDialog", "Retype passphrase", None))
         self.groupBox.setTitle(_translate("NewAddressDialog", "Randomly generate address", None))
         self.label_2.setText(_translate("NewAddressDialog", "Label (not shown to anyone except you)", None))
         self.radioButtonMostAvailable.setText(_translate("NewAddressDialog", "Use the most available stream", None))
-        self.label_3.setText(_translate("NewAddressDialog", " (best if this is the first of many addresses you will create)", None))
-        self.radioButtonExisting.setText(_translate("NewAddressDialog", "Use the same stream as an existing address", None))
+        self.label_3.setText(
+            _translate("NewAddressDialog", " (best if this is the first of many addresses you will create)", None)
+        )
+        self.radioButtonExisting.setText(
+            _translate("NewAddressDialog", "Use the same stream as an existing address", None)
+        )
         self.label_4.setText(_translate("NewAddressDialog", "(saves you some bandwidth and processing power)", None))
-

@@ -43,7 +43,7 @@ if __name__ == "__main__":
         if (len(asyncore.socket_map) < parallel):
             for i in range(parallel - len(asyncore.socket_map)):
                 HTTPClient('127.0.0.1', '/')
-        print "Active connections: %i" % (len(asyncore.socket_map))
+"Active connections: %i" % (len(asyncore.socket_map))"Active connections: %i" % (len(asyncore.socket_map))
         asyncore.loop(count=len(asyncore.socket_map)/2)
         if requestCount % 100 == 0:
-            print "Processed %i total messages" % (requestCount)
+"Processed %i total messages" % (requestCount)"Processed %i total messages" % (requestCount)

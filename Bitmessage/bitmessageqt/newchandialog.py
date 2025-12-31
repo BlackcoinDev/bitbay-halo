@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_newChanDialog(object):
     def setupUi(self, newChanDialog):
@@ -73,11 +79,15 @@ class Ui_newChanDialog(object):
         self.lineEditChanBitmessageAddress.setObjectName("lineEditChanBitmessageAddress")
         self.gridLayout_2.addWidget(self.lineEditChanBitmessageAddress, 4, 0, 1, 1)
         self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.groupBoxJoinChan)
-        spacerItem = QtWidgets.QSpacerItem(389, 2, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            389, 2, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.formLayout.setItem(4, QtWidgets.QFormLayout.ItemRole.FieldRole, spacerItem)
         self.buttonBox = QtWidgets.QDialogButtonBox(newChanDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
@@ -98,10 +108,21 @@ class Ui_newChanDialog(object):
         self.radioButtonCreateChan.setText(_translate("newChanDialog", "Create a new chan", None))
         self.radioButtonJoinChan.setText(_translate("newChanDialog", "Join a chan", None))
         self.groupBoxCreateChan.setTitle(_translate("newChanDialog", "Create a chan", None))
-        self.label_4.setText(_translate("newChanDialog", "<html><head/><body><p>Enter a name for your chan. If you choose a sufficiently complex chan name (like a strong and unique passphrase) and none of your friends share it publicly then the chan will be secure and private. If you and someone else both create a chan with the same chan name then it is currently very likely that they will be the same chan.</p></body></html>", None))
+        self.label_4.setText(
+            _translate(
+                "newChanDialog",
+                "<html><head/><body><p>Enter a name for your chan. If you choose a sufficiently complex chan name (like a strong and unique passphrase) and none of your friends share it publicly then the chan will be secure and private. If you and someone else both create a chan with the same chan name then it is currently very likely that they will be the same chan.</p></body></html>",
+                None,
+            )
+        )
         self.label_5.setText(_translate("newChanDialog", "Chan name:", None))
         self.groupBoxJoinChan.setTitle(_translate("newChanDialog", "Join a chan", None))
-        self.label.setText(_translate("newChanDialog", "<html><head/><body><p>A chan exists when a group of people share the same decryption keys. The keys and bitmessage address used by a chan are generated from a human-friendly word or phrase (the chan name). To send a message to everyone in the chan, send a normal person-to-person message to the chan address.</p><p>Chans are experimental and completely unmoderatable.</p></body></html>", None))
+        self.label.setText(
+            _translate(
+                "newChanDialog",
+                "<html><head/><body><p>A chan exists when a group of people share the same decryption keys. The keys and bitmessage address used by a chan are generated from a human-friendly word or phrase (the chan name). To send a message to everyone in the chan, send a normal person-to-person message to the chan address.</p><p>Chans are experimental and completely unmoderatable.</p></body></html>",
+                None,
+            )
+        )
         self.label_2.setText(_translate("newChanDialog", "Chan name:", None))
         self.label_3.setText(_translate("newChanDialog", "Chan bitmessage address:", None))
-

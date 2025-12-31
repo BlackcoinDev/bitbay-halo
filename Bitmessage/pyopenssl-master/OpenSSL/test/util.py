@@ -7,12 +7,13 @@ Helpers for the OpenSSL test suite, largely copied from
 U{Twisted<http://twistedmatrix.com/>}.
 """
 
+import os
+import os.path
 import shutil
+import sys
 import traceback
-import os, os.path
 from tempfile import mktemp
 from unittest import TestCase
-import sys
 
 from OpenSSL._util import exception_from_error_queue
 from OpenSSL.crypto import Error
@@ -20,16 +21,22 @@ from OpenSSL.crypto import Error
 try:
     import memdbg
 except Exception:
-    class _memdbg(object): heap = None
+
+    class _memdbg(object):
+        heap = None
+
     memdbg = _memdbg()
 
-from OpenSSL._util import ffi, lib, byte_string as b
+from OpenSSL._util import byte_string as b
+from OpenSSL._util import ffi, lib
+
 
 class TestCase(TestCase):
     """
     :py:class:`TestCase` adds useful testing functionality beyond what is available
     from the standard library :py:class:`unittest.TestCase`.
     """
+
     def run(self, result):
         run = super(TestCase, self).run
         if memdbg.heap is None:
@@ -62,7 +69,6 @@ class TestCase(TestCase):
             after = set(memdbg.heap)
 
             self._reportLeaks(after - before, result)
-
 
     def _reportLeaks(self, leaks, result):
         def format_leak(p):
@@ -109,12 +115,12 @@ class TestCase(TestCase):
             saved = list(c_stack)
 
             # Figure the first interesting frame will be after a the cffi-compiled module
-            while c_stack and '/__pycache__/_cffi__' not in c_stack[-1]:
+            while c_stack and "/__pycache__/_cffi__" not in c_stack[-1]:
                 c_stack.pop()
 
             # Figure the last interesting frame will always be CRYPTO_malloc,
             # since that's where we hooked in to things.
-            while c_stack and 'CRYPTO_malloc' not in c_stack[0] and 'CRYPTO_realloc' not in c_stack[0]:
+            while c_stack and "CRYPTO_malloc" not in c_stack[0] and "CRYPTO_realloc" not in c_stack[0]:
                 c_stack.pop(0)
 
             if c_stack:
@@ -137,18 +143,15 @@ class TestCase(TestCase):
                     unique_leaks[new_leak].append((size, p))
                 memdbg.free(p)
 
-            for (stack, allocs) in unique_leaks.items():
+            for stack, allocs in unique_leaks.items():
                 allocs_accum = []
-                for (size, pointer) in allocs:
+                for size, pointer in allocs:
 
-                    addr = int(ffi.cast('uintptr_t', pointer))
+                    addr = int(ffi.cast("uintptr_t", pointer))
                     allocs_accum.append("%d@0x%x" % (size, addr))
                 allocs_report = ", ".join(sorted(allocs_accum))
 
-                result.addError(
-                    self,
-                    (None, Exception(stack % (allocs_report,)), None))
-
+                result.addError(self, (None, Exception(stack % (allocs_report,)), None))
 
     def tearDown(self):
         """
@@ -168,7 +171,6 @@ class TestCase(TestCase):
             e = sys.exc_info()[1]
             if e.args != ([],):
                 self.fail("Left over errors in OpenSSL error queue: " + repr(e))
-
 
     def assertIsInstance(self, instance, classOrTuple, message=None):
         """
@@ -190,9 +192,7 @@ class TestCase(TestCase):
                 suffix = ""
             else:
                 suffix = ": " + message
-            self.fail("%r is not an instance of %s%s" % (
-                    instance, classOrTuple, suffix))
-
+            self.fail("%r is not an instance of %s%s" % (instance, classOrTuple, suffix))
 
     def failUnlessIn(self, containee, container, msg=None):
         """
@@ -205,9 +205,9 @@ class TestCase(TestCase):
                     '%r not in %r' % (first, second)
         """
         if containee not in container:
-            raise self.failureException(msg or "%r not in %r"
-                                        % (containee, container))
+            raise self.failureException(msg or "%r not in %r" % (containee, container))
         return containee
+
     assertIn = failUnlessIn
 
     def failUnlessIdentical(self, first, second, msg=None):
@@ -220,10 +220,10 @@ class TestCase(TestCase):
         '%r is not %r' % (first, second)
         """
         if first is not second:
-            raise self.failureException(msg or '%r is not %r' % (first, second))
+            raise self.failureException(msg or "%r is not %r" % (first, second))
         return first
-    assertIdentical = failUnlessIdentical
 
+    assertIdentical = failUnlessIdentical
 
     def failIfIdentical(self, first, second, msg=None):
         """
@@ -235,10 +235,10 @@ class TestCase(TestCase):
         '%r is %r' % (first, second)
         """
         if first is second:
-            raise self.failureException(msg or '%r is %r' % (first, second))
+            raise self.failureException(msg or "%r is %r" % (first, second))
         return first
-    assertNotIdentical = failIfIdentical
 
+    assertNotIdentical = failIfIdentical
 
     def failUnlessRaises(self, exception, f, *args, **kwargs):
         """
@@ -261,17 +261,20 @@ class TestCase(TestCase):
             inst = sys.exc_info()[1]
             return inst
         except:
-            raise self.failureException('%s raised instead of %s'
-                                        % (sys.exc_info()[0],
-                                           exception.__name__,
-                                          ))
+            raise self.failureException(
+                "%s raised instead of %s"
+                % (
+                    sys.exc_info()[0],
+                    exception.__name__,
+                )
+            )
         else:
-            raise self.failureException('%s not raised (%r returned)'
-                                        % (exception.__name__, result))
+            raise self.failureException("%s not raised (%r returned)" % (exception.__name__, result))
+
     assertRaises = failUnlessRaises
 
-
     _temporaryFiles = None
+
     def mktemp(self):
         """
         Pathetic substitute for twisted.trial.unittest.TestCase.mktemp.
@@ -281,7 +284,6 @@ class TestCase(TestCase):
         temp = b(mktemp(dir="."))
         self._temporaryFiles.append(temp)
         return temp
-
 
     # Other stuff
     def assertConsistentType(self, theType, name, *constructionArgs):

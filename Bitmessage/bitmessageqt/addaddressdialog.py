@@ -7,21 +7,27 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtWidgets.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtWidgets.QApplication.translate(context, text, disambig)
+
 
 class Ui_AddAddressDialog(object):
     def setupUi(self, AddAddressDialog):
@@ -49,7 +55,9 @@ class Ui_AddAddressDialog(object):
         self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.labelAddressCheck)
         self.buttonBox = QtWidgets.QDialogButtonBox(AddAddressDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
+        )
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
@@ -62,4 +70,3 @@ class Ui_AddAddressDialog(object):
         AddAddressDialog.setWindowTitle(_translate("AddAddressDialog", "Add new entry", None))
         self.label_2.setText(_translate("AddAddressDialog", "Label", None))
         self.label.setText(_translate("AddAddressDialog", "Address", None))
-

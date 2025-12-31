@@ -74,7 +74,7 @@ def getAPI(workingdir=None, silent=False):
             while 1:
                 import time
                 time.sleep(2)
-                print self._count_threads()
+self._count_threads()self._count_threads()
                 bitmessagemain.shared.shutdown = 1
 
         def _count_threads(self):
@@ -84,19 +84,19 @@ def getAPI(workingdir=None, silent=False):
             threads = threading.enumerate()
             for th in threads:
                 if th.is_alive():
-                    print th
+thth
                     thcount += 1
             return thcount
 
         def clientStatus(self):
             '''Returns the Status of the Bitmessage Daemon
             Usage: status = api.clinetStatus()
-            print status['externalIPAddress']
-            print status['networkConnections']
-            print status['numberOfMessagesProcessed']
-            print status['numberOfBroadcastsProcessed']
-            print status['numberOfPubkeysProcessed']
-            print status['networkStatus']
+status['externalIPAddress']status['externalIPAddress']
+status['networkConnections']status['networkConnections']
+status['numberOfMessagesProcessed']status['numberOfMessagesProcessed']
+status['numberOfBroadcastsProcessed']status['numberOfBroadcastsProcessed']
+status['numberOfPubkeysProcessed']status['numberOfPubkeysProcessed']
+status['networkStatus']status['networkStatus']
             '''
 
             if len(network.stats.connectedHostsList()) == 0:
@@ -398,13 +398,13 @@ def getAPI(workingdir=None, silent=False):
                 toAddress)
             if status != 'success':
                 with bitmessagemain.shared.printLock:
-                    print 'ToAddress Error: %s , %s' % (toAddress, status)
+'ToAddress Error: %s , %s' % (toAddress, status)'ToAddress Error: %s , %s' % (toAddress, status)
                 return (toAddress, status)
             status, addressVersionNumber, streamNumber, fromRipe = addresses.decodeAddress(
                 fromAddress)
             if status != 'success':
                 with bitmessagemain.shared.printLock:
-                    print 'fromAddress Error: %s , %s' % (fromAddress, status)
+'fromAddress Error: %s , %s' % (fromAddress, status)'fromAddress Error: %s , %s' % (fromAddress, status)
                 return (fromAddress, status)
             toAddress = addresses.addBMIfNotPresent(toAddress)
             fromAddress = addresses.addBMIfNotPresent(fromAddress)

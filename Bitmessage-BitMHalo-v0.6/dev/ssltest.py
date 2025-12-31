@@ -57,28 +57,28 @@ def sslHandshake(sock, server=False):
             sslSock.do_handshake()
             break
         except ssl.SSLWantReadError:
-            print "Waiting for SSL socket handhake read"
+"Waiting for SSL socket handhake read""Waiting for SSL socket handhake read"
             select.select([sslSock], [], [], 10)
         except ssl.SSLWantWriteError:
-            print "Waiting for SSL socket handhake write"
+"Waiting for SSL socket handhake write""Waiting for SSL socket handhake write"
             select.select([], [sslSock], [], 10)
         except Exception:
-            print "SSL socket handhake failed, shutting down connection"
+"SSL socket handhake failed, shutting down connection""SSL socket handhake failed, shutting down connection"
             traceback.print_exc()
             return
-    print "Success!"
+"Success!""Success!"
     return sslSock
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print "Usage: ssltest.py client|server"
+"Usage: ssltest.py client|server""Usage: ssltest.py client|server"
         sys.exit(0)
     elif sys.argv[1] == "server":
         serversock = listen()
         while True:
-            print "Waiting for connection"
+"Waiting for connection""Waiting for connection"
             sock, addr = serversock.accept()
-            print "Got connection from %s:%i" % (addr[0], addr[1])
+"Got connection from %s:%i" % (addr[0], addr[1])"Got connection from %s:%i" % (addr[0], addr[1])
             sslSock = sslHandshake(sock, True)
             if sslSock:
                 sslSock.shutdown(socket.SHUT_RDWR)
@@ -90,5 +90,5 @@ if __name__ == "__main__":
             sslSock.shutdown(socket.SHUT_RDWR)
             sslSock.close()
     else:
-        print "Usage: ssltest.py client|server"
+"Usage: ssltest.py client|server""Usage: ssltest.py client|server"
         sys.exit(0)

@@ -1,11 +1,13 @@
 import sys
-sys.modules['ssl'] = None
-sys.modules['_hashlib'] = None
+
+sys.modules["ssl"] = None
+sys.modules["_hashlib"] = None
 
 try:
-   import memdbg
+    import memdbg
 except Exception as e:
-   pass
+    pass
 
 from twisted.scripts.trial import run
+
 run()
