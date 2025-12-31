@@ -11,6 +11,9 @@ import time
 
 from . import ripemd
 
+BLACKCOIN_ADDRESS_MAGICBYTE = 25
+BITCOIN_ADDRESS_MAGICBYTE = 0
+
 
 def to_bytes(s):
     if isinstance(s, bytes):
@@ -386,7 +389,7 @@ def privkey_to_pubkey(privkey):
 privtopub = privkey_to_pubkey
 
 
-def privkey_to_address(priv, magicbyte=0):
+def privkey_to_address(priv, magicbyte=BLACKCOIN_ADDRESS_MAGICBYTE):
     return pubkey_to_address(privkey_to_pubkey(priv), magicbyte)
 
 
@@ -532,7 +535,7 @@ def b58check_to_hex(inp):
     return binascii.hexlify(b58check_to_bin(inp)).decode()
 
 
-def pubkey_to_address(pubkey, magicbyte=0):
+def pubkey_to_address(pubkey, magicbyte=BLACKCOIN_ADDRESS_MAGICBYTE):
     if isinstance(pubkey, (list, tuple)):
         pubkey = encode_pubkey(pubkey, "bin")
     if len(pubkey) in [66, 130]:
@@ -569,7 +572,6 @@ def deterministic_generate_k(msghash, priv):
 
 
 def ecdsa_raw_sign(msghash, priv):
-
     z = hash_to_int(msghash)
     k = deterministic_generate_k(msghash, priv)
 

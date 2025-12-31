@@ -126,13 +126,13 @@ def getAPI(workingdir=None, silent=False):
 
         def clientStatus(self):
             """Returns the Status of the Bitmessage Daemon
-            Usage: status = api.clinetStatus()
-status['externalIPAddress']status['externalIPAddress']
-status['networkConnections']status['networkConnections']
-status['numberOfMessagesProcessed']status['numberOfMessagesProcessed']
-status['numberOfBroadcastsProcessed']status['numberOfBroadcastsProcessed']
-status['numberOfPubkeysProcessed']status['numberOfPubkeysProcessed']
-status['networkStatus']status['networkStatus']
+                        Usage: status = api.clinetStatus()
+            status['externalIPAddress']status['externalIPAddress']
+            status['networkConnections']status['networkConnections']
+            status['numberOfMessagesProcessed']status['numberOfMessagesProcessed']
+            status['numberOfBroadcastsProcessed']status['numberOfBroadcastsProcessed']
+            status['numberOfPubkeysProcessed']status['numberOfPubkeysProcessed']
+            status['networkStatus']status['networkStatus']
             """
 
             if len(bitmessagemain.shared.connectedHostsList) == 0:
@@ -861,29 +861,29 @@ class XMLRPCServer:
 
 class SimpleProgramAPI:
     """This API is created to simply let programs communicate over the BitMessage Network.
-    It is concepted to be used extremely easy, so an own Address is automatically generated at startup.
+        It is concepted to be used extremely easy, so an own Address is automatically generated at startup.
 
-    Examples:
+        Examples:
 
-    #Send data to a Program
-    api = SimpleProgramAPI()
-api.get_address()api.get_address()
-    >BM-.
-    mydata = {'a':'b'}
-    toAddress = BM-.
-    api.send_data_wait(toAddress,mydata)
-    api.close()
+        #Send data to a Program
+        api = SimpleProgramAPI()
+    api.get_address()api.get_address()
+        >BM-.
+        mydata = {'a':'b'}
+        toAddress = BM-.
+        api.send_data_wait(toAddress,mydata)
+        api.close()
 
-    #Recieve data for my program
-    api = SimpleProgramAPI()
-api.get_address(),'This Address should be entered in the Sending example.'api.get_address(),'This Address should be entered in the Sending example.'
-    while api.get_data() == []:
-        time.sleep(1)
-'Waiting for a Message''Waiting for a Message'
-    recdata = api.get_data()
-    for data in recdata:
-'got:',data'got:',data
-    >{'a':'b'}
+        #Recieve data for my program
+        api = SimpleProgramAPI()
+    api.get_address(),'This Address should be entered in the Sending example.'api.get_address(),'This Address should be entered in the Sending example.'
+        while api.get_data() == []:
+            time.sleep(1)
+    'Waiting for a Message''Waiting for a Message'
+        recdata = api.get_data()
+        for data in recdata:
+    'got:',data'got:',data
+        >{'a':'b'}
     """
 
     def __init__(self, name, path=None, url=None):

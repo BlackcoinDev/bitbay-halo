@@ -553,7 +553,9 @@ def checkSensitiveFilePermissions(filename):
             # Skip known problems for non-Win32 filesystems without POSIX permissions.
             import subprocess
 
-            fstype = subprocess.check_output('stat -f -c "%%T" %s' % (filename), shell=True, stderr=subprocess.STDOUT).decode('utf-8')
+            fstype = subprocess.check_output(
+                'stat -f -c "%%T" %s' % (filename), shell=True, stderr=subprocess.STDOUT
+            ).decode("utf-8")
             if "fuseblk" in fstype:
                 logger.info("Skipping file permissions check for %s. Filesystem fuseblk detected.", filename)
                 return True

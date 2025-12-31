@@ -73,6 +73,90 @@
 - [ ] Optimize UV dependencies
 - [ ] Test clean installation
 
+### 3.4 BlackCoin v26.2.0 Legacy Wallet Support (Week 6)
+**Goal:** Fix address import for BlackCoin More daemon v26.2.0+
+
+**Problem:**
+- Bitcoin Core v26+ (BlackCoin More v26.2.0) creates descriptor wallets by default
+- Descriptor wallets use SQLite, legacy wallets use BerkeleyDB (BDB)
+- `importaddress` works differently with descriptor wallets
+- No default wallet is created automatically on first run
+
+**Root Cause:**
+```
+Daemon v26+ → No default wallet → Can't import multisig addresses
+```
+
+**Solution:**
+1. Use `python-bitcoinrpc` library (`AuthServiceProxy`) to call RPC methods
+2. Create legacy BDB wallet before importing addresses
+3. Use idempotent `createwallet` call to avoid duplicates
+
+**Implementation (Halo.py):**
+
+```python
+from bitcoinrpc.authproxy import AuthServiceProxy
+
+BLKurl = 'http://' + CoinSelect['rpcuser'] + ':' + CoinSelect['rpcpassword'] + '@localhost:' + CoinSelect['rpcport']
+BLK = AuthServiceProxy(BLKurl)
+
+def ensure_legacy_wallet():
+    """Create legacy BDB wallet if it doesn't exist. Safe to call multiple times."""
+    # Check if wallet is already loaded
+    try:
+        wallets = BLK.listwallets()
+        for w in wallets:
+            if "legacy" in w:
+                print("Legacy wallet already loaded")
+                return True
+    except:
+        pass
+
+    # Create legacy wallet (idempotent - safe to call multiple times)
+    try:
+        BLK.createwallet(
+            wallet_name="legacy",
+            disable_private_keys=False,  # We need private keys for signing
+            blank=False,                 # Initialize with data
+            load_on_startup=True,        # Auto-load on daemon restart
+            descriptors=False            # FALSE = creates BDB legacy wallet!
+        )
+        print("Created legacy BDB wallet")
+        return True
+    except Exception as e:
+        if any(x in str(e) for x in ["Database already exists", "Wallet already exists", "already loaded"]):
+            print("Legacy wallet already exists")
+            return True
+        print(f"Error creating wallet: {e}")
+        return False
+```
+
+**Where to Call:**
+- Before processing `WatchlistQueue` (around line 12163 in Halo.py)
+- After daemon is confirmed running
+
+**Testing:**
+```bash
+# Verify wallet was created
+blackmore-cli listwallets
+# Should show: ["wallets/legacy/wallet.dat"]
+
+# Verify address was imported
+blackmore-cli getaddressinfo bbBg9J1DcyyvXJFbgVxALL7kWeD867K63j
+```
+
+**RPC Methods Used:**
+- `listwallets()` - Check loaded wallets
+- `createwallet(wallet_name, descriptors=False, ...)` - Create legacy wallet
+- `importaddress(address, label, rescan)` - Import watch-only address
+
+**Related Files:**
+- `Halo.py:1338-1374` - Config file creation (add deprecatedrpc=create_bdb)
+- `Halo.py:12163-12186` - WatchlistQueue processing (call ensure_legacy_wallet first)
+- `Halo.py:10197` - BLK connection setup
+
+**Deliverable:** Legacy BDB wallet created automatically, multisig addresses import correctly
+
 **Deliverable:** Working cross-platform build system
 
 ---
@@ -133,7 +217,7 @@
 |-------|----------|------|------------------|
 | **1. Critical Fixes** | Weeks 1-2 | Fix broken core functionality | Crypto functions working, BitMessage API complete |
 | **2. Python 3 Compatibility** | Weeks 3-4 | Complete Python 2→3 migration | All code Python 3.14 compatible |
-| **3. Build System Modernization** | Weeks 5-6 | Apply legacy patterns to modern | Cross-platform build scripts |
+| **3. Build System Modernization** | Weeks 5-6 | Apply legacy patterns to modern | Cross-platform build scripts, Legacy wallet support |
 | **4. Automation & Testing** | Weeks 7-8 | CI/CD pipeline and testing | Automated testing pipeline |
 | **5. Distribution** | Weeks 9-10 | Production releases | installers for all platforms |
 

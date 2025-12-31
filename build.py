@@ -5,10 +5,10 @@ Modernized for Python 3.14+ and PyQt6 using UV
 """
 
 import os
-import sys
 import platform
-import subprocess
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 
@@ -60,14 +60,28 @@ def setup_uv_project():
     print("Dependencies installed successfully!")
 
 
+def find_qt_path():
+    """Find Qt6 path for PyInstaller bundling"""
+    import site
+
+    qt_paths = [
+        "/usr/lib/python3/dist-packages/PyQt6/Qt6",
+        "/usr/lib64/python3/site-packages/PyQt6/Qt6",
+        f"{site.getsitepackages()[0]}/PyQt6/Qt6" if site.getsitepackages() else None,
+    ]
+    for path in qt_paths:
+        if path and Path(path).exists():
+            return path
+    return None
+
+
 def build_executable():
     """Build executable using PyInstaller with UV"""
     print("Building executable...")
 
     platform_name = platform.system().lower()
-    script_name = "BitMHalo.py"
+    script_name = "Halo.py"  # Use Halo.py as main entry point
 
-    # Use UV run to execute pyinstaller in the correct environment
     cmd = [
         "uv",
         "run",
@@ -79,11 +93,12 @@ def build_executable():
         script_name,
     ]
 
-    # Platform-specific additions
-    if platform_name == "linux":
-        cmd.extend(["--add-data", "/usr/lib/python3/dist-packages/PyQt6/Qt6:Q"])
-    elif platform_name == "darwin":  # macOS
-        cmd.extend(["--add-data", "/System/Library/Frameworks/QtGui.framework:Q"])
+    qt_path = find_qt_path()
+    if qt_path:
+        cmd.extend(["--add-data", f"{qt_path}:Qt6"])
+        print(f"Found Qt6 at: {qt_path}")
+    else:
+        print("Warning: Qt6 path not found, skipping Qt bundling")
 
     try:
         subprocess.run(cmd, check=True)

@@ -1,8 +1,19 @@
+import hashlib
 from binascii import hexlify
 
 import pyelliptic
 from pyelliptic import OpenSSL
 from pyelliptic import arithmetic as a
+
+
+def hash160(string):
+    intermed = hashlib.sha256(string).digest()
+    digest = hashlib.new("ripemd160", intermed).digest()
+    return hexlify(digest).decode()
+
+
+def hash256(string):
+    return hexlify(hashlib.sha256(hashlib.sha256(string).digest()).digest()).decode()
 
 
 def makeCryptor(privkey):

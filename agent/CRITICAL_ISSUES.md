@@ -94,6 +94,79 @@ urllib2 → urllib.request incompatibility
 
 **Impact**: **Subtle runtime errors** that crash functionality
 
+### 🚨 **Issue 6: BlackCoin v26.2.0 Legacy Wallet Compatibility**
+
+**Problem**: Bitcoin Core v26+ (BlackCoin More v26.2.0) uses descriptor wallets by default
+
+```python
+# v26+ changes:
+- No default wallet created automatically
+- Descriptor wallets use SQLite, legacy use BDB
+- importaddress works differently with descriptor wallets
+- Multisig addresses need legacy BDB wallet format
+```
+
+**Impact**: **Address import fails, wallet can't track multisig addresses**
+
+**Solution**:
+```python
+from bitcoinrpc.authproxy import AuthServiceProxy
+
+def ensure_legacy_wallet():
+    """Create legacy BDB wallet if it doesn't exist."""
+    global BLK
+    
+    # Check if legacy wallet is already loaded
+    try:
+        wallets = BLK.listwallets()
+        for w in wallets:
+            if "legacy" in w:
+                return True
+    except:
+        pass
+    
+    # Create legacy wallet (idempotent)
+    try:
+        BLK.createwallet(
+            wallet_name="legacy",
+            disable_private_keys=False,
+            blank=False,
+            load_on_startup=True,
+            descriptors=False  # FALSE = BDB legacy!
+        )
+        return True
+    except Exception as e:
+        if any(x in str(e) for x in ["Database already exists", "Wallet already exists", "already loaded"]):
+            return True
+        return False
+```
+
+**Where to implement:**
+- File: `Halo.py`
+- Call: Before WatchlistQueue processing (~line 12163)
+- Add to config: `deprecatedrpc=create_bdb`
+
+**Related Files:**
+- `Halo.py:1338-1374` - Config file creation
+- `Halo.py:12163-12186` - WatchlistQueue processing
+- `Halo.py:10197` - BLK connection setup
+
+### 🚨 **Issue 7: RPC Library Compatibility**
+
+**Problem**: `python-bitcoinrpc` library is from 2016
+
+```python
+# Current library: python-bitcoinrpc (2016)
+# May not support newer RPC calls like:
+# - createwallet (with descriptors parameter)
+# - listwallets
+# - getwalletinfo
+```
+
+**Reality Check**: The library uses `__getattr__` to dynamically create method proxies, so it **should work** with any RPC call including new ones. No immediate replacement needed.
+
+**Impact**: **Low risk** - Dynamic proxy pattern supports all RPC methods
+
 ## Detailed Technical Analysis
 
 ### **Core Function Mapping - BROKEN**
@@ -269,6 +342,7 @@ class_bitmessage.getAPI()  # ✅ Wrapper function only
 2. **Fix import architecture** - Consistent module interfaces
 3. **Type handling** - Consistent string/bytes handling
 4. **BitMessage API completion** - Essential messaging functions
+5. **BlackCoin v26.2.0 wallet support** - Create legacy BDB wallet before import
 
 ### **Must Fix Before Production:**
 1. **Comprehensive integration testing** - End-to-end functionality

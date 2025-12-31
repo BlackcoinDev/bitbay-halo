@@ -9,17 +9,17 @@ from .openssl import OpenSSL
 
 class Cipher:
     """
-    Symmetric encryption
+        Symmetric encryption
 
-        import pyelliptic
-        iv = pyelliptic.Cipher.gen_IV('aes-256-cfb')
-        ctx = pyelliptic.Cipher("secretkey", iv, 1, ciphername='aes-256-cfb')
-        ciphertext = ctx.update('test1')
-        ciphertext += ctx.update('test2')
-        ciphertext += ctx.final()
+            import pyelliptic
+            iv = pyelliptic.Cipher.gen_IV('aes-256-cfb')
+            ctx = pyelliptic.Cipher("secretkey", iv, 1, ciphername='aes-256-cfb')
+            ciphertext = ctx.update('test1')
+            ciphertext += ctx.update('test2')
+            ciphertext += ctx.final()
 
-        ctx2 = pyelliptic.Cipher("secretkey", iv, 0, ciphername='aes-256-cfb')
-ctx2.ciphering(ciphertext)ctx2.ciphering(ciphertext)
+            ctx2 = pyelliptic.Cipher("secretkey", iv, 0, ciphername='aes-256-cfb')
+    ctx2.ciphering(ciphertext)ctx2.ciphering(ciphertext)
     """
 
     def __init__(self, key, iv, do, ciphername="aes-256-cbc"):

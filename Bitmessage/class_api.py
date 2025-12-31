@@ -37,7 +37,6 @@ class APIError(Exception):
 
 
 def getAPI(workingdir=None, silent=False):
-
     if workingdir:
         os.environ["BITMESSAGE_HOME"] = workingdir
 
@@ -137,13 +136,13 @@ def getAPI(workingdir=None, silent=False):
 
         def clientStatus(self):
             """Returns the Status of the Bitmessage Daemon
-            Usage: status = api.clinetStatus()
-status['externalIPAddress']status['externalIPAddress']
-status['networkConnections']status['networkConnections']
-status['numberOfMessagesProcessed']status['numberOfMessagesProcessed']
-status['numberOfBroadcastsProcessed']status['numberOfBroadcastsProcessed']
-status['numberOfPubkeysProcessed']status['numberOfPubkeysProcessed']
-status['networkStatus']status['networkStatus']
+                        Usage: status = api.clinetStatus()
+            status['externalIPAddress']status['externalIPAddress']
+            status['networkConnections']status['networkConnections']
+            status['numberOfMessagesProcessed']status['numberOfMessagesProcessed']
+            status['numberOfBroadcastsProcessed']status['numberOfBroadcastsProcessed']
+            status['numberOfPubkeysProcessed']status['numberOfPubkeysProcessed']
+            status['networkStatus']status['networkStatus']
             """
 
             if len(bitmessagemain.shared.connectedHostsList) == 0:
@@ -232,7 +231,12 @@ status['networkStatus']status['networkStatus']
             return queueReturn
 
         def createRandomAddress(
-            self, label, eighteenByteRipe=False, totalDifficulty=1, smallMessageDifficulty=1, streamNumberForAddress=1
+            self,
+            label,
+            eighteenByteRipe=False,
+            totalDifficulty=1,
+            smallMessageDifficulty=1,
+            streamNumberForAddress=1,
         ):
             """Create a reandom Bitmessage Address
             Usage: api.createRandomAddress(label,eighteenByteRipe,totalDifficulty,smallMessageDifficulty)"""
@@ -268,7 +272,6 @@ status['networkStatus']status['networkStatus']
             return bitmessagemain.shared.apiAddressGeneratorReturnQueue.get()
 
         def deleteAddress(self, address):
-
             status, addressVersionNumber, streamNumber, toRipe = self._verifyAddress(address)
             address = addresses.addBMIfNotPresent(address)
             if not bitmessagemain.shared.config.has_section(address):
@@ -337,7 +340,16 @@ status['networkStatus']status['networkStatus']
             )
             messages = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, received, message, encodingtype, read = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    received,
+                    message,
+                    encodingtype,
+                    read,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 messages.append(
@@ -376,7 +388,17 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    lastactiontime,
+                    message,
+                    encodingtype,
+                    status,
+                    ackdata,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -433,7 +455,16 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, received, message, encodingtype, read = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    received,
+                    message,
+                    encodingtype,
+                    read,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -460,7 +491,15 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, received, message, encodingtype = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    received,
+                    message,
+                    encodingtype,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -487,7 +526,17 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    lastactiontime,
+                    message,
+                    encodingtype,
+                    status,
+                    ackdata,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -516,7 +565,17 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    lastactiontime,
+                    message,
+                    encodingtype,
+                    status,
+                    ackdata,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -556,7 +615,17 @@ status['networkStatus']status['networkStatus']
             )
             data = []
             for row in queryreturn:
-                msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
+                (
+                    msgid,
+                    toAddress,
+                    fromAddress,
+                    subject,
+                    lastactiontime,
+                    message,
+                    encodingtype,
+                    status,
+                    ackdata,
+                ) = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
                 data.append(
@@ -607,7 +676,9 @@ status['networkStatus']status['networkStatus']
 
             # Add Address to Address Book
             bitmessagemain.shared.sqlExecute(
-                """INSERT INTO addressbook VALUES (?,?)""", str_chan + " " + label, address
+                """INSERT INTO addressbook VALUES (?,?)""",
+                str_chan + " " + label,
+                address,
             )
             return address
 
@@ -780,7 +851,10 @@ status['networkStatus']status['networkStatus']
                 for row in queryreturn:
                     (toLabel,) = row
             bitmessagemain.shared.UISignalQueue.put(
-                ("displayNewSentMessage", (toAddress, toLabel, fromAddress, subject, message, ackdata))
+                (
+                    "displayNewSentMessage",
+                    (toAddress, toLabel, fromAddress, subject, message, ackdata),
+                )
             )
             bitmessagemain.shared.workerQueue.put(("sendmessage", toAddress))
             return ackdata.hex()
@@ -814,7 +888,11 @@ status['networkStatus']status['networkStatus']
         def _verifyAddress(self, address):
             status, addressVersionNumber, streamNumber, ripe = addresses.decodeAddress(address)
             if status != "success":
-                logger.warn("API Error 0007: Could not decode address %s. Status: %s.", address, status)
+                logger.warn(
+                    "API Error 0007: Could not decode address %s. Status: %s.",
+                    address,
+                    status,
+                )
 
                 if status == "checksumfailed":
                     raise APIError("Checksum failed for address: " + address)
@@ -831,6 +909,12 @@ status['networkStatus']status['networkStatus']
                 raise APIError("The stream number must be 1. Others aren't supported. Check the address.")
 
             return (status, addressVersionNumber, streamNumber, ripe)
+
+        def decodeAddress(self, address):
+            """Decode a Bitmessage address
+            Usage: api.decodeAddress(address)
+            Returns: (status, addressVersionNumber, streamNumber, ripe)"""
+            return addresses.decodeAddress(address)
 
     api = MainAPI()
     api.start(daemon=True)
@@ -872,28 +956,28 @@ class XMLRPCServer:
 
 class SimpleProgramAPI:
     """This API is created to simply let programs communicate over the BitMessage Network.
-    It is concepted to be used extremely easy, so an own Address is automatically generated at startup.
+        It is concepted to be used extremely easy, so an own Address is automatically generated at startup.
 
-    Examples:
-    #Send data to a Program
-    api = SimpleProgramAPI()
-api.get_address()api.get_address()
-    >BM-.
-    mydata = {'a':'b'}
-    toAddress = BM-.
-    api.send_data_wait(toAddress,mydata)
-    api.close()
+        Examples:
+        #Send data to a Program
+        api = SimpleProgramAPI()
+    api.get_address()api.get_address()
+        >BM-.
+        mydata = {'a':'b'}
+        toAddress = BM-.
+        api.send_data_wait(toAddress,mydata)
+        api.close()
 
-    #Recieve data for my program
-    api = SimpleProgramAPI()
-api.get_address(),'This Address should be entered in the Sending example.'api.get_address(),'This Address should be entered in the Sending example.'
-    while api.get_data() == []:
-        time.sleep(1)
-'Waiting for a Message''Waiting for a Message'
-    recdata = api.get_data()
-    for data in recdata:
-'got:',data'got:',data
-    >{'a':'b'}
+        #Recieve data for my program
+        api = SimpleProgramAPI()
+    api.get_address(),'This Address should be entered in the Sending example.'api.get_address(),'This Address should be entered in the Sending example.'
+        while api.get_data() == []:
+            time.sleep(1)
+    'Waiting for a Message''Waiting for a Message'
+        recdata = api.get_data()
+        for data in recdata:
+    'got:',data'got:',data
+        >{'a':'b'}
     """
 
     def __init__(self, name, path=None, url=None):
@@ -935,7 +1019,10 @@ api.get_address(),'This Address should be entered in the Sending example.'api.ge
     def get_header(self):
         """Create a Header, used in the Subject Field"""
         if self.url:
-            header = "This is an autogenerated Mail by the Software:%s (%s)" % (self.name, self.url)
+            header = "This is an autogenerated Mail by the Software:%s (%s)" % (
+                self.name,
+                self.url,
+            )
         else:
             header = "This is an autogenerated Mail by the Software:%s" % self.name
 

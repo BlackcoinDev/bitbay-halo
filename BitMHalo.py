@@ -150,9 +150,7 @@ class RPCThread(QThread):  # threading.Thread
 
     def run(self):
         # Create server
-        server = SimpleXMLRPCServer(
-            ("localhost", 8878), requestHandler=RequestHandler, logRequests=False
-        )
+        server = SimpleXMLRPCServer(("localhost", 8878), requestHandler=RequestHandler, logRequests=False)
         server.register_introspection_functions()
         # Register functions
         server.register_instance(self.MyFuncs())
@@ -189,9 +187,7 @@ def getPythonFileLocation():
 
 application_path = getPythonFileLocation()
 
-list_response_pattern = re.compile(
-    r'\((?P<flags>.*?)\) "(?P<delimiter>.*)" (?P<name>.*)'
-)
+list_response_pattern = re.compile(r'\((?P<flags>.*?)\) "(?P<delimiter>.*)" (?P<name>.*)')
 
 
 def parse_list_response(line):
@@ -256,7 +252,9 @@ if __name__ == "__main__":
             sys.stderr.write(str("Closing Bitmessage."))
             sys.exit()
         time.sleep(0.23456)
-        ticker += 1  # We dont check email messages as compulsively not do we try resending outbox messages as compulsively
+        ticker += (
+            1  # We dont check email messages as compulsively not do we try resending outbox messages as compulsively
+        )
         ticker2 += 1
         ticker3 += 1
         if ticker3 > 1000:
@@ -282,9 +280,7 @@ if __name__ == "__main__":
                     fromAddress = ""
                     if "ENCRYPTED:" in data1:
                         if "PASSWORD:" in data1:
-                            matchObj = re.match(
-                                r"(PASSWORD:)(.*?)(MY:)", data1, re.M | re.I
-                            )
+                            matchObj = re.match(r"(PASSWORD:)(.*?)(MY:)", data1, re.M | re.I)
                             EmailPassword = matchObj.group(2)
                             data1 = data1.replace("PASSWORD:" + EmailPassword, "")
                         matchObj = re.match(
@@ -319,16 +315,14 @@ if __name__ == "__main__":
                             break
                     ret = True
                     try:
-                        EmailPassword = password.DecryptWithAES(
-                            "Halo Master", EmailPassword
-                        )
+                        EmailPassword = password.DecryptWithAES("Halo Master", EmailPassword)
                     except:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
-                        if (
-                            "You have received a payment of " not in str(content)
-                            and "If you are new to Cryptocurrency, somebody may have sent you these coins"
-                            not in str(content)
+                        if "You have received a payment of " not in str(
+                            content
+                        ) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(
+                            content
                         ):
                             content = "****" + str(content) + "****"
                             attach = 0
@@ -365,23 +359,18 @@ if __name__ == "__main__":
                                 b64 = base64.b64decode(content["b64img"])
                                 text_content = str(content["Data"])
                                 html_content = (
-                                    "<html><body>"
-                                    + content["Data"]
-                                    + '<img src="cid:doge" />.\n'
-                                    "</body></html>"
+                                    "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
                                 )
-                                payload, mail_from, rcpt_to, msg_id = (
-                                    pyzmail.compose_mail(
-                                        (str(fromAddress), fromAddress),
-                                        [(str(toAddress), toAddress)],
-                                        "Halo",
-                                        "iso-8859-1",
-                                        (text_content, "iso-8859-1"),
-                                        (html_content, "iso-8859-1"),
-                                        embeddeds=[
-                                            (b64, "image", "bmp", "doge", None),
-                                        ],
-                                    )
+                                payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
+                                    (str(fromAddress), fromAddress),
+                                    [(str(toAddress), toAddress)],
+                                    "Halo",
+                                    "iso-8859-1",
+                                    (text_content, "iso-8859-1"),
+                                    (html_content, "iso-8859-1"),
+                                    embeddeds=[
+                                        (b64, "image", "bmp", "doge", None),
+                                    ],
                                 )
                                 ret = pyzmail.send_mail(
                                     payload,
@@ -403,9 +392,7 @@ if __name__ == "__main__":
                         except Exception as e:
                             sys.stderr.write(str("OUTBOX SENDING ERROR: ") + str(e))
                             ret = False
-                    if (
-                        ret != False or toAddress == "####"
-                    ):  # We are not resending bitmessage at the moment
+                    if ret != False or toAddress == "####":  # We are not resending bitmessage at the moment
                         outbox.pop(pos)
                         next = 0
                         with open(outpath, "w") as f:
@@ -444,13 +431,9 @@ if __name__ == "__main__":
                     if "ENCRYPTED:" in data[2]:
                         try:
                             if "PASSWORD:" in data[2]:
-                                matchObj = re.match(
-                                    r"(PASSWORD:)(.*?)(MY:)", data[2], re.M | re.I
-                                )
+                                matchObj = re.match(r"(PASSWORD:)(.*?)(MY:)", data[2], re.M | re.I)
                                 EmailPassword = matchObj.group(2)
-                                data[2] = data[2].replace(
-                                    "PASSWORD:" + EmailPassword, ""
-                                )
+                                data[2] = data[2].replace("PASSWORD:" + EmailPassword, "")
                             matchObj = re.match(
                                 r"(MY:)(.*?)(THEIR:)(.*?)(ENCRYPTED:)(.*?)(###)",
                                 data[2],
@@ -486,16 +469,14 @@ if __name__ == "__main__":
                             break
                     ret = True
                     try:
-                        EmailPassword = password.DecryptWithAES(
-                            "Halo Master", EmailPassword
-                        )
+                        EmailPassword = password.DecryptWithAES("Halo Master", EmailPassword)
                     except:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
-                        if (
-                            "You have received a payment of " not in str(content)
-                            and "If you are new to Cryptocurrency, somebody may have sent you these coins"
-                            not in str(content)
+                        if "You have received a payment of " not in str(
+                            content
+                        ) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(
+                            content
                         ):
                             attach = 0
                             content = "****" + str(content) + "****"
@@ -532,23 +513,18 @@ if __name__ == "__main__":
                                 b64 = base64.b64decode(content["b64img"])
                                 text_content = str(content["Data"])
                                 html_content = (
-                                    "<html><body>"
-                                    + content["Data"]
-                                    + '<img src="cid:doge" />.\n'
-                                    "</body></html>"
+                                    "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
                                 )
-                                payload, mail_from, rcpt_to, msg_id = (
-                                    pyzmail.compose_mail(
-                                        (str(fromAddress), fromAddress),
-                                        [(str(toAddress), toAddress)],
-                                        "Halo",
-                                        "iso-8859-1",
-                                        (text_content, "iso-8859-1"),
-                                        (html_content, "iso-8859-1"),
-                                        embeddeds=[
-                                            (b64, "image", "bmp", "doge", None),
-                                        ],
-                                    )
+                                payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
+                                    (str(fromAddress), fromAddress),
+                                    [(str(toAddress), toAddress)],
+                                    "Halo",
+                                    "iso-8859-1",
+                                    (text_content, "iso-8859-1"),
+                                    (html_content, "iso-8859-1"),
+                                    embeddeds=[
+                                        (b64, "image", "bmp", "doge", None),
+                                    ],
                                 )
                                 ret = pyzmail.send_mail(
                                     payload,
@@ -596,9 +572,7 @@ if __name__ == "__main__":
                             ret = "False" + str(data[2])
                     else:
                         try:
-                            ret = api.sendMessage(
-                                fromAddress, toAddress, "BitHalo", str(content)
-                            )
+                            ret = api.sendMessage(fromAddress, toAddress, "BitHalo", str(content))
                         except Exception as e:
                             ret = "False" + str(content)
                     try:
@@ -629,9 +603,7 @@ if __name__ == "__main__":
                                 if dat["Password"] == "#!#":
                                     dat["Password"] = mypassword
                                 try:
-                                    dat["Password"] = password.DecryptWithAES(
-                                        "Halo Master", dat["Password"]
-                                    )
+                                    dat["Password"] = password.DecryptWithAES("Halo Master", dat["Password"])
                                 except:
                                     sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                                 verified = 0
@@ -656,9 +628,7 @@ if __name__ == "__main__":
                                             # For now we maintain the record of read messages on the client side
                                         prevaccount = dat["Email Address"]
                                         connection = imaplib.IMAP4_SSL(imapname)
-                                        connection.login(
-                                            dat["Email Address"], dat["Password"]
-                                        )
+                                        connection.login(dat["Email Address"], dat["Password"])
                                         typ, mailbox_data = connection.list()
                                         inbox = []
                                         try:
@@ -674,9 +644,7 @@ if __name__ == "__main__":
                                             mailbox = {str(dat["Email Address"]): {}}
                                         for line in mailbox_data:
                                             try:
-                                                flags, delimiter, mailbox_name = (
-                                                    parse_list_response(line)
-                                                )
+                                                flags, delimiter, mailbox_name = parse_list_response(line)
                                                 if (
                                                     "sent" in mailbox_name.lower()
                                                     or "all" in mailbox_name.lower()
@@ -688,9 +656,7 @@ if __name__ == "__main__":
                                                 if ch == "Remove Order":
                                                     connection.select(mailbox_name)
                                                 else:
-                                                    connection.select(
-                                                        mailbox_name, readonly=True
-                                                    )
+                                                    connection.select(mailbox_name, readonly=True)
                                                 msg_ids1 = set([])
                                                 try:
                                                     typ, msg_ids1 = connection.uid(
@@ -699,9 +665,7 @@ if __name__ == "__main__":
                                                         '(SUBJECT "Halo")',
                                                     )  # connection.search(None, '(SUBJECT "Halo")')
                                                 except Exception as e:
-                                                    sys.stderr.write(
-                                                        str("SEARCH ERROR") + str(e)
-                                                    )
+                                                    sys.stderr.write(str("SEARCH ERROR") + str(e))
                                                     continue
                                                 msg_ids = msg_ids1[0]
                                                 try:
@@ -720,347 +684,183 @@ if __name__ == "__main__":
                                                         except:
                                                             mydict2[elem] = ""
                                                 for msg_id in msg_ids:
-                                                    if (
-                                                        "uids" in dat
-                                                    ):  # If they ask to skip any messages we do so
+                                                    if "uids" in dat:  # If they ask to skip any messages we do so
                                                         if msg_id in mydict2:
                                                             if "ordernumber" in dat:
-                                                                if (
-                                                                    dat["ordernumber"]
-                                                                    == mydict2[msg_id]
-                                                                ):
+                                                                if dat["ordernumber"] == mydict2[msg_id]:
                                                                     pass
                                                                 else:
                                                                     continue
                                                             else:
                                                                 continue
-                                                    sys.stderr.write(
-                                                        "\n\n" + str(msg_id) + "\n\n"
-                                                    )
+                                                    sys.stderr.write("\n\n" + str(msg_id) + "\n\n")
                                                     mymessage = {}
-                                                    if (
-                                                        msg_id
-                                                        in mailbox[
-                                                            str(dat["Email Address"])
-                                                        ]
-                                                    ):
+                                                    if msg_id in mailbox[str(dat["Email Address"])]:
                                                         try:
-                                                            mymessage["toAddress"] = (
-                                                                mailbox[
-                                                                    str(
-                                                                        dat[
-                                                                            "Email Address"
-                                                                        ]
-                                                                    )
-                                                                ][msg_id]["toAddress"]
-                                                            )
-                                                            mymessage["fromAddress"] = (
-                                                                mailbox[
-                                                                    str(
-                                                                        dat[
-                                                                            "Email Address"
-                                                                        ]
-                                                                    )
-                                                                ][msg_id]["fromAddress"]
-                                                            )
-                                                            mymessage["body"] = mailbox[
-                                                                str(
-                                                                    dat["Email Address"]
-                                                                )
-                                                            ][msg_id]["body"]
-                                                            mymessage["uid"] = mailbox[
-                                                                str(
-                                                                    dat["Email Address"]
-                                                                )
-                                                            ][msg_id]["uid"]
+                                                            mymessage["toAddress"] = mailbox[str(dat["Email Address"])][
+                                                                msg_id
+                                                            ]["toAddress"]
+                                                            mymessage["fromAddress"] = mailbox[
+                                                                str(dat["Email Address"])
+                                                            ][msg_id]["fromAddress"]
+                                                            mymessage["body"] = mailbox[str(dat["Email Address"])][
+                                                                msg_id
+                                                            ]["body"]
+                                                            mymessage["uid"] = mailbox[str(dat["Email Address"])][
+                                                                msg_id
+                                                            ]["uid"]
                                                             body = mymessage["body"]
                                                         except:
                                                             body = ""
                                                             mymessage = {}
-                                                            sys.stderr.write(
-                                                                "\n\nMessage reading error!\n\n"
-                                                            )
+                                                            sys.stderr.write("\n\nMessage reading error!\n\n")
                                                     else:
                                                         try:
-                                                            if (
-                                                                systemexit == 1
-                                                            ):  # Attempt a clean exit when possible
+                                                            if systemexit == 1:  # Attempt a clean exit when possible
                                                                 systemexit = 2
-                                                                sys.stderr.write(
-                                                                    str(
-                                                                        "Closing Bitmessage."
-                                                                    )
-                                                                )
+                                                                sys.stderr.write(str("Closing Bitmessage."))
                                                                 sys.exit()
-                                                            sys.stderr.write(
-                                                                str("\n\nFETCHING.\n\n")
-                                                            )
+                                                            sys.stderr.write(str("\n\nFETCHING.\n\n"))
                                                             # This is to prevent dropped connections, for now only on fetching
                                                             timeresult = False
                                                             try:  # Let Halo know through RPC we started to download
-                                                                myrpc.MessageStatus(
-                                                                    "1", "password"
-                                                                )
+                                                                myrpc.MessageStatus("1", "password")
                                                             except Exception as e:
                                                                 pass
 
-                                                            @stopit.threading_timeoutable(
-                                                                timeout_param="my_timeout"
-                                                            )
+                                                            @stopit.threading_timeoutable(timeout_param="my_timeout")
                                                             def timethis():  # If we get dropped, we can time out
-                                                                global \
-                                                                    timeresult, \
-                                                                    typ, \
-                                                                    msg_data, \
-                                                                    connection
-                                                                typ, msg_data = (
-                                                                    connection.uid(
-                                                                        "fetch",
-                                                                        msg_id,
-                                                                        "(RFC822)",
-                                                                    )
+                                                                global timeresult, typ, msg_data, connection
+                                                                typ, msg_data = connection.uid(
+                                                                    "fetch",
+                                                                    msg_id,
+                                                                    "(RFC822)",
                                                                 )  # connection.fetch(msg_id, '(RFC822)')
                                                                 timeresult = True
 
-                                                            timethis(
-                                                                my_timeout=600
-                                                            )  # 10 minutes is very generous
+                                                            timethis(my_timeout=600)  # 10 minutes is very generous
                                                             if timeresult == False:
                                                                 float("A")
                                                             try:  # Let Halo know through RPC we finished
-                                                                myrpc.MessageStatus(
-                                                                    "0", "password"
-                                                                )
+                                                                myrpc.MessageStatus("0", "password")
                                                             except Exception as e:
                                                                 pass
-                                                            sys.stderr.write(
-                                                                str("\n\nFETCHED!!\n\n")
-                                                            )
+                                                            sys.stderr.write(str("\n\nFETCHED!!\n\n"))
                                                             # readmessages.append(msg_id)
                                                         except:
                                                             connection.close()
-                                                            sys.stderr.write(
-                                                                str("FETCH ERROR")
-                                                            )
+                                                            sys.stderr.write(str("FETCH ERROR"))
                                                             if systemexit == 2:
                                                                 sys.exit()
                                                             continue
                                                         body = ""
                                                         try:
                                                             for part in msg_data:
-                                                                if isinstance(
-                                                                    part, tuple
-                                                                ):
-                                                                    msg = email.message_from_string(
-                                                                        part[1]
-                                                                    )
+                                                                if isinstance(part, tuple):
+                                                                    msg = email.message_from_string(part[1])
                                                                     try:
                                                                         src = (
-                                                                            msg["from"]
-                                                                            .split("<")[
-                                                                                1
-                                                                            ]
-                                                                            .split(">")[
-                                                                                0
-                                                                            ]
+                                                                            msg["from"].split("<")[1].split(">")[0]
                                                                         ).strip()
                                                                     except:
-                                                                        src = msg[
-                                                                            "from"
-                                                                        ].strip()
+                                                                        src = msg["from"].strip()
                                                                     try:
                                                                         src1 = (
-                                                                            msg["to"]
-                                                                            .split("<")[
-                                                                                1
-                                                                            ]
-                                                                            .split(">")[
-                                                                                0
-                                                                            ]
+                                                                            msg["to"].split("<")[1].split(">")[0]
                                                                         ).strip()
                                                                     except:
-                                                                        src1 = msg[
-                                                                            "to"
-                                                                        ].strip()
+                                                                        src1 = msg["to"].strip()
                                                                     try:
                                                                         charset = "utf8"
                                                                         if msg.is_multipart():
                                                                             for msub in msg.get_payload():
-                                                                                if (
-                                                                                    msub.get_content_charset()
-                                                                                    != None
-                                                                                ):
+                                                                                if msub.get_content_charset() != None:
                                                                                     charset = msub.get_content_charset()
                                                                                 body = msub.get_payload(
                                                                                     decode=True
-                                                                                ).decode(
-                                                                                    msub.get_content_charset()
-                                                                                )
+                                                                                ).decode(msub.get_content_charset())
                                                                                 break
                                                                         else:
-                                                                            if (
-                                                                                msg.get_content_charset()
-                                                                                != None
-                                                                            ):
+                                                                            if msg.get_content_charset() != None:
                                                                                 charset = msg.get_content_charset()
-                                                                            body = msg.get_payload(
-                                                                                decode=True
-                                                                            ).decode(
+                                                                            body = msg.get_payload(decode=True).decode(
                                                                                 charset
                                                                             )
                                                                     except:
                                                                         try:
-                                                                            body = str(
-                                                                                msg.encode(
-                                                                                    "utf8"
-                                                                                )
-                                                                            )
+                                                                            body = str(msg.encode("utf8"))
                                                                         except:
-                                                                            body = str(
-                                                                                msg
-                                                                            )
+                                                                            body = str(msg)
                                                         except Exception as e:
-                                                            sys.stderr.write(
-                                                                str("MESSAGE ERROR ")
-                                                            )
+                                                            sys.stderr.write(str("MESSAGE ERROR "))
                                                             sys.stderr.write(str(e))
-                                                        mymessage["toAddress"] = str(
-                                                            src1
-                                                        )
-                                                        mymessage["fromAddress"] = str(
-                                                            src
-                                                        )
+                                                        mymessage["toAddress"] = str(src1)
+                                                        mymessage["fromAddress"] = str(src)
                                                         try:
-                                                            body = str(
-                                                                body.encode("utf8")
-                                                            )
+                                                            body = str(body.encode("utf8"))
                                                         except:
-                                                            sys.stderr.write(
-                                                                str("Not encoded")
-                                                            )
+                                                            sys.stderr.write(str("Not encoded"))
                                                         try:
                                                             try:
-                                                                body = body.split(
-                                                                    "****"
-                                                                )[1].split("****")[0]
+                                                                body = body.split("****")[1].split("****")[0]
                                                             except:  # Gmail has been breaking things by removing the stars for no reason, so we look for other signs of an important email
                                                                 test = body
                                                                 try:
-                                                                    test = test.split(
-                                                                        "TheirBMAddress"
-                                                                    )[1].split("}")[0]
+                                                                    test = test.split("TheirBMAddress")[1].split("}")[0]
                                                                 except:
                                                                     try:
-                                                                        test = test.split(
-                                                                            "ENCRYPTED:"
-                                                                        )[1].split(
+                                                                        test = test.split("ENCRYPTED:")[1].split(
                                                                             "\r\n"
                                                                         )[0]
                                                                     except:
                                                                         float("a")
                                                         except:
                                                             try:
-                                                                if (
-                                                                    "You have received a payment of "
-                                                                    not in str(body)
-                                                                ):
+                                                                if "You have received a payment of " not in str(body):
                                                                     body = ""
                                                                 else:
                                                                     # I'm hoping email providers will not change this as identifying the full base64 string would be challenging.
                                                                     # Any added padding gets changed when uploading the base64 image with the pyzmail library, although the bitmap is lossless
                                                                     body = body.split(
                                                                         "<doge>\nContent-Disposition: inline\n\n"
-                                                                    )[1].split(
-                                                                        "\n--========="
-                                                                    )[0]
-                                                                    body = (
-                                                                        "PAY TO EMAIL BASE64 IMAGE:"
-                                                                        + body
-                                                                    )
+                                                                    )[1].split("\n--=========")[0]
+                                                                    body = "PAY TO EMAIL BASE64 IMAGE:" + body
                                                             except:  # Okay they changed it we can try something else
                                                                 try:
-                                                                    bodymsg = email.message_from_string(
-                                                                        str(body)
-                                                                    )
+                                                                    bodymsg = email.message_from_string(str(body))
                                                                     x = 0
                                                                     posx = 0
-                                                                    while x < len(
-                                                                        bodymsg.get_payload()
-                                                                    ):
-                                                                        attachment = bodymsg.get_payload()[
-                                                                            x
-                                                                        ]
-                                                                        if (
-                                                                            "bmp"
-                                                                            in attachment.get_content_type()
-                                                                        ):
+                                                                    while x < len(bodymsg.get_payload()):
+                                                                        attachment = bodymsg.get_payload()[x]
+                                                                        if "bmp" in attachment.get_content_type():
                                                                             posx = x
                                                                         x += 1
-                                                                    attachment = msg.get_payload()[
-                                                                        posx
-                                                                    ]
-                                                                    img = attachment.get_payload(
-                                                                        decode=False
-                                                                    )
+                                                                    attachment = msg.get_payload()[posx]
+                                                                    img = attachment.get_payload(decode=False)
                                                                     body = img
-                                                                    body = (
-                                                                        "PAY TO EMAIL BASE64 IMAGE:"
-                                                                        + body
-                                                                    )
+                                                                    body = "PAY TO EMAIL BASE64 IMAGE:" + body
                                                                 except:
-                                                                    sys.stderr.write(
-                                                                        str(
-                                                                            "PARSE ERROR"
-                                                                        )
-                                                                    )
+                                                                    sys.stderr.write(str("PARSE ERROR"))
                                                                     body = ""
-                                                        if (
-                                                            "fromAddress" in mymessage
-                                                            and body != ""
-                                                        ):  # decode emails
+                                                        if "fromAddress" in mymessage and body != "":  # decode emails
                                                             if (
-                                                                "@aol"
-                                                                in mymessage[
-                                                                    "fromAddress"
-                                                                ].lower()
-                                                                or "@mail"
-                                                                in mymessage[
-                                                                    "fromAddress"
-                                                                ].lower()
+                                                                "@aol" in mymessage["fromAddress"].lower()
+                                                                or "@mail" in mymessage["fromAddress"].lower()
                                                             ):
-                                                                body = body.encode(
-                                                                    "utf8"
-                                                                ).replace("\r\n ", "")
+                                                                body = body.encode("utf8").replace("\r\n ", "")
                                                                 if "ENCRYPTED:" in body:
-                                                                    body = body.replace(
-                                                                        " ", ""
-                                                                    )
+                                                                    body = body.replace(" ", "")
                                                         mymessage["body"] = str(body)
                                                         mymessage["uid"] = msg_id
-                                                        if (
-                                                            "fromAddress" in mymessage
-                                                            and "toAddress" in mymessage
-                                                        ):
-                                                            mailbox[
-                                                                str(
-                                                                    dat["Email Address"]
-                                                                )
-                                                            ][
-                                                                msg_id
-                                                            ] = ast.literal_eval(
-                                                                str(mymessage)
+                                                        if "fromAddress" in mymessage and "toAddress" in mymessage:
+                                                            mailbox[str(dat["Email Address"])][msg_id] = (
+                                                                ast.literal_eval(str(mymessage))
                                                             )
                                                     if "ordernumber" in dat:
                                                         if "ENCRYPTED:" in str(body):
                                                             try:
-                                                                MyCipher = body.replace(
-                                                                    "ENCRYPTED:", ""
-                                                                )
-                                                                MyCipher = (
-                                                                    base64.b64decode(
-                                                                        MyCipher
-                                                                    )
-                                                                )
+                                                                MyCipher = body.replace("ENCRYPTED:", "")
+                                                                MyCipher = base64.b64decode(MyCipher)
                                                                 MyCipher = decrypt(
                                                                     MyCipher,
                                                                     dat["Private Key"],
@@ -1068,75 +868,34 @@ if __name__ == "__main__":
                                                                 body = MyCipher
                                                             except Exception as e:
                                                                 try:
-                                                                    body = body.replace(
-                                                                        "=\r\n", ""
-                                                                    )
-                                                                    body = body.replace(
-                                                                        "\r\n", ""
-                                                                    )
-                                                                    body = body.replace(
-                                                                        " ", ""
-                                                                    )
-                                                                    body = body.replace(
-                                                                        "****", ""
-                                                                    )
+                                                                    body = body.replace("=\r\n", "")
+                                                                    body = body.replace("\r\n", "")
+                                                                    body = body.replace(" ", "")
+                                                                    body = body.replace("****", "")
                                                                     try:
-                                                                        body = (
-                                                                            body.encode(
-                                                                                "utf8"
-                                                                            )
-                                                                        )
+                                                                        body = body.encode("utf8")
                                                                     except:
                                                                         pass
                                                                     try:
-                                                                        MyCipher = quopri.decodestring(
-                                                                            body
-                                                                        )
+                                                                        MyCipher = quopri.decodestring(body)
                                                                     except:
                                                                         MyCipher = body
-                                                                    MyCipher = MyCipher.replace(
-                                                                        "ENCRYPTED:", ""
-                                                                    )
-                                                                    missing_padding = (
-                                                                        len(MyCipher)
-                                                                        % 4
-                                                                    )
-                                                                    if (
-                                                                        missing_padding
-                                                                        != 0
-                                                                    ):
-                                                                        MyCipher += (
-                                                                            b"="
-                                                                            * (
-                                                                                4
-                                                                                - missing_padding
-                                                                            )
-                                                                        )
-                                                                    MyCipher = base64.b64decode(
-                                                                        MyCipher
-                                                                    )
+                                                                    MyCipher = MyCipher.replace("ENCRYPTED:", "")
+                                                                    missing_padding = len(MyCipher) % 4
+                                                                    if missing_padding != 0:
+                                                                        MyCipher += b"=" * (4 - missing_padding)
+                                                                    MyCipher = base64.b64decode(MyCipher)
                                                                     MyCipher = decrypt(
                                                                         MyCipher,
-                                                                        dat[
-                                                                            "Private Key"
-                                                                        ],
+                                                                        dat["Private Key"],
                                                                     )
                                                                     body = MyCipher
                                                                 except:
                                                                     pass
-                                                        if dat["ordernumber"] in str(
-                                                            body
-                                                        ):
+                                                        if dat["ordernumber"] in str(body):
                                                             try:
-                                                                body = ast.literal_eval(
-                                                                    body
-                                                                )
-                                                                if (
-                                                                    body["ordernumber"]
-                                                                    == dat[
-                                                                        "ordernumber"
-                                                                    ]
-                                                                ):
+                                                                body = ast.literal_eval(body)
+                                                                if body["ordernumber"] == dat["ordernumber"]:
                                                                     connection.uid(
                                                                         "STORE",
                                                                         msg_id,
@@ -1144,37 +903,17 @@ if __name__ == "__main__":
                                                                         "(\Deleted)",
                                                                     )  # The flags should always be in parenthesis
                                                                     connection.expunge()
-                                                                    sys.stderr.write(
-                                                                        str(
-                                                                            "\n\n\REMOVED!!\n\n"
-                                                                        )
-                                                                    )
+                                                                    sys.stderr.write(str("\n\n\REMOVED!!\n\n"))
                                                                     try:
-                                                                        mailbox[
-                                                                            str(
-                                                                                dat[
-                                                                                    "Email Address"
-                                                                                ]
-                                                                            )
-                                                                        ].pop(msg_id)
+                                                                        mailbox[str(dat["Email Address"])].pop(msg_id)
                                                                     except:
                                                                         sys.stderr.write(
-                                                                            str(
-                                                                                "\n\nNOT REMOVED FROM CACHE\n\n"
-                                                                            )
+                                                                            str("\n\nNOT REMOVED FROM CACHE\n\n")
                                                                         )
                                                             except:
-                                                                sys.stderr.write(
-                                                                    str(
-                                                                        "\n\nNOT REMOVED\n\n"
-                                                                    )
-                                                                )
+                                                                sys.stderr.write(str("\n\nNOT REMOVED\n\n"))
                                                         else:
-                                                            sys.stderr.write(
-                                                                str(
-                                                                    "\n\nNOT REMOVED\n\n"
-                                                                )
-                                                            )
+                                                            sys.stderr.write(str("\n\nNOT REMOVED\n\n"))
                                                     if mymessage not in inbox:
                                                         inbox.append(mymessage)
                                                 # To save time and to avoid duplicates, i used to break at INBOX but we should also check Junk folder
@@ -1200,15 +939,11 @@ if __name__ == "__main__":
                                             lockTHIS = 0
                                         except:
                                             lockTHIS = 0
-                                            sys.stderr.write(
-                                                str("\n\Cache write error!\n\n")
-                                            )
+                                            sys.stderr.write(str("\n\Cache write error!\n\n"))
                                     except Exception as e:
                                         if systemexit == 2:
                                             sys.exit()
-                                        sys.stderr.write(
-                                            str("\n\n\nException with inbox\n\n\n")
-                                        )
+                                        sys.stderr.write(str("\n\n\nException with inbox\n\n\n"))
                                         ret = False
                                         traceback.print_exc()
                         except Exception as e:
@@ -1221,18 +956,13 @@ if __name__ == "__main__":
                                 msgids = api.getAllInboxMessageIDs()
                                 a = api.getAllInboxMessages()
                                 dat["Address"] = dat["Bitmessage Address"]
-                                sentmessages = api.getSentMessagesBySender(
-                                    dat["Address"]
-                                )
+                                sentmessages = api.getSentMessagesBySender(dat["Address"])
                                 # Clear Sent symbolizes we have no open contracts to worry about message loss
                                 if "Clear Sent" in dat:
                                     Smsgids = api.getAllSentMessageIDs()
                                     for msg in Smsgids:
                                         message = api.getSentMessageByID(msg)
-                                        if (
-                                            message[0]["fromAddress"]
-                                            == dat["Bitmessage Address"]
-                                        ):
+                                        if message[0]["fromAddress"] == dat["Bitmessage Address"]:
                                             if (
                                                 "msgsent" in message[0]["status"]
                                                 or "ackreceived" in message[0]["status"]
@@ -1240,15 +970,9 @@ if __name__ == "__main__":
                                                 api.trashSentMessage(msg)
                                 for msg in msgids:
                                     message = api.getInboxMessageByID(msg)
-                                    if (
-                                        message[0]["toAddress"]
-                                        == dat["Bitmessage Address"]
-                                        and "Clear Sent" in dat
-                                    ):
+                                    if message[0]["toAddress"] == dat["Bitmessage Address"] and "Clear Sent" in dat:
                                         api.trashInboxMessage(msg)
-                                    if (
-                                        message[0]["toAddress"] in dat["MyMarkets"]
-                                    ):  # Market orders are more expendable
+                                    if message[0]["toAddress"] in dat["MyMarkets"]:  # Market orders are more expendable
                                         api.trashInboxMessage(msg)
                         except:
                             a = api.getAllInboxMessages()
@@ -1258,9 +982,7 @@ if __name__ == "__main__":
                             a = api.getAllInboxMessages()
                         try:
                             if ch != "Clean Inbox":
-                                sentmessages = api.getSentMessagesBySender(
-                                    dat["Address"]
-                                )
+                                sentmessages = api.getSentMessagesBySender(dat["Address"])
                         except:
                             sentmessages = "False"
                         for inmessage in inbox:
@@ -1307,21 +1029,15 @@ if __name__ == "__main__":
                             else:
                                 key = str(dat["Pubs"][0])
                                 key2 = str(dat["Pubs"][1])
-                                addr = api.createDeterministicAddresses(
-                                    str(key[:14] + key2[-14:]), "BitHalo"
-                                )
+                                addr = api.createDeterministicAddresses(str(key[:14] + key2[-14:]), "BitHalo")
                                 try:
                                     addr = addr[0]
                                 except:
                                     try:
-                                        addr = api.getDeterministicAddress(
-                                            str(key[:14] + key2[-14:])
-                                        )
+                                        addr = api.getDeterministicAddress(str(key[:14] + key2[-14:]))
                                     except:
                                         addr = " "
-                                addr2 = api.createDeterministicAddresses(
-                                    str(key2[:14] + key[-14:]), "BitHalo"
-                                )
+                                addr2 = api.createDeterministicAddresses(str(key2[:14] + key[-14:]), "BitHalo")
                                 sys.stderr.write(str("\n\n\n"))
                                 sys.stderr.write(str(addr))
                             f.write("1" + "\n")

@@ -164,6 +164,71 @@ import urllib.request as urllib2       # Replace urllib2
 print statements → print() functions
 ```
 
+#### 3.4 BlackCoin v26.2.0 Legacy Wallet Support
+**Status**: 🔴 Critical - Address import fails with descriptor wallets
+
+**Problem:**
+- Bitcoin Core v26+ (BlackCoin More v26.2.0) creates descriptor wallets by default
+- No default wallet created on first run
+- `importaddress` doesn't work as expected with descriptor wallets
+- Need legacy BDB wallet for multisig address support
+
+**Solution:**
+```python
+from bitcoinrpc.authproxy import AuthServiceProxy
+
+def ensure_legacy_wallet():
+    """Create legacy BDB wallet if it doesn't exist. Safe to call multiple times."""
+    global BLK
+    
+    # Check if legacy wallet is already loaded
+    try:
+        wallets = BLK.listwallets()
+        for w in wallets:
+            if "legacy" in w:
+                print("Legacy wallet already loaded")
+                return True
+    except:
+        pass
+    
+    # Create legacy wallet (idempotent)
+    try:
+        BLK.createwallet(
+            wallet_name="legacy",
+            disable_private_keys=False,
+            blank=False,
+            load_on_startup=True,
+            descriptors=False  # FALSE = BDB legacy!
+        )
+        print("Created legacy BDB wallet")
+        return True
+    except Exception as e:
+        if any(x in str(e) for x in ["Database already exists", "Wallet already exists", "already loaded"]):
+            print("Legacy wallet already exists")
+            return True
+        print(f"Error creating wallet: {e}")
+        return False
+```
+
+**Where to implement:**
+- File: `Halo.py`
+- Location: Before WatchlistQueue processing (line ~12163)
+- Call `ensure_legacy_wallet()` before processing imports
+
+**Testing:**
+```bash
+# Verify wallet created
+blackmore-cli listwallets
+
+# Verify address imported
+blackmore-cli getaddressinfo bbBg9J1DcyyvXJFbgVxALL7kWeD867K63j
+```
+
+**Related RPC Methods:**
+- `listwallets()` - Check loaded wallets
+- `createwallet(wallet_name, descriptors=False, ...)` - Create legacy wallet
+- `importaddress(address, label, rescan)` - Import watch-only address
+
 ## Phase 4: Testing and Validation (Week 7-8)
 
 ### High Priority Tasks
@@ -216,6 +281,8 @@ python3 Halo.py  # Should start without errors
 - [ ] UV environment contains all required packages
 - [ ] Test suite passes (32/32 tests)
 - [ ] BlackCoin integration functional
+- [ ] Legacy BDB wallet created automatically for v26.2.0+
+- [ ] Multisig addresses import correctly
 
 ### Phase 4 Success:
 - [ ] Core smart contract functionality works

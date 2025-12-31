@@ -225,12 +225,7 @@ def hn(tag):
 
 def dumb_property_dict(style):
     """returns a hash of css attributes"""
-    return dict(
-        [
-            (x.strip(), y.strip())
-            for x, y in [z.split(":", 1) for z in style.split(";") if ":" in z]
-        ]
-    )
+    return dict([(x.strip(), y.strip()) for x, y in [z.split(":", 1) for z in style.split(";") if ":" in z]])
 
 
 def dumb_css_parser(data):
@@ -409,11 +404,7 @@ class _html2text(html.parser.HTMLParser):
 
             if has_key(a, "href") and a["href"] == attrs["href"]:
                 if has_key(a, "title") or has_key(attrs, "title"):
-                    if (
-                        has_key(a, "title")
-                        and has_key(attrs, "title")
-                        and a["title"] == attrs["title"]
-                    ):
+                    if has_key(a, "title") and has_key(attrs, "title") and a["title"] == attrs["title"]:
                         match = True
                 else:
                     match = True
@@ -434,11 +425,7 @@ class _html2text(html.parser.HTMLParser):
         strikethrough = "line-through" in tag_emphasis and options.hide_strikethrough
         bold = "bold" in tag_emphasis and not "bold" in parent_emphasis
         italic = "italic" in tag_emphasis and not "italic" in parent_emphasis
-        fixed = (
-            google_fixed_width_font(tag_style)
-            and not google_fixed_width_font(parent_style)
-            and not self.pre
-        )
+        fixed = google_fixed_width_font(tag_style) and not google_fixed_width_font(parent_style) and not self.pre
 
         if start:
             # crossed-out text must be handled before other attributes
@@ -596,9 +583,7 @@ class _html2text(html.parser.HTMLParser):
 
         if tag == "a" and not IGNORE_ANCHORS:
             if start:
-                if has_key(attrs, "href") and not (
-                    SKIP_INTERNAL_LINKS and attrs["href"].startswith("#")
-                ):
+                if has_key(attrs, "href") and not (SKIP_INTERNAL_LINKS and attrs["href"].startswith("#")):
                     self.astack.append(attrs)
                     self.o("[")
                 else:
@@ -772,12 +757,7 @@ class _html2text(html.parser.HTMLParser):
                 newa = []
                 for link in self.a:
                     if self.outcount > link["outcount"]:
-                        self.out(
-                            "   ["
-                            + str(link["count"])
-                            + "]: "
-                            + urllib.parse.urljoin(self.baseurl, link["href"])
-                        )
+                        self.out("   [" + str(link["count"]) + "]: " + urllib.parse.urljoin(self.baseurl, link["href"]))
                         if has_key(link, "title"):
                             self.out(" (" + link["title"] + ")")
                         self.out("\n")
@@ -840,9 +820,7 @@ options.ul_item_mark = "*"
 if __name__ == "__main__":
     baseurl = ""
 
-    p = optparse.OptionParser(
-        "%prog [(filename|url) [encoding]]", version="%prog " + __version__
-    )
+    p = optparse.OptionParser("%prog [(filename|url) [encoding]]", version="%prog " + __version__)
     p.add_option(
         "-g",
         "--google-doc",
