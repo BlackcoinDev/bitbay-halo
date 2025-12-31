@@ -27,7 +27,7 @@ BlackHalo Codebase (20,000+ lines of core logic)
 **Three Distinct Versions**:
 - **BitHalo** - Bitcoin version
 - **Halo** - BitBay version (with pegged currency system)
-- **BlackHalo** - BlackCoin version (our focus)
+- **BlackHalo** - BlackCoin version (our focus) - Built on official BlackCoin node software
 
 **Dynamic Currency Selection**:
 ```python
@@ -137,7 +137,7 @@ gui/
 
 ### Blackcoin Library Dependencies Analysis
 
-**Critical Finding**: All Blackcoin functionality is **custom-integrated** - no external Blackcoin-specific Python packages required.
+**Critical Finding**: All Blackcoin functionality uses **official BlackCoin node software** - based on Bitcoin Core v26.2.0 with BlackCoin PoS v3.1, not custom code.
 
 **pyblackcointools/ - Custom Internal Library**
 ```python
@@ -197,7 +197,7 @@ from bitcoinrpc.authproxy import AuthServiceProxy  # Blackcoin stuff
 **Current RPC Configuration**:
 ```python
 # Halo.py lines 517-522
-NewCoin['daemon']="blackmored"           # Custom CoinBlack fork
+NewCoin['daemon']="blackmored"           # Official BlackCoin node (Bitcoin Core v26.2.0)
 NewCoin['rpcuser']="blackcoinrpc"
 NewCoin['rpcpassword']="32w54er56t7y89j8h34w5e6t7y89ik34sAs4"
 NewCoin['rpcport']="15715"               # Blackcoin More port

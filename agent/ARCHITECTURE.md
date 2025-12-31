@@ -363,7 +363,7 @@ CoinSelect = {
 **BlackCoin Daemon Communication:**
 ```python
 # RPC Configuration (Halo.py:517-522)
-NewCoin['daemon']="blackmored"           # Custom BlackCoin fork
+NewCoin['daemon']="blackmored"           # Official BlackCoin node (Bitcoin Core v26.2.0)
 NewCoin['rpcuser']="blackcoinrpc"
 NewCoin['rpcpassword']="32w54er56t7y89j8h34w5e6t7y89ik34sAs4"
 NewCoin['rpcport']="15715"               # Blackcoin More port

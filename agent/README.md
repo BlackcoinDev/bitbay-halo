@@ -10,15 +10,16 @@ BlackHalo eliminates middlemen by using cryptographic enforcement of contracts r
 
 ### Main Components
 - **BlackHalo Core** - Smart contracting engine with double deposit escrow
+- **BlackCoin Currency** - Official modern cryptocurrency (Bitcoin Core v26.2.0 + PoS v3.1)
 - **BitBay Currency** - PoS-based cryptocurrency with dynamic inflation/deflation controls
 - **Bitmessage Integration** - Decentralized encrypted communication
 - **PyElliptic Cryptography** - ECC, AES, and cryptographic operations
 - **GUI Layer** - Qt-based user interface with naming conventions
 
 ### Cryptocurrency Support
-- **Bitcoin** - Primary cryptocurrency support
-- **Blackcoin** - Sister currency with staking capabilities
+- **Blackcoin** - Official modern cryptocurrency (Bitcoin Core v26.2.0 + PoS v3.1)
 - **BitBay** - Dynamic currency with algorithmic interest rates
+- **Bitcoin** - Legacy support (not recommended)
 - **USD Integration** - Real-time exchange rate synchronization
 
 ## Key Features
