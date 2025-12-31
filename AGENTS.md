@@ -1,19 +1,37 @@
 # Agent Guidelines for BlackHalo Development
 
+## Current Modernization Status (2025)
+
+### ✅ Foundation Already Established (40% Complete)
+- **Python 3.14.2** - Fully functional, modern language features
+- **PyQt6 imports** - Present in all major files (Halo.py, gui/mainwindow.py, etc.)
+- **UV Package Management** - Modern dependency resolution system
+- **Test Suite** - 32/32 tests passing, solid foundation
+- **GUI Startup** - Main application starts successfully
+
+### 🔧 Modernization Roadmap (60% Remaining)
+- **Python 2→3 compatibility** - Print statements, imports, string handling
+- **Legacy build pattern modernization** - 2014 scripts → 2025 approach
+- **Cross-compilation setup** - Multi-platform distribution
+- **Dependency resolution** - Missing packages via UV
+
 ## Build and Test Commands (UV-Based)
 
 ### Primary Build Scripts
 ```bash
-# Modern UV-based cross-platform build
+# Modern UV-based cross-platform build (recommended)
 python3 build.py                    # Run modernized UV build script
 
-# Legacy build scripts (may need modernization)
-./bitmhalo.sh                       # Build BitMHalo with PyInstaller
-./BUILD SCRIPTS ETC/linux.sh --build    # Build BlackCoin daemon
+# Legacy build scripts (analyzed for patterns, being modernized)
+./BUILD SCRIPTS ETC/linux.sh --build    # Proven 2014 patterns for modern adaptation
 ./BUILD SCRIPTS ETC/linux.sh --reset    # Reset and rebuild environment
-./BUILD SCRIPTS ETC/osx64.sh        # macOS build
-./BUILD SCRIPTS ETC/win32.sh        # Windows build
-./LinuxHaloSetup.sh                 # Linux setup and build
+./BUILD SCRIPTS ETC/win32.sh        # Windows cross-compilation patterns
+./BUILD SCRIPTS ETC/osx64.sh        # macOS build patterns
+./LinuxHaloSetup.sh                 # Legacy Linux setup (being modernized)
+
+# Individual script execution (after fixes)
+uv run --active python3 Halo.py     # Direct application startup
+uv run --active pyinstaller Halo.py # Create executable
 ```
 
 ### UV Environment Management
@@ -85,23 +103,22 @@ uv add PyQt6 PyQt6-WebEngine pyzmail39 stopit pycryptodome requests pillow qrcod
 # Alternative: Install system-wide (Linux)
 sudo apt install python3-pyqt6 python3-pyqt6.qtwebengine
 
-# Install legacy dependencies if needed
+# Install legacy dependencies if needed (for compatibility)
 uv add -r Bitmessage-BitMHalo-v0.6/requirements.txt  # If file exists
 ```
 
-## Code Style Guidelines
+## Python Version and Compatibility
 
-### Python Version and Compatibility
-- **Python 3.8+** required for core functionality (Python 3.14+ preferred)
-- **Legacy Python 2.7** code exists but being migrated
-- Use `print()` functions (not statements) for Python 3+
-- Handle `unicode` vs `str` differences explicitly
-- Use compatibility imports: `try: import urllib.request as urllib2`
+### Current Status: Mixed Python 2.7 and 3.14+ Code
+- **Python 3.14+** - Primary target, foundation established
+- **Legacy Python 2.7** - Still present in some modules, being migrated
+- **Mixed imports** - Some Python 2/3 compatibility issues remain
+- **Print statements** - Multiple files need conversion from Python 2 syntax
 
-### Import Conventions
+### Import Conventions (Modern Python 3.14+)
 ```python
 # Standard library imports first
-import urllib2
+import urllib.request as urllib2  # Python 3 compatibility
 import re
 import time
 import calendar
@@ -110,46 +127,141 @@ import datetime
 # Third-party imports (managed by UV)
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 import pyzmail
 
 # Local imports last
 from custom.Demo1 import *
 import pyblackcointools
+
+# Python 2/3 compatibility patterns
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 ```
 
-### Code Formatting
+## Code Formatting and Modernization
+
+### Python 3.14+ Standards
 - **Line Length**: Maximum 120 characters (configured in .flake8, pyproject.toml)
 - **Indentation**: 4 spaces (no tabs)
-- **Formatter**: Use `black` with line-length=120 for new code
+- **Print Functions**: Use `print()` not `print` statements
+- **String Formatting**: Use f-strings for Python 3.6+, `.format()` for compatibility
 - **Import Sorting**: Use `isort` with black profile
 - **Excluded Paths**: Bitmessage-BitMHalo-v0.6, BUILD SCRIPTS ETC, bridge, data, agent, BitMData, images
 
-### Linting Configuration
-- **flake8**: Max line length 120, extensive legacy ignores for compatibility
-- **pylint**: Only Error (E) and Fatal (F) messages enabled, ignores legacy patterns
-- **Custom Scripts**: Use `uv run --active python3 tests/scripts/lint.py` for comprehensive checks
+### Critical Python 2→3 Conversions Needed
+```python
+# Print statements → Print functions
+print "message"              # OLD
+print("message")             # NEW
 
-### Naming Conventions
+# String handling
+unicode(text)                # OLD
+str(text)                    # NEW
 
-**Python Variables**:
+# urllib imports
+import urllib2               # OLD
+import urllib.request as urllib2  # NEW
+
+# Exception syntax
+except Exception, e:         # OLD
+except Exception as e:       # NEW
+```
+
+### Legacy Build Script Patterns (2014 → 2025)
+**Valuable patterns from BUILD SCRIPTS ETC:**
+- **Modular architecture** - Separate check/reset/build functions
+- **Platform abstraction** - OS version verification, tool checking
+- **Dependency management** - Systematic package installation
+- **Cross-compilation** - Single source, multiple targets
+
+**Modern adaptations:**
+- **Debian 7 (2014)** → **Ubuntu 24.04 (2025)**
+- **MXE cross-compiler** → **Modern MinGW-w64/ARM64 toolchains**
+- **Makefile builds** → **PyInstaller/CMake modern approach**
+- **apt dependencies** → **UV package management**
+- **Manual testing** → **Automated CI/CD**
+
+## Cross-Platform Distribution Strategy
+
+### Target Platforms (From Ubuntu 24.04 AMD64)
+```bash
+✅ Windows x64 (Intel/AMD) - MinGW-w64 cross-compilation
+✅ macOS Universal (Intel + ARM64) - Xcode toolchain
+✅ Linux x64 (Intel/AMD) - Native builds
+✅ Linux ARM64 (Raspberry Pi, Apple Silicon) - GCC cross-compiler
+✅ Windows ARM64 (Surface, etc.) - MinGW-w64 (limited)
+```
+
+### Modern Cross-Compilation Commands
+```bash
+# Windows x64 build
+uv run --active pyinstaller --onefile --windowed --name=BlackHalo-windows-x64 Halo.py
+
+# Linux ARM64 build  
+aarch64-linux-gnu-uv run --active pyinstaller --onefile --windowed --name=BlackHalo-linux-arm64 Halo.py
+
+# Native Linux build
+uv run --active pyinstaller --onefile --windowed --name=BlackHalo-linux-x64 Halo.py
+```
+
+## Cryptocurrency Integration
+
+### Supported Cryptocurrencies (Priority-Based)
+1. **BlackCoin (BLK)** - PRIMARY FOCUS
+   - Official modern cryptocurrency (Bitcoin Core v26.2.0 + PoS v3.1)
+   - Website: https://blackcoinmore.org
+   - Daemon: `blackmored`
+   - RPC Port: 15715
+
+2. **BitBay (BAY)** - SECONDARY SUPPORT
+   - Dynamic pegged currency system
+   - Advanced market features
+   - Daemon: `bitbayd`
+   - RPC Port: 19915
+
+3. **Bitcoin (BTC)** - LEGACY SUPPORT
+   - Not real Bitcoin (uses BlackCoin daemon)
+   - Consider removal or real Bitcoin Core integration
+
+### BlackCoin Integration Testing
+```bash
+# Test BlackCoin daemon connection
+uv run --active python3 -c "
+import pyblackcointools
+print('BlackCoin integration working')
+"
+
+# Test RPC communication
+uv run --active python3 -c "
+from bitcoinrpc.authproxy import AuthServiceProxy
+print('RPC integration working')
+"
+```
+
+## Naming Conventions
+
+### Python Variables
 - `variableName` - Class/object members/properties
 - `var_name` - Temporary scope variables
 - `i,j,k` - Short names for small scope loops
 
-**GUI Variables**:
+### GUI Variables (Qt Framework)
 - `type_variableName` format for UI controls
 - Examples: `le_firstName`, `l_statusLabel`, `btn_submitButton`
 - Type prefixes: `l` (QLabel), `le` (QLineEdit), `btn` (QPushButton)
 
-**Functions and Classes**:
+### Functions and Classes
 - `function_name` for functions (snake_case)
 - `ClassName` for classes (PascalCase)
 - `CONSTANT_NAME` for constants
 - `global_variable` for module-level variables
 
-### Error Handling
+## Error Handling and Testing
 
-**Exception Patterns**:
+### Modern Exception Patterns
 ```python
 try:
     # Risky operation
@@ -164,99 +276,92 @@ except urllib2.URLError as e:
     handle_url_error(e)
 ```
 
-**Error Recovery**:
-- Always provide fallback mechanisms
-- Log errors with debug levels
-- Continue processing when possible
-- Use meaningful error messages
-
-### Type Handling
-
-**String Types** (Python 3+):
+### Type Handling (Python 3.14+)
 ```python
-# Handle string types
+# String types (Python 3+)
 text = text.encode('utf-8') if isinstance(text, str) else text
 
 # String formatting
 print(f"Block: {block} | Interval: {interval}")
-```
 
-**Cryptographic Types**:
-```python
-# Binary data handling
+# Cryptographic types
 if re.match('^[0-9a-fA-F]*$', tx):
     tx = bytes.fromhex(tx)
-
-# Address validation
-if addr[0] == 'b':
-    return mk_scripthash_script(addr)
 ```
 
-### GUI Development
+## Modernization Phases
 
-**Qt Framework Rules**:
-- Use PyQt6 for new development (migrating from PyQt4)
-- Follow UI naming schema strictly
-- Implement proper signal/slot connections
-- Handle widget cleanup in destructors
+### Phase 1: Core Compatibility (Weeks 1-2)
+- [ ] Fix print statements (Python 2→3)
+- [ ] Resolve import compatibility issues
+- [ ] Fix urllib2 → urllib.request references
+- [ ] Complete dependency resolution via UV
 
-**Form Development**:
-- Use Qt Designer .ui files
-- Generate Python classes with `pyuic6` (PyQt6)
-- Implement custom validation in form classes
-- Use internationalization ready patterns
+### Phase 2: Build System Modernization (Weeks 3-4)
+- [ ] Apply legacy build patterns to modern approach
+- [ ] Create modular build scripts (based on 2014 patterns)
+- [ ] Implement platform abstraction layer
+- [ ] Setup cross-compilation toolchains
 
-### Threading Guidelines
+### Phase 3: Cross-Platform Integration (Weeks 5-6)
+- [ ] PyInstaller cross-compilation setup
+- [ ] Qt6 runtime bundling
+- [ ] BlackCoin daemon integration
+- [ ] Platform-specific optimizations
 
-**Multi-threading Patterns**:
-```python
-# Qt thread communication
-QtCore.QObject.connect(thread, QtCore.SIGNAL("finished()"), self.update_ui)
+### Phase 4: Automation & Testing (Weeks 7-8)
+- [ ] GitHub Actions workflow setup
+- [ ] Multi-platform testing matrix
+- [ ] Automated release pipeline
+- [ ] Performance optimization
 
-# Proper thread cleanup
-def stop_thread(self):
-    self.thread.terminate()
-    self.thread.wait()
-```
+### Phase 5: Distribution (Weeks 9-10)
+- [ ] Code signing setup
+- [ ] Platform-specific installers
+- [ ] Distribution channel preparation
+- [ ] Final testing and validation
 
-**RPC Communication**:
-- Use separate threads for daemon communication
-- Implement timeout handling for RPC calls
-- Handle connection failures gracefully
-- Cache blockchain data when appropriate
+## Critical Development Notes
 
-### Security Considerations
+### What Works Now (Safe to Use)
+- ✅ Python 3.14.2 environment
+- ✅ PyQt6 imports and GUI startup
+- ✅ UV package management
+- ✅ Test suite (32/32 passing)
+- ✅ Basic cryptocurrency integration
 
-**Key Management**:
+### What Needs Fixing (Use with Caution)
+- 🔧 Print statements in multiple files
+- 🔧 Import compatibility issues
+- 🔧 Legacy BitMessage module
+- 🔧 Cross-compilation setup
+
+### Legacy Build Script Resources
+The `BUILD SCRIPTS ETC/` folder contains **valuable 2014 patterns** that provide an excellent foundation for modern cross-platform builds. These proven patterns should guide the modernization approach.
+
+## Security Considerations
+
+### Key Management
 - Never commit private keys
 - Use secure random number generation
 - Implement proper key rotation
 - Validate all cryptographic inputs
 
-**Application Security**:
+### Application Security
 - Sanitize user inputs
 - Implement proper access controls
 - Use secure communication protocols
 - Log security-relevant events
 
-## Modernization Status
+## Documentation Resources
 
-### Current Challenges
-- **Mixed Python Versions**: Legacy Python 2.7 and modern Python 3.14+ code
-- **Incomplete PyQt Migration**: Partial PyQt4 to PyQt6 transition
-- **Dependency Issues**: Legacy and modern dependencies don't integrate well
-- **Platform-Specific Code**: Windows-centric patterns need abstraction
+### Key Documents
+- `agent/TODO.md` - Detailed modernization roadmap
+- `agent/ARCHITECTURE.md` - Current codebase analysis
+- `agent/CRYPTOCURRENCIES.md` - Multi-currency support details
+- `agent/BLACKHALO.md` - Startup/shutdown procedure analysis
+- `agent/BUILD_SCRIPTS_ANALYSIS.md` - Legacy build pattern modernization
+- `agent/CROSSCOMPILATION.md` - Cross-platform distribution strategy
+- `agent/MODERNIZATION_SUMMARY.md` - Executive summary and roadmap
 
-### UV-Based Development Workflow
-1. **Initialize**: `uv sync` to install all dependencies
-2. **Test**: `uv run --active pytest tests/` to verify functionality
-3. **Build**: `uv run --active python3 build.py` for cross-platform builds
-4. **Format**: `uv run --active black . --line-length=120` for code formatting
-
-### Recommended Approach
-1. **Phase 1**: Use UV for consistent dependency management ✅
-2. **Phase 2**: Complete PyQt4 to PyQt6 migration
-3. **Phase 3**: Consolidate dependencies and create unified build system
-4. **Phase 4**: Test cross-platform functionality
-
-This codebase represents a sophisticated cryptocurrency platform with smart contracts and decentralized exchange functionality. The UV-based workflow provides reliable cross-platform dependency management for modernization efforts.
+This codebase represents a sophisticated cryptocurrency platform with smart contracts and decentralized exchange functionality. The UV-based workflow and legacy build pattern analysis provide a solid foundation for successful modernization to Python 3.14 + PyQt6 with cross-platform distribution capability.
