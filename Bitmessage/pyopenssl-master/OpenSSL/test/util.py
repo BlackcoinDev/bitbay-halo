@@ -101,7 +101,7 @@ class TestCase(TestCase):
             # /home/exarkun/Projects/cpython/2.7/python() [0x4d5f52]
             # /home/exarkun/Projects/cpython/2.7/python(PyEval_EvalFrameEx+0x753b) [0x4d0e1e]
             # /home/exarkun/Projects/cpython/2.7/python() [0x4d6419]
-            # ...
+            # .
             #
             # Notice the stack is upside down compared to a Python traceback.
             # Identify the start and end of interesting bits and stuff it into the stack we report.
@@ -137,7 +137,7 @@ class TestCase(TestCase):
                     unique_leaks[new_leak].append((size, p))
                 memdbg.free(p)
 
-            for (stack, allocs) in unique_leaks.iteritems():
+            for (stack, allocs) in unique_leaks.items():
                 allocs_accum = []
                 for (size, pointer) in allocs:
 

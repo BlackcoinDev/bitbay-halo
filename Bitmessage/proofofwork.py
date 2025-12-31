@@ -4,8 +4,8 @@
 import hashlib
 from struct import unpack, pack
 import sys
-from shared import config, frozen
-import shared
+from .shared import config, frozen
+from . import shared
 #import os
 
 def _set_idle():
@@ -66,7 +66,7 @@ def _doFastPoW(target, initialHash):
             if result[i].ready():
                 result = result[i].get()
                 pool.terminate()
-                pool.join() #Wait for the workers to exit...
+                pool.join() #Wait for the workers to exit.
                 return result[0], result[1]
         time.sleep(0.2)
 

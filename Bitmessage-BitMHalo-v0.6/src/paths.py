@@ -191,7 +191,7 @@ def tail(f, lines=20):
 
 
 def lastCommit():
-    githeadfile = path.join(codePath(), '..', '.git', 'logs', 'HEAD')
+    githeadfile = path.join(codePath(), '.', '.git', 'logs', 'HEAD')
     result = {}
     if path.isfile(githeadfile):
         try:

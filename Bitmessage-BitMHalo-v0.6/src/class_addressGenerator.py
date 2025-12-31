@@ -151,7 +151,7 @@ class addressGenerator(threading.Thread, StoppableThread):
                 queues.apiAddressGeneratorReturnQueue.put(address)
 
                 queues.UISignalQueue.put((
-                    'updateStatusBar', tr._translate("MainWindow", "Done generating address. Doing work necessary to broadcast it...")))
+                    'updateStatusBar', tr._translate("MainWindow", "Done generating address. Doing work necessary to broadcast it.")))
                 queues.UISignalQueue.put(('writeNewAddressToTable', (
                     label, address, streamNumber)))
                 shared.reloadMyAddressHashes()

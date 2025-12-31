@@ -529,7 +529,7 @@ def listAdd(): #Lists all of the addresses and their info
         enabled = str(jsonAddresses['addresses'][addNum]['enabled'])
 
         if (len(label) > 19):
-            label = label[:16] + '...'
+            label = label[:16] + '.'
             
         print '     |' + str(addNum).ljust(3) + '|' + label.ljust(19) + '|' + address.ljust(37) + '|' + stream.ljust(1), '|' + enabled.ljust(7) + '|'
 
@@ -605,7 +605,7 @@ def saveFile(fileName, fileData): #Allows attachments and messages/broadcats to 
     #This section finds all invalid characters and replaces them with ~
     fileName = fileName.replace(" ", "")
     fileName = fileName.replace("/", "~")
-    #fileName = fileName.replace("\\", "~") How do I get this to work...?
+    #fileName = fileName.replace("\\", "~") How do I get this to work.?
     fileName = fileName.replace(":", "~")
     fileName = fileName.replace("*", "~")
     fileName = fileName.replace("?", "~")
@@ -676,12 +676,12 @@ def attachment(): #Allows users to attach a file to their message or broadcast
             print '     Attachment detected as an Image.'
             print '     <img> tags will automatically be included,'
             print '     allowing the recipient to view the image'
-            print '     using the "View HTML code..." option in Bitmessage.'
+            print '     using the "View HTML code." option in Bitmessage.'
             print '     ---------------------------------------------------\n'
             isImage = True
             time.sleep(2)
             
-        print '\n     Encoding Attachment, Please Wait ...\n' #Alert the user that the encoding process may take some time.
+        print '\n     Encoding Attachment, Please Wait .\n' #Alert the user that the encoding process may take some time.
         
         with open(filePath, 'rb') as f: #Begin the actual encoding
             data = f.read(188743680) #Reads files up to 180MB, the maximum size for Bitmessage.
@@ -689,7 +689,7 @@ def attachment(): #Allows users to attach a file to their message or broadcast
 
         if (isImage == True): #If it is an image, include image tags in the message
             theAttachment = """
-<!-- Note: Image attachment below. Please use the right click "View HTML code ..." option to view it. -->
+<!-- Note: Image attachment below. Please use the right click "View HTML code ." option to view it. -->
 <!-- Sent using Bitmessage Daemon. https://github.com/Dokument/PyBitmessage-Daemon -->
  
 Filename:%s 
@@ -1194,7 +1194,7 @@ def listAddressBookEntries():
         for entry in addressBook['addresses']:
             label = entry['label'].decode('base64')
             address = entry['address']
-            if (len(label) > 19): label = label[:16] + '...'
+            if (len(label) > 19): label = label[:16] + '.'
             print '     | ' + label.ljust(19) + '| ' + address.ljust(37) + ' |'
         print '     --------------------------------------------------------------'
         print
@@ -1421,7 +1421,7 @@ def UI(usrInput): #Main user menu
         
     elif usrInput == "getaddress": #Gets the address for/from a passphrase
         phrase = userInput("Enter the address passphrase.")
-        print '\n     Working...\n'
+        print '\n     Working.\n'
         #vNumber = int(raw_input("Enter the address version number:"))
         #sNumber = int(raw_input("Enter the address stream number:"))
 
@@ -1460,17 +1460,17 @@ def UI(usrInput): #Main user menu
         main()
         
     elif usrInput == "inbox":
-        print '\n     Loading...\n'
+        print '\n     Loading.\n'
         inbox()
         main()
 
     elif usrInput == "unread":
-        print '\n     Loading...\n'
+        print '\n     Loading.\n'
         inbox(True)
         main()
 
     elif usrInput == "outbox":
-        print '\n     Loading...\n'
+        print '\n     Loading.\n'
         outbox()
         main()
 
@@ -1499,7 +1499,7 @@ def UI(usrInput): #Main user menu
         msgNum = int(userInput("What is the number of the message you wish to open?"))
 
         if (uInput == 'i' or uInput == 'inbox'):
-            print '\n     Loading...\n'
+            print '\n     Loading.\n'
             messageID = readMsg(msgNum)
 
             uInput = userInput("\nWould you like to keep this message unread, (Y)es or (N)o?").lower()
@@ -1511,13 +1511,13 @@ def UI(usrInput): #Main user menu
             uInput = userInput("\nWould you like to (D)elete, (F)orward, (R)eply to, or (Exit) this message?").lower()
 
             if (uInput == 'r' or uInput == 'reply'):
-                print '\n     Loading...\n'
+                print '\n     Loading.\n'
                 print ' '
                 replyMsg(msgNum,'reply')
                 usrPrompt = 1
                 
             elif (uInput == 'f' or uInput == 'forward'):
-                print '\n     Loading...\n'
+                print '\n     Loading.\n'
                 print ' '
                 replyMsg(msgNum,'forward')
                 usrPrompt = 1

@@ -1,5 +1,5 @@
 
-from PyQt4.QtCore import QThread, SIGNAL
+from PyQt6.QtCore import QThread, SIGNAL
 import sys
 
 import queues

@@ -5,7 +5,7 @@ import logging
 import cmd
 import datetime
 import signal
-import class_api
+from . import class_api
 log = logging.getLogger('bitshell')
 
 #A hack to let pybitmessage source directory exist in bitshell sourcedir
@@ -13,9 +13,9 @@ if os.path.exists(os.path.abspath('src')):
     sys.path.append(os.path.abspath('src'))
     
 #html2text
-import html2text
+from . import html2text
 if float(html2text.__version__) < float(3.1):
-    print 'html2text Version > 3.0 is required'
+    print('html2text Version > 3.0 is required')
     sys.exit(1)
 html2text.IGNORE_ANCHORS = True
 html2text.IGNORE_IMAGES = True
@@ -152,7 +152,7 @@ class BitShell(cmd.Cmd):
                 addlist[counter] = add['address']
             
             self.stdout.write('#')
-            data = raw_input()
+            data = input()
 
             if data == '':
                 continue
@@ -182,7 +182,7 @@ class BitShell(cmd.Cmd):
                 addlist[counter] = add['address']
             
             self.stdout.write('#')
-            data = raw_input()
+            data = input()
 
             if data == '':
                 continue
@@ -202,10 +202,10 @@ class BitShell(cmd.Cmd):
         self._print('Writing from: %s to %s'%(mfrom,mto))
         
         self._print('Please Enter the subject:')
-        subj = raw_input()
+        subj = input()
         
         self._print('Please Enter the Message:')
-        message = raw_input()
+        message = input()
 
         try:
             answer = self.api.sendMessage(mfrom,mto,subj,message)
@@ -216,7 +216,7 @@ class BitShell(cmd.Cmd):
         if 'API Error' in answer:
             self._print(answer)
         else:
-            self._print('Message Sended correct...')
+            self._print('Message Sended correct.')
         self.sentMessages.append(answer)
     
     def do_createaddress(self, name):
@@ -225,7 +225,7 @@ class BitShell(cmd.Cmd):
         
         if not name:
             self._print('Please Enter the Name of the Address:')
-            name = raw_input()
+            name = input()
         self.api.createRandomAddress(name)
         
     def _print(self,message):
@@ -244,7 +244,7 @@ class BitShell(cmd.Cmd):
         """Exit this Shell
         Usage: exit"""
 
-        self._print('Exiting...')
+        self._print('Exiting.')
         self.api.stop()
         os._exit(0)
 
@@ -277,7 +277,7 @@ class BitShell(cmd.Cmd):
                     if self.use_rawinput:
                         try:
                             sys.stderr.write(self.prompt)
-                            line = raw_input()
+                            line = input()
                         except EOFError:
                             line = 'EOF'
                     else:
@@ -304,10 +304,10 @@ class BitShell(cmd.Cmd):
         
         if not name:
             self._print('Please Enter the Name of the Address:')
-            name = raw_input()
+            name = input()
             
         self._print('Please Enter Bitmessage Address:')
-        adress = raw_input()
+        adress = input()
         
         respond = self.api.addContact(name,adress)
         

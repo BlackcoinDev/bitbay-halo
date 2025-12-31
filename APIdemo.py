@@ -1,4 +1,7 @@
-import xmlrpclib
+try:
+    import xmlrpc.client as xmlrpclib
+except ImportError:
+    import xmlrpclib
 from pyblackcointools import *
 #This is only a demo! The RPC calls were done during testing and this is only
 #to give you some ideas on how to interact with the exchange. You should become
@@ -32,7 +35,7 @@ def ScanForDeposits():
     if d==[]:
         return
     res=HaloRPC.Deposit('alice',d,'pw')
-    print str(res)
+    print(str(res))
     if res==True:
         for s in d:
             alicetxids[s]=1
@@ -95,7 +98,7 @@ AliceOrders={'ORDER:323509092304521':{'SellBitBay':100000000,'BitcoinRate':5000}
 CurrentCycle=15
 res=HaloRPC.GetCycle('pw')
 if res>CurrentCycle:
-    print "cycle change"
+    print("cycle change")
     CurrentCycle=res
     atotal=0
     for Ordernumber in AliceOrders:
@@ -103,21 +106,21 @@ if res>CurrentCycle:
     res=HaloRPC.GetBalance('alice','pw')
     #We check to see if liquid funds became reserve and if she has enough to cover her orders.
     #It's possible that the exchange may want to pause trading for a couple seconds while it checks balances.
-    print str(res)
-    print str(res['liquid'])
-    print str(atotal)
+    print(str(res))
+    print(str(res['liquid']))
+    print(str(atotal))
     res['liquid']=40000000
     try:
         if res['liquid']<atotal:
             perc=float(res['liquid'])/float(atotal)
-            print str(perc)
+            print(str(perc))
             for Ordernumber in AliceOrders:
                 AliceOrders[Ordernumber]['SellBitBay']=int(float(AliceOrders[Ordernumber]['SellBitBay'])*perc)
     except:
         pass
-print str(AliceOrders)
+print(str(AliceOrders))
 """
 #res=HaloRPC.GetBalance('alice','pw')
-#print str(res)
+#print(str(res))
 #Although you should keep the exchange running as much as possible. You can shut down using this command.
 #res=HaloRPC.ShutDown('pw')

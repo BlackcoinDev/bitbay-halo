@@ -58,7 +58,7 @@ def go():
 
     called = []
     def info(*args):
-        print count.next()
+        print(next(count))
         called.append(None)
         return 1
     context = Context(TLSv1_METHOD)
@@ -87,11 +87,11 @@ def go():
             for ssl in clientSSL, serverSSL:
                 try:
                     ssl.send('foo')
-                except WantReadError, e:
+                except WantReadError as e:
                     pass
 
 
-threads = [Thread(target=go, args=()) for i in xrange(2)]
+threads = [Thread(target=go, args=()) for i in range(2)]
 for th in threads:
     th.start()
 for th in threads:

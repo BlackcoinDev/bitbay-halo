@@ -14,7 +14,7 @@
 import sys, os
 
 DOC_DIR = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(DOC_DIR, "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(DOC_DIR, ".")))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -43,8 +43,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyOpenSSL'
-copyright = u'2011, Jean-Paul Calderone'
+project = 'pyOpenSSL'
+copyright = '2011, Jean-Paul Calderone'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -76,7 +76,7 @@ exclude_patterns = ['_build']
 #add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description
-# unit titles (such as .. function::).
+# unit titles (such as . function::).
 #add_module_names = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
@@ -155,7 +155,7 @@ html_static_path = ['_static']
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True
 
-# If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+# If true, "(C) Copyright ." is shown in the HTML footer. Default is True.
 #html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
@@ -181,8 +181,8 @@ htmlhelp_basename = 'pyOpenSSLdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyOpenSSL.tex', u'pyOpenSSL Documentation',
-   u'Jean-Paul Calderone', 'manual'),
+  ('index', 'pyOpenSSL.tex', 'pyOpenSSL Documentation',
+   'Jean-Paul Calderone', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,6 +214,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pyopenssl', u'pyOpenSSL Documentation',
-     [u'Jean-Paul Calderone'], 1)
+    ('index', 'pyopenssl', 'pyOpenSSL Documentation',
+     ['Jean-Paul Calderone'], 1)
 ]

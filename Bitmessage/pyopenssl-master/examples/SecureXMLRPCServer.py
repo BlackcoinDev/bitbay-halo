@@ -14,9 +14,9 @@ been extensively tested.
 This code is in the public domain.
 It is provided AS-IS WITH NO WARRANTY WHATSOEVER.
 """
-import SocketServer
+import socketserver
 import os, socket
-import SimpleXMLRPCServer
+import xmlrpc.server
 from OpenSSL import SSL
 
 class SSLWrapper:
@@ -52,13 +52,13 @@ class SSLWrapper:
 
 
 
-class SecureTCPServer(SocketServer.TCPServer):
+class SecureTCPServer(socketserver.TCPServer):
     """
     Just like TCPServer, but use a socket.
     This really ought to let you specify the key and certificate files.
     """
     def __init__(self, server_address, RequestHandlerClass):
-        SocketServer.BaseServer.__init__(self, server_address, RequestHandlerClass)
+        socketserver.BaseServer.__init__(self, server_address, RequestHandlerClass)
 
         ## Same as normal, but make it secure:
         ctx = SSL.Context(SSL.SSLv23_METHOD)
@@ -74,7 +74,7 @@ class SecureTCPServer(SocketServer.TCPServer):
         self.server_activate()
 
 
-class SecureXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
+class SecureXMLRPCRequestHandler(xmlrpc.server.SimpleXMLRPCRequestHandler):
     def setup(self):
         """
         We need to use socket._fileobject Because SSL.Connection
@@ -86,7 +86,7 @@ class SecureXMLRPCRequestHandler(SimpleXMLRPCServer.SimpleXMLRPCRequestHandler):
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
     
 
-class SecureXMLRPCServer(SimpleXMLRPCServer.SimpleXMLRPCServer, SecureTCPServer):
+class SecureXMLRPCServer(xmlrpc.server.SimpleXMLRPCServer, SecureTCPServer):
     def __init__(self, addr,
                  requestHandler=SecureXMLRPCRequestHandler,
                  logRequests=1):

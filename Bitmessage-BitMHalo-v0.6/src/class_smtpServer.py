@@ -136,7 +136,7 @@ class smtpServerPyBitmessage(smtpd.SMTPServer):
         try:
             msg_subject = self.decode_header('subject')[0]
         except:
-            msg_subject = "Subject missing..."
+            msg_subject = "Subject missing."
 
         msg_tmp = email.message_from_string(data)
         body = u''

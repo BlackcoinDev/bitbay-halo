@@ -1,5 +1,5 @@
 import struct
-import crypt
+from . import crypt
 
 HEADER_FORMAT = '<I12sI4s'
 
@@ -30,9 +30,9 @@ def encodeVarInt(i):
         return struct.pack('>BH', 0xfd, i)
     elif i >= 0x10000 and i < 0x100000000:
         return struct.pack('>BI', 0xfe, i)
-    elif i >= 0x100000000 and i < 0x10000000000000000L:
+    elif i >= 0x100000000 and i < 0x10000000000000000:
         return struct.pack('>BQ', 0xff, i)
-    raise Exception('varint cannot be >= 0x10000000000000000L')
+    raise Exception('varint cannot be >= 0x10000000000000000')
 
 def decodeVarStr(data):
     if len(data) == 0:
@@ -63,7 +63,7 @@ def decodeVarList(data):
 
     return (l, size)
 def encodeVarList(*items):
-    s = ''
+    s = b''
 
     s += encodeVarInt(len(items))
     for item in items:
@@ -88,8 +88,8 @@ class Header:
         self.csum = crypt.checksum(payload)
         self.payload = payload
     def serialize(self):
-        content = ''
-        content += struct.pack(HEADER_FORMAT, self.magic, self.command, self.length, self.csum)
+        content = b''
+        content += struct.pack(HEADER_FORMAT, self.magic, self.command.encode('ascii') if isinstance(self.command, str) else self.command, self.length, self.csum)
         content += self.payload
 
         return content
@@ -101,7 +101,7 @@ class Header:
         header_data = data[:header_size]
         (magic, command, length, csum) = struct.unpack(HEADER_FORMAT, header_data)
 
-        header = Header(command.rstrip('\0'), magic)
+        header = Header(command.rstrip(b'\0'), magic)
 
         if len(data) < header_size + length:
             raise HeaderException('Data size < Header size + Payload length')
@@ -119,10 +119,10 @@ class Header:
         s += 'Command          : %s\n' % (self.command)
         s += 'Magic            : 0x%08x\n' % (self.magic)
         s += 'Payload length   : %d\n' % (self.length)
-        s += 'Payload checksum : %s\n' % (self.csum.encode('hex'))
-        s += 'Payload data     : %s\n' % (self.payload.encode('hex'))
+        s += 'Payload checksum : %s\n' % (self.csum.hex())
+        s += 'Payload data     : %s\n' % (self.payload.hex())
         s += '\n'
-        s += 'Serialized data  : %s\n' % (self.serialize().encode('hex'))
+        s += 'Serialized data  : %s\n' % (self.serialize().hex())
 
         return s
 
@@ -139,7 +139,7 @@ def encode(msg):
 def decode(data, msg_types = MSG_TYPES):
     header = Header.unserialize(data)
     msg = None
-    if header.command in msg_types.keys():
+    if header.command in list(msg_types.keys()):
         msg_type = msg_types[header.command]
         msg = msg_type.unserialize(header.payload)
     return msg

@@ -25,8 +25,8 @@ import socket
 import sys
 import os
 
-import shared
-import tr # translate
+from . import shared
+from . import tr # translate
 
 configSection = "bitmessagesettings"
 
@@ -90,21 +90,21 @@ class namecoinConnection (object):
                 assert False
         except RPCError as exc:
             if exc.error["code"] == -4:
-                return (tr.translateText("MainWindow",'The name %1 was not found.').arg(unicode(string)), None)
+                return (tr.translateText("MainWindow",'The name %1 was not found.').replace("%1", str(string)), None)
             else:
-                return (tr.translateText("MainWindow",'The namecoin query failed (%1)').arg(unicode(exc.error["message"])), None)
+                return (tr.translateText("MainWindow",'The namecoin query failed (%1)').replace("%1", str(exc.error["message"])), None)
         except Exception as exc:
-            print "Namecoin query exception: %s" % str (exc)
+            print(("Namecoin query exception: %s" % str (exc)))
             return (tr.translateText("MainWindow",'The namecoin query failed.'), None)
 
         try:
             val = json.loads (res)
         except:
-            return (tr.translateText("MainWindow",'The name %1 has no valid JSON data.').arg(unicode(string)), None)            
+            return (tr.translateText("MainWindow",'The name %1 has no valid JSON data.').replace("%1", str(string)), None)            
 
         if "bitmessage" in val:
             return (None, val["bitmessage"])
-        return (tr.translateText("MainWindow",'The name %1 has no associated Bitmessage address.').arg(unicode(string)), None) 
+        return (tr.translateText("MainWindow",'The name %1 has no associated Bitmessage address.').replace("%1", str(string)), None) 
 
     # Test the connection settings.  This routine tries to query a "getinfo"
     # command, and builds either an error message or a success message with
@@ -116,15 +116,15 @@ class namecoinConnection (object):
                 vers = res["version"]
                 
                 v3 = vers % 100
-                vers = vers / 100
+                vers = vers // 100
                 v2 = vers % 100
-                vers = vers / 100
+                vers = vers // 100
                 v1 = vers
                 if v3 == 0:
                   versStr = "0.%d.%d" % (v1, v2)
                 else:
                   versStr = "0.%d.%d.%d" % (v1, v2, v3)
-                return ('success',  tr.translateText("MainWindow",'Success!  Namecoind version %1 running.').arg(unicode(versStr)) )
+                return ('success',  tr.translateText("MainWindow",'Success!  Namecoind version %1 running.').replace("%1", str(versStr)) )
 
             elif self.nmctype == "nmcontrol":
                 res = self.callRPC ("data", ["status"])
@@ -132,14 +132,14 @@ class namecoinConnection (object):
                 if ("reply" in res) and res["reply"][:len(prefix)] == prefix:
                     return ('success', tr.translateText("MainWindow",'Success!  NMControll is up and running.'))
 
-                print "Unexpected nmcontrol reply: %s" % res
+                print(("Unexpected nmcontrol reply: %s" % res))
                 return ('failed',  tr.translateText("MainWindow",'Couldn\'t understand NMControl.'))
 
             else:
                 assert False
 
         except Exception as exc:
-            print "Namecoin connection test: %s" % str (exc)
+            print(("Namecoin connection test: %s" % str (exc)))
             return ('failed', "The connection to namecoin failed.")
 
     # Helper routine that actually performs an JSON RPC call.
@@ -170,8 +170,8 @@ class namecoinConnection (object):
         header += "Content-Type: application/json\n"
         header += "Content-Length: %d\n" % len (data)
         header += "Accept: application/json\n"
-        authstr = "%s:%s" % (self.user, self.password)
-        header += "Authorization: Basic %s\n" % base64.b64encode (authstr)
+        authstr = ("%s:%s" % (self.user, self.password)).encode('utf-8')
+        header += "Authorization: Basic %s\n" % base64.b64encode (authstr).decode('utf-8')
 
         resp = self.queryServer ("%s\n%s" % (header, data))
         lines = resp.split ("\r\n")
@@ -194,8 +194,8 @@ class namecoinConnection (object):
             s.setsockopt (socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.settimeout(3) 
             s.connect ((self.host, int (self.port)))
-            s.sendall (data)
-            result = ""
+            s.sendall (data.encode('utf-8') if isinstance(data, str) else data)
+            result = b""
 
             while True:
                 tmp = s.recv (self.bufsize)
@@ -205,7 +205,7 @@ class namecoinConnection (object):
 
             s.close ()
 
-            return result
+            return result.decode('utf-8')
 
         except socket.error as exc:
             raise Exception ("Socket error in RPC connection: %s" % str (exc))
@@ -220,8 +220,8 @@ def lookupNamecoinFolder ():
             dataFolder = path.join (os.environ["HOME"],
                                     "Library/Application Support/", app) + '/'
         else:
-            print ("Could not find home folder, please report this message"
-                    + " and your OS X version to the BitMessage Github.")
+            print(("Could not find home folder, please report this message"
+                    + " and your OS X version to the BitMessage Github."))
             sys.exit()
 
     elif "win32" in sys.platform or "win64" in sys.platform:
@@ -270,7 +270,7 @@ def ensureNamecoinOptions ():
         nmc.close ()
 
     except Exception as exc:
-        print "Could not read the Namecoin config file probably because you don't have Namecoin installed. That's ok; we don't really need it. Detailed error message: %s" % str (exc)
+        print(("Could not read the Namecoin config file probably because you don't have Namecoin installed. That's ok; we don't really need it. Detailed error message: %s" % str (exc)))
 
     # If still nothing found, set empty at least.
     if (not hasUser):

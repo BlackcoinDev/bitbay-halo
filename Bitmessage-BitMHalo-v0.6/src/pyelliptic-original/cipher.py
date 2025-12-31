@@ -33,7 +33,7 @@ class Cipher:
             OpenSSL.EVP_CipherInit_ex(
                 self.ctx, self.cipher.get_pointer(), 0, k, IV, do)
         else:
-            raise Exception("RTFM ...")
+            raise Exception("RTFM .")
 
     @staticmethod
     def get_all_cipher():
@@ -58,7 +58,7 @@ class Cipher:
         inp = OpenSSL.malloc(input, len(input))
         if OpenSSL.EVP_CipherUpdate(self.ctx, OpenSSL.byref(buffer),
                                     OpenSSL.byref(i), inp, len(input)) == 0:
-            raise Exception("[OpenSSL] EVP_CipherUpdate FAIL ...")
+            raise Exception("[OpenSSL] EVP_CipherUpdate FAIL .")
         return buffer.raw[0:i.value]
 
     def final(self):
@@ -66,7 +66,7 @@ class Cipher:
         buffer = OpenSSL.malloc(b"", self.cipher.get_blocksize())
         if (OpenSSL.EVP_CipherFinal_ex(self.ctx, OpenSSL.byref(buffer),
                                        OpenSSL.byref(i))) == 0:
-            raise Exception("[OpenSSL] EVP_CipherFinal_ex FAIL ...")
+            raise Exception("[OpenSSL] EVP_CipherFinal_ex FAIL .")
         return buffer.raw[0:i.value]
 
     def ciphering(self, input):

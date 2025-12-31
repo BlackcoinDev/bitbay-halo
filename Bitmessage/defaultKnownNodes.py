@@ -5,7 +5,7 @@ import time
 import random
 import sys
 from time import strftime, localtime
-import shared
+from . import shared
 
 def createDefaultKnownNodes(appdata):
     ############## Stream 1 ################
@@ -49,8 +49,8 @@ def readDefaultKnownNodes(appdata):
     pickleFile = open(appdata + 'knownnodes.dat', 'rb')
     knownNodes = pickle.load(pickleFile)
     pickleFile.close()
-    for stream, storedValue in knownNodes.items():
-        for host,value in storedValue.items():
+    for stream, storedValue in list(knownNodes.items()):
+        for host,value in list(storedValue.items()):
             try:
                 # Old knownNodes format.
                 port, storedtime = value
@@ -58,7 +58,7 @@ def readDefaultKnownNodes(appdata):
                 # New knownNodes format.
                 host, port = host
                 storedtime = value
-            print host, '\t', port, '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')
+            print((host, '\t', port, '\t', str(strftime('%a, %d %b %Y  %I:%M %p',localtime(storedtime)),'utf-8')))
 
 if __name__ == "__main__":
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
         appdata = path.expanduser(path.join("~", "." + APPNAME + "/"))
 
 
-    print 'New list of all known nodes:', createDefaultKnownNodes(appdata)
+    print(('New list of all known nodes:', createDefaultKnownNodes(appdata)))
     readDefaultKnownNodes(appdata)
 
 

@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 
 import queues
 import re
@@ -236,7 +236,7 @@ class MailchuckAccount(GatewayAccount):
     def settings(self):
         self.toAddress = self.registrationAddress
         self.subject = "config"
-        self.message = QtGui.QApplication.translate("Mailchuck", """# You can use this to configure your email gateway account
+        self.message = QtWidgets.QApplication.translate("Mailchuck", """# You can use this to configure your email gateway account
 # Uncomment the setting you want to use
 # Here are the options:
 # 

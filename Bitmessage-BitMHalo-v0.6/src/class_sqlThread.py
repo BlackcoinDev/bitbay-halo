@@ -385,7 +385,7 @@ class sqlThread(threading.Thread):
         self.cur.execute(item, parameters)
         currentVersion = int(self.cur.fetchall()[0][0])
         if currentVersion == 9:
-            logger.info('In messages.dat database, making TTL-related changes: combining the pubkeyretrynumber and msgretrynumber fields into the retrynumber field and adding the sleeptill and ttl fields...')
+            logger.info('In messages.dat database, making TTL-related changes: combining the pubkeyretrynumber and msgretrynumber fields into the retrynumber field and adding the sleeptill and ttl fields.')
             self.cur.execute(
                 '''CREATE TEMPORARY TABLE sent_backup (msgid blob, toaddress text, toripe blob, fromaddress text, subject text, message text, ackdata blob, lastactiontime integer, status text, retrynumber integer, folder text, encodingtype int)''' )
             self.cur.execute(
@@ -482,7 +482,7 @@ class sqlThread(threading.Thread):
         for row in queryreturn:
             value, = row
             if int(value) < int(time.time()) - 86400:
-                logger.info('It has been a long time since the messages.dat file has been vacuumed. Vacuuming now...')
+                logger.info('It has been a long time since the messages.dat file has been vacuumed. Vacuuming now.')
                 try:
                     self.cur.execute( ''' VACUUM ''')
                 except Exception as err:

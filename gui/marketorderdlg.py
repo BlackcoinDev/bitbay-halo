@@ -1,7 +1,7 @@
 
 import os
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt6 import QtCore, QtGui, uic
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -10,14 +10,14 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
-class MyForm(QtGui.QDialog):
+class MyForm(QtWidgets.QDialog):
     def setupUi(self, Form):
         appfont = QtGui.QFont()
         appfont.setPixelSize(11)
@@ -38,7 +38,7 @@ class MyForm(QtGui.QDialog):
         Form.setFont(font)
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
 
 if __name__ == "__main__":
@@ -46,8 +46,8 @@ if __name__ == "__main__":
     import styles
     import styles.base_rc
 
-    app = QtGui.QApplication(sys.argv)
-    QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Windows"))
+    app = QtWidgets.QApplication(sys.argv)
+    QtWidgets.QApplication.setStyle(QtGui.QStyleFactory.create("Windows"))
     dlg = MyForm()
     dlg.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -73,7 +73,7 @@ def words_verify(words,wordlist=wordlist_english):
 	ebytes=_eint_to_bytes(eint,entropy_bits)
 	return csint == entropy_cs(ebytes)
 
-def mnemonic_to_seed(mnemonic_phrase,passphrase=u''):
+def mnemonic_to_seed(mnemonic_phrase,passphrase=''):
 	try:
 		from hashlib import pbkdf2_hmac
 		def pbkdf2_hmac_sha256(password,salt,iters=2048):
@@ -107,7 +107,7 @@ def words_mine(prefix,entbits,satisfunction,wordlist=wordlist_english,randombits
 	while(not satisfunction(entropy_to_words(eint_to_bytes(pint+dint,entbits)))):
 		dint=randombits(mine_bits)
 		if((count & 0xFFFF) == 0):
-			print("Searched %f percent of the space" % (float(count)/float(1 << mine_bits)))
+			print(("Searched %f percent of the space" % (float(count)/float(1 << mine_bits))))
 
 	return entropy_to_words(eint_to_bytes(pint+dint,entbits))
 
@@ -121,6 +121,6 @@ if __name__=="__main__":
 		seed=mnemonic_to_seed(w,passphrase='TREZOR')
 		passed = passed and w==v[1]
 		passed = passed and binascii.hexlify(seed)==v[2]
-	print("Tests %s." % ("Passed" if passed else "Failed"))
+	print(("Tests %s." % ("Passed" if passed else "Failed")))
 		
 

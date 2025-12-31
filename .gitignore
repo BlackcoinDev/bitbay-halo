@@ -1,0 +1,70 @@
+# .gitignore for a Python 2.7 project using PyQt4, migrated to Python 3.14 with PyQt6
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.dll
+*.dylib
+*.pyd
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+pip-wheel-metadata/
+*.egg-info
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+ENV/
+ENV.*
+ENVIRONMENT/
+ENVIRONMENT.*
+PythonVirtualEnv/
+PythonVirtualEnv.*
+PythonVirtualEnv*
+
+# IDE / editor directories
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+*.DS_Store
+
+# Log files
+*.log
+
+# Test artifacts
+*.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.pyc
+*.pyo
+
+#Blackhalo specific
+data/
+BitMData/
+data/debug.log
+.mypy_cache
+.ruff_cache
+Other.dat
+OtherBackup.dat
+Contracts.dat
+crashlog.dat
+BitQueue.dat
+BitTMP.dat

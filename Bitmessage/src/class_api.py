@@ -4,7 +4,8 @@ import time
 import json
 import threading
 import logging
-from SimpleXMLRPCServer import SimpleXMLRPCServer
+import base64
+from xmlrpc.server import SimpleXMLRPCServer
 
 SUPPORTED_VERSIONS = ['0.4.1']
 
@@ -28,8 +29,8 @@ def getAPI(workingdir=None,silent=False):
     
     #Workaround while logging is not completed 
     if silent:
-        import StringIO
-        fobj = StringIO.StringIO()
+        import io
+        fobj = io.StringIO()
         sys.stdout = fobj    
         
     import bitmessagemain
@@ -54,7 +55,7 @@ def getAPI(workingdir=None,silent=False):
             while 1:
                 import time
                 time.sleep(2)
-                print self._count_threads()
+                print(self._count_threads())
                 bitmessagemain.shared.shutdown = 1
                 
             
@@ -66,7 +67,7 @@ def getAPI(workingdir=None,silent=False):
             threads = threading.enumerate()
             for th in threads:
                 if th.is_alive():
-                    print th
+                    print(th)
                     thcount += 1
             return thcount
 
@@ -75,7 +76,8 @@ def getAPI(workingdir=None,silent=False):
             '''Add a Conact to the Addressbook
             Usage: api.addContact(label,bmaddress)'''
 
-            unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             queryreturn = bitmessagemain.shared.sqlQuery('''select * from addressbook where address=?''',address)
             if queryreturn != []:
                 raise APIError('Given Address is already inside: %s'%address)
@@ -88,7 +90,8 @@ def getAPI(workingdir=None,silent=False):
             Usage: api.addSubscription(label,bmaddressl)'''
             
             logger.info('Label: %s Address: %s'%(label, address))
-            unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             address = bitmessagemain.addBMIfNotPresent(address)
             status, addressVersionNumber, streamNumber, toRipe = bitmessagemain.decodeAddress(address)
             if status != 'success':
@@ -109,7 +112,8 @@ def getAPI(workingdir=None,silent=False):
             Usage: api.addToBlacklist(label,bmaddress,enabled[True,False])'''
             
             logger.info('Label: %s Address: %s Enabled: %s'%(label, address, enabled))
-            unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             bitmessagemain.shared.sqlExecute('''INSERT INTO blacklist VALUES (?,?,?)''',label,address,enabled)
             return True
 
@@ -120,7 +124,8 @@ def getAPI(workingdir=None,silent=False):
             Usage: api.addToBlacklist(label,bmaddress,enabled[True,False])'''
             
             logger.info('Label: %s Address: %s Enabled: %s'%(label, address, enabled))
-            unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             bitmessagemain.shared.sqlExecute('''INSERT INTO whitelist VALUES (?,?,?)''',label,address,enabled)
             return True
 
@@ -183,7 +188,8 @@ def getAPI(workingdir=None,silent=False):
             if not label:
                 label = passphrase
 
-            label = unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             nonceTrialsPerByte = int(bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty)
             payloadLengthExtraBytes = int(bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty)
             bitmessagemain.shared.apiAddressGeneratorReturnQueue.queue.clear()
@@ -204,7 +210,8 @@ def getAPI(workingdir=None,silent=False):
             if streamNumberForAddress != 1:
                 raise APIError('Only Stream Number 1 is Supported jet. Got: %s' % streamNumberForAddress)
                 
-            unicode(label, 'utf-8')
+            if isinstance(label, bytes):
+                label = label.decode('utf-8')
             nonceTrialsPerByte = int(bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty)
             payloadLengthExtraBytes = int(bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty)
             bitmessagemain.shared.apiAddressGeneratorReturnQueue.queue.clear()
@@ -220,7 +227,7 @@ def getAPI(workingdir=None,silent=False):
                 raise APIError('Could not find this address in your keys.dat file.')
 
             bitmessagemain.shared.config.remove_section(address)
-            with open(bitmessagemain.shared.appdata + 'keys.dat', 'wb') as configfile:
+            with open(bitmessagemain.shared.appdata + 'keys.dat', 'w') as configfile:
                 bitmessagemain.shared.config.write(configfile)
             
             bitmessagemain.shared.reloadMyAddressHashes()
@@ -273,7 +280,7 @@ def getAPI(workingdir=None,silent=False):
             queryreturn = bitmessagemain.shared.sqlQuery('''SELECT msgid FROM inbox where folder='inbox' ORDER BY received''')
             data = []
             for msgid in queryreturn:
-                data.append(msgid[0].encode('hex'))
+                data.append(msgid[0].hex())
             return data
             
         def getAllInboxMessages(self):
@@ -287,7 +294,7 @@ def getAPI(workingdir=None,silent=False):
                 msgid, toAddress, fromAddress, subject, received, message, encodingtype, read = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                messages.append({'msgid': msgid.encode('hex'),'toAddress': toAddress, 'fromAddress': fromAddress, 'subject': subject, 'message': message, 'encodingType': encodingtype, 'receivedTime': received, 'read': read})
+                messages.append({'msgid': msgid.hex(),'toAddress': toAddress, 'fromAddress': fromAddress, 'subject': subject, 'message': message, 'encodingType': encodingtype, 'receivedTime': received, 'read': read})
             return messages
             
         def getAllSentMessageIDs(self):
@@ -299,7 +306,7 @@ def getAPI(workingdir=None,silent=False):
             data = []
             for row in queryreturn:
                 msgid = row[0]
-                data.append(msgid.encode('hex'))
+                data.append(msgid.hex())
             return data
             
         def getAllSentMessages(self):
@@ -313,7 +320,7 @@ def getAPI(workingdir=None,silent=False):
                 msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data.append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.encode('hex')})
+                data.append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.hex()})
             return data
             
         def getBlackWhitelist(self):
@@ -343,14 +350,14 @@ def getAPI(workingdir=None,silent=False):
             '''Return an Inbox Message by a given ID
             Usage: print api.getInboxMessageByID(MessageID)'''
 
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             queryreturn = bitmessagemain.shared.sqlQuery('''SELECT msgid, toaddress, fromaddress, subject, received, message, encodingtype, read FROM inbox WHERE msgid=?''',msgid)
             data = []
             for row in queryreturn:
                 msgid, toAddress, fromAddress, subject, received, message, encodingtype, read = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data.append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'receivedTime':received, 'read': read})
+                data.append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'receivedTime':received, 'read': read})
             return data
             
         def getInboxMessagesByReceiver(self,toAddress):
@@ -364,7 +371,7 @@ def getAPI(workingdir=None,silent=False):
                 msgid, toAddress, fromAddress, subject, received, message, encodingtype = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data .append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject.encode('base64'), 'message':message.encode('base64'), 'encodingType':encodingtype, 'receivedTime':received})
+                data .append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':base64.b64encode(subject.encode('utf-8')).decode('ascii'), 'message':base64.b64encode(message.encode('utf-8')).decode('ascii'), 'encodingType':encodingtype, 'receivedTime':received})
             return data
             
         def getSentMessageByAckData(self,ackData):
@@ -372,14 +379,14 @@ def getAPI(workingdir=None,silent=False):
             '''Return an Inbox Message by a AckData
             Usage: print api.getSentMessageByAckData(AckData)'''
             
-            ackData = ackData.decode('hex')
+            ackData = bytes.fromhex(ackData)
             queryreturn = bitmessagemain.shared.sqlQuery('''SELECT msgid, toaddress, fromaddress, subject, lastactiontime, message, encodingtype, status, ackdata FROM sent WHERE ackdata=?''',ackData)
             data = []
             for row in queryreturn:
                 msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data.append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.encode('hex')})
+                data.append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.hex()})
             return data
             
         def getSentMessageByID(self,msgid):
@@ -387,14 +394,14 @@ def getAPI(workingdir=None,silent=False):
             '''Return an Outbox Message by a given ID
             Usage: print api.getSentMessageByID(MessageID)'''
 
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             queryreturn = bitmessagemain.shared.sqlQuery('''SELECT msgid, toaddress, fromaddress, subject, lastactiontime, message, encodingtype, status, ackdata FROM sent WHERE msgid=?''',msgid)
             data = []
             for row in queryreturn:
                 msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data.append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject.encode('base64'), 'message':message.encode('base64'), 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.encode('hex')})
+                data.append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':base64.b64encode(subject.encode('utf-8')).decode('ascii'), 'message':base64.b64encode(message.encode('utf-8')).decode('ascii'), 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.hex()})
             return data
             
         def getSentMessageStatus(self,ackdata):
@@ -402,7 +409,7 @@ def getAPI(workingdir=None,silent=False):
             '''Returns the Status of an Outbox Message by AckData
             Usage: print api.getSentMessageStatus(AckData)'''
 
-            ackdata = ackdata.decode('hex')
+            ackdata = bytes.fromhex(ackdata)
             queryreturn = bitmessagemain.shared.sqlQuery('''SELECT status FROM sent where ackdata=?''',ackdata)
             if queryreturn == []:
                 return 'notfound'
@@ -421,7 +428,7 @@ def getAPI(workingdir=None,silent=False):
                 msgid, toAddress, fromAddress, subject, lastactiontime, message, encodingtype, status, ackdata = row
                 subject = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(subject)
                 message = bitmessagemain.shared.fixPotentiallyInvalidUTF8Data(message)
-                data.append({'msgid':msgid.encode('hex'), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.encode('hex')})
+                data.append({'msgid':msgid.hex(), 'toAddress':toAddress, 'fromAddress':fromAddress, 'subject':subject, 'message':message, 'encodingType':encodingtype, 'lastActionTime':lastactiontime, 'status':status, 'ackData':ackdata.hex()})
             return data
             
         def joinChannel(self, label, testaddress=None):
@@ -528,7 +535,7 @@ def getAPI(workingdir=None,silent=False):
             '''Mark an Inbox Message as read
             Usage: api.markInboxMessageAsRead()'''
             
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             bitmessagemain.shared.sqlExecute('''UPDATE inbox SET read='1' WHERE msgid=?''', msgid) 
             return True
             
@@ -538,7 +545,7 @@ def getAPI(workingdir=None,silent=False):
             '''Mark an Inbox Message as unread
             Usage: api.markInboxMessageAsUnread()'''
             
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             bitmessagemain.shared.sqlExecute('''UPDATE inbox SET read='0' WHERE msgid=?''', msgid)
             return True
 
@@ -566,7 +573,7 @@ def getAPI(workingdir=None,silent=False):
             bitmessagemain.helper_sent.insert(t)
             toLabel = '[Broadcast subscribers]'
             bitmessagemain.shared.workerQueue.put(('sendbroadcast', ''))
-            return ackdata.encode('hex')
+            return ackdata.hex()
             
         def sendMessage(self, fromAddress, toAddress, subject, message):
             
@@ -579,12 +586,12 @@ def getAPI(workingdir=None,silent=False):
             status, addressVersionNumber, streamNumber, toRipe = bitmessagemain.decodeAddress(toAddress)
             if status != 'success':
                 with bitmessagemain.shared.printLock:
-                    print 'ToAddress Error: %s , %s'%(toAddress,status)
+                    print('ToAddress Error: %s , %s'%(toAddress,status))
                 return (toAddress,status)
             status, addressVersionNumber, streamNumber, fromRipe = bitmessagemain.decodeAddress(fromAddress)
             if status != 'success':
                 with bitmessagemain.shared.printLock:
-                    print 'fromAddress Error: %s , %s'%(fromAddress,status)
+                    print('fromAddress Error: %s , %s'%(fromAddress,status))
                 return (fromAddress,status)
             toAddress = bitmessagemain.addBMIfNotPresent(toAddress)
             fromAddress = bitmessagemain.addBMIfNotPresent(fromAddress)
@@ -606,7 +613,7 @@ def getAPI(workingdir=None,silent=False):
             bitmessagemain.shared.UISignalQueue.put(('displayNewSentMessage', (
                 toAddress, toLabel, fromAddress, subject, message, ackdata)))
             bitmessagemain.shared.workerQueue.put(('sendmessage', toAddress))
-            return ackdata.encode('hex')
+            return ackdata.hex()
             
         def setBlackWhitelist(self, value):
             
@@ -624,7 +631,7 @@ def getAPI(workingdir=None,silent=False):
             '''Trash a Message from Inbox by a given ID
             Usage: api.trashInboxMessage(MessageID)'''
 
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             bitmessagemain.helper_inbox.trash(msgid)
             return True
             
@@ -633,7 +640,7 @@ def getAPI(workingdir=None,silent=False):
             '''Trash a Message from Outbox by a given ID
             Usage: api.trashSentMessage(MessageID)'''
 
-            msgid = msgid.decode('hex')
+            msgid = bytes.fromhex(msgid)
             bitmessagemain.shared.sqlExecute('''UPDATE sent SET folder='trash' WHERE msgid=?''',msgid)
             return True
             
@@ -679,7 +686,7 @@ class XMLRPCServer:
     def _work_loop(self):
         while not self.quit:
             self.server.handle_request()
-        print 'Server exits'
+        print('Server exits')
         self.api.stop()
 
     def stop(self):
@@ -703,9 +710,9 @@ class SimpleProgramAPI:
     #Send data to a Program 
     api = SimpleProgramAPI()
     print api.get_address()
-    >BM-...
+    >BM-.
     mydata = {'a':'b'}
-    toAddress = BM-...
+    toAddress = BM-.
     api.send_data_wait(toAddress,mydata)
     api.close()
     

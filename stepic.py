@@ -51,11 +51,18 @@ def encode_imdata(imdata, data):
 
     imdata = iter(imdata)
 
-    for i in xrange(datalen):
+    for i in range(datalen):
         pixels = [value & ~1 for value in
-                  imdata.next()[:3] + imdata.next()[:3] + imdata.next()[:3]]
-        byte = ord(data[i])
-        for j in xrange(7, -1, -1):
+                  list(next(imdata)[:3] + next(imdata)[:3] + next(imdata)[:3])]
+        
+        # Py3 compatibility: data[i] might be int (if bytes) or str (need ord)
+        item = data[i]
+        if isinstance(item, int):
+            byte = item
+        else:
+            byte = ord(item)
+            
+        for j in range(7, -1, -1):
             pixels[j] |= byte & 1
             byte >>= 1
         if i == datalen - 1:
@@ -95,21 +102,25 @@ def decode_imdata(imdata):
 
     imdata = iter(imdata)
     while True:
-        pixels = list(imdata.next()[:3] + imdata.next()[:3] + imdata.next()[:3])
+        pixels = list(next(imdata)[:3] + next(imdata)[:3] + next(imdata)[:3])
         byte = 0
-        for c in xrange(7):
+        for c in range(7):
             byte |= pixels[c] & 1
             byte <<= 1
         byte |= pixels[7] & 1
-        yield chr(byte)
+        
+        # In Py3, standardizing on bytes return would be best, but legacy might expect str
+        # For now, yield bytes to ensure binary data isn't mangled by decoding
+        yield bytes([byte])
+        
         if pixels[-1] & 1:
             break
 
 
 def decode(image):
     '''extracts data from an image'''
-
-    return ''.join(decode_imdata(image.getdata()))
+    # Joining bytes
+    return b''.join(decode_imdata(image.getdata()))
 
 
 class Steganographer:

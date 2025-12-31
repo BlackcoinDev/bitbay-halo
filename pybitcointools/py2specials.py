@@ -6,9 +6,9 @@ import hashlib
 
 
 if sys.version_info.major == 2:
-    string_types = (str, unicode)
+    string_types = (str, str)
     string_or_bytes_types = string_types
-    int_types = (int, float, long)
+    int_types = (int, float, int)
 
     # Base switching
     code_strings = {
@@ -95,4 +95,4 @@ if sys.version_info.major == 2:
         return os.urandom(x)
 
     def is_hexilified(tx):
-        return isinstance(tx, (unicode, str)) and re.match('^[0-9a-fA-F]*$', tx)
+        return isinstance(tx, str) and re.match('^[0-9a-fA-F]*$', tx)

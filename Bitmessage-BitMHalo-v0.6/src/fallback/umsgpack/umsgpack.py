@@ -120,7 +120,7 @@ class Ext:
         s += " ".join(["0x%02x" % ord(self.data[i:i + 1])
                        for i in xrange(min(len(self.data), 8))])
         if len(self.data) > 8:
-            s += " ..."
+            s += " ."
         s += ")"
         return s
 
@@ -230,7 +230,7 @@ b'\x92\xabsome string\xaasome bytes'
 # You may notice struct.pack("B", obj) instead of the simpler chr(obj) in the
 # code below. This is to allow for seamless Python 2 and 3 compatibility, as
 # chr(obj) has a str return type instead of bytes in Python 3, and
-# struct.pack(...) has the right return type in both versions.
+# struct.pack(.) has the right return type in both versions.
 
 
 def _pack_integer(obj, fp, options):

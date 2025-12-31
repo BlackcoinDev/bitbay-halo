@@ -50,9 +50,9 @@ Return a PIL Image class instance which have generated identicon image.
 """
 
 # we probably don't need all of them, but i don't want to check now
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6 import QtCore, QtGui
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 
 __all__ = ['render_identicon', 'IdenticonRendererBase']
 

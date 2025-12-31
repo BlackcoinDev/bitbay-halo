@@ -1,14 +1,14 @@
 import threading
 import time
 import random
-import shared
-import socks
+from . import shared
+from . import socks
 import socket
 import sys
-import tr
+from . import tr
 
-from class_sendDataThread import *
-from class_receiveDataThread import *
+from .class_sendDataThread import *
+from .class_receiveDataThread import *
 
 # For each stream to which we connect, several outgoingSynSender threads
 # will exist and will collectively create 8 connections with peers.
@@ -87,7 +87,7 @@ class outgoingSynSender(threading.Thread):
                     pass
                 shared.knownNodesLock.release()
                 with shared.printLock:
-                    print 'deleting ', peer, 'from shared.knownNodes because it caused a socks.socksocket exception. We must not be 64-bit compatible.'
+                    print(('deleting ', peer, 'from shared.knownNodes because it caused a socks.socksocket exception. We must not be 64-bit compatible.'))
                 continue
             # This option apparently avoids the TIME_WAIT state so that we
             # can rebind faster
@@ -95,13 +95,13 @@ class outgoingSynSender(threading.Thread):
             sock.settimeout(20)
             if shared.config.get('bitmessagesettings', 'socksproxytype') == 'none' and shared.verbose >= 2:
                 with shared.printLock:
-                    print 'Trying an outgoing connection to', peer
+                    print(('Trying an outgoing connection to', peer))
 
                 # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             elif shared.config.get('bitmessagesettings', 'socksproxytype') == 'SOCKS4a':
                 if shared.verbose >= 2:
                     with shared.printLock:
-                        print '(Using SOCKS4a) Trying an outgoing connection to', peer
+                        print(('(Using SOCKS4a) Trying an outgoing connection to', peer))
 
                 proxytype = socks.PROXY_TYPE_SOCKS4
                 sockshostname = shared.config.get(
@@ -122,7 +122,7 @@ class outgoingSynSender(threading.Thread):
             elif shared.config.get('bitmessagesettings', 'socksproxytype') == 'SOCKS5':
                 if shared.verbose >= 2:
                     with shared.printLock:
-                        print '(Using SOCKS5) Trying an outgoing connection to', peer
+                        print(('(Using SOCKS5) Trying an outgoing connection to', peer))
 
                 proxytype = socks.PROXY_TYPE_SOCKS5
                 sockshostname = shared.config.get(
@@ -155,10 +155,9 @@ class outgoingSynSender(threading.Thread):
                          self.selfInitiatedConnections, 
                          sendDataThreadQueue)
                 rd.start()
-                with shared.printLock:
-                    print self, 'connected to', peer, 'during an outgoing attempt.'
-
-
+                if sock:
+                    print((self, 'connected to', peer, 'during an outgoing attempt.'))
+                
                 sd = sendDataThread(sendDataThreadQueue)
                 sd.setup(sock, peer.host, peer.port, self.streamNumber,
                          someObjectsOfWhichThisRemoteNodeIsAlreadyAware)
@@ -168,7 +167,7 @@ class outgoingSynSender(threading.Thread):
             except socks.GeneralProxyError as err:
                 if shared.verbose >= 2:
                     with shared.printLock:
-                        print 'Could NOT connect to', peer, 'during outgoing attempt.', err
+                        print(('Could NOT connect to', peer, 'during outgoing attempt.', err))
 
                 deletedPeer = None
                 with shared.knownNodesLock:
@@ -187,24 +186,26 @@ class outgoingSynSender(threading.Thread):
                             deletedPeer = peer
                 if deletedPeer:
                     with shared.printLock:
-                        print 'deleting', peer, 'from shared.knownNodes because it is more than 48 hours old and we could not connect to it.'
+                        print(('deleting', peer, 'from shared.knownNodes because it is more than 48 hours old and we could not connect to it.'))
 
             except socks.Socks5AuthError as err:
                 shared.UISignalQueue.put((
                     'updateStatusBar', tr.translateText(
                     "MainWindow", "SOCKS5 Authentication problem: %1").arg(str(err))))
             except socks.Socks5Error as err:
-                pass
-                print 'SOCKS5 error. (It is possible that the server wants authentication).)', str(err)
+                if '0x01' in str(err): # General SOCKS server failure
+                    print(('SOCKS5 error. (It is possible that the server wants authentication).)', str(err)))
+                else:
+                    print(('SOCKS5 error.', err))
             except socks.Socks4Error as err:
-                print 'Socks4Error:', err
+                print(('Socks4Error:', err))
             except socket.error as err:
                 if shared.config.get('bitmessagesettings', 'socksproxytype')[0:5] == 'SOCKS':
-                    print 'Bitmessage MIGHT be having trouble connecting to the SOCKS server. ' + str(err)
+                    print(('Bitmessage MIGHT be having trouble connecting to the SOCKS server. ' + str(err)))
                 else:
                     if shared.verbose >= 1:
                         with shared.printLock:
-                            print 'Could NOT connect to', peer, 'during outgoing attempt.', err
+                            print(('Could NOT connect to', peer, 'during outgoing attempt.', err))
 
                 deletedPeer = None
                 with shared.knownNodesLock:
@@ -212,9 +213,10 @@ class outgoingSynSender(threading.Thread):
                     It is remotely possible that peer is no longer in shared.knownNodes.
                     This could happen if two outgoingSynSender threads both try to 
                     connect to the same peer, both fail, and then both try to remove
-                    it from shared.knownNodes. This is unlikely because of the
-                    alreadyAttemptedConnectionsList but because we clear that list once
-                    every half hour, it can happen.
+                            print('Could NOT connect to', peer, 'during outgoing attempt.', err)
+
+                deletedPeer = None
+                with shared.knownNodesLock:
                     """
                     if peer in shared.knownNodes[self.streamNumber]:
                         timeLastSeen = shared.knownNodes[self.streamNumber][peer]
@@ -223,9 +225,19 @@ class outgoingSynSender(threading.Thread):
                             deletedPeer = peer
                 if deletedPeer:
                     with shared.printLock:
-                        print 'deleting', peer, 'from shared.knownNodes because it is more than 48 hours old and we could not connect to it.'
+                        print(('deleting', peer, 'from shared.knownNodes because it is more than 48 hours old and we could not connect to it.'))
 
             except Exception as err:
+                with shared.printLock:
+                    if str(err) != "timed out" and str(err) != "socket error": # We don't want to print 'timed out' or 'socket error' because they are too common.
+                        print(('Could NOT connect to', peer, 'during outgoing attempt.', err))
+                    if peer in shared.knownNodes[self.streamNumber] and int(time.time()) - shared.knownNodes[self.streamNumber][peer] > 172800: # If we have known about this node for more than 48 hours and we still can't connect, delete entirely.
+                        print(('deleting', peer, 'from shared.knownNodes because it is more than 48 hours old and we could not connect to it.'))
+                        del shared.knownNodes[self.streamNumber][peer]
+                try:
+                    sock.close()
+                except:
+                    pass
                 sys.stderr.write(
                     'An exception has occurred in the outgoingSynSender thread that was not caught by other exception types: ')
                 import traceback

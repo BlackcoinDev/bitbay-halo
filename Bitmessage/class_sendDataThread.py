@@ -1,16 +1,16 @@
 import time
 import threading
-import shared
-import Queue
+from . import shared
+import queue as Queue
 from struct import unpack, pack
 import hashlib
 import random
 import sys
 import socket
 
-from helper_generic import addDataPadding
-from class_objectHashHolder import *
-from addresses import *
+from .helper_generic import addDataPadding
+from .class_objectHashHolder import *
+from .addresses import *
 
 # Every connection to a peer has a sendDataThread (and also a
 # receiveDataThread).
@@ -42,15 +42,29 @@ class sendDataThread(threading.Thread):
             time.time())  # If this value increases beyond five minutes ago, we'll send a pong message to keep the connection alive.
         self.someObjectsOfWhichThisRemoteNodeIsAlreadyAware = someObjectsOfWhichThisRemoteNodeIsAlreadyAware
         with shared.printLock:
-            print 'The streamNumber of this sendDataThread (ID:', str(id(self)) + ') at setup() is', self.streamNumber
-
+            print(('The streamNumber of this sendDataThread (ID:', str(id(self)) + ') at setup() is', self.streamNumber))
+        try:
+            # We must send the version packet (and then an address packet)
+            # before we can send any other data.
+            datatosend = shared.assembleVersionMessage(
+                self.peer.host, self.peer.port, self.streamNumber) # the IP and port of the remote host, and my streamNumber.
+            if shared.verbose >= 2:
+                print(('Sending version packet: ', repr(datatosend)))
+            self.sock.sendall(datatosend)
+            
+            # We used to send our addr packet here (and still do for protocol <=2) 
+            # but now we wait for the verack.
+        except Exception as err:
+            # print 'socket error in sendDataThread setup'
+            import traceback
+            traceback.print_exc()
 
     def sendVersionMessage(self):
         datatosend = shared.assembleVersionMessage(
             self.peer.host, self.peer.port, self.streamNumber)  # the IP and port of the remote host, and my streamNumber.
 
         with shared.printLock:
-            print 'Sending version packet: ', repr(datatosend)
+            print(('Sending version packet: ', repr(datatosend)))
 
         try:
             self.sendBytes(datatosend)
@@ -92,30 +106,31 @@ class sendDataThread(threading.Thread):
 
     def run(self):
         with shared.printLock:
-            print 'sendDataThread starting. ID:', str(id(self))+'. Number of queues in sendDataQueues:', len(shared.sendDataQueues)
+            print(('sendDataThread starting. ID:', str(id(self))+'. Number of queues in sendDataQueues:', len(shared.sendDataQueues)))
         while True:
             deststream, command, data = self.sendDataThreadQueue.get()
 
             if deststream == self.streamNumber or deststream == 0:
                 if command == 'shutdown':
-                    with shared.printLock:
-                        print 'sendDataThread (associated with', self.peer, ') ID:', id(self), 'shutting down now.'
+                    if shared.verbose >= 2:
+                        print(('sendDataThread (associated with', self.peer, ') ID:', id(self), 'shutting down now.'))
                     break
-                # When you receive an incoming connection, a sendDataThread is
-                # created even though you don't yet know what stream number the
-                # remote peer is interested in. They will tell you in a version
-                # message and if you too are interested in that stream then you
-                # will continue on with the connection and will set the
-                # streamNumber of this send data thread here:
+
                 elif command == 'setStreamNumber':
                     self.streamNumber = data
-                    with shared.printLock:
-                        print 'setting the stream number in the sendData thread (ID:', id(self), ') to', self.streamNumber 
+                    if shared.verbose >= 2:
+                        print(('setting the stream number in the sendData thread (ID:', id(self), ') to', self.streamNumber)) 
+                
                 elif command == 'setRemoteProtocolVersion':
                     specifiedRemoteProtocolVersion = data
-                    with shared.printLock:
-                        print 'setting the remote node\'s protocol version in the sendDataThread (ID:', id(self), ') to', specifiedRemoteProtocolVersion
-                    self.remoteProtocolVersion = specifiedRemoteProtocolVersion
+                    if shared.verbose >= 2:
+                        print(('setting the remote node\'s protocol version in the sendDataThread (ID:', id(self), ') to', specifiedRemoteProtocolVersion))
+                    
+                elif command == 'shutdown':
+                    if shared.verbose >= 2:
+                        print(('sendDataThread (associated with', self.peer, ') ID:', id(self), 'shutting down now.'))
+                    break
+
                 elif command == 'advertisepeer':
                     self.objectHashHolderInstance.holdPeer(data)
                 elif command == 'sendaddr':
@@ -138,7 +153,7 @@ class sendDataThread(threading.Thread):
                             self.sendBytes(packet)
                         except:
                             with shared.printLock:
-                                print 'sendaddr: self.sock.sendall failed'
+                                print('sendaddr: self.sock.sendall failed')
                             break
                 elif command == 'advertiseobject':
                     self.objectHashHolderInstance.holdHash(data)
@@ -155,33 +170,33 @@ class sendDataThread(threading.Thread):
                                 self.sendBytes(packet)
                             except:
                                 with shared.printLock:
-                                    print 'sendinv: self.sock.sendall failed'
+                                    print('sendinv: self.sock.sendall failed')
                                 break
                 elif command == 'pong':
                     self.someObjectsOfWhichThisRemoteNodeIsAlreadyAware.clear() # To save memory, let us clear this data structure from time to time. As its function is to help us keep from sending inv messages to peers which sent us the same inv message mere seconds earlier, it will be fine to clear this data structure from time to time.
                     if self.lastTimeISentData < (int(time.time()) - 298):
                         # Send out a pong message to keep the connection alive.
                         with shared.printLock:
-                            print 'Sending pong to', self.peer, 'to keep connection alive.'
+                            print(('Sending pong to', self.peer, 'to keep connection alive.'))
                         packet = shared.CreatePacket('pong')
                         try:
                             self.sendBytes(packet)
                         except:
                             with shared.printLock:
-                                print 'send pong failed'
+                                print('send pong failed')
                             break
                 elif command == 'sendRawData':
                     try:
                         self.sendBytes(data)
                     except:
                         with shared.printLock:
-                            print 'Sending of data to', self.peer, 'failed. sendDataThread thread', self, 'ending now.' 
+                            print(('Sending of data to', self.peer, 'failed. sendDataThread thread', self, 'ending now.')) 
                         break
                 elif command == 'connectionIsOrWasFullyEstablished':
                     self.connectionIsOrWasFullyEstablished = True
             else:
                 with shared.printLock:
-                    print 'sendDataThread ID:', id(self), 'ignoring command', command, 'because the thread is not in stream', deststream
+                    print(('sendDataThread ID:', id(self), 'ignoring command', command, 'because the thread is not in stream', deststream))
 
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
@@ -190,5 +205,5 @@ class sendDataThread(threading.Thread):
             pass
         shared.sendDataQueues.remove(self.sendDataThreadQueue)
         with shared.printLock:
-            print 'sendDataThread ending. ID:', str(id(self))+'. Number of queues in sendDataQueues:', len(shared.sendDataQueues)
+            print(('sendDataThread ending. ID:', str(id(self))+'. Number of queues in sendDataQueues:', len(shared.sendDataQueues)))
         self.objectHashHolderInstance.close()

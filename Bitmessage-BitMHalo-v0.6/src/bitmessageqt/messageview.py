@@ -1,11 +1,11 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 
 import multiprocessing
 import Queue
 from urlparse import urlparse
 from safehtmlparser import *
 
-class MessageView(QtGui.QTextBrowser):
+class MessageView(QtWidgets.QTextBrowser):
     MODE_PLAIN = 0
     MODE_HTML = 1
     
@@ -41,19 +41,19 @@ class MessageView(QtGui.QTextBrowser):
     def wheelEvent(self, event):
         # super will actually automatically take care of zooming
         super(MessageView, self).wheelEvent(event)
-        if (QtGui.QApplication.queryKeyboardModifiers() & QtCore.Qt.ControlModifier) == QtCore.Qt.ControlModifier and event.orientation() == QtCore.Qt.Vertical:
+        if (QtWidgets.QApplication.queryKeyboardModifiers() & QtCore.Qt.ControlModifier) == QtCore.Qt.ControlModifier and event.orientation() == QtCore.Qt.Vertical:
             zoom = self.currentFont().pointSize() * 100 / self.defaultFontPointSize
-            QtGui.QApplication.activeWindow().statusBar().showMessage(QtGui.QApplication.translate("MainWindow", "Zoom level %1%").arg(str(zoom)))
+            QtWidgets.QApplication.activeWindow().statusBar().showMessage(QtWidgets.QApplication.translate("MainWindow", "Zoom level %1%").arg(str(zoom)))
 
     def setWrappingWidth(self, width=None):
-        self.setLineWrapMode(QtGui.QTextEdit.FixedPixelWidth)
+        self.setLineWrapMode(QtWidgets.QTextEdit.FixedPixelWidth)
         if width is None:
             width = self.width()
         self.setLineWrapColumnOrWidth(width)
 
     def confirmURL(self, link):
         if link.scheme() == "mailto":
-            window = QtGui.QApplication.activeWindow()
+            window = QtWidgets.QApplication.activeWindow()
             window.ui.lineEditTo.setText(link.path())
             if link.hasQueryItem("subject"):
                 window.ui.lineEditSubject.setText(
@@ -68,11 +68,11 @@ class MessageView(QtGui.QTextBrowser):
             )
             window.ui.textEditMessage.setFocus()
             return
-        reply = QtGui.QMessageBox.warning(self,
-            QtGui.QApplication.translate("MessageView", "Follow external link"),
-            QtGui.QApplication.translate("MessageView", "The link \"%1\" will open in a browser. It may be a security risk, it could de-anonymise you or download malicious data. Are you sure?").arg(unicode(link.toString())),
-            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-        if reply == QtGui.QMessageBox.Yes:
+        reply = QtWidgets.QMessageBox.warning(self,
+            QtWidgets.QApplication.translate("MessageView", "Follow external link"),
+            QtWidgets.QApplication.translate("MessageView", "The link \"%1\" will open in a browser. It may be a security risk, it could de-anonymise you or download malicious data. Are you sure?").arg(unicode(link.toString())),
+            QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+        if reply == QtWidgets.QMessageBox.Yes:
             QtGui.QDesktopServices.openUrl(link)
 
     def loadResource (self, restype, name):
@@ -88,7 +88,7 @@ class MessageView(QtGui.QTextBrowser):
         else:
             pass
 #            by default, this will interpret it as a local file
-#            QtGui.QTextBrowser.loadResource(restype, name)
+#            QtWidgets.QTextBrowser.loadResource(restype, name)
 
     def lazyRender(self):
         if self.rendering:
@@ -113,7 +113,7 @@ class MessageView(QtGui.QTextBrowser):
         self.mode = MessageView.MODE_PLAIN
         out = self.html.raw
         if self.html.has_html:
-            out = "<div align=\"center\" style=\"text-decoration: underline;\"><b>" + unicode(QtGui.QApplication.translate("MessageView", "HTML detected, click here to display")) + "</b></div><br/>" + out
+            out = "<div align=\"center\" style=\"text-decoration: underline;\"><b>" + unicode(QtWidgets.QApplication.translate("MessageView", "HTML detected, click here to display")) + "</b></div><br/>" + out
         self.out = out
         self.outpos = 0
         self.setHtml("")
@@ -122,7 +122,7 @@ class MessageView(QtGui.QTextBrowser):
     def showHTML(self):
         self.mode = MessageView.MODE_HTML
         out = self.html.sanitised
-        out = "<div align=\"center\" style=\"text-decoration: underline;\"><b>" + unicode(QtGui.QApplication.translate("MessageView", "Click here to disable HTML")) + "</b></div><br/>" + out
+        out = "<div align=\"center\" style=\"text-decoration: underline;\"><b>" + unicode(QtWidgets.QApplication.translate("MessageView", "Click here to disable HTML")) + "</b></div><br/>" + out
         self.out = out
         self.outpos = 0
         self.setHtml("")

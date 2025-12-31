@@ -2,7 +2,7 @@
 from _functools import reduce
 
 import copy
-from main import *
+from .main import *
 ### Hex to bin converter and vice versa for objects
 
 
@@ -422,13 +422,13 @@ def mk_OPCS_multisig_script(form):
     return res
 
 
-def mk_multisig_script(*args):  # [pubs],k or pub1,pub2...pub[n],k
+def mk_multisig_script(*args):  # [pubs],k or pub1,pub2.pub[n],k
     if isinstance(args[0], list):
         pubs, k = args[0], int(args[1])
     elif len(args) == 1 and isinstance(args[0], dict):
         return mk_OPCS_multisig_script(args[0])
     else:
-        pubs = list(filter(lambda x: len(str(x)) >= 32, args))
+        pubs = list([x for x in args if len(str(x)) >= 32])
         k = int(args[len(pubs)])
     return serialize_script([k]+pubs+[len(pubs)]+[0xae])
 
@@ -497,7 +497,7 @@ def multisign(tx, i, script, pk, hashcode=SIGHASH_ALL):
     return ecdsa_tx_sign(modtx, pk, hashcode)
 
 def apply_multisignatures(*args):
-    # tx,i,script,sigs OR tx,i,script,sig1,sig2...,sig[n]
+    # tx,i,script,sigs OR tx,i,script,sig1,sig2.,sig[n]
     tx, i, script = args[0], int(args[1]), args[2]
     sigs = args[3] if isinstance(args[3], list) else list(args[3:])
 
@@ -520,7 +520,7 @@ def is_inp(arg):
 
 
 def mktx(*args, **kwargs):
-    # [in0, in1...],[out0, out1...] or in0, in1 ... out0 out1 ...
+    # [in0, in1.],[out0, out1.] or in0, in1 . out0 out1 .
     ser = kwargs.get('serialize', True)
     ins, outs = [], []
     for arg in args:
@@ -641,7 +641,7 @@ def mk_opreturn(msg, rawtx=None, json=0):
     if rawtx is not None:
         try:
             txo = deserialize(rawtx)
-            if not 'outs' in txo.keys(): raise Exception("OP_Return cannot be the sole output!")
+            if not 'outs' in list(txo.keys()): raise Exception("OP_Return cannot be the sole output!")
             txo['outs'].append(orjson)
             newrawtx = serialize(txo)
             return newrawtx

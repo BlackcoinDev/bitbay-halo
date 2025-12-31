@@ -68,7 +68,7 @@ class smtpDeliver(threading.Thread, StoppableThread):
                     client.starttls()
                     client.ehlo()
                     client.sendmail(msg['From'], [to], msg.as_string())
-                    logger.info("Delivered via SMTP to %s through %s:%i ...", to, u.hostname, u.port)
+                    logger.info("Delivered via SMTP to %s through %s:%i .", to, u.hostname, u.port)
                     client.quit()
                 except:
                     logger.error("smtp delivery error", exc_info=True)

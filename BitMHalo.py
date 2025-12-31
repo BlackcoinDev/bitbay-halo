@@ -1,5 +1,5 @@
-import BitMessage.class_api as class_api
-import BitMessage.parallelTestModule as parallelTestModule
+import Bitmessage.class_api as class_api
+import Bitmessage.parallelTestModule as parallelTestModule
 import time
 import ast
 import sys, os, inspect, re
@@ -17,11 +17,11 @@ from highlevelcrypto import *
 import traceback
 import re
 import stopit
-import xmlrpclib
+import xmlrpc.client
 import password
 from email.parser import HeaderParser
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.server import SimpleXMLRPCRequestHandler
 #########################################
 providers=[{'@gmail': {'imap':'imap.googlemail.com','smtp':'smtp.googlemail.com','port':587,'SSL':0}},{'@hotmail':{'imap':'imap-mail.outlook.com','smtp':'smtp-mail.outlook.com','port':587,'SSL':0}}, {'@outlook':{'imap':'imap-mail.outlook.com','smtp':'smtp-mail.outlook.com','port':587,'SSL':0}},{'@aol.com':{'imap':'imap.aol.com','smtp':'smtp.aol.com','port':587,'SSL':0}}]#Mail.com support removed. They now charge for imap/smtp {'@mail':{'imap':'imap.mail.com','smtp':'smtp.mail.com','port':587,'SSL':0}}
 imapname = 'imap.googlemail.com'
@@ -44,7 +44,7 @@ global lockTHIS
 lockTHIS=0
 #print txhash(open("blackhalo2.py", 'rb').read())
 #########################################
-from PyQt4.QtCore import QThread
+from PyQt6.QtCore import QThread
 import threading
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
@@ -59,7 +59,7 @@ class RPCThread(QThread): #threading.Thread
     class MyFuncs:
         def ExitBitmessage(self, passw):
             global systemexit
-            sys.stderr.write(str("Closing Bitmessage..."))
+            sys.stderr.write(str("Closing Bitmessage."))
             #if passw=='password'
             try:
                 api.stop()
@@ -128,7 +128,7 @@ if __name__ ==  '__main__':
     #extractor.runInParallel(numProcesses=1, numThreads=1)#EDIT:Was two processes is now one
     path1=sys.argv[0]
     os.environ['no_proxy'] = '127.0.0.1,localhost'
-    myrpc = xmlrpclib.ServerProxy('http://127.0.0.1:8877')
+    myrpc = xmlrpc.client.ServerProxy('http://127.0.0.1:8877')
     application_path=path1
     application_path=application_path.replace("python ","")
     application_path=application_path.replace("python2.7 ","")
@@ -176,7 +176,7 @@ if __name__ ==  '__main__':
     while ch != "exit":
         if systemexit==1:
             systemexit=2
-            sys.stderr.write(str("Closing Bitmessage..."))
+            sys.stderr.write(str("Closing Bitmessage."))
             sys.exit()
         time.sleep(0.23456)
         ticker+=1 #We dont check email messages as compulsively not do we try resending outbox messages as compulsively
@@ -225,7 +225,7 @@ if __name__ ==  '__main__':
                             toAddress="####"
                     verified=0
                     for prov in providers:
-                        for key, val in prov.items():
+                        for key, val in list(prov.items()):
                             pass
                         if key in fromAddress.lower():
                             verified=1
@@ -264,14 +264,14 @@ if __name__ ==  '__main__':
                                 connection.close()
                             else:
                                 b64=base64.b64decode(content['b64img'])
-                                text_content=unicode(content['Data'])
-                                html_content=u'<html><body>' + content['Data'] + \
+                                text_content=str(content['Data'])
+                                html_content='<html><body>' + content['Data'] + \
                                           '<img src="cid:doge" />.\n' \
                                           '</body></html>'
                                 payload, mail_from, rcpt_to, msg_id=pyzmail.compose_mail(\
-                                    (unicode(fromAddress), fromAddress), \
-                                    [(unicode(toAddress), toAddress)], \
-                                    u'Halo', \
+                                    (str(fromAddress), fromAddress), \
+                                    [(str(toAddress), toAddress)], \
+                                    'Halo', \
                                     'iso-8859-1', \
                                     (text_content, 'iso-8859-1'), \
                                     (html_content, 'iso-8859-1'), \
@@ -286,7 +286,7 @@ if __name__ ==  '__main__':
                                         pass
                                 else:
                                     float("A")
-                        except Exception, e:
+                        except Exception as e:
                             sys.stderr.write(str("OUTBOX SENDING ERROR: ")+str(e))
                             ret = False
                     if ret != False or toAddress=="####":#We are not resending bitmessage at the moment
@@ -299,7 +299,7 @@ if __name__ ==  '__main__':
                             f.close()
                     if next==1:
                         pos+=1
-            except Exception, e:
+            except Exception as e:
                 traceback.print_exc()
         try:
             with open(path,'r') as f:
@@ -314,7 +314,7 @@ if __name__ ==  '__main__':
                 except:
                     pass
                 f.close()
-        except Exception,e:
+        except Exception as e:
             traceback.print_exc()
         if data[0] == "0":
             time.sleep(.23456)
@@ -351,7 +351,7 @@ if __name__ ==  '__main__':
                             content="####"
                     verified=0
                     for prov in providers:
-                        for key, val in prov.items():
+                        for key, val in list(prov.items()):
                             pass
                         if key in fromAddress.lower():
                             verified=1
@@ -390,14 +390,14 @@ if __name__ ==  '__main__':
                                 connection.close()
                             else:                               
                                 b64=base64.b64decode(content['b64img'])
-                                text_content=unicode(content['Data'])
-                                html_content=u'<html><body>' + content['Data'] + \
+                                text_content=str(content['Data'])
+                                html_content='<html><body>' + content['Data'] + \
                                           '<img src="cid:doge" />.\n' \
                                           '</body></html>'
                                 payload, mail_from, rcpt_to, msg_id=pyzmail.compose_mail(\
-                                    (unicode(fromAddress), fromAddress), \
-                                    [(unicode(toAddress), toAddress)], \
-                                    u'Halo', \
+                                    (str(fromAddress), fromAddress), \
+                                    [(str(toAddress), toAddress)], \
+                                    'Halo', \
                                     'iso-8859-1', \
                                     (text_content, 'iso-8859-1'), \
                                     (html_content, 'iso-8859-1'), \
@@ -414,17 +414,17 @@ if __name__ ==  '__main__':
                                 else:
                                     float("A")
                                 ret = True
-                        except Exception, e:
+                        except Exception as e:
                             sys.stderr.write(str("SEND ERROR: ")+ str(e))
                             ret = False
-                        if ret== False:#It failed lets write it to an outbox... We could also try repeating until solved. Reporting an email fail via api.
+                        if ret== False:#It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
                             outbox=[]
                             try:
                                 with open(outpath,'r') as f:
                                     outbox=f.readline().strip()
                                     outbox=ast.literal_eval(outbox)
                                     f.close()
-                            except Exception,e:
+                            except Exception as e:
                                 pass
                             try:
                                 if str(original) not in outbox:
@@ -440,7 +440,7 @@ if __name__ ==  '__main__':
                     else:
                         try:
                             ret = api.sendMessage(fromAddress,toAddress,"BitHalo",str(content))
-                        except Exception, e:
+                        except Exception as e:
                             ret = "False"+str(content)
                     try:
                         waitlock()
@@ -459,7 +459,7 @@ if __name__ ==  '__main__':
                         sys.stderr.write(str("File Error"))
                 if ch == "GetMessages" or ch == "Remove Order" or ch == "Clean Inbox":
                     if ticker2>22:
-                        sys.stderr.write(str("\n\n\nChecking Inbox...\n\n\n"))
+                        sys.stderr.write(str("\n\n\nChecking Inbox.\n\n\n"))
                         ticker2=0
                         #Gets messages
                         inbox=[]
@@ -475,7 +475,7 @@ if __name__ ==  '__main__':
                                     sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                                 verified=0
                                 for prov in providers:
-                                    for key, val in prov.items():
+                                    for key, val in list(prov.items()):
                                         pass
                                     if key in dat['Email Address'].lower():
                                         verified=1
@@ -517,7 +517,7 @@ if __name__ ==  '__main__':
                                                 msg_ids1=set([])
                                                 try:
                                                     typ, msg_ids1 = connection.uid('search', None, '(SUBJECT "Halo")')#connection.search(None, '(SUBJECT "Halo")')
-                                                except Exception, e:
+                                                except Exception as e:
                                                     sys.stderr.write(str("SEARCH ERROR")+str(e))
                                                     continue
                                                 msg_ids = msg_ids1[0]
@@ -563,14 +563,14 @@ if __name__ ==  '__main__':
                                                         try:
                                                             if systemexit==1:#Attempt a clean exit when possible
                                                                 systemexit=2
-                                                                sys.stderr.write(str("Closing Bitmessage..."))
+                                                                sys.stderr.write(str("Closing Bitmessage."))
                                                                 sys.exit()
-                                                            sys.stderr.write(str("\n\nFETCHING...\n\n"))
+                                                            sys.stderr.write(str("\n\nFETCHING.\n\n"))
                                                             #This is to prevent dropped connections, for now only on fetching
                                                             timeresult = False
                                                             try:#Let Halo know through RPC we started to download
                                                                 myrpc.MessageStatus("1","password")
-                                                            except Exception, e:
+                                                            except Exception as e:
                                                                 pass
                                                             @stopit.threading_timeoutable(timeout_param='my_timeout')
                                                             def timethis():#If we get dropped, we can time out
@@ -582,7 +582,7 @@ if __name__ ==  '__main__':
                                                                 float("A")
                                                             try:#Let Halo know through RPC we finished
                                                                 myrpc.MessageStatus("0","password")
-                                                            except Exception, e:
+                                                            except Exception as e:
                                                                 pass
                                                             sys.stderr.write(str("\n\nFETCHED!!\n\n"))
                                                             #readmessages.append(msg_id)
@@ -622,7 +622,7 @@ if __name__ ==  '__main__':
                                                                             body=str(msg.encode('utf8'))
                                                                         except:
                                                                             body=str(msg)
-                                                        except Exception, e:
+                                                        except Exception as e:
                                                             sys.stderr.write(str("MESSAGE ERROR "))
                                                             sys.stderr.write(str(e))
                                                         mymessage['toAddress']=str(src1)
@@ -685,7 +685,7 @@ if __name__ ==  '__main__':
                                                                 MyCipher=base64.b64decode(MyCipher)
                                                                 MyCipher=decrypt(MyCipher, dat['Private Key'])
                                                                 body=MyCipher
-                                                            except Exception, e:
+                                                            except Exception as e:
                                                                 try:
                                                                     body=body.replace("=\r\n","")
                                                                     body=body.replace("\r\n","")
@@ -734,7 +734,7 @@ if __name__ ==  '__main__':
                                                 if systemexit==2:
                                                     sys.exit()
                                                 pass
-                                        sys.stderr.write(str("\n\nClosing...\n\n"))
+                                        sys.stderr.write(str("\n\nClosing.\n\n"))
                                         connection.close()
                                         sys.stderr.write(str("\n\nCLOSED!\n\n"))
                                         try:
@@ -749,13 +749,13 @@ if __name__ ==  '__main__':
                                         except:
                                             lockTHIS=0
                                             sys.stderr.write(str("\n\Cache write error!\n\n"))
-                                    except Exception, e:
+                                    except Exception as e:
                                         if systemexit==2:
                                             sys.exit()
                                         sys.stderr.write(str("\n\n\nException with inbox\n\n\n"))
                                         ret=False
                                         traceback.print_exc()
-                        except Exception, e:
+                        except Exception as e:
                             if systemexit==2:
                                 sys.exit()
                             traceback.print_exc()
@@ -819,7 +819,7 @@ if __name__ ==  '__main__':
                                 os.fsync(f)
                                 f.close()
                             lockTHIS=0
-                        except Exception, e:
+                        except Exception as e:
                             lockTHIS=0
                             traceback.print_exc()
                             pass

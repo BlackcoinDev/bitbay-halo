@@ -8,10 +8,10 @@ useVeryEasyProofOfWorkForTesting = False  # If you set this to True while on the
 
 # Libraries.
 import collections
-import ConfigParser
+import configparser as ConfigParser
 import os
 import pickle
-import Queue
+import queue as Queue
 import random
 import socket
 import sys
@@ -23,14 +23,14 @@ from struct import Struct
 import traceback
 
 # Project imports.
-from addresses import *
-import highlevelcrypto
-import shared
+from .addresses import *
+from . import highlevelcrypto
+from . import shared
 #import helper_startup
-from helper_sql import *
+from .helper_sql import *
 
 
-config = ConfigParser.SafeConfigParser()
+config = ConfigParser.ConfigParser()
 myECCryptorObjects = {}
 MyECSubscriptionCryptorObjects = {}
 myAddressesByHash = {} #The key in this dictionary is the RIPE hash which is encoded in an address and value is the address itself.
@@ -258,7 +258,7 @@ def lookupAppdataFolder():
             if 'logger' in globals():
                 logger.critical(stringToLog)
             else:
-                print stringToLog
+                print(stringToLog)
             sys.exit()
 
     elif 'win32' in sys.platform or 'win64' in sys.platform:
@@ -277,7 +277,7 @@ def lookupAppdataFolder():
             if 'logger' in globals():
                 logger.info(stringToLog)
             else:
-                print stringToLog
+                print(stringToLog)
         except IOError:
             # Old directory may not exist.
             pass
@@ -290,7 +290,7 @@ def isAddressInMyAddressBook(address):
         address)
     return queryreturn != []
 
-#At this point we should really just have a isAddressInMy(book, address)...
+#At this point we should really just have a isAddressInMy(book, address).
 def isAddressInMySubscriptionsList(address):
     queryreturn = sqlQuery(
         '''select * from subscriptions where address=?''',
@@ -302,40 +302,40 @@ def isAddressInMyAddressBookSubscriptionsListOrWhitelist(address):
         return True
 
     queryreturn = sqlQuery('''SELECT address FROM whitelist where address=? and enabled = '1' ''', address)
-    if queryreturn <> []:
+    if queryreturn != []:
         return True
 
     queryreturn = sqlQuery(
         '''select address from subscriptions where address=? and enabled = '1' ''',
         address)
-    if queryreturn <> []:
+    if queryreturn != []:
         return True
     return False
 
 def safeConfigGetBoolean(section,field):
     try:
         return config.getboolean(section,field)
-    except Exception, err:
+    except Exception as err:
         return False
 
 def decodeWalletImportFormat(WIFstring):
-    fullString = arithmetic.changebase(WIFstring,58,256)
+    fullString = arithmetic.changebase(WIFstring,58,256).encode('latin1')
     privkey = fullString[:-4]
     if fullString[-4:] != hashlib.sha256(hashlib.sha256(privkey).digest()).digest()[:4]:
         logger.critical('Major problem! When trying to decode one of your private keys, the checksum '
                      'failed. Here are the first 6 characters of the PRIVATE key: %s' % str(WIFstring)[:6])
         os._exit(0)
-        return ""
+        return b""
     else:
         #checksum passed
-        if privkey[0] == '\x80':
+        if privkey[0] == 0x80: # privkey is bytes now, so check int check
             return privkey[1:]
         else:
             logger.critical('Major problem! When trying to decode one of your private keys, the '
                          'checksum passed but the key doesn\'t begin with hex 80. Here is the '
                          'PRIVATE key: %s' % str(WIFstring))
             os._exit(0)
-            return ""
+            return b""
 
 
 def reloadMyAddressHashes():
@@ -349,7 +349,7 @@ def reloadMyAddressHashes():
     configSections = config.sections()
     hasEnabledKeys = False
     for addressInKeysFile in configSections:
-        if addressInKeysFile <> 'bitmessagesettings':
+        if addressInKeysFile != 'bitmessagesettings':
             isEnabled = config.getboolean(addressInKeysFile, 'enabled')
             if isEnabled:
                 hasEnabledKeys = True
@@ -358,7 +358,7 @@ def reloadMyAddressHashes():
                     # Returns a simple 32 bytes of information encoded in 64 Hex characters,
                     # or null if there was an error.
                     privEncryptionKey = decodeWalletImportFormat(
-                            config.get(addressInKeysFile, 'privencryptionkey')).encode('hex')
+                            config.get(addressInKeysFile, 'privencryptionkey')).hex()
 
                     if len(privEncryptionKey) == 64:#It is 32 bytes encoded as 64 hex characters
                         myECCryptorObjects[hash] = highlevelcrypto.makeCryptor(privEncryptionKey)
@@ -377,7 +377,7 @@ def reloadBroadcastSendersForWhichImWatching():
     broadcastSendersForWhichImWatching.clear()
     MyECSubscriptionCryptorObjects.clear()
     queryreturn = sqlQuery('SELECT address FROM subscriptions where enabled=1')
-    logger.debug('reloading subscriptions...')
+    logger.debug('reloading subscriptions.')
     for row in queryreturn:
         address, = row
         status,addressVersionNumber,streamNumber,hash = decodeAddress(address)
@@ -387,13 +387,13 @@ def reloadBroadcastSendersForWhichImWatching():
         
         if addressVersionNumber <= 3:
             privEncryptionKey = hashlib.sha512(encodeVarint(addressVersionNumber)+encodeVarint(streamNumber)+hash).digest()[:32]
-            MyECSubscriptionCryptorObjects[hash] = highlevelcrypto.makeCryptor(privEncryptionKey.encode('hex'))
+            MyECSubscriptionCryptorObjects[hash] = highlevelcrypto.makeCryptor(privEncryptionKey.hex())
         else:
             doubleHashOfAddressData = hashlib.sha512(hashlib.sha512(encodeVarint(
                 addressVersionNumber) + encodeVarint(streamNumber) + hash).digest()).digest()
             tag = doubleHashOfAddressData[32:]
             privEncryptionKey = doubleHashOfAddressData[:32]
-            MyECSubscriptionCryptorObjects[tag] = highlevelcrypto.makeCryptor(privEncryptionKey.encode('hex'))
+            MyECSubscriptionCryptorObjects[tag] = highlevelcrypto.makeCryptor(privEncryptionKey.hex())
 
 def isProofOfWorkSufficient(data,
                             nonceTrialsPerByte=0,
@@ -420,20 +420,20 @@ def doCleanShutdown():
         objectProcessorQueue.put(('checkShutdownVariable',data))
     
     knownNodesLock.acquire()
-    UISignalQueue.put(('updateStatusBar','Saving the knownNodes list of peers to disk...'))
+    UISignalQueue.put(('updateStatusBar','Saving the knownNodes list of peers to disk.'))
     output = open(appdata + 'knownnodes.dat', 'wb')
     logger.info('finished opening knownnodes.dat. Now pickle.dump')
     pickle.dump(knownNodes, output)
-    logger.info('Completed pickle.dump. Closing output...')
+    logger.info('Completed pickle.dump. Closing output.')
     output.close()
     knownNodesLock.release()
     logger.info('Finished closing knownnodes.dat output file.')
     UISignalQueue.put(('updateStatusBar','Done saving the knownNodes list of peers to disk.'))
 
-    logger.info('Flushing inventory in memory out to disk...')
+    logger.info('Flushing inventory in memory out to disk.')
     UISignalQueue.put((
         'updateStatusBar',
-        'Flushing inventory in memory out to disk. This should normally only take a second...'))
+        'Flushing inventory in memory out to disk. This should normally only take a second.'))
     flushInventory()
     
     # Verify that the objectProcessor has finished exiting. It should have incremented the 
@@ -466,16 +466,17 @@ def broadcastToSendDataQueues(data):
 def flushInventory():
     #Note that the singleCleanerThread clears out the inventory dictionary from time to time, although it only clears things that have been in the dictionary for a long time. This clears the inventory dictionary Now.
     with SqlBulkExecute() as sql:
-        for hash, storedValue in inventory.items():
+        for hash, storedValue in list(inventory.items()):
             objectType, streamNumber, payload, expiresTime, tag = storedValue
             sql.execute('''INSERT INTO inventory VALUES (?,?,?,?,?,?)''',
                        hash,objectType,streamNumber,payload,expiresTime,tag)
             del inventory[hash]
 
 def fixPotentiallyInvalidUTF8Data(text):
-    try:
-        unicode(text,'utf-8')
+    if isinstance(text, str):
         return text
+    try:
+        return text.decode('utf-8')
     except:
         output = 'Part of the message is corrupt. The message cannot be displayed the normal way.\n\n' + repr(text)
         return output
@@ -529,7 +530,7 @@ def fixSensitiveFilePermissions(filename, hasEnabledKeys):
 
         logger.info('Keyfile permissions automatically fixed.')
 
-    except Exception, e:
+    except Exception as e:
         logger.exception('Keyfile permissions could not be fixed.')
         raise
     
@@ -603,9 +604,9 @@ def decryptAndCheckPubkeyPayload(data, address):
         readPosition = 0
         bitfieldBehaviors = decryptedData[readPosition:readPosition + 4]
         readPosition += 4
-        publicSigningKey = '\x04' + decryptedData[readPosition:readPosition + 64]
+        publicSigningKey = b'\x04' + decryptedData[readPosition:readPosition + 64]
         readPosition += 64
-        publicEncryptionKey = '\x04' + decryptedData[readPosition:readPosition + 64]
+        publicEncryptionKey = b'\x04' + decryptedData[readPosition:readPosition + 64]
         readPosition += 64
         specifiedNonceTrialsPerByte, specifiedNonceTrialsPerByteLength = decodeVarint(
             decryptedData[readPosition:readPosition + 10])
@@ -620,12 +621,12 @@ def decryptAndCheckPubkeyPayload(data, address):
         readPosition += signatureLengthLength
         signature = decryptedData[readPosition:readPosition + signatureLength]
         
-        if highlevelcrypto.verify(signedDataOldMethod, signature, publicSigningKey.encode('hex')):
+        if highlevelcrypto.verify(signedDataOldMethod, signature, publicSigningKey.hex()):
             logger.info('ECDSA verify passed (within decryptAndCheckPubkeyPayload, old method)')
         else:
             logger.info('ECDSA verify failed (within decryptAndCheckPubkeyPayload, old method)')
             # Try the protocol v3 signing method
-            if highlevelcrypto.verify(signedDataNewMethod, signature, publicSigningKey.encode('hex')):
+            if highlevelcrypto.verify(signedDataNewMethod, signature, publicSigningKey.hex()):
                 logger.info('ECDSA verify passed (within decryptAndCheckPubkeyPayload, new method)')
             else:
                 logger.info('ECDSA verify failed (within decryptAndCheckPubkeyPayload, new method)')
@@ -651,9 +652,9 @@ def decryptAndCheckPubkeyPayload(data, address):
                     publicSigningKey in hex: %s\n\
                     publicEncryptionKey in hex: %s' % (addressVersion,
                                                        streamNumber, 
-                                                       ripe.encode('hex'), 
-                                                       publicSigningKey.encode('hex'), 
-                                                       publicEncryptionKey.encode('hex')
+                                                       ripe.hex(), 
+                                                       publicSigningKey.hex(), 
+                                                       publicEncryptionKey.hex()
                                                        )
                     )
     
@@ -743,7 +744,7 @@ def _checkAndShareUndefinedObjectWithPeers(data):
         objectType, streamNumber, data, embeddedTime,'')
     inventorySets[streamNumber].add(inventoryHash)
     inventoryLock.release()
-    logger.debug('advertising inv with hash: %s' % inventoryHash.encode('hex'))
+    logger.debug('advertising inv with hash: %s' % inventoryHash.hex())
     broadcastToSendDataQueues((streamNumber, 'advertiseobject', inventoryHash))
     
     
@@ -773,7 +774,7 @@ def _checkAndShareMsgWithPeers(data):
         objectType, streamNumber, data, embeddedTime,'')
     inventorySets[streamNumber].add(inventoryHash)
     inventoryLock.release()
-    logger.debug('advertising inv with hash: %s' % inventoryHash.encode('hex'))
+    logger.debug('advertising inv with hash: %s' % inventoryHash.hex())
     broadcastToSendDataQueues((streamNumber, 'advertiseobject', inventoryHash))
 
     # Now let's enqueue it to be processed ourselves.
@@ -820,7 +821,7 @@ def _checkAndShareGetpubkeyWithPeers(data):
     inventorySets[streamNumber].add(inventoryHash)
     inventoryLock.release()
     # This getpubkey request is valid. Forward to peers.
-    logger.debug('advertising inv with hash: %s' % inventoryHash.encode('hex'))
+    logger.debug('advertising inv with hash: %s' % inventoryHash.hex())
     broadcastToSendDataQueues((streamNumber, 'advertiseobject', inventoryHash))
 
     # Now let's queue it to be processed ourselves.
@@ -847,7 +848,7 @@ def _checkAndSharePubkeyWithPeers(data):
         return
     if addressVersion >= 4:
         tag = data[readPosition:readPosition + 32]
-        logger.debug('tag in received pubkey is: %s' % tag.encode('hex'))
+        logger.debug('tag in received pubkey is: %s' % tag.hex())
     else:
         tag = ''
 
@@ -868,7 +869,7 @@ def _checkAndSharePubkeyWithPeers(data):
     inventorySets[streamNumber].add(inventoryHash)
     inventoryLock.release()
     # This object is valid. Forward it to peers.
-    logger.debug('advertising inv with hash: %s' % inventoryHash.encode('hex'))
+    logger.debug('advertising inv with hash: %s' % inventoryHash.hex())
     broadcastToSendDataQueues((streamNumber, 'advertiseobject', inventoryHash))
 
 
@@ -918,7 +919,7 @@ def _checkAndShareBroadcastWithPeers(data):
     inventorySets[streamNumber].add(inventoryHash)
     inventoryLock.release()
     # This object is valid. Forward it to peers.
-    logger.debug('advertising inv with hash: %s' % inventoryHash.encode('hex'))
+    logger.debug('advertising inv with hash: %s' % inventoryHash.hex())
     broadcastToSendDataQueues((streamNumber, 'advertiseobject', inventoryHash))
 
     # Now let's queue it to be processed ourselves.
@@ -929,4 +930,4 @@ def _checkAndShareBroadcastWithPeers(data):
         shared.objectProcessorQueueSize += len(data)
         objectProcessorQueue.put((objectType,data))
 
-from debug import logger
+from .debug import logger

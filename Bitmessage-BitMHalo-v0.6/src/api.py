@@ -890,7 +890,7 @@ class MySimpleXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
         # Let us do the POW
         target = 2 ** 64 / ((len(payload) + defaults.networkDefaultPayloadLengthExtraBytes +
                              8) * defaults.networkDefaultProofOfWorkNonceTrialsPerByte)
-        print '(For pubkey message via API) Doing proof of work...'
+        print '(For pubkey message via API) Doing proof of work.'
         initialHash = hashlib.sha512(payload).digest()
         trialValue, nonce = proofofwork.run(target, initialHash)
         print '(For pubkey message via API) Found proof of work', trialValue, 'Nonce:', nonce

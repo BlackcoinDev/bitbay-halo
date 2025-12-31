@@ -1,13 +1,13 @@
 import unittest
 import time
 import tempfile
-import class_api
-import xmlrpclib
+from . import class_api
+import xmlrpc.client
 class XMLRPC_TEST(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        print 'Testing XMLRPC Implementation'
+        print('Testing XMLRPC Implementation')
         
 
         
@@ -19,7 +19,7 @@ class XMLRPC_TEST(unittest.TestCase):
         server.start('localhost',9000)
         
         global api
-        api = xmlrpclib.ServerProxy("http://localhost:9000") 
+        api = xmlrpc.client.ServerProxy("http://localhost:9000") 
         time.sleep(5)
 
     @classmethod
@@ -122,7 +122,7 @@ class XMLRPC_TEST(unittest.TestCase):
     #~ 
     def test_08_manage_inbox_messages(self):
         if api.clientStatus()['networkStatus'] == 'notConnected':
-            raise IOError,'Not Connected'
+            raise IOError('Not Connected')
         addr = api.createRandomAddress('sendtest')
         counter = 0
         ackdata = api.sendMessage(addr,addr,'test','test')
@@ -131,7 +131,7 @@ class XMLRPC_TEST(unittest.TestCase):
                 ackdata = api.sendMessage(addr,addr,'apitest','apitest\nhttps://github.com/merlink01/PyBitAPI')
             time.sleep(10)
             if api.clientStatus()['networkStatus'] == 'notConnected':
-                raise IOError,'Not Connected'
+                raise IOError('Not Connected')
             
         assert api.getAllInboxMessages() != [],api.getAllInboxMessages()
         assert api.getAllInboxMessageIDs() != [],api.getAllInboxMessageIDs()

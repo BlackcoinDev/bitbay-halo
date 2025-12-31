@@ -1,4 +1,4 @@
-from PyQt4 import QtGui
+from PyQt6 import QtGui
 from Queue import Empty
 
 from addresses import decodeAddress, addBMIfNotPresent
@@ -31,7 +31,7 @@ class AddressPassPhraseValidatorMixin():
             if string is not None and self.feedBackObject is not None:
                 self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setText(_translate("AddressValidator", "Invalid"))
             else:
-                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setText(_translate("AddressValidator", "Validating..."))
+                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setText(_translate("AddressValidator", "Validating."))
 
     def setOK(self, string):
         if string is not None and self.feedBackObject is not None:

@@ -2,8 +2,8 @@ from debug import logger
 import sys
 
 try:
-    from PyQt4 import QtCore, QtGui
-    from PyQt4.QtNetwork import QLocalSocket, QLocalServer
+    from PyQt6 import QtCore, QtGui
+    from PyQt6.QtNetwork import QLocalSocket, QLocalServer
 except Exception as err:
     logmsg = 'PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. You can download it from http://www.riverbankcomputing.com/software/pyqt/download or by searching Google for \'PyQt Download\' (without quotes).'
     logger.critical(logmsg, exc_info=True)
@@ -72,19 +72,19 @@ def change_translation(newlocale):
     global qmytranslator, qsystranslator
     try:
         if not qmytranslator.isEmpty():
-            QtGui.QApplication.removeTranslator(qmytranslator)
+            QtWidgets.QApplication.removeTranslator(qmytranslator)
     except:
         pass
     try:
         if not qsystranslator.isEmpty():
-            QtGui.QApplication.removeTranslator(qsystranslator)
+            QtWidgets.QApplication.removeTranslator(qsystranslator)
     except:
         pass
 
     qmytranslator = QtCore.QTranslator()
     translationpath = os.path.join (paths.codePath(), 'translations', 'bitmessage_' + newlocale)
     qmytranslator.load(translationpath)
-    QtGui.QApplication.installTranslator(qmytranslator)
+    QtWidgets.QApplication.installTranslator(qmytranslator)
 
     qsystranslator = QtCore.QTranslator()
     if paths.frozen:
@@ -92,7 +92,7 @@ def change_translation(newlocale):
     else:
         translationpath = os.path.join (str(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)), 'qt_' + newlocale)
     qsystranslator.load(translationpath)
-    QtGui.QApplication.installTranslator(qsystranslator)
+    QtWidgets.QApplication.installTranslator(qsystranslator)
 
     lang = locale.normalize(l10n.getTranslationLanguage())
     langs = [lang.split(".")[0] + "." + l10n.encoding, lang.split(".")[0] + "." + 'UTF-8', lang]
@@ -165,7 +165,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_inbox_popup_menu(self, connectSignal=True):
         # Popup menu for the Inbox tab
-        self.ui.inboxContextMenuToolbar = QtGui.QToolBar()
+        self.ui.inboxContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
         self.actionReply = self.ui.inboxContextMenuToolbar.addAction(_translate(
             "MainWindow", "Reply to sender"), self.on_action_InboxReply)
@@ -191,7 +191,7 @@ class MyForm(settingsmixin.SMainWindow):
             self.on_action_InboxMessageForceHtml)
         self.actionSaveMessageAs = self.ui.inboxContextMenuToolbar.addAction(
             _translate(
-                "MainWindow", "Save message as..."),
+                "MainWindow", "Save message as."),
             self.on_action_InboxSaveMessageAs)
         self.actionMarkUnread = self.ui.inboxContextMenuToolbar.addAction(
             _translate(
@@ -219,7 +219,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_identities_popup_menu(self, connectSignal=True):
         # Popup menu for the Your Identities tab
-        self.ui.addressContextMenuToolbarYourIdentities = QtGui.QToolBar()
+        self.ui.addressContextMenuToolbarYourIdentities = QtWidgets.QToolBar()
         # Actions
         self.actionNewYourIdentities = self.ui.addressContextMenuToolbarYourIdentities.addAction(_translate(
             "MainWindow", "New"), self.on_action_YourIdentitiesNew)
@@ -231,7 +231,7 @@ class MyForm(settingsmixin.SMainWindow):
                 "MainWindow", "Disable"), self.on_action_Disable)
         self.actionSetAvatarYourIdentities = self.ui.addressContextMenuToolbarYourIdentities.addAction(
             _translate(
-                "MainWindow", "Set avatar..."),
+                "MainWindow", "Set avatar."),
             self.on_action_TreeWidgetSetAvatar)
         self.actionClipboardYourIdentities = self.ui.addressContextMenuToolbarYourIdentities.addAction(
             _translate(
@@ -239,7 +239,7 @@ class MyForm(settingsmixin.SMainWindow):
             self.on_action_Clipboard)
         self.actionSpecialAddressBehaviorYourIdentities = self.ui.addressContextMenuToolbarYourIdentities.addAction(
             _translate(
-                "MainWindow", "Special address behavior..."),
+                "MainWindow", "Special address behavior."),
             self.on_action_SpecialAddressBehaviorDialog)
         self.actionEmailGateway = self.ui.addressContextMenuToolbarYourIdentities.addAction(
             _translate(
@@ -259,7 +259,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_chan_popup_menu(self, connectSignal=True):
         # Popup menu for the Channels tab
-        self.ui.addressContextMenuToolbar = QtGui.QToolBar()
+        self.ui.addressContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
         self.actionNew = self.ui.addressContextMenuToolbar.addAction(_translate(
             "MainWindow", "New"), self.on_action_YourIdentitiesNew)
@@ -274,7 +274,7 @@ class MyForm(settingsmixin.SMainWindow):
                 "MainWindow", "Disable"), self.on_action_Disable)
         self.actionSetAvatar = self.ui.addressContextMenuToolbar.addAction(
             _translate(
-                "MainWindow", "Set avatar..."),
+                "MainWindow", "Set avatar."),
             self.on_action_TreeWidgetSetAvatar)
         self.actionClipboard = self.ui.addressContextMenuToolbar.addAction(
             _translate(
@@ -282,7 +282,7 @@ class MyForm(settingsmixin.SMainWindow):
             self.on_action_Clipboard)
         self.actionSpecialAddressBehavior = self.ui.addressContextMenuToolbar.addAction(
             _translate(
-                "MainWindow", "Special address behavior..."),
+                "MainWindow", "Special address behavior."),
             self.on_action_SpecialAddressBehaviorDialog)
 
         self.ui.treeWidgetChans.setContextMenuPolicy(
@@ -294,7 +294,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_addressbook_popup_menu(self, connectSignal=True):
         # Popup menu for the Address Book page
-        self.ui.addressBookContextMenuToolbar = QtGui.QToolBar()
+        self.ui.addressBookContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
         self.actionAddressBookSend = self.ui.addressBookContextMenuToolbar.addAction(
             _translate(
@@ -310,11 +310,11 @@ class MyForm(settingsmixin.SMainWindow):
             self.on_action_AddressBookSubscribe)
         self.actionAddressBookSetAvatar = self.ui.addressBookContextMenuToolbar.addAction(
             _translate(
-                "MainWindow", "Set avatar..."),
+                "MainWindow", "Set avatar."),
             self.on_action_AddressBookSetAvatar)
         self.actionAddressBookSetSound = \
             self.ui.addressBookContextMenuToolbar.addAction(
-                _translate("MainWindow", "Set notification sound..."),
+                _translate("MainWindow", "Set notification sound."),
                 self.on_action_AddressBookSetSound)
         self.actionAddressBookNew = self.ui.addressBookContextMenuToolbar.addAction(
             _translate(
@@ -331,7 +331,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_subscriptions_popup_menu(self, connectSignal=True):
         # Popup menu for the Subscriptions page
-        self.ui.subscriptionsContextMenuToolbar = QtGui.QToolBar()
+        self.ui.subscriptionsContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
         self.actionsubscriptionsNew = self.ui.subscriptionsContextMenuToolbar.addAction(
             _translate("MainWindow", "New"), self.on_action_SubscriptionsNew)
@@ -348,7 +348,7 @@ class MyForm(settingsmixin.SMainWindow):
             _translate("MainWindow", "Disable"),
             self.on_action_SubscriptionsDisable)
         self.actionsubscriptionsSetAvatar = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "Set avatar..."),
+            _translate("MainWindow", "Set avatar."),
             self.on_action_TreeWidgetSetAvatar)
         self.ui.treeWidgetSubscriptions.setContextMenuPolicy(
             QtCore.Qt.CustomContextMenu)
@@ -359,7 +359,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def init_sent_popup_menu(self, connectSignal=True):
         # Popup menu for the Sent page
-        self.ui.sentContextMenuToolbar = QtGui.QToolBar()
+        self.ui.sentContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
         self.actionTrashSentMessage = self.ui.sentContextMenuToolbar.addAction(
             _translate(
@@ -371,7 +371,7 @@ class MyForm(settingsmixin.SMainWindow):
         self.actionForceSend = self.ui.sentContextMenuToolbar.addAction(
             _translate(
                 "MainWindow", "Force send"), self.on_action_ForceSend)
-        # self.popMenuSent = QtGui.QMenu( self )
+        # self.popMenuSent = QtWidgets.QMenu( self )
         # self.popMenuSent.addAction( self.actionSentClipboard )
         # self.popMenuSent.addAction( self.actionTrashSentMessage )
 
@@ -574,7 +574,7 @@ class MyForm(settingsmixin.SMainWindow):
         treeWidget.setSortingEnabled(True)
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -587,9 +587,9 @@ class MyForm(settingsmixin.SMainWindow):
                 displayMsg = _translate(
                     "MainWindow", "One of your addresses, %1, is an old version 1 address. Version 1 addresses are no longer supported. "
                     + "May we delete it now?").arg(addressInKeysFile)
-                reply = QtGui.QMessageBox.question(
-                    self, 'Message', displayMsg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-                if reply == QtGui.QMessageBox.Yes:
+                reply = QtWidgets.QMessageBox.question(
+                    self, 'Message', displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+                if reply == QtWidgets.QMessageBox.Yes:
                     BMConfigParser().remove_section(addressInKeysFile)
                     BMConfigParser().save()
 
@@ -689,8 +689,8 @@ class MyForm(settingsmixin.SMainWindow):
             "itemSelectionChanged ()"), self.treeWidgetItemClicked)
         QtCore.QObject.connect(self.ui.treeWidgetChans, QtCore.SIGNAL(
             "itemChanged (QTreeWidgetItem *, int)"), self.treeWidgetItemChanged)
-        QtCore.QObject.connect(
-            self.ui.tabWidget, QtCore.SIGNAL("currentChanged(int)"),
+        
+            self.ui.tabWidget.currentChanged.connect(
             self.tabWidgetCurrentChanged
         )
 
@@ -699,7 +699,7 @@ class MyForm(settingsmixin.SMainWindow):
         self.setStatusBar(BMStatusBar())
         self.statusbar = self.statusBar()
 
-        self.pushButtonStatusIcon = QtGui.QPushButton(self)
+        self.pushButtonStatusIcon = QtWidgets.QPushButton(self)
         self.pushButtonStatusIcon.setText('')
         self.pushButtonStatusIcon.setIcon(
             QtGui.QIcon(':/newPrefix/images/redicon.png'))
@@ -838,7 +838,7 @@ class MyForm(settingsmixin.SMainWindow):
         else:
             self.show()
             self.setWindowState(
-                self.windowState() & ~QtCore.Qt.WindowMinimized | QtCore.Qt.WindowActive)
+                self.windowState() & ~QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized | QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowActive)
             self.raise_()
             self.activateWindow()
 
@@ -872,7 +872,7 @@ class MyForm(settingsmixin.SMainWindow):
         print self.actionShow.isChecked()
         if not self.actionShow.isChecked():
             self.hide()
-            #self.setWindowState(self.windowState() & QtCore.Qt.WindowMinimized)
+            #self.setWindowState(self.windowState() & QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized)
         else:
             self.appIndicatorShowOrHideWindow()"""
 
@@ -933,7 +933,7 @@ class MyForm(settingsmixin.SMainWindow):
             # returns an empty list
             for rrow in xrange(related.rowCount()):
                 if msgid == str(related.item(rrow, 3).data(
-                        QtCore.Qt.UserRole).toPyObject()):
+                        QtCore.Qt.UserRole)):
                     break
             else:
                 rrow = None
@@ -1075,7 +1075,7 @@ class MyForm(settingsmixin.SMainWindow):
         newItem.setData(QtCore.Qt.UserRole, QtCore.QByteArray(ackdata))
         newItem.setData(33, int(lastactiontime))
         newItem.setFlags(
-            QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
         items.append(newItem)
         self.addMessageListItem(tableWidget, items)
         return acct
@@ -1106,7 +1106,7 @@ class MyForm(settingsmixin.SMainWindow):
         time_item.setData(QtCore.Qt.UserRole, QtCore.QByteArray(msgid))
         time_item.setData(33, int(received))
         time_item.setFlags(
-            QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
         if not read:
             time_item.setFont(font)
         items.append(time_item)
@@ -1187,19 +1187,19 @@ class MyForm(settingsmixin.SMainWindow):
         QtCore.QObject.connect(self.tray, QtCore.SIGNAL(
             traySignal), self.__icon_activated)
 
-        m = QtGui.QMenu()
+        m = QtWidgets.QMenu()
 
-        self.actionStatus = QtGui.QAction(_translate(
+        self.actionStatus = QtWidgets.QAction(_translate(
             "MainWindow", "Not Connected"), m, checkable=False)
         m.addAction(self.actionStatus)
 
         # separator
-        actionSeparator = QtGui.QAction('', m, checkable=False)
+        actionSeparator = QtWidgets.QAction('', m, checkable=False)
         actionSeparator.setSeparator(True)
         m.addAction(actionSeparator)
 
         # show bitmessage
-        self.actionShow = QtGui.QAction(_translate(
+        self.actionShow = QtWidgets.QAction(_translate(
             "MainWindow", "Show Bitmessage"), m, checkable=True)
         self.actionShow.setChecked(not BMConfigParser().getboolean(
             'bitmessagesettings', 'startintray'))
@@ -1208,7 +1208,7 @@ class MyForm(settingsmixin.SMainWindow):
             m.addAction(self.actionShow)
 
         # quiet mode
-        self.actionQuiet = QtGui.QAction(_translate(
+        self.actionQuiet = QtWidgets.QAction(_translate(
             "MainWindow", "Quiet Mode"), m, checkable=True)
         self.actionQuiet.setChecked(not BMConfigParser().getboolean(
             'bitmessagesettings', 'showtraynotifications'))
@@ -1216,25 +1216,21 @@ class MyForm(settingsmixin.SMainWindow):
         m.addAction(self.actionQuiet)
 
         # Send
-        actionSend = QtGui.QAction(_translate(
+        actionSend = QtWidgets.QAction(_translate(
             "MainWindow", "Send"), m, checkable=False)
         actionSend.triggered.connect(self.appIndicatorSend)
         m.addAction(actionSend)
 
         # Subscribe
-        actionSubscribe = QtGui.QAction(_translate(
+        actionSubscribe = QtWidgets.QAction(_translate(
             "MainWindow", "Subscribe"), m, checkable=False)
         actionSubscribe.triggered.connect(self.appIndicatorSubscribe)
         m.addAction(actionSubscribe)
 
         # Channels
-        actionSubscribe = QtGui.QAction(_translate(
+        actionSubscribe = QtWidgets.QAction(_translate(
             "MainWindow", "Channel"), m, checkable=False)
-        actionSubscribe.triggered.connect(self.appIndicatorChannel)
-        m.addAction(actionSubscribe)
-
-        # separator
-        actionSeparator = QtGui.QAction('', m, checkable=False)
+        actionSubscribe.triggered.m.connect( checkable=False)
         actionSeparator.setSeparator(True)
         m.addAction(actionSeparator)
 
@@ -1396,13 +1392,13 @@ class MyForm(settingsmixin.SMainWindow):
         messagelist = self.getCurrentMessagelist()
         folder = self.getCurrentFolder()
         if event.key() == QtCore.Qt.Key_Delete:
-            if isinstance (focus, MessageView) or isinstance(focus, QtGui.QTableWidget):
+            if isinstance (focus, MessageView) or isinstance(focus, QtWidgets.QTableWidget):
                 if folder == "sent":
                     self.on_action_SentTrash()
                 else:
                     self.on_action_InboxTrash()
             event.ignore()
-        elif QtGui.QApplication.queryKeyboardModifiers() == QtCore.Qt.NoModifier:
+        elif QtWidgets.QApplication.queryKeyboardModifiers() == QtCore.Qt.NoModifier:
             if event.key() == QtCore.Qt.Key_N:
                 currentRow = messagelist.currentRow()
                 if currentRow < messagelist.rowCount() - 1:
@@ -1440,38 +1436,38 @@ class MyForm(settingsmixin.SMainWindow):
             return
         if isinstance (focus, MessageView):
             return MessageView.keyPressEvent(focus, event)
-        elif isinstance (focus, QtGui.QTableWidget):
-            return QtGui.QTableWidget.keyPressEvent(focus, event)
-        elif isinstance (focus, QtGui.QTreeWidget):
-            return QtGui.QTreeWidget.keyPressEvent(focus, event)
+        elif isinstance (focus, QtWidgets.QTableWidget):
+            return QtWidgets.QTableWidget.keyPressEvent(focus, event)
+        elif isinstance (focus, QtWidgets.QTreeWidget):
+            return QtWidgets.QTreeWidget.keyPressEvent(focus, event)
 
     # menu button 'manage keys'
     def click_actionManageKeys(self):
         if 'darwin' in sys.platform or 'linux' in sys.platform:
             if state.appdata == '':
-                # reply = QtGui.QMessageBox.information(self, 'keys.dat?','You
+                # reply = QtWidgets.QMessageBox.information(self, 'keys.dat?','You
                 # may manage your keys by editing the keys.dat file stored in
                 # the same directory as this program. It is important that you
                 # back up this file.', QMessageBox.Ok)
-                reply = QtGui.QMessageBox.information(self, 'keys.dat?', _translate(
-                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in the same directory as this program. It is important that you back up this file."), QtGui.QMessageBox.Ok)
+                reply = QtWidgets.QMessageBox.information(self, 'keys.dat?', _translate(
+                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in the same directory as this program. It is important that you back up this file."), QtWidgets.QMessageBox.Ok)
 
             else:
-                QtGui.QMessageBox.information(self, 'keys.dat?', _translate(
-                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file.").arg(state.appdata), QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.information(self, 'keys.dat?', _translate(
+                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file.").arg(state.appdata), QtWidgets.QMessageBox.Ok)
         elif sys.platform == 'win32' or sys.platform == 'win64':
             if state.appdata == '':
-                reply = QtGui.QMessageBox.question(self, _translate("MainWindow", "Open keys.dat?"), _translate(
-                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in the same directory as this program. It is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)"), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                reply = QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Open keys.dat?"), _translate(
+                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in the same directory as this program. It is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)"), QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             else:
-                reply = QtGui.QMessageBox.question(self, _translate("MainWindow", "Open keys.dat?"), _translate(
-                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)").arg(state.appdata), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
+                reply = QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Open keys.dat?"), _translate(
+                    "MainWindow", "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)").arg(state.appdata), QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            if reply == QtWidgets.QMessageBox.Yes:
                 shared.openKeysFile()
 
     # menu button 'delete all treshed messages'
     def click_actionDeleteAllTrashedMessages(self):
-        if QtGui.QMessageBox.question(self, _translate("MainWindow", "Delete trash?"), _translate("MainWindow", "Are you sure you want to delete all trashed messages?"), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+        if QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Delete trash?"), _translate("MainWindow", "Are you sure you want to delete all trashed messages?"), QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
             return
         sqlStoredProcedure('deleteandvacuume')
         self.rerenderTabTreeMessages()
@@ -1487,9 +1483,9 @@ class MyForm(settingsmixin.SMainWindow):
     # menu button 'regenerate deterministic addresses'
     def click_actionRegenerateDeterministicAddresses(self):
         dialog = dialogs.RegenerateAddressesDialog(self)
-        if dialog.exec_():
+        if dialog.exec():
             if dialog.lineEditPassphrase.text() == "":
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self, _translate("MainWindow", "bad passphrase"),
                     _translate(
                         "MainWindow",
@@ -1502,7 +1498,7 @@ class MyForm(settingsmixin.SMainWindow):
                 addressVersionNumber = int(
                     dialog.lineEditAddressVersionNumber.text())
             except:
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self,
                     _translate("MainWindow", "Bad address version number"),
                     _translate(
@@ -1512,7 +1508,7 @@ class MyForm(settingsmixin.SMainWindow):
                     ))
                 return
             if addressVersionNumber < 3 or addressVersionNumber > 4:
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self,
                     _translate("MainWindow", "Bad address version number"),
                     _translate(
@@ -1538,7 +1534,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def showConnectDialog(self):
         dialog = dialogs.ConnectDialog(self)
-        if dialog.exec_():
+        if dialog.exec():
             if dialog.radioButtonConnectNow.isChecked():
                 BMConfigParser().remove_option(
                     'bitmessagesettings', 'dontconnect')
@@ -1548,7 +1544,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def showMigrationWizard(self, level):
         self.migrationWizardInstance = Ui_MigrationWizard(["a"])
-        if self.migrationWizardInstance.exec_():
+        if self.migrationWizardInstance.exec():
             pass
         else:
             pass
@@ -1564,17 +1560,17 @@ class MyForm(settingsmixin.SMainWindow):
             self.init_sent_popup_menu(False)
             self.ui.blackwhitelist.init_blacklist_popup_menu(False)
         if event.type() == QtCore.QEvent.WindowStateChange:
-            if self.windowState() & QtCore.Qt.WindowMinimized:
+            if self.windowState() & QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized:
                 if BMConfigParser().getboolean('bitmessagesettings', 'minimizetotray') and not 'darwin' in sys.platform:
                     QtCore.QTimer.singleShot(0, self.appIndicatorHide)
-            elif event.oldState() & QtCore.Qt.WindowMinimized:
+            elif event.oldState() & QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized:
                 # The window state has just been changed to
                 # Normal/Maximised/FullScreen
                 pass
-        # QtGui.QWidget.changeEvent(self, event)
+        # QtWidgets.QWidget.changeEvent(self, event)
 
     def __icon_activated(self, reason):
-        if reason == QtGui.QSystemTrayIcon.Trigger:
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
             self.actionShow.setChecked(not self.actionShow.isChecked())
             self.appIndicatorShowOrHideWindow()
 
@@ -1647,7 +1643,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def initTrayIcon(self, iconFileName, app):
         self.currentTrayIconFileName = iconFileName
-        self.tray = QtGui.QSystemTrayIcon(
+        self.tray = QtWidgets.QSystemTrayIcon(
             self.calcTrayIcon(iconFileName, self.findInboxUnreadCount()), app)
 
     def setTrayIconFile(self, iconFileName):
@@ -1737,7 +1733,7 @@ class MyForm(settingsmixin.SMainWindow):
                 toAddress = sent.item(
                     i, 0).data(QtCore.Qt.UserRole)
                 tableAckdata = sent.item(
-                    i, 3).data(QtCore.Qt.UserRole).toPyObject()
+                    i, 3).data(QtCore.Qt.UserRole)
                 status, addressVersionNumber, streamNumber, ripe = decodeAddress(
                     toAddress)
                 if ackdata == tableAckdata:
@@ -1758,7 +1754,7 @@ class MyForm(settingsmixin.SMainWindow):
             self.ui.tableWidgetInboxSubscriptions,
             self.ui.tableWidgetInboxChans]):
             for i in range(inbox.rowCount()):
-                if msgid == str(inbox.item(i, 3).data(QtCore.Qt.UserRole).toPyObject()):
+                if msgid == str(inbox.item(i, 3).data(QtCore.Qt.UserRole)):
                     self.updateStatusBar(
                         _translate("MainWindow", "Message trashed"))
                     treeWidget = self.widgetConvert(inbox)
@@ -1777,7 +1773,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def displayAlert(self, title, text, exitAfterUserClicksOk):
         self.updateStatusBar(text)
-        QtGui.QMessageBox.critical(self, title, text, QtGui.QMessageBox.Ok)
+        QtWidgets.QMessageBox.critical(self, title, text, QtWidgets.QMessageBox.Ok)
         if exitAfterUserClicksOk:
             os._exit(0)
 
@@ -1848,11 +1844,11 @@ class MyForm(settingsmixin.SMainWindow):
         self.rerenderTabTreeSubscriptions()
 
     def click_pushButtonTTL(self):
-        QtGui.QMessageBox.information(self, 'Time To Live', _translate(
+        QtWidgets.QMessageBox.information(self, 'Time To Live', _translate(
             "MainWindow", """The TTL, or Time-To-Live is the length of time that the network will hold the message.
  The recipient must get it during this time. If your Bitmessage client does not hear an acknowledgement, it
  will resend the message automatically. The longer the Time-To-Live, the
- more work your computer must do to send the message. A Time-To-Live of four or five days is often appropriate."""), QtGui.QMessageBox.Ok)
+ more work your computer must do to send the message. A Time-To-Live of four or five days is often appropriate."""), QtWidgets.QMessageBox.Ok)
 
     def click_pushButtonClear(self):
         self.ui.lineEditSubject.setText("")
@@ -1861,7 +1857,7 @@ class MyForm(settingsmixin.SMainWindow):
         self.ui.comboBoxSendFrom.setCurrentIndex(0)
 
     def click_pushButtonSend(self):
-        encoding = 3 if QtGui.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier else 2
+        encoding = 3 if QtWidgets.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier else 2
 
         self.statusbar.clearMessage()
 
@@ -1893,7 +1889,7 @@ class MyForm(settingsmixin.SMainWindow):
         users can send messages of any length.
         """
         if len(message) > (2 ** 18 - 500):
-            QtGui.QMessageBox.about(
+            QtWidgets.QMessageBox.about(
                 self, _translate("MainWindow", "Message too long"),
                 _translate(
                     "MainWindow",
@@ -1922,9 +1918,9 @@ class MyForm(settingsmixin.SMainWindow):
                             subject = acct.subject
                             toAddress = acct.toAddress
                         else:
-                            if QtGui.QMessageBox.question(self, "Sending an email?", _translate("MainWindow", 
+                            if QtWidgets.QMessageBox.question(self, "Sending an email?", _translate("MainWindow", 
                                 "You are trying to send an email instead of a bitmessage. This requires registering with a gateway. Attempt to register?"),
-                                QtGui.QMessageBox.Yes|QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
+                                QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No) != QtWidgets.QMessageBox.Yes:
                                 continue
                             email = acct.getLabel()
                             if email[-14:] != "@mailchuck.com": #attempt register
@@ -2020,11 +2016,11 @@ class MyForm(settingsmixin.SMainWindow):
                         toAddress = addBMIfNotPresent(toAddress)
 
                         if addressVersionNumber > 4 or addressVersionNumber <= 1:
-                            QtGui.QMessageBox.about(self, _translate("MainWindow", "Address version number"), _translate(
+                            QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Address version number"), _translate(
                                 "MainWindow", "Concerning the address %1, Bitmessage cannot understand address version numbers of %2. Perhaps upgrade Bitmessage to the latest version.").arg(toAddress).arg(str(addressVersionNumber)))
                             continue
                         if streamNumber > 1 or streamNumber == 0:
-                            QtGui.QMessageBox.about(self, _translate("MainWindow", "Stream number"), _translate(
+                            QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Stream number"), _translate(
                                 "MainWindow", "Concerning the address %1, Bitmessage cannot handle stream numbers of %2. Perhaps upgrade Bitmessage to the latest version.").arg(toAddress).arg(str(streamNumber)))
                             continue
                         self.statusbar.clearMessage()
@@ -2284,12 +2280,12 @@ class MyForm(settingsmixin.SMainWindow):
                 and acct.feedback != GatewayAccount.ALL_OK:
             if acct.feedback == GatewayAccount.REGISTRATION_DENIED:
                 dialogs.EmailGatewayDialog(
-                    self, BMConfigParser(), acct).exec_()
+                    self, BMConfigParser(), acct).exec()
 
     def click_pushButtonAddAddressBook(self, dialog=None):
         if not dialog:
             dialog = dialogs.AddAddressDialog(self)
-        dialog.exec_()
+        dialog.exec()
         try:
             address, label = dialog.data
         except AttributeError:
@@ -2334,7 +2330,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def click_pushButtonAddSubscription(self):
         dialog = dialogs.NewSubscriptionDialog(self)
-        dialog.exec_()
+        dialog.exec()
         try:
             address, label = dialog.data
         except AttributeError:
@@ -2363,22 +2359,22 @@ class MyForm(settingsmixin.SMainWindow):
                 ))
 
     def click_pushButtonStatusIcon(self):
-        dialogs.IconGlossaryDialog(self, config=BMConfigParser()).exec_()
+        dialogs.IconGlossaryDialog(self, config=BMConfigParser()).exec()
 
     def click_actionHelp(self):
-        dialogs.HelpDialog(self).exec_()
+        dialogs.HelpDialog(self).exec()
 
     def click_actionSupport(self):
         support.createSupportMessage(self)
 
     def click_actionAbout(self):
-        dialogs.AboutDialog(self).exec_()
+        dialogs.AboutDialog(self).exec()
 
     def click_actionSettings(self):
         self.settingsDialogInstance = settingsDialog(self)
         if self._firstrun:
             self.settingsDialogInstance.ui.tabWidgetSettings.setCurrentIndex(1)
-        if self.settingsDialogInstance.exec_():
+        if self.settingsDialogInstance.exec():
             if self._firstrun:
                 BMConfigParser().remove_option(
                     'bitmessagesettings', 'dontconnect')
@@ -2407,7 +2403,7 @@ class MyForm(settingsmixin.SMainWindow):
             
             if int(BMConfigParser().get('bitmessagesettings', 'port')) != int(self.settingsDialogInstance.ui.lineEditTCPPort.text()):
                 if not BMConfigParser().safeGetBoolean('bitmessagesettings', 'dontconnect'):
-                    QtGui.QMessageBox.about(self, _translate("MainWindow", "Restart"), _translate(
+                    QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Restart"), _translate(
                         "MainWindow", "You must restart Bitmessage for the port number change to take effect."))
                 BMConfigParser().set('bitmessagesettings', 'port', str(
                     self.settingsDialogInstance.ui.lineEditTCPPort.text()))
@@ -2421,7 +2417,7 @@ class MyForm(settingsmixin.SMainWindow):
             #print 'self.settingsDialogInstance.ui.comboBoxProxyType.currentText())[0:5]', self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5]
             if BMConfigParser().get('bitmessagesettings', 'socksproxytype') == 'none' and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] == 'SOCKS':
                 if shared.statusIconColor != 'red':
-                    QtGui.QMessageBox.about(self, _translate("MainWindow", "Restart"), _translate(
+                    QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Restart"), _translate(
                         "MainWindow", "Bitmessage will use your proxy from now on but you may want to manually restart Bitmessage now to close existing connections (if any)."))
             if BMConfigParser().get('bitmessagesettings', 'socksproxytype')[0:5] == 'SOCKS' and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] != 'SOCKS':
                 self.statusbar.clearMessage()
@@ -2450,7 +2446,7 @@ class MyForm(settingsmixin.SMainWindow):
                 BMConfigParser().set('bitmessagesettings', 'maxuploadrate', str(
                     int(float(self.settingsDialogInstance.ui.lineEditMaxUploadRate.text()))))
             except ValueError:
-                QtGui.QMessageBox.about(self, _translate("MainWindow", "Number needed"), _translate(
+                QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Number needed"), _translate(
                     "MainWindow", "Your maximum download and upload rate must be numbers. Ignoring what you typed."))
             else:
                 set_rates(BMConfigParser().safeGetInt("bitmessagesettings", "maxdownloadrate"),
@@ -2530,7 +2526,7 @@ class MyForm(settingsmixin.SMainWindow):
                 if (float(self.settingsDialogInstance.ui.lineEditDays.text()) >=0 and float(self.settingsDialogInstance.ui.lineEditMonths.text()) >=0):
                     shared.maximumLengthOfTimeToBotherResendingMessages = (float(str(self.settingsDialogInstance.ui.lineEditDays.text())) * 24 * 60 * 60) + (float(str(self.settingsDialogInstance.ui.lineEditMonths.text())) * (60 * 60 * 24 *365)/12)
                     if shared.maximumLengthOfTimeToBotherResendingMessages < 432000: # If the time period is less than 5 hours, we give zero values to all fields. No message will be sent again.
-                        QtGui.QMessageBox.about(self, _translate("MainWindow", "Will not resend ever"), _translate(
+                        QtWidgets.QMessageBox.about(self, _translate("MainWindow", "Will not resend ever"), _translate(
                             "MainWindow", "Note that the time limit you entered is less than the amount of time Bitmessage waits for the first resend attempt therefore your messages will never be resent."))
                         BMConfigParser().set('bitmessagesettings', 'stopresendingafterxdays', '0')
                         BMConfigParser().set('bitmessagesettings', 'stopresendingafterxmonths', '0')
@@ -2558,7 +2554,7 @@ class MyForm(settingsmixin.SMainWindow):
                 # startup for linux
                 pass
 
-            if state.appdata != paths.lookupExeFolder() and self.settingsDialogInstance.ui.checkBoxPortableMode.isChecked():  # If we are NOT using portable mode now but the user selected that we should...
+            if state.appdata != paths.lookupExeFolder() and self.settingsDialogInstance.ui.checkBoxPortableMode.isChecked():  # If we are NOT using portable mode now but the user selected that we should.
                 # Write the keys.dat file to disk in the new location
                 sqlStoredProcedure('movemessagstoprog')
                 with open(paths.lookupExeFolder() + 'keys.dat', 'wb') as configfile:
@@ -2576,7 +2572,7 @@ class MyForm(settingsmixin.SMainWindow):
                 except:
                     pass
 
-            if state.appdata == paths.lookupExeFolder() and not self.settingsDialogInstance.ui.checkBoxPortableMode.isChecked():  # If we ARE using portable mode now but the user selected that we shouldn't...
+            if state.appdata == paths.lookupExeFolder() and not self.settingsDialogInstance.ui.checkBoxPortableMode.isChecked():  # If we ARE using portable mode now but the user selected that we shouldn't.
                 state.appdata = paths.lookupAppdataFolder()
                 if not os.path.exists(state.appdata):
                     os.makedirs(state.appdata)
@@ -2600,7 +2596,7 @@ class MyForm(settingsmixin.SMainWindow):
     def on_action_EmailGatewayDialog(self):
         dialog = dialogs.EmailGatewayDialog(self, config=BMConfigParser())
         # For Modal dialogs
-        dialog.exec_()
+        dialog.exec()
         try:
             acct = dialog.data
         except AttributeError:
@@ -2609,7 +2605,7 @@ class MyForm(settingsmixin.SMainWindow):
         # Only settings remain here
         acct.settings()
         for i in range(self.ui.comboBoxSendFrom.count()):
-            if str(self.ui.comboBoxSendFrom.itemData(i).toPyObject()) \
+            if str(self.ui.comboBoxSendFrom.itemData(i)) \
                     == acct.fromAddress:
                 self.ui.comboBoxSendFrom.setCurrentIndex(i)
                 break
@@ -2628,13 +2624,13 @@ class MyForm(settingsmixin.SMainWindow):
         self.ui.textEditMessage.setFocus()
 
     def on_action_MarkAllRead(self):
-        if QtGui.QMessageBox.question(
+        if QtWidgets.QMessageBox.question(
                 self, "Marking all messages as read?",
                 _translate(
                     "MainWindow",
                     "Are you sure you would like to mark all messages read?"
-                ), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
-        ) != QtGui.QMessageBox.Yes:
+                ), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
+        ) != QtWidgets.QMessageBox.Yes:
             return
         # addressAtCurrentRow = self.getCurrentAccount()
         tableWidget = self.getCurrentMessagelist()
@@ -2649,7 +2645,7 @@ class MyForm(settingsmixin.SMainWindow):
         msgids = []
         for i in range(0, idCount):
             msgids.append(str(tableWidget.item(
-                i, 3).data(QtCore.Qt.UserRole).toPyObject()))
+                i, 3).data(QtCore.Qt.UserRole)))
             tableWidget.item(i, 0).setUnread(False)
             tableWidget.item(i, 1).setUnread(False)
             tableWidget.item(i, 2).setUnread(False)
@@ -2680,10 +2676,10 @@ class MyForm(settingsmixin.SMainWindow):
     # Quit selected from menu or application indicator
     def quit(self):
         '''quit_msg = "Are you sure you want to exit Bitmessage?"
-        reply = QtGui.QMessageBox.question(self, 'Message',
-                         quit_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+        reply = QtWidgets.QMessageBox.question(self, 'Message',
+                         quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
 
-        if reply is QtGui.QMessageBox.No:
+        if reply is QtWidgets.QMessageBox.No:
             return
         '''
 
@@ -2700,46 +2696,46 @@ class MyForm(settingsmixin.SMainWindow):
 
         # C PoW currently doesn't support interrupting and OpenCL is untested
         if getPowType() == "python" and (powQueueSize() > 0 or PendingUpload().len() > 0):
-            reply = QtGui.QMessageBox.question(self, _translate("MainWindow", "Proof of work pending"),
+            reply = QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Proof of work pending"),
                     _translate("MainWindow", "%n object(s) pending proof of work", None, QtCore.QCoreApplication.CodecForTr, powQueueSize()) + ", " +
                     _translate("MainWindow", "%n object(s) waiting to be distributed", None, QtCore.QCoreApplication.CodecForTr, PendingUpload().len()) + "\n\n" + 
                     _translate("MainWindow", "Wait until these tasks finish?"),
-                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
-            if reply == QtGui.QMessageBox.No:
+                    QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.No:
                 waitForPow = False
-            elif reply == QtGui.QMessageBox.Cancel:
+            elif reply == QtWidgets.QMessageBox.Cancel:
                 return
 
         if PendingDownloadQueue.totalSize() > 0:
-            reply = QtGui.QMessageBox.question(self, _translate("MainWindow", "Synchronisation pending"),
+            reply = QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Synchronisation pending"),
                     _translate("MainWindow", "Bitmessage hasn't synchronised with the network, %n object(s) to be downloaded. If you quit now, it may cause delivery delays. Wait until the synchronisation finishes?", None, QtCore.QCoreApplication.CodecForTr, PendingDownloadQueue.totalSize()),
-                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
-            if reply == QtGui.QMessageBox.Yes:
+                    QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
                 waitForSync = True
-            elif reply == QtGui.QMessageBox.Cancel:
+            elif reply == QtWidgets.QMessageBox.Cancel:
                 return
             else:
                 PendingDownloadQueue.stop()
 
         if shared.statusIconColor == 'red' and not BMConfigParser().safeGetBoolean(
                 'bitmessagesettings', 'dontconnect'):
-            reply = QtGui.QMessageBox.question(self, _translate("MainWindow", "Not connected"),
+            reply = QtWidgets.QMessageBox.question(self, _translate("MainWindow", "Not connected"),
                     _translate("MainWindow", "Bitmessage isn't connected to the network. If you quit now, it may cause delivery delays. Wait until connected and the synchronisation finishes?"),
-                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Cancel)
-            if reply == QtGui.QMessageBox.Yes:
+                    QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
                 waitForConnection = True
                 waitForSync = True
-            elif reply == QtGui.QMessageBox.Cancel:
+            elif reply == QtWidgets.QMessageBox.Cancel:
                 return
 
         self.quitAccepted = True
 
         self.updateStatusBar(_translate(
-            "MainWindow", "Shutting down PyBitmessage... %1%").arg(0))
+            "MainWindow", "Shutting down PyBitmessage. %1%").arg(0))
 
         if waitForConnection:
             self.updateStatusBar(_translate(
-                "MainWindow", "Waiting for network connection..."))
+                "MainWindow", "Waiting for network connection."))
             while shared.statusIconColor == 'red':
                 time.sleep(0.5)
                 QtCore.QCoreApplication.processEvents(
@@ -2749,7 +2745,7 @@ class MyForm(settingsmixin.SMainWindow):
         # this probably will not work correctly, because there is a delay between the status icon turning red and inventory exchange, but it's better than nothing.
         if waitForSync:
             self.updateStatusBar(_translate(
-                "MainWindow", "Waiting for finishing synchronisation..."))
+                "MainWindow", "Waiting for finishing synchronisation."))
             while PendingDownloadQueue.totalSize() > 0:
                 time.sleep(0.5)
                 QtCore.QCoreApplication.processEvents(
@@ -2767,7 +2763,7 @@ class MyForm(settingsmixin.SMainWindow):
                     maxWorkerQueue = curWorkerQueue
                 if curWorkerQueue > 0:
                     self.updateStatusBar(_translate(
-                        "MainWindow", "Waiting for PoW to finish... %1%"
+                        "MainWindow", "Waiting for PoW to finish. %1%"
                         ).arg(50 * (maxWorkerQueue - curWorkerQueue)
                               / maxWorkerQueue)
                     )
@@ -2777,7 +2773,7 @@ class MyForm(settingsmixin.SMainWindow):
                     )
 
             self.updateStatusBar(_translate(
-                "MainWindow", "Shutting down Pybitmessage... %1%").arg(50))
+                "MainWindow", "Shutting down Pybitmessage. %1%").arg(50))
 
             QtCore.QCoreApplication.processEvents(
                 QtCore.QEventLoop.AllEvents, 1000
@@ -2791,12 +2787,12 @@ class MyForm(settingsmixin.SMainWindow):
 
             # check if upload (of objects created locally) pending
             self.updateStatusBar(_translate(
-                "MainWindow", "Waiting for objects to be sent... %1%").arg(50))
+                "MainWindow", "Waiting for objects to be sent. %1%").arg(50))
             try:
                 while PendingUpload().progress() < 1:
                     self.updateStatusBar(_translate(
                         "MainWindow",
-                        "Waiting for objects to be sent... %1%"
+                        "Waiting for objects to be sent. %1%"
                         ).arg(int(50 + 20 * PendingUpload().progress()))
                     )
                     time.sleep(0.5)
@@ -2815,7 +2811,7 @@ class MyForm(settingsmixin.SMainWindow):
 
         # save state and geometry self and all widgets
         self.updateStatusBar(_translate(
-            "MainWindow", "Saving settings... %1%").arg(70))
+            "MainWindow", "Saving settings. %1%").arg(70))
         QtCore.QCoreApplication.processEvents(
             QtCore.QEventLoop.AllEvents, 1000
         )
@@ -2828,17 +2824,17 @@ class MyForm(settingsmixin.SMainWindow):
                     obj.saveSettings()
 
         self.updateStatusBar(_translate(
-            "MainWindow", "Shutting down core... %1%").arg(80))
+            "MainWindow", "Shutting down core. %1%").arg(80))
         QtCore.QCoreApplication.processEvents(
             QtCore.QEventLoop.AllEvents, 1000
         )
         shutdown.doCleanShutdown()
         self.updateStatusBar(_translate(
-            "MainWindow", "Stopping notifications... %1%").arg(90))
+            "MainWindow", "Stopping notifications. %1%").arg(90))
         self.tray.hide()
 
         self.updateStatusBar(_translate(
-            "MainWindow", "Shutdown imminent... %1%").arg(100))
+            "MainWindow", "Shutdown imminent. %1%").arg(100))
         shared.thisapp.cleanup()
         logger.info("Shutdown complete")
         super(MyForm, myapp).close()
@@ -2903,7 +2899,7 @@ class MyForm(settingsmixin.SMainWindow):
         for row in tableWidget.selectedIndexes():
             currentRow = row.row()
             msgid = str(tableWidget.item(
-                currentRow, 3).data(QtCore.Qt.UserRole).toPyObject())
+                currentRow, 3).data(QtCore.Qt.UserRole))
             msgids.add(msgid)
             # if not tableWidget.item(currentRow, 0).unread:
             #     modified += 1
@@ -2958,7 +2954,7 @@ class MyForm(settingsmixin.SMainWindow):
                 address = messagelist.item(
                     currentInboxRow, 0).address
         for box in [self.ui.comboBoxSendFrom, self.ui.comboBoxSendFromBroadcast]:
-            listOfAddressesInComboBoxSendFrom = [str(box.itemData(i).toPyObject()) for i in range(box.count())]
+            listOfAddressesInComboBoxSendFrom = [str(box.itemData(i)) for i in range(box.count())]
             if address in listOfAddressesInComboBoxSendFrom:
                 currentIndex = listOfAddressesInComboBoxSendFrom.index(address)
                 box.setCurrentIndex(currentIndex)
@@ -2986,7 +2982,7 @@ class MyForm(settingsmixin.SMainWindow):
         fromAddressAtCurrentInboxRow = tableWidget.item(
             currentInboxRow, 1).address
         msgid = str(tableWidget.item(
-            currentInboxRow, 3).data(QtCore.Qt.UserRole).toPyObject())
+            currentInboxRow, 3).data(QtCore.Qt.UserRole))
         queryreturn = sqlQuery(
             '''select message from inbox where msgid=?''', msgid)
         if queryreturn != []:
@@ -3004,11 +3000,11 @@ class MyForm(settingsmixin.SMainWindow):
             )
 #            toAddressAtCurrentInboxRow = fromAddressAtCurrentInboxRow
         elif not BMConfigParser().has_section(toAddressAtCurrentInboxRow):
-            QtGui.QMessageBox.information(self, _translate("MainWindow", "Address is gone"), _translate(
-                "MainWindow", "Bitmessage cannot find your address %1. Perhaps you removed it?").arg(toAddressAtCurrentInboxRow), QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.information(self, _translate("MainWindow", "Address is gone"), _translate(
+                "MainWindow", "Bitmessage cannot find your address %1. Perhaps you removed it?").arg(toAddressAtCurrentInboxRow), QtWidgets.QMessageBox.Ok)
         elif not BMConfigParser().getboolean(toAddressAtCurrentInboxRow, 'enabled'):
-            QtGui.QMessageBox.information(self, _translate("MainWindow", "Address disabled"), _translate(
-                "MainWindow", "Error: The address from which you are trying to send is disabled. You\'ll have to enable it on the \'Your Identities\' tab before using it."), QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.information(self, _translate("MainWindow", "Address disabled"), _translate(
+                "MainWindow", "Error: The address from which you are trying to send is disabled. You\'ll have to enable it on the \'Your Identities\' tab before using it."), QtWidgets.QMessageBox.Ok)
         else:
             self.setBroadcastEnablementDependingOnWhetherThisIsAMailingListAddress(toAddressAtCurrentInboxRow)
             broadcast_tab_index = self.ui.tabWidgetSend.indexOf(
@@ -3054,7 +3050,7 @@ class MyForm(settingsmixin.SMainWindow):
         if not tableWidget:
             return
         currentInboxRow = tableWidget.currentRow()
-        # tableWidget.item(currentRow,1).data(Qt.UserRole).toPyObject()
+        # tableWidget.item(currentRow,1).data(Qt.UserRole)
         addressAtCurrentInboxRow = tableWidget.item(
             currentInboxRow, 1).data(QtCore.Qt.UserRole)
         self.ui.tabWidget.setCurrentIndex(
@@ -3068,7 +3064,7 @@ class MyForm(settingsmixin.SMainWindow):
         if not tableWidget:
             return
         currentInboxRow = tableWidget.currentRow()
-        # tableWidget.item(currentRow,1).data(Qt.UserRole).toPyObject()
+        # tableWidget.item(currentRow,1).data(Qt.UserRole)
         addressAtCurrentInboxRow = tableWidget.item(
             currentInboxRow, 1).data(QtCore.Qt.UserRole)
         recipientAddress = tableWidget.item(
@@ -3100,15 +3096,15 @@ class MyForm(settingsmixin.SMainWindow):
         for messageList in messageLists:
             if row is not None:
                 inventoryHash = str(messageList.item(row, 3).data(
-                    QtCore.Qt.UserRole).toPyObject())
+                    QtCore.Qt.UserRole))
                 messageList.removeRow(row)
             elif inventoryHash is not None:
                 for i in range(messageList.rowCount() - 1, -1, -1):
-                    if messageList.item(i, 3).data(QtCore.Qt.UserRole).toPyObject() == inventoryHash:
+                    if messageList.item(i, 3).data(QtCore.Qt.UserRole) == inventoryHash:
                         messageList.removeRow(i)
             elif ackData is not None:
                 for i in range(messageList.rowCount() - 1, -1, -1):
-                    if messageList.item(i, 3).data(QtCore.Qt.UserRole).toPyObject() == ackData:
+                    if messageList.item(i, 3).data(QtCore.Qt.UserRole) == ackData:
                         messageList.removeRow(i)
 
     # Send item on the Inbox tab to trash
@@ -3118,14 +3114,14 @@ class MyForm(settingsmixin.SMainWindow):
             return
         currentRow = 0
         folder = self.getCurrentFolder()
-        shifted = QtGui.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier
+        shifted = QtWidgets.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier
         tableWidget.setUpdatesEnabled(False);
         inventoryHashesToTrash = []
         # ranges in reversed order
         for r in sorted(tableWidget.selectedRanges(), key=lambda r: r.topRow())[::-1]:
             for i in range(r.bottomRow()-r.topRow()+1):
                 inventoryHashToTrash = str(tableWidget.item(
-                    r.topRow()+i, 3).data(QtCore.Qt.UserRole).toPyObject())
+                    r.topRow()+i, 3).data(QtCore.Qt.UserRole))
                 if inventoryHashToTrash in inventoryHashesToTrash:
                     continue
                 inventoryHashesToTrash.append(inventoryHashToTrash)
@@ -3156,7 +3152,7 @@ class MyForm(settingsmixin.SMainWindow):
         for r in sorted(tableWidget.selectedRanges(), key=lambda r: r.topRow())[::-1]:
             for i in range(r.bottomRow()-r.topRow()+1):
                 inventoryHashToTrash = str(tableWidget.item(
-                    r.topRow()+i, 3).data(QtCore.Qt.UserRole).toPyObject())
+                    r.topRow()+i, 3).data(QtCore.Qt.UserRole))
                 if inventoryHashToTrash in inventoryHashesToTrash:
                     continue
                 inventoryHashesToTrash.append(inventoryHashToTrash)
@@ -3188,7 +3184,7 @@ class MyForm(settingsmixin.SMainWindow):
 
         # Retrieve the message data out of the SQL database
         msgid = str(tableWidget.item(
-            currentInboxRow, 3).data(QtCore.Qt.UserRole).toPyObject())
+            currentInboxRow, 3).data(QtCore.Qt.UserRole))
         queryreturn = sqlQuery(
             '''select message from inbox where msgid=?''', msgid)
         if queryreturn != []:
@@ -3196,7 +3192,7 @@ class MyForm(settingsmixin.SMainWindow):
                 message, = row
 
         defaultFilename = "".join(x for x in subjectAtCurrentInboxRow if x.isalnum()) + '.txt'
-        filename = QtGui.QFileDialog.getSaveFileName(self, _translate("MainWindow","Save As..."), defaultFilename, "Text files (*.txt);;All files (*.*)")
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, _translate("MainWindow","Save As."), defaultFilename, "Text files (*.txt);;All files (*.*)")
         if filename == '':
             return
         try:
@@ -3215,11 +3211,11 @@ class MyForm(settingsmixin.SMainWindow):
         if not tableWidget:
             return
         folder = self.getCurrentFolder()
-        shifted = (QtGui.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier) > 0
+        shifted = (QtWidgets.QApplication.queryKeyboardModifiers() & QtCore.Qt.ShiftModifier) > 0
         while tableWidget.selectedIndexes() != []:
             currentRow = tableWidget.selectedIndexes()[0].row()
             ackdataToTrash = str(tableWidget.item(
-                currentRow, 3).data(QtCore.Qt.UserRole).toPyObject())
+                currentRow, 3).data(QtCore.Qt.UserRole))
             if folder == "trash" or shifted:
                 sqlExecute('''DELETE FROM sent WHERE ackdata=?''', ackdataToTrash)
             else:
@@ -3253,7 +3249,7 @@ class MyForm(settingsmixin.SMainWindow):
         currentRow = self.ui.tableWidgetInbox.currentRow()
         addressAtCurrentRow = self.ui.tableWidgetInbox.item(
             currentRow, 0).data(QtCore.Qt.UserRole)
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(str(addressAtCurrentRow))
 
     # Group of functions for the Address Book dialog box
@@ -3287,7 +3283,7 @@ class MyForm(settingsmixin.SMainWindow):
                 fullStringOfAddresses = addressAtCurrentRow
             else:
                 fullStringOfAddresses += ', ' + str(addressAtCurrentRow)
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(fullStringOfAddresses)
 
     def on_action_AddressBookSend(self):
@@ -3321,7 +3317,7 @@ class MyForm(settingsmixin.SMainWindow):
             listOfSelectedRows[self.ui.tableWidgetAddressBook.selectedIndexes()[i].row()] = 0
         for currentRow in listOfSelectedRows:
             addressAtCurrentRow = str(self.ui.tableWidgetAddressBook.item(currentRow,1).text())
-            # Then subscribe to it... provided it's not already in the address book
+            # Then subscribe to it. provided it's not already in the address book
             if shared.isAddressInMySubscriptionsList(addressAtCurrentRow):
                 self.updateStatusBar(_translate(
                     "MainWindow",
@@ -3336,7 +3332,7 @@ class MyForm(settingsmixin.SMainWindow):
             )
 
     def on_context_menuAddressBook(self, point):
-        self.popMenuAddressBook = QtGui.QMenu(self)
+        self.popMenuAddressBook = QtWidgets.QMenu(self)
         self.popMenuAddressBook.addAction(self.actionAddressBookSend)
         self.popMenuAddressBook.addAction(self.actionAddressBookClipboard)
         self.popMenuAddressBook.addAction(self.actionAddressBookSubscribe)
@@ -3362,7 +3358,7 @@ class MyForm(settingsmixin.SMainWindow):
         self.click_pushButtonAddSubscription()
 
     def on_action_SubscriptionsDelete(self):
-        if QtGui.QMessageBox.question(
+        if QtWidgets.QMessageBox.question(
                 self, "Delete subscription?",
                 _translate(
                     "MainWindow",
@@ -3373,8 +3369,8 @@ class MyForm(settingsmixin.SMainWindow):
                     " messages, but you can still view messages you"
                     " already received.\n\nAre you sure you want to"
                     " delete the subscription?"
-                ), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
-        ) != QtGui.QMessageBox.Yes:
+                ), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
+        ) != QtWidgets.QMessageBox.Yes:
             return
         address = self.getCurrentAccount()
         sqlExecute('''DELETE FROM subscriptions WHERE address=?''',
@@ -3386,7 +3382,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def on_action_SubscriptionsClipboard(self):
         address = self.getCurrentAccount()
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(str(address))
 
     def on_action_SubscriptionsEnable(self):
@@ -3411,7 +3407,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def on_context_menuSubscriptions(self, point):
         currentItem = self.getCurrentItem()
-        self.popMenuSubscriptions = QtGui.QMenu(self)
+        self.popMenuSubscriptions = QtWidgets.QMenu(self)
         if isinstance(currentItem, Ui_AddressWidget):
             self.popMenuSubscriptions.addAction(self.actionsubscriptionsNew)
             self.popMenuSubscriptions.addAction(self.actionsubscriptionsDelete)
@@ -3498,8 +3494,8 @@ class MyForm(settingsmixin.SMainWindow):
             currentRow = messagelist.currentRow()
             if currentRow >= 0:
                 msgid = str(messagelist.item(
-                    currentRow, 3).data(QtCore.Qt.UserRole).toPyObject())
-                # data is saved at the 4. column of the table...
+                    currentRow, 3).data(QtCore.Qt.UserRole))
+                # data is saved at the 4. column of the table.
                 return msgid
         return False
 
@@ -3605,7 +3601,7 @@ class MyForm(settingsmixin.SMainWindow):
         if account.type == AccountMixin.NORMAL:
             return  # maybe in the future
         elif account.type == AccountMixin.CHAN:
-            if QtGui.QMessageBox.question(
+            if QtWidgets.QMessageBox.question(
                     self, "Delete channel?",
                     _translate(
                         "MainWindow",
@@ -3616,8 +3612,8 @@ class MyForm(settingsmixin.SMainWindow):
                         " messages, but you can still view messages you"
                         " already received.\n\nAre you sure you want to"
                         " delete the channel?"
-                    ), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
-            ) == QtGui.QMessageBox.Yes:
+                    ), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
+            ) == QtWidgets.QMessageBox.Yes:
                 BMConfigParser().remove_section(str(account.address))
             else:
                 return
@@ -3658,7 +3654,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def on_action_Clipboard(self):
         address = self.getCurrentAccount()
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(str(address))
 
     def on_action_ClipboardMessagelist(self):
@@ -3684,7 +3680,7 @@ class MyForm(settingsmixin.SMainWindow):
         else:
             text = tableWidget.item(currentRow, currentColumn).data(QtCore.Qt.UserRole)
         text = unicode(str(text), 'utf-8', 'ignore')
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QtWidgets.QApplication.clipboard()
         clipboard.setText(text)
 
     #set avatar functions
@@ -3725,8 +3721,8 @@ class MyForm(settingsmixin.SMainWindow):
                 current_files += [upper]
         filters[0:0] = ['Image files (' + ' '.join(all_images_filter) + ')']
         filters[1:1] = ['All files (*.*)']
-        sourcefile = QtGui.QFileDialog.getOpenFileName(
-            self, _translate("MainWindow", "Set avatar..."),
+        sourcefile = QtWidgets.QFileDialog.getOpenFileName(
+            self, _translate("MainWindow", "Set avatar."),
             filter = ';;'.join(filters)
         )
         # determine the correct filename (note that avatars don't use the suffix)
@@ -3736,22 +3732,22 @@ class MyForm(settingsmixin.SMainWindow):
             # ask for removal of avatar
             if exists | (len(current_files)>0):
                 displayMsg = _translate("MainWindow", "Do you really want to remove this avatar?")
-                overwrite = QtGui.QMessageBox.question(
-                            self, 'Message', displayMsg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                overwrite = QtWidgets.QMessageBox.question(
+                            self, 'Message', displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             else:
-                overwrite = QtGui.QMessageBox.No
+                overwrite = QtWidgets.QMessageBox.No
         else:
             # ask whether to overwrite old avatar
             if exists | (len(current_files)>0):
                 displayMsg = _translate("MainWindow", "You have already set an avatar for this address. Do you really want to overwrite it?")
-                overwrite = QtGui.QMessageBox.question(
-                            self, 'Message', displayMsg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                overwrite = QtWidgets.QMessageBox.question(
+                            self, 'Message', displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             else:
-                overwrite = QtGui.QMessageBox.No
+                overwrite = QtWidgets.QMessageBox.No
             
         # copy the image file to the appdata folder
-        if (not exists) | (overwrite == QtGui.QMessageBox.Yes):
-            if overwrite == QtGui.QMessageBox.Yes:
+        if (not exists) | (overwrite == QtWidgets.QMessageBox.Yes):
+            if overwrite == QtWidgets.QMessageBox.Yes:
                 for file in current_files:
                     QtCore.QFile.remove(file)
                 QtCore.QFile.remove(destination)
@@ -3783,8 +3779,8 @@ class MyForm(settingsmixin.SMainWindow):
             "MainWindow", "Sound files (%s)" %
             ' '.join(['*%s%s' % (os.extsep, ext) for ext in sound.extensions])
         ))]
-        sourcefile = unicode(QtGui.QFileDialog.getOpenFileName(
-            self, _translate("MainWindow", "Set notification sound..."),
+        sourcefile = unicode(QtWidgets.QFileDialog.getOpenFileName(
+            self, _translate("MainWindow", "Set notification sound."),
             filter=';;'.join(filters)
         ))
 
@@ -3801,15 +3797,15 @@ class MyForm(settingsmixin.SMainWindow):
         pattern = destfile.lower()
         for item in os.listdir(destdir):
             if item.lower() == pattern:
-                overwrite = QtGui.QMessageBox.question(
+                overwrite = QtWidgets.QMessageBox.question(
                     self, _translate("MainWindow", "Message"),
                     _translate(
                         "MainWindow",
                         "You have already set a notification sound"
                         " for this address book entry."
                         " Do you really want to overwrite it?"),
-                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No
-                ) == QtGui.QMessageBox.Yes
+                    QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
+                ) == QtWidgets.QMessageBox.Yes
                 if overwrite:
                     QtCore.QFile.remove(os.path.join(destdir, item))
                 break
@@ -3820,7 +3816,7 @@ class MyForm(settingsmixin.SMainWindow):
 
     def on_context_menuYourIdentities(self, point):
         currentItem = self.getCurrentItem()
-        self.popMenuYourIdentities = QtGui.QMenu(self)
+        self.popMenuYourIdentities = QtWidgets.QMenu(self)
         if isinstance(currentItem, Ui_AddressWidget):
             self.popMenuYourIdentities.addAction(self.actionNewYourIdentities)
             self.popMenuYourIdentities.addSeparator()
@@ -3847,7 +3843,7 @@ class MyForm(settingsmixin.SMainWindow):
     # TODO make one popMenu
     def on_context_menuChan(self, point):
         currentItem = self.getCurrentItem()
-        self.popMenu = QtGui.QMenu(self)
+        self.popMenu = QtWidgets.QMenu(self)
         if isinstance(currentItem, Ui_AddressWidget):
             self.popMenu.addAction(self.actionNew)
             self.popMenu.addAction(self.actionDelete)
@@ -3873,7 +3869,7 @@ class MyForm(settingsmixin.SMainWindow):
             if currentFolder == 'sent':
                 self.on_context_menuSent(point)
             else:
-                self.popMenuInbox = QtGui.QMenu(self)
+                self.popMenuInbox = QtWidgets.QMenu(self)
                 self.popMenuInbox.addAction(self.actionForceHtml)
                 self.popMenuInbox.addAction(self.actionMarkUnread)
                 self.popMenuInbox.addSeparator()
@@ -3901,7 +3897,7 @@ class MyForm(settingsmixin.SMainWindow):
                 self.popMenuInbox.exec_(tableWidget.mapToGlobal(point))
 
     def on_context_menuSent(self, point):
-        self.popMenuSent = QtGui.QMenu(self)
+        self.popMenuSent = QtWidgets.QMenu(self)
         self.popMenuSent.addAction(self.actionSentClipboard)
         self.popMenuSent.addAction(self.actionTrashSentMessage)
 
@@ -3910,7 +3906,7 @@ class MyForm(settingsmixin.SMainWindow):
         currentRow = self.ui.tableWidgetInbox.currentRow()
         if currentRow >= 0:
             ackData = str(self.ui.tableWidgetInbox.item(
-                currentRow, 3).data(QtCore.Qt.UserRole).toPyObject())
+                currentRow, 3).data(QtCore.Qt.UserRole))
             queryreturn = sqlQuery('''SELECT status FROM sent where ackdata=?''', ackData)
             for row in queryreturn:
                 status, = row
@@ -4091,10 +4087,10 @@ class MyForm(settingsmixin.SMainWindow):
                     obj.loadSettings()
 
 
-class settingsDialog(QtGui.QDialog):
+class settingsDialog(QtWidgets.QDialog):
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_settingsDialog()
         self.ui.setupUi(self)
         self.parent = parent
@@ -4261,7 +4257,7 @@ class settingsDialog(QtGui.QDialog):
         else:
             self.ui.comboBoxMaxCores.setCurrentIndex(5)"""
 
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
     def comboBoxProxyTypeChanged(self, comboBoxIndex):
         if comboBoxIndex == 0:
@@ -4308,7 +4304,7 @@ class settingsDialog(QtGui.QDialog):
     # Test the namecoin settings specified in the settings dialog.
     def click_pushButtonNamecoinTest(self):
         self.ui.labelNamecoinTestResult.setText(_translate(
-                "MainWindow", "Testing..."))
+                "MainWindow", "Testing."))
         options = {}
         options["type"] = self.getNamecoinType()
         options["host"] = str(self.ui.lineEditNamecoinHost.text().toUtf8())
@@ -4330,14 +4326,14 @@ class settingsDialog(QtGui.QDialog):
 class myTableWidgetItem(QtGui.QTableWidgetItem):
 
     def __lt__(self, other):
-        return int(self.data(33).toPyObject()) < int(other.data(33).toPyObject())
+        return int(self.data(33)) < int(other.data(33))
 
 
 app = None
 myapp = None
 
 
-class MySingleApplication(QtGui.QApplication):
+class MySingleApplication(QtWidgets.QApplication):
     """
     Listener to allow our Qt form to get focus when another instance of the
     application is open.
@@ -4422,4 +4418,4 @@ def run():
     if not BMConfigParser().getboolean('bitmessagesettings', 'startintray'):
         myapp.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

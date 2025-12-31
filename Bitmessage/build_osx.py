@@ -12,7 +12,7 @@ setup(
     options = dict(
         py2app = dict(
             resources = ["images", "translations"],
-            includes = ['sip', 'PyQt4._qt'],
+            includes = ['sip', 'PyQt6._qt'],
             iconfile = "images/bitmessage.icns"
         )
     )

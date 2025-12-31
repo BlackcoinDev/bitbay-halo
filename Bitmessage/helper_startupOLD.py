@@ -1,5 +1,5 @@
-import shared
-import ConfigParser
+from . import shared
+import configparser
 import sys
 import os
 import locale
@@ -8,7 +8,7 @@ import string
 import platform
 from distutils.version import StrictVersion
 
-from namecoin import ensureNamecoinOptions
+from .namecoin import ensureNamecoinOptions
 
 storeConfigFilesInSameDirectoryAsProgramByDefault = False  # The user may de-select Portable Mode in the settings if they want the config files to stay in the application data folder.
 
@@ -18,7 +18,7 @@ def loadConfig():
         #shared.appdata must have been specified as a startup option.
         try:
             shared.config.get('bitmessagesettings', 'settingsversion')
-            print 'Loading config files from directory specified on startup: ' + shared.appdata
+            print('Loading config files from directory specified on startup: ' + shared.appdata)
             needToCreateKeysFile = False
         except:
             needToCreateKeysFile = True
@@ -27,7 +27,7 @@ def loadConfig():
         shared.config.read('keys.dat')
         try:
             shared.config.get('bitmessagesettings', 'settingsversion')
-            print 'Loading config files from same directory as program.'
+            print('Loading config files from same directory as program.')
             needToCreateKeysFile = False
             shared.appdata = ''
         except:
@@ -37,7 +37,7 @@ def loadConfig():
             shared.config.read(shared.appdata + 'keys.dat')
             try:
                 shared.config.get('bitmessagesettings', 'settingsversion')
-                print 'Loading existing config files from', shared.appdata
+                print('Loading existing config files from', shared.appdata)
                 needToCreateKeysFile = False
             except:
                 needToCreateKeysFile = True
@@ -112,9 +112,9 @@ def loadConfig():
             # Just use the same directory as the program and forget about
             # the appdata folder
             shared.appdata = ''
-            print 'Creating new config files in same directory as program.'
+            print('Creating new config files in same directory as program.')
         else:
-            print 'Creating new config files in', shared.appdata
+            print('Creating new config files in', shared.appdata)
             if not os.path.exists(shared.appdata):
                 os.makedirs(shared.appdata)
         if not sys.platform.startswith('win'):
@@ -129,5 +129,5 @@ def isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections():
             return StrictVersion("5.1.2600")<=VER_THIS and StrictVersion("6.0.6000")>=VER_THIS
         return False
     except Exception as err:
-        print 'An Exception occurred within isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections:', err
+        print('An Exception occurred within isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections:', err)
         return False

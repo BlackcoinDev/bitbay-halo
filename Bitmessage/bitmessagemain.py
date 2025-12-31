@@ -12,56 +12,40 @@
 
 import sys
 #Version check
-#Older versions of Python don't support the print function while Python 3 doesn't
-#like the print statement, so we use sys.stdout for the version check. After this
-#check we can then use the print function in the remainder of this file. Currently
-#in order to use logging, a lot of unnecessary code needs to be executed which could
-#potentially render this version check useless. So logging won't be used here until
-#there is a more efficient way to configure logging
-if sys.hexversion >= 0x3000000:
-    msg = "PyBitmessage does not support Python 3. Python 2.7.3 or later is required. Your version: %s" % sys.version
-    #logger.critical(msg)
-    sys.stdout.write(msg)
-    sys.exit(0)
-if sys.hexversion < 0x20703F0:
-    msg = "You should use Python 2.7.3 or greater (but not Python 3). Your version: %s" % sys.version
-    #logger.critical(msg)
-    sys.stdout.write(msg)
-    sys.exit(0)
-
+import sys
 import signal  # Used to capture a Ctrl-C keypress so that Bitmessage can shutdown gracefully.
 # The next 3 are used for the API
-import singleton
+from . import singleton
 import os
 import socket
 import ctypes
 from struct import pack
 
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from api import MySimpleXMLRPCRequestHandler
-from helper_startup import isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections
+from xmlrpc.server import SimpleXMLRPCServer
+from .api import MySimpleXMLRPCRequestHandler
+from .helper_startup import isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections
 
-import shared
-from helper_sql import sqlQuery
+from . import shared
+from .helper_sql import sqlQuery
 import threading
 
 # Classes
 #from helper_sql import *
 #from class_sqlThread import *
-from class_sqlThread import sqlThread
-from class_singleCleaner import singleCleaner
+from .class_sqlThread import sqlThread
+from .class_singleCleaner import singleCleaner
 #from class_singleWorker import *
-from class_objectProcessor import objectProcessor
-from class_outgoingSynSender import outgoingSynSender
-from class_singleListener import singleListener
-from class_singleWorker import singleWorker
+from .class_objectProcessor import objectProcessor
+from .class_outgoingSynSender import outgoingSynSender
+from .class_singleListener import singleListener
+from .class_singleWorker import singleWorker
 #from class_addressGenerator import *
-from class_addressGenerator import addressGenerator
-from debug import logger
+from .class_addressGenerator import addressGenerator
+from .debug import logger
 
 # Helper Functions
-import helper_bootstrap
-import helper_generic
+from . import helper_bootstrap
+from . import helper_generic
 
 from subprocess import call
 import time
@@ -212,7 +196,7 @@ class Main:
                 apiNotifyPath = ''
             if apiNotifyPath != '':
                 with shared.printLock:
-                    print('Trying to call', apiNotifyPath)
+                    print(('Trying to call', apiNotifyPath))
 
                 call([apiNotifyPath, "startingUp"])
             singleAPIThread = singleAPI()
@@ -229,18 +213,18 @@ class Main:
         if daemon == False and shared.safeConfigGetBoolean('bitmessagesettings', 'daemon') == False:
             if curses == False:
                 try:
-                    from PyQt4 import QtCore, QtGui
+                    from PyQt6 import QtCore, QtGui
                 except Exception as err:
                     print('PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. You can download PyQt from http://www.riverbankcomputing.com/software/pyqt/download   or by searching Google for \'PyQt Download\'. If you want to run in daemon mode, see https://bitmessage.org/wiki/Daemon')
-                    print('Error message:', err)
+                    print(('Error message:', err))
                     print('You can also run PyBitmessage with the new curses interface by providing \'-c\' as a commandline argument.')
                     os._exit(0)
 
-                import bitmessageqt
+                from . import bitmessageqt
                 bitmessageqt.run()
             else:
                 print('Running with curses')
-                import bitmessagecurses
+                from . import bitmessagecurses
                 bitmessagecurses.runwrapper()
         else:
             shared.config.remove_option('bitmessagesettings', 'dontconnect')

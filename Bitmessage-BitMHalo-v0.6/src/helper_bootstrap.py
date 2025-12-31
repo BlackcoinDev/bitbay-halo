@@ -25,7 +25,7 @@ def knownNodes():
         with open(state.appdata + 'knownnodes.dat', 'rb') as pickleFile:
             with knownnodes.knownNodesLock:
                 knownnodes.knownNodes = pickle.load(pickleFile)
-            # the old format was {Peer:lastseen, ...}
+            # the old format was {Peer:lastseen, .}
             # the new format is {Peer:{"lastseen":i, "rating":f}}
             for stream in knownnodes.knownNodes.keys():
                 for node, params in knownnodes.knownNodes[stream].items():
@@ -74,7 +74,7 @@ def dns():
         addKnownNode(1, state.Peer('quzwelsuziwqgpt2.onion', 8444))
         logger.debug("Adding quzwelsuziwqgpt2.onion:8444 to knownNodes.")
         for port in [8080, 8444]:
-            logger.debug("Resolving %i through SOCKS...", port)
+            logger.debug("Resolving %i through SOCKS.", port)
             address_family = socket.AF_INET
             sock = socks.socksocket(address_family, socket.SOCK_STREAM)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

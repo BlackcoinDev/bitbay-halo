@@ -41,7 +41,7 @@ High-level wrapper around a subset of the OpenSSL library, includes
    sockets
  * Callbacks written in Python
  * Extensive error-handling mechanism, mirroring OpenSSL's error codes
-...  and much more ;)""",
+.  and much more ;)""",
       classifiers = [
         'Development Status :: 6 - Mature',
         'Intended Audience :: Developers',

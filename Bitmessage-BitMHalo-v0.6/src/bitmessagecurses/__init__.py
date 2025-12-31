@@ -829,7 +829,7 @@ def sendMessage(sender="", recv="", broadcast=None, subject="", body="", reply=F
 
 def loadInbox():
     sys.stdout = sys.__stdout__
-    print("Loading inbox messages...")
+    print("Loading inbox messages.")
     sys.stdout = printlog
     
     where = "toaddress || fromaddress || subject || message"
@@ -878,7 +878,7 @@ def loadInbox():
     inbox.reverse()
 def loadSent():
     sys.stdout = sys.__stdout__
-    print("Loading sent messages...")
+    print("Loading sent messages.")
     sys.stdout = printlog
     
     where = "toaddress || fromaddress || subject || message"
@@ -954,7 +954,7 @@ def loadSent():
     sentbox.reverse()
 def loadAddrBook():
     sys.stdout = sys.__stdout__
-    print("Loading address book...")
+    print("Loading address book.")
     sys.stdout = printlog
     
     ret = sqlQuery("SELECT label, address FROM addressbook")
@@ -1050,7 +1050,7 @@ def run(stdscr):
 
 def doShutdown():
     sys.stdout = sys.__stdout__
-    print("Shutting down...")
+    print("Shutting down.")
     sys.stdout = printlog
     shutdown.doCleanShutdown()
     sys.stdout = sys.__stdout__

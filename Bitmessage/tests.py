@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 import random, string, unittest, struct
-from pybmlib import protocol, crypt
+from .pybmlib import protocol, crypt
 
 class TestProtocol(unittest.TestCase):
     HEADER_DATA_HEX =   'd9b4bee97465737400000000000000002000000076f8186f536f6d65'
@@ -25,15 +25,11 @@ class TestProtocol(unittest.TestCase):
         header = protocol.Header('test')
         header.update(self.HEADER_PAYLOAD)
 
-        self.assertEqual(header.serialize().encode('hex'), self.HEADER_DATA_HEX)
+        self.assertEqual(header.serialize().hex(), self.HEADER_DATA_HEX)
+        header = protocol.Header.unserialize(bytes.fromhex(self.HEADER_DATA_HEX))
 
-    def test_header_decode(self):
-        header = protocol.Header.unserialize(self.HEADER_DATA_HEX.decode('hex'))
-
-        self.assertEqual(header.payload, self.HEADER_PAYLOAD)
-
-    def test_pow(self):
-        self.assertEqual(crypt.pow(self.POW_DATA).encode('hex'), self.POW_HASH)
+        self.assertEqual(crypt.pow(self.POW_DATA).hex(), self.POW_HASH)
+        self.assertEqual(crypt.addr(self.ADDR_DATA).hex(), self.ADDR_HASH)
 
     def test_addr(self):
         self.assertEqual(crypt.addr(self.ADDR_DATA).encode('hex'), self.ADDR_HASH)

@@ -3,7 +3,8 @@
 # https://github.com/VictorZhang2014/free-google-translate/issues/6
 # 
 
-import urllib
+import urllib.request
+import urllib.parse
 import requests
 import json
 import re
@@ -170,9 +171,9 @@ class GoogleTrans(object):
     
     def query(self, q, lang_to=''):
         try:
-            self.data['q'] = urllib.pathname2url(q)
+            self.data['q'] = urllib.request.pathname2url(q)
         except:
-            self.data['q'] = urllib.quote(q)
+            self.data['q'] = urllib.parse.quote(q)
         self.data['tk'] = self.JSHackToken().wo(q, self.TKK)
         self.data['tl'] = lang_to
         url = self.construct_url()
@@ -188,4 +189,4 @@ if __name__ == '__main__':
     text = "Hello world"
     originalText, originalLanguageCode, targetText, targetLanguageCode = GoogleTrans().query(text, lang_to='fr')  
     print("==============================")
-    print  originalText, originalLanguageCode, targetText, targetLanguageCode
+    print((originalText, originalLanguageCode, targetText, targetLanguageCode))

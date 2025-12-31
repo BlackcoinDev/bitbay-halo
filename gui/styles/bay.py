@@ -1,7 +1,7 @@
 import os
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets
 
-import bay_rc
+from . import bay_rc
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -15,7 +15,7 @@ def setupFonts(main_window):
     for f in ttf_files: QtGui.QFontDatabase.addApplicationFont(os.path.join(fonts_path, f))
     font = QtGui.QFont("Roboto", 12, 0)
     font.setPixelSize(15)
-    #QtGui.QApplication.setFont(font)
+    #QtWidgets.QApplication.setFont(font)
     main_window.setFont(font)
 
 def setupFontsForeign(main_window):
@@ -24,7 +24,7 @@ def setupFontsForeign(main_window):
     for f in ttf_files: QtGui.QFontDatabase.addApplicationFont(os.path.join(fonts_path, f))
     font = QtGui.QFont("Arial Unicode MS", 12, 0)
     font.setPixelSize(15)
-    #QtGui.QApplication.setFont(font)
+    #QtWidgets.QApplication.setFont(font)
     main_window.setFont(font)
 
 def applyCssFiles(ui, main_window):
@@ -61,7 +61,7 @@ def apply(ui, main_window):
     applyCssFiles(ui, main_window)
 
     icon = QtGui.QIcon()
-    icon.addPixmap(QtGui.QPixmap(main_window.ApplicationPath+"/images/BitBay.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon.addPixmap(QtGui.QPixmap(main_window.ApplicationPath+"/images/BitBay.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
     main_window.setWindowIcon(icon)
 
     ui.webView.setHtml(_fromUtf8("<iframe src="+ui.NewCoin['IRC']+" width='100%' height='500'></iframe></div></div></div>"))
@@ -100,7 +100,7 @@ def apply(ui, main_window):
     ui.Market.tb_cards.setIcon(QtGui.QIcon(":/icons/cards"))
 
     icon1 = QtGui.QIcon()
-    icon1.addPixmap(QtGui.QPixmap(":/images/attention_off"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon1.addPixmap(QtGui.QPixmap(":/images/attention_off"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
     main_window.setWindowTitle(ui._translate("MainWindow", "BitBay", None))
 

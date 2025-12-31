@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,46 +16,46 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_AddAddressDialog(object):
     def setupUi(self, AddAddressDialog):
-        AddAddressDialog.setObjectName(_fromUtf8("AddAddressDialog"))
+        AddAddressDialog.setObjectName("AddAddressDialog")
         AddAddressDialog.resize(368, 162)
-        self.formLayout = QtGui.QFormLayout(AddAddressDialog)
-        self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.label_2 = QtGui.QLabel(AddAddressDialog)
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.SpanningRole, self.label_2)
-        self.newAddressLabel = QtGui.QLineEdit(AddAddressDialog)
-        self.newAddressLabel.setObjectName(_fromUtf8("newAddressLabel"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.SpanningRole, self.newAddressLabel)
-        self.label = QtGui.QLabel(AddAddressDialog)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.label)
-        self.lineEditAddress = QtGui.QLineEdit(AddAddressDialog)
-        self.lineEditAddress.setObjectName(_fromUtf8("lineEditAddress"))
-        self.formLayout.setWidget(5, QtGui.QFormLayout.SpanningRole, self.lineEditAddress)
-        self.labelAddressCheck = QtGui.QLabel(AddAddressDialog)
+        self.formLayout = QtWidgets.QFormLayout(AddAddressDialog)
+        self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.formLayout.setObjectName("formLayout")
+        self.label_2 = QtWidgets.QLabel(AddAddressDialog)
+        self.label_2.setObjectName("label_2")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.label_2)
+        self.newAddressLabel = QtWidgets.QLineEdit(AddAddressDialog)
+        self.newAddressLabel.setObjectName("newAddressLabel")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.newAddressLabel)
+        self.label = QtWidgets.QLabel(AddAddressDialog)
+        self.label.setObjectName("label")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label)
+        self.lineEditAddress = QtWidgets.QLineEdit(AddAddressDialog)
+        self.lineEditAddress.setObjectName("lineEditAddress")
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.lineEditAddress)
+        self.labelAddressCheck = QtWidgets.QLabel(AddAddressDialog)
         self.labelAddressCheck.setText(_fromUtf8(""))
         self.labelAddressCheck.setWordWrap(True)
-        self.labelAddressCheck.setObjectName(_fromUtf8("labelAddressCheck"))
-        self.formLayout.setWidget(6, QtGui.QFormLayout.SpanningRole, self.labelAddressCheck)
-        self.buttonBox = QtGui.QDialogButtonBox(AddAddressDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.formLayout.setWidget(7, QtGui.QFormLayout.FieldRole, self.buttonBox)
+        self.labelAddressCheck.setObjectName("labelAddressCheck")
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.labelAddressCheck)
+        self.buttonBox = QtWidgets.QDialogButtonBox(AddAddressDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
         self.retranslateUi(AddAddressDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), AddAddressDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), AddAddressDialog.reject)
+        self.buttonBox.accepted.connect(AddAddressDialog.accept)
+        self.buttonBox.rejected.connect(AddAddressDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(AddAddressDialog)
 
     def retranslateUi(self, AddAddressDialog):

@@ -1,5 +1,5 @@
-from helper_sql import *
-import shared
+from .helper_sql import *
+from . import shared
 
 def insert(t):
     sqlExecute('''INSERT INTO inbox VALUES (?,?,?,?,?,?,?,?,?)''', *t)

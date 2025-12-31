@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 
 class SettingsMixin(object):
     def warnIfNoObjectName(self):
@@ -41,7 +41,7 @@ class SettingsMixin(object):
             pass
 
             
-class SMainWindow(QtGui.QMainWindow, SettingsMixin):
+class SMainWindow(QtWidgets.QMainWindow, SettingsMixin):
     def loadSettings(self):
         self.readGeometry(self)
         self.readState(self)
@@ -51,7 +51,7 @@ class SMainWindow(QtGui.QMainWindow, SettingsMixin):
         self.writeGeometry(self)
 
 
-class STableWidget(QtGui.QTableWidget, SettingsMixin):
+class STableWidget(QtWidgets.QTableWidget, SettingsMixin):
     def loadSettings(self):
         self.readState(self.horizontalHeader())
 
@@ -59,7 +59,7 @@ class STableWidget(QtGui.QTableWidget, SettingsMixin):
         self.writeState(self.horizontalHeader())
 
         
-class SSplitter(QtGui.QSplitter, SettingsMixin):
+class SSplitter(QtWidgets.QSplitter, SettingsMixin):
     def loadSettings(self):
         self.readState(self)
 
@@ -67,7 +67,7 @@ class SSplitter(QtGui.QSplitter, SettingsMixin):
         self.writeState(self)
         
 
-class STreeWidget(QtGui.QTreeWidget, SettingsMixin):
+class STreeWidget(QtWidgets.QTreeWidget, SettingsMixin):
     def loadSettings(self):
         #recurse children
         #self.readState(self)

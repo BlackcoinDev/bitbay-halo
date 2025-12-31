@@ -18,9 +18,9 @@ Use: `from debug import logger` to import this facility into whatever module you
 '''
 import logging
 import logging.config
-import shared
+from . import shared
 import sys
-import helper_startup
+from . import helper_startup
 helper_startup.loadConfig()
 
 # TODO(xj9): Get from a config file.

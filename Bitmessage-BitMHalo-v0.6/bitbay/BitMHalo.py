@@ -42,8 +42,8 @@ connection = ""
 #print txhash(open("blackhalo2.py", 'rb').read())
 #########################################
 
-from PyQt4.QtCore import QThread
-from PyQt4.QtCore import QCoreApplication
+from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QCoreApplication
 import threading
 
 logger = logging.getLogger('both')  # type: Logger
@@ -64,7 +64,7 @@ class RPCThread(QThread):  # threading.Thread
     # published as XML-RPC methods (in this case, just 'div').
     class MyFuncs:
         def ExitBitmessage(self, passw):
-            logger.warning(str("bitmhalo: Closing Bitmessage..."))
+            logger.warning(str("bitmhalo: Closing Bitmessage."))
             #Bitmessage doesn't do clean exit, so do a safe BitMHalo exit instead.
             shared.systemexit = 1
             return True
@@ -234,7 +234,7 @@ def cmd_send(str_data, data3):
             str_data)
         ret = email_support.send_email(
             email_password, content, from_address, to_address, smtp_name, port)
-        # It failed lets write it to an outbox...
+        # It failed lets write it to an outbox.
         # We could also try repeating until solved.
         # Reporting an email fail via api.
         if ret == False:
@@ -487,7 +487,7 @@ class BMHaloApp(QCoreApplication):
             return
         if shared.systemexit == 1:
             shared.systemexit = 2
-            logger.warning("bitmhalo: closing bitmessage...")
+            logger.warning("bitmhalo: closing bitmessage.")
             self.quit()
             return
         if shared.systemexit == 2:
@@ -507,7 +507,7 @@ class BMHaloApp(QCoreApplication):
                 cmd_remove_channel(self.str_data_arg1)
             if cmd == "exit":
                 shared.systemexit = 2
-                logger.warning("bitmhalo: closing bitmessage...")
+                logger.warning("bitmhalo: closing bitmessage.")
                 self.quit()
         except Exception, e:
             logger.error("bitmhalo: checking/thread: %s %s" %
@@ -519,7 +519,7 @@ class BMHaloApp(QCoreApplication):
             return
         if shared.systemexit == 1:
             shared.systemexit = 2
-            logger.warning(str("bitmhalo: closing bitmessage..."))
+            logger.warning(str("bitmhalo: closing bitmessage."))
             self.quit()
             return
         if shared.systemexit == 2:
@@ -528,7 +528,7 @@ class BMHaloApp(QCoreApplication):
             cmd = self.str_data_cmd
             logger.debug("do2: %s, %s, %s" % (str(cmd), str(self.str_data_arg1), str(self.str_data_arg2)))
             if cmd == "GetMessages" or cmd == "Remove Order":
-                logger.info("bitmhalo: checking Inbox...")
+                logger.info("bitmhalo: checking Inbox.")
                 inbox = []
                 ret = ""
                 try:
@@ -627,7 +627,7 @@ class BMHaloApp(QCoreApplication):
 def main():
     init()
     app = BMHaloApp(sys.argv)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()

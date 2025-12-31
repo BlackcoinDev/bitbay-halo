@@ -44,7 +44,7 @@ global lockTHIS
 lockTHIS=0
 #print txhash(open("blackhalo2.py", 'rb').read())
 #########################################
-from PyQt4.QtCore import QThread
+from PyQt6.QtCore import QThread
 import threading
 
 os.environ['no_proxy'] = '127.0.0.1,localhost'
@@ -59,7 +59,7 @@ class RPCThread(QThread): #threading.Thread
     class MyFuncs:
         def ExitBitmessage(self, passw):
             global systemexit
-            sys.stderr.write(str("Closing Bitmessage..."))
+            sys.stderr.write(str("Closing Bitmessage."))
             #if passw=='password'
             try:
                 api.stop()
@@ -176,7 +176,7 @@ if __name__ ==  '__main__':
     while ch != "exit":
         if systemexit==1:
             systemexit=2
-            sys.stderr.write(str("Closing Bitmessage..."))
+            sys.stderr.write(str("Closing Bitmessage."))
             sys.exit()
         time.sleep(0.23456)
         ticker+=1 #We dont check email messages as compulsively not do we try resending outbox messages as compulsively
@@ -417,7 +417,7 @@ if __name__ ==  '__main__':
                         except Exception, e:
                             sys.stderr.write(str("SEND ERROR: ")+ str(e))
                             ret = False
-                        if ret== False:#It failed lets write it to an outbox... We could also try repeating until solved. Reporting an email fail via api.
+                        if ret== False:#It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
                             outbox=[]
                             try:
                                 with open(outpath,'r') as f:
@@ -459,7 +459,7 @@ if __name__ ==  '__main__':
                         sys.stderr.write(str("File Error"))
                 if ch == "GetMessages" or ch == "Remove Order" or ch == "Clean Inbox":
                     if ticker2>22:
-                        sys.stderr.write(str("\n\n\nChecking Inbox...\n\n\n"))
+                        sys.stderr.write(str("\n\n\nChecking Inbox.\n\n\n"))
                         ticker2=0
                         #Gets messages
                         inbox=[]
@@ -563,9 +563,9 @@ if __name__ ==  '__main__':
                                                         try:
                                                             if systemexit==1:#Attempt a clean exit when possible
                                                                 systemexit=2
-                                                                sys.stderr.write(str("Closing Bitmessage..."))
+                                                                sys.stderr.write(str("Closing Bitmessage."))
                                                                 sys.exit()
-                                                            sys.stderr.write(str("\n\nFETCHING...\n\n"))
+                                                            sys.stderr.write(str("\n\nFETCHING.\n\n"))
                                                             #This is to prevent dropped connections, for now only on fetching
                                                             timeresult = False
                                                             try:#Let Halo know through RPC we started to download
@@ -734,7 +734,7 @@ if __name__ ==  '__main__':
                                                 if systemexit==2:
                                                     sys.exit()
                                                 pass
-                                        sys.stderr.write(str("\n\nClosing...\n\n"))
+                                        sys.stderr.write(str("\n\nClosing.\n\n"))
                                         connection.close()
                                         sys.stderr.write(str("\n\nCLOSED!\n\n"))
                                         try:

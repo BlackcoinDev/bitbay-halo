@@ -1,4 +1,4 @@
-from PyQt4 import QtGui
+from PyQt6 import QtGui
 from tr import _translate
 from retranslateui import RetranslateMixin
 import widgets
@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 
-class AboutDialog(QtGui.QDialog, RetranslateMixin):
+class AboutDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent=None):
         super(AboutDialog, self).__init__(parent)
         widgets.load('about.ui', self)
@@ -44,10 +44,10 @@ class AboutDialog(QtGui.QDialog, RetranslateMixin):
         except AttributeError:
             pass
 
-        self.setFixedSize(QtGui.QWidget.sizeHint(self))
+        self.setFixedSize(QtWidgets.QWidget.sizeHint(self))
 
 
-class IconGlossaryDialog(QtGui.QDialog, RetranslateMixin):
+class IconGlossaryDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent=None, config=None):
         super(IconGlossaryDialog, self).__init__(parent)
         widgets.load('iconglossary.ui', self)
@@ -59,18 +59,18 @@ class IconGlossaryDialog(QtGui.QDialog, RetranslateMixin):
             "iconGlossaryDialog",
             "You are using TCP port %1. (This can be changed in the settings)."
             ).arg(config.getint('bitmessagesettings', 'port')))
-        self.setFixedSize(QtGui.QWidget.sizeHint(self))
+        self.setFixedSize(QtWidgets.QWidget.sizeHint(self))
 
 
-class HelpDialog(QtGui.QDialog, RetranslateMixin):
+class HelpDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent=None):
         super(HelpDialog, self).__init__(parent)
         widgets.load('help.ui', self)
-        self.setFixedSize(QtGui.QWidget.sizeHint(self))
+        self.setFixedSize(QtWidgets.QWidget.sizeHint(self))
 
 
-class ConnectDialog(QtGui.QDialog, RetranslateMixin):
+class ConnectDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent=None):
         super(ConnectDialog, self).__init__(parent)
         widgets.load('connect.ui', self)
-        self.setFixedSize(QtGui.QWidget.sizeHint(self))
+        self.setFixedSize(QtWidgets.QWidget.sizeHint(self))

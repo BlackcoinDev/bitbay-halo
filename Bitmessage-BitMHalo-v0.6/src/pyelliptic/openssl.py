@@ -522,12 +522,12 @@ def loadOpenSSL():
             datadir = getPythonFileLocation()
         if 'darwin' in sys.platform:
             libdir.extend([
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.1.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.2.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.1.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.0.9.8.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.1.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.2.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.1.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.0.9.8.dylib'),
                 ])
         elif 'win32' in sys.platform or 'win64' in sys.platform:
             libdir.append(path.join(datadir, 'libeay32.dll'))

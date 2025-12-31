@@ -1,7 +1,7 @@
-import hashlib, ctypes, pyelliptic
-import protocol
-from pyelliptic import arithmetic
-from pyelliptic.openssl import OpenSSL
+import hashlib, ctypes
+from . import protocol
+from .pyelliptic import arithmetic
+from .pyelliptic.openssl import OpenSSL
 
 BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
@@ -56,11 +56,11 @@ def encodeAddress(ripe, stream = 1, version = 2):
     if version >= 2:
         if len(ripe) != 20:
             raise Exception('Ripe length not equels to 20')
-        if ripe[:2] == '\x00\x00':
+        if ripe[:2] == b'\x00\x00':
             ripe = ripe[2:]
-        elif ripe[:1] == '\x00':
+        elif ripe[:1] == b'\x00':
             ripe = ripe[1:]
-    a = ''
+    a = b''
 
     a += protocol.encodeVarInt(version)
     a += protocol.encodeVarInt(stream)
@@ -70,7 +70,7 @@ def encodeAddress(ripe, stream = 1, version = 2):
 
     a += h
 
-    v = int(a.encode('hex'), 16)
+    v = int(a.hex(), 16)
     return 'BM-%s' % (encodeBase58(v))
 def decodeAddress(address):
     address = str(address).strip()
@@ -82,12 +82,12 @@ def decodeAddress(address):
     if i == 0:
         return ('invalidcharacters', 0, 0, 0)
 
-    hexdata = hex(i)[2:-1]
+    hexdata = hex(i)[2:]
 
     if len(hexdata) % 2 != 0:
         hexdata = '0' + hexdata
 
-    data = hexdata.decode('hex')
+    data = bytes.fromhex(hexdata)
     checksum = data[-4:]
 
     a = data[:-4]
@@ -107,9 +107,9 @@ def decodeAddress(address):
 
     if 2 <= version <= 3:
         if len(ripe) == 19:
-            ripe = '\x00' + ripe
+            ripe = b'\x00' + ripe
         elif len(ripe) == 18:
-            ripe = '\x00\x00' + ripe
+            ripe = b'\x00\x00' + ripe
         elif len(ripe) != 20:
             return ('badripe', 0, 0, 0)
 

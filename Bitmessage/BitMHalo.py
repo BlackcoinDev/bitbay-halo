@@ -1,7 +1,6 @@
-import msvcrt as m
 import sys
-import class_api
-import parallelTestModule
+from . import class_api
+from . import parallelTestModule
 import time
 import os
 import rpyc #For communication between the server and BitHalo for now not being used
@@ -30,9 +29,9 @@ if __name__ ==  '__main__':
 				try:
 					data[2]=f.readline().strip()
 				except:
-					print ""
+					print("")
 				f.close()
-		except Exception,e:
+		except Exception as e:
 			sys.stderr.write(str(e))
 		if data[0] == "0":			
 			ch=data[1]
@@ -48,7 +47,7 @@ if __name__ ==  '__main__':
 						f.write(str(ret)+"\n")
 						f.close()
 				except:
-					print "error"
+					print("error")
 			if ch == "GetMessages":
 				#Gets messages
 				#Command=ast.literal_eval(data[2])#This gets the specific addresss as well

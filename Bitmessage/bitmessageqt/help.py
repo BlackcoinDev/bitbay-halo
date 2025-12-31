@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,33 +16,33 @@ except AttributeError:
 
 class Ui_helpDialog(object):
     def setupUi(self, helpDialog):
-        helpDialog.setObjectName(_fromUtf8("helpDialog"))
+        helpDialog.setObjectName("helpDialog")
         helpDialog.resize(335, 96)
-        self.formLayout = QtGui.QFormLayout(helpDialog)
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.labelHelpURI = QtGui.QLabel(helpDialog)
+        self.formLayout = QtWidgets.QFormLayout(helpDialog)
+        self.formLayout.setObjectName("formLayout")
+        self.labelHelpURI = QtWidgets.QLabel(helpDialog)
         self.labelHelpURI.setOpenExternalLinks(True)
-        self.labelHelpURI.setObjectName(_fromUtf8("labelHelpURI"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.labelHelpURI)
-        self.label = QtGui.QLabel(helpDialog)
+        self.labelHelpURI.setObjectName("labelHelpURI")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.labelHelpURI)
+        self.label = QtWidgets.QLabel(helpDialog)
         self.label.setWordWrap(True)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.SpanningRole, self.label)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.formLayout.setItem(2, QtGui.QFormLayout.LabelRole, spacerItem)
-        self.buttonBox = QtGui.QDialogButtonBox(helpDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.buttonBox)
+        self.label.setObjectName("label")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.label)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.formLayout.setItem(2, QtWidgets.QFormLayout.ItemRole.LabelRole, spacerItem)
+        self.buttonBox = QtWidgets.QDialogButtonBox(helpDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
         self.retranslateUi(helpDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), helpDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), helpDialog.reject)
+        self.buttonBox.accepted.connect(helpDialog.accept)
+        self.buttonBox.rejected.connect(helpDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(helpDialog)
 
     def retranslateUi(self, helpDialog):
-        helpDialog.setWindowTitle(QtGui.QApplication.translate("helpDialog", "Help", None, QtGui.QApplication.UnicodeUTF8))
-        self.labelHelpURI.setText(QtGui.QApplication.translate("helpDialog", "<a href=\"http://Bitmessage.org/wiki/PyBitmessage_Help\">http://Bitmessage.org/wiki/PyBitmessage_Help</a>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("helpDialog", "As Bitmessage is a collaborative project, help can be found online in the Bitmessage Wiki:", None, QtGui.QApplication.UnicodeUTF8))
+        helpDialog.setWindowTitle(QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.labelHelpURI.setText(QtWidgets.QApplication.translate("helpDialog", "<a href=\"http://Bitmessage.org/wiki/PyBitmessage_Help\">http://Bitmessage.org/wiki/PyBitmessage_Help</a>", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label.setText(QtWidgets.QApplication.translate("helpDialog", "As Bitmessage is a collaborative project, help can be found online in the Bitmessage Wiki:", None, QtWidgets.QApplication.UnicodeUTF8))
 

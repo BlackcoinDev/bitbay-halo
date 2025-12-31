@@ -73,7 +73,7 @@ class _OpenSSL:
         """
         self._lib = ctypes.CDLL(library)
         self._version, self._hexversion, self._cflags = get_version(self._lib)
-        self._libreSSL = self._version.startswith("LibreSSL")
+        self._libreSSL = self._version.startswith(b"LibreSSL")
 
         self.pointer = ctypes.pointer
         self.c_int = ctypes.c_int
@@ -522,12 +522,12 @@ def loadOpenSSL():
             datadir = getPythonFileLocation()
         if 'darwin' in sys.platform:
             libdir.extend([
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.1.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.2.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.1.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.0.9.8.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.1.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.2.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.1.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.0.9.8.dylib'),
                 ])
         elif 'win32' in sys.platform or 'win64' in sys.platform:
             libdir.append(path.join(datadir, 'libeay32.dll'))
@@ -551,6 +551,8 @@ def loadOpenSSL():
     elif 'win32' in sys.platform or 'win64' in sys.platform:
         libdir.append('libeay32.dll')
     else:
+        libdir.append('libcrypto.so.3')
+        libdir.append('libssl.so.3')
         libdir.append('libcrypto.so')
         libdir.append('libssl.so')
     if 'linux' in sys.platform or 'darwin' in sys.platform or 'bsd' in sys.platform:
@@ -561,7 +563,8 @@ def loadOpenSSL():
         try:
             OpenSSL = _OpenSSL(library)
             return
-        except:
+        except Exception as e:
+            print(f"Failed to load {library}: {e}")
             pass
     raise Exception("Couldn't find and load the OpenSSL library. You must install it.")
 

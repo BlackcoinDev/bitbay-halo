@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,49 +16,49 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_NewSubscriptionDialog(object):
     def setupUi(self, NewSubscriptionDialog):
-        NewSubscriptionDialog.setObjectName(_fromUtf8("NewSubscriptionDialog"))
+        NewSubscriptionDialog.setObjectName("NewSubscriptionDialog")
         NewSubscriptionDialog.resize(368, 173)
-        self.formLayout = QtGui.QFormLayout(NewSubscriptionDialog)
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.label_2 = QtGui.QLabel(NewSubscriptionDialog)
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_2)
-        self.newsubscriptionlabel = QtGui.QLineEdit(NewSubscriptionDialog)
-        self.newsubscriptionlabel.setObjectName(_fromUtf8("newsubscriptionlabel"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.SpanningRole, self.newsubscriptionlabel)
-        self.label = QtGui.QLabel(NewSubscriptionDialog)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label)
-        self.lineEditSubscriptionAddress = QtGui.QLineEdit(NewSubscriptionDialog)
-        self.lineEditSubscriptionAddress.setObjectName(_fromUtf8("lineEditSubscriptionAddress"))
-        self.formLayout.setWidget(3, QtGui.QFormLayout.SpanningRole, self.lineEditSubscriptionAddress)
-        self.labelAddressCheck = QtGui.QLabel(NewSubscriptionDialog)
+        self.formLayout = QtWidgets.QFormLayout(NewSubscriptionDialog)
+        self.formLayout.setObjectName("formLayout")
+        self.label_2 = QtWidgets.QLabel(NewSubscriptionDialog)
+        self.label_2.setObjectName("label_2")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_2)
+        self.newsubscriptionlabel = QtWidgets.QLineEdit(NewSubscriptionDialog)
+        self.newsubscriptionlabel.setObjectName("newsubscriptionlabel")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.newsubscriptionlabel)
+        self.label = QtWidgets.QLabel(NewSubscriptionDialog)
+        self.label.setObjectName("label")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label)
+        self.lineEditSubscriptionAddress = QtWidgets.QLineEdit(NewSubscriptionDialog)
+        self.lineEditSubscriptionAddress.setObjectName("lineEditSubscriptionAddress")
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.lineEditSubscriptionAddress)
+        self.labelAddressCheck = QtWidgets.QLabel(NewSubscriptionDialog)
         self.labelAddressCheck.setText(_fromUtf8(""))
         self.labelAddressCheck.setWordWrap(True)
-        self.labelAddressCheck.setObjectName(_fromUtf8("labelAddressCheck"))
-        self.formLayout.setWidget(4, QtGui.QFormLayout.SpanningRole, self.labelAddressCheck)
-        self.checkBoxDisplayMessagesAlreadyInInventory = QtGui.QCheckBox(NewSubscriptionDialog)
+        self.labelAddressCheck.setObjectName("labelAddressCheck")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.labelAddressCheck)
+        self.checkBoxDisplayMessagesAlreadyInInventory = QtWidgets.QCheckBox(NewSubscriptionDialog)
         self.checkBoxDisplayMessagesAlreadyInInventory.setEnabled(False)
-        self.checkBoxDisplayMessagesAlreadyInInventory.setObjectName(_fromUtf8("checkBoxDisplayMessagesAlreadyInInventory"))
-        self.formLayout.setWidget(5, QtGui.QFormLayout.SpanningRole, self.checkBoxDisplayMessagesAlreadyInInventory)
-        self.buttonBox = QtGui.QDialogButtonBox(NewSubscriptionDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.formLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.buttonBox)
+        self.checkBoxDisplayMessagesAlreadyInInventory.setObjectName("checkBoxDisplayMessagesAlreadyInInventory")
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.checkBoxDisplayMessagesAlreadyInInventory)
+        self.buttonBox = QtWidgets.QDialogButtonBox(NewSubscriptionDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 
         self.retranslateUi(NewSubscriptionDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), NewSubscriptionDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), NewSubscriptionDialog.reject)
+        self.buttonBox.accepted.connect(NewSubscriptionDialog.accept)
+        self.buttonBox.rejected.connect(NewSubscriptionDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(NewSubscriptionDialog)
 
     def retranslateUi(self, NewSubscriptionDialog):

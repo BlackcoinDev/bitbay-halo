@@ -1,5 +1,5 @@
 
-import peer
-import net
-import protocol
-import crypt
+from . import peer
+from . import net
+from . import protocol
+from . import crypt

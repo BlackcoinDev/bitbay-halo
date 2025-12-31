@@ -1,6 +1,6 @@
 import hashlib
 from struct import *
-from pyelliptic import arithmetic
+from .pyelliptic import arithmetic
 
 
 
@@ -10,9 +10,9 @@ def convertIntToString(n):
     if a[-1:] == 'L':
         a = a[:-1]
     if (len(a) % 2) == 0:
-        return a[2:].decode('hex')
+        return bytes.fromhex(a[2:])
     else:
-        return ('0'+a[2:]).decode('hex')
+        return bytes.fromhex('0'+a[2:])
 
 ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
@@ -55,7 +55,7 @@ def decodeBase58(string, alphabet=ALPHABET):
 
 def encodeVarint(integer):
     if integer < 0:
-        print 'varint cannot be < 0'
+        print('varint cannot be < 0')
         raise SystemExit
     if integer < 253:
         return pack('>B',integer)
@@ -66,7 +66,7 @@ def encodeVarint(integer):
     if integer >= 4294967296 and integer < 18446744073709551616:
         return pack('>B',255) + pack('>Q',integer)
     if integer >= 18446744073709551616:
-        print 'varint cannot be >= 18446744073709551616'
+        print('varint cannot be >= 18446744073709551616')
         raise SystemExit
     
 class varintDecodeError(Exception):
@@ -123,14 +123,14 @@ def encodeAddress(version,stream,ripe):
     if version >= 2 and version < 4:
         if len(ripe) != 20:
             raise Exception("Programming error in encodeAddress: The length of a given ripe hash was not 20.")
-        if ripe[:2] == '\x00\x00':
+        if ripe[:2] == b'\x00\x00':
             ripe = ripe[2:]
-        elif ripe[:1] == '\x00':
+        elif ripe[:1] == b'\x00':
             ripe = ripe[1:]
     elif version == 4:
         if len(ripe) != 20:
             raise Exception("Programming error in encodeAddress: The length of a given ripe hash was not 20.")
-        ripe = ripe.lstrip('\x00')
+        ripe = ripe.lstrip(b'\x00')
 
     storedBinaryData = encodeVarint(version) + encodeVarint(stream) + ripe
     
@@ -142,7 +142,7 @@ def encodeAddress(version,stream,ripe):
     sha.update(currentHash)
     checksum = sha.digest()[0:4]
 
-    asInt = int(storedBinaryData.encode('hex') + checksum.encode('hex'),16)
+    asInt = int(storedBinaryData.hex() + checksum.hex(),16)
     return 'BM-'+ encodeBase58(asInt)
 
 def decodeAddress(address):
@@ -158,14 +158,14 @@ def decodeAddress(address):
         status = 'invalidcharacters'
         return status,0,0,""
     #after converting to hex, the string will be prepended with a 0x and appended with a L
-    hexdata = hex(integer)[2:-1]
+    hexdata = hex(integer)[2:]
 
     if len(hexdata) % 2 != 0:
         hexdata = '0' + hexdata
 
     #print 'hexdata', hexdata
 
-    data = hexdata.decode('hex')
+    data = bytes.fromhex(hexdata)
     checksum = data[-4:]
 
     sha = hashlib.new('sha512')
@@ -185,25 +185,25 @@ def decodeAddress(address):
     try:
         addressVersionNumber, bytesUsedByVersionNumber = decodeVarint(data[:9])
     except varintDecodeError as e:
-        print e
+        print(e)
         status = 'varintmalformed'
         return status,0,0,""
     #print 'addressVersionNumber', addressVersionNumber
     #print 'bytesUsedByVersionNumber', bytesUsedByVersionNumber
 
     if addressVersionNumber > 4:
-        print 'cannot decode address version numbers this high'
+        print('cannot decode address version numbers this high')
         status = 'versiontoohigh'
         return status,0,0,""
     elif addressVersionNumber == 0:
-        print 'cannot decode address version numbers of zero.'
+        print('cannot decode address version numbers of zero.')
         status = 'versiontoohigh'
         return status,0,0,""
 
     try:
         streamNumber, bytesUsedByStreamNumber = decodeVarint(data[bytesUsedByVersionNumber:])
     except varintDecodeError as e:
-        print e
+        print(e)
         status = 'varintmalformed'
         return status,0,0,""
     #print streamNumber
@@ -213,11 +213,11 @@ def decodeAddress(address):
     elif addressVersionNumber == 2 or addressVersionNumber == 3:
         embeddedRipeData = data[bytesUsedByVersionNumber+bytesUsedByStreamNumber:-4]
         if len(embeddedRipeData) == 19:
-            return status,addressVersionNumber,streamNumber,'\x00'+embeddedRipeData
+            return status,addressVersionNumber,streamNumber,b'\x00'+embeddedRipeData
         elif len(embeddedRipeData) == 20:
             return status,addressVersionNumber,streamNumber,embeddedRipeData
         elif len(embeddedRipeData) == 18:
-            return status,addressVersionNumber,streamNumber,'\x00\x00'+embeddedRipeData
+            return status,addressVersionNumber,streamNumber,b'\x00\x00'+embeddedRipeData
         elif len(embeddedRipeData) < 18:
             return 'ripetooshort',0,0,""
         elif len(embeddedRipeData) > 20:
@@ -226,7 +226,7 @@ def decodeAddress(address):
             return 'otherproblem',0,0,""
     elif addressVersionNumber == 4:
         embeddedRipeData = data[bytesUsedByVersionNumber+bytesUsedByStreamNumber:-4]
-        if embeddedRipeData[0:1] == '\x00':
+        if embeddedRipeData[0:1] == b'\x00':
             # In order to enforce address non-malleability, encoded RIPE data must have NULL bytes removed from the front
             return 'encodingproblem',0,0,"" 
         elif len(embeddedRipeData) > 20:
@@ -234,7 +234,7 @@ def decodeAddress(address):
         elif len(embeddedRipeData) < 4:
             return 'ripetooshort',0,0,""
         else:
-            x00string = '\x00' * (20 - len(embeddedRipeData))
+            x00string = b'\x00' * (20 - len(embeddedRipeData))
             return status,addressVersionNumber,streamNumber,x00string+embeddedRipeData
 
 def addBMIfNotPresent(address):
@@ -245,18 +245,18 @@ def addBMIfNotPresent(address):
         return address
 
 if __name__ == "__main__":
-    print 'Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:'
+    print('Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:')
     privateSigningKey = '93d0b61371a54b53df143b954035d612f8efa8a3ed1cf842c2186bfd8f876665'
     privateEncryptionKey = '4b0b73a54e19b059dc274ab69df095fe699f43b17397bca26fdf40f4d7400a3a'
-    print 'privateSigningKey =', privateSigningKey
-    print 'privateEncryptionKey =', privateEncryptionKey
-    print 'Now let us convert them to public keys by doing an elliptic curve point multiplication.'
+    print(('privateSigningKey =', privateSigningKey))
+    print(('privateEncryptionKey =', privateEncryptionKey))
+    print('Now let us convert them to public keys by doing an elliptic curve point multiplication.')
     publicSigningKey = arithmetic.privtopub(privateSigningKey)
     publicEncryptionKey = arithmetic.privtopub(privateEncryptionKey)
-    print 'publicSigningKey =', publicSigningKey
-    print 'publicEncryptionKey =', publicEncryptionKey
+    print(('publicSigningKey =', publicSigningKey))
+    print(('publicEncryptionKey =', publicEncryptionKey))
 
-    print 'Notice that they both begin with the \\x04 which specifies the encoding type. This prefix is not send over the wire. You must strip if off before you send your public key across the wire, and you must add it back when you receive a public key.'
+    print('Notice that they both begin with the \\x04 which specifies the encoding type. This prefix is not send over the wire. You must strip if off before you send your public key across the wire, and you must add it back when you receive a public key.')
 
     publicSigningKeyBinary = arithmetic.changebase(publicSigningKey,16,256,minlen=64)
     publicEncryptionKeyBinary = arithmetic.changebase(publicEncryptionKey,16,256,minlen=64)
@@ -268,14 +268,14 @@ if __name__ == "__main__":
     ripe.update(sha.digest())
     addressVersionNumber = 2
     streamNumber = 1
-    print 'Ripe digest that we will encode in the address:', ripe.digest().encode('hex')
+    print(('Ripe digest that we will encode in the address:', ripe.digest().hex()))
     returnedAddress = encodeAddress(addressVersionNumber,streamNumber,ripe.digest())
-    print 'Encoded address:', returnedAddress
+    print(('Encoded address:', returnedAddress))
     status,addressVersionNumber,streamNumber,data = decodeAddress(returnedAddress)
-    print '\nAfter decoding address:'
-    print 'Status:', status
-    print 'addressVersionNumber', addressVersionNumber
-    print 'streamNumber', streamNumber
-    print 'length of data(the ripe hash):', len(data)
-    print 'ripe data:', data.encode('hex')
+    print('\\nAfter decoding address:')
+    print(('Status:', status))
+    print(('addressVersionNumber', addressVersionNumber))
+    print(('streamNumber', streamNumber))
+    print(('length of data(the ripe hash):', len(data)))
+    print(('ripe data:', data.hex()))
 

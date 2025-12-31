@@ -5,7 +5,7 @@ import threading
 import logging
 import socket
 
-app_dir = os.path.dirname(os.path.abspath(__file__))+'/../src'
+app_dir = os.path.dirname(os.path.abspath(__file__))+'/./src'
 sys.path.insert(0, app_dir)
 
 from pyelliptic import openssl

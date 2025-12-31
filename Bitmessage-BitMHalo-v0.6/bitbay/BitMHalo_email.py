@@ -16,7 +16,7 @@ import quopri
 
 from BitMHalo_shared import shared
 
-app_dir = os.path.dirname(os.path.abspath(__file__))+'/../src'
+app_dir = os.path.dirname(os.path.abspath(__file__))+'/./src'
 sys.path.insert(0, app_dir)
 
 from highlevelcrypto import decrypt
@@ -326,9 +326,9 @@ def read_inbox_messages(dat, readmessages, mailpath, imap_name, myrpc):
                         try:
                             if shared.systemexit == 1:  # Attempt a clean exit when possible
                                 shared.systemexit = 2
-                                logger.warning("bitmhalo: closing...")
+                                logger.warning("bitmhalo: closing.")
                                 sys.exit()
-                            logger.debug("bitmhalo: fetching...")
+                            logger.debug("bitmhalo: fetching.")
                             # This is to prevent dropped connections, for now only on fetching
                             shared.timeresult = False
                             try:
@@ -528,7 +528,7 @@ def read_inbox_messages(dat, readmessages, mailpath, imap_name, myrpc):
                 if shared.systemexit == 2:
                     sys.exit()
                 pass
-        logger.warning("bitmhalo: imap, closing...")
+        logger.warning("bitmhalo: imap, closing.")
         connection.close()
         logger.warning("bitmhalo: imap, closed")
     except Exception, e:

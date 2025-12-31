@@ -29,9 +29,9 @@ class singleinstance:
             except OSError:
                 type, e, tb = sys.exc_info()
                 if e.errno == 13:
-                    print 'Another instance of this application is already running'
+                    print('Another instance of this application is already running')
                     sys.exit(-1)
-                print(e.errno)
+                print((e.errno))
                 raise
         else:  # non Windows
             import fcntl  # @UnresolvedImport
@@ -39,7 +39,7 @@ class singleinstance:
             try:
                 fcntl.lockf(self.fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except IOError:
-                print 'Another instance of this application is already running'
+                print('Another instance of this application is already running')
                 sys.exit(-1)
         self.initialized = True
 
@@ -57,5 +57,5 @@ class singleinstance:
                 fcntl.lockf(self.fp, fcntl.LOCK_UN)
                 if os.path.isfile(self.lockfile):
                     os.unlink(self.lockfile)
-        except Exception, e:
+        except Exception as e:
             sys.exit(-1)

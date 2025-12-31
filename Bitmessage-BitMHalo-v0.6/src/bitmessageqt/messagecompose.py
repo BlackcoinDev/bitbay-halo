@@ -1,6 +1,6 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 
-class MessageCompose(QtGui.QTextEdit):
+class MessageCompose(QtWidgets.QTextEdit):
     
     def __init__(self, parent = 0):
         super(MessageCompose, self).__init__(parent)
@@ -8,13 +8,13 @@ class MessageCompose(QtGui.QTextEdit):
         self.defaultFontPointSize = self.currentFont().pointSize()
     
     def wheelEvent(self, event):
-        if (QtGui.QApplication.queryKeyboardModifiers() & QtCore.Qt.ControlModifier) == QtCore.Qt.ControlModifier and event.orientation() == QtCore.Qt.Vertical:
+        if (QtWidgets.QApplication.queryKeyboardModifiers() & QtCore.Qt.ControlModifier) == QtCore.Qt.ControlModifier and event.orientation() == QtCore.Qt.Vertical:
             if event.delta() > 0:
                 self.zoomIn(1)
             else:
                 self.zoomOut(1)
             zoom = self.currentFont().pointSize() * 100 / self.defaultFontPointSize
-            QtGui.QApplication.activeWindow().statusBar().showMessage(QtGui.QApplication.translate("MainWindow", "Zoom level %1%").arg(str(zoom)))
+            QtWidgets.QApplication.activeWindow().statusBar().showMessage(QtWidgets.QApplication.translate("MainWindow", "Zoom level %1%").arg(str(zoom)))
         else:
             # in QTextEdit, super does not zoom, only scroll
             super(MessageCompose, self).wheelEvent(event)

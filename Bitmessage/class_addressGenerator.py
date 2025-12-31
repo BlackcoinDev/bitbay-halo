@@ -1,14 +1,14 @@
-import shared
+from . import shared
 import threading
 import time
 import sys
-from pyelliptic.openssl import OpenSSL
+from .pyelliptic.openssl import OpenSSL
 import ctypes
 import hashlib
-import highlevelcrypto
-from addresses import *
-from pyelliptic import arithmetic
-import tr
+from . import highlevelcrypto
+from .addresses import *
+from .pyelliptic import arithmetic
+from . import tr
 import traceback
 
 class addressGenerator(threading.Thread):
@@ -96,22 +96,22 @@ class addressGenerator(threading.Thread):
                     ripe.update(sha.digest())
                     # print 'potential ripe.digest',
                     # ripe.digest().encode('hex')
-                    if ripe.digest()[:numberOfNullBytesDemandedOnFrontOfRipeHash] == '\x00' * numberOfNullBytesDemandedOnFrontOfRipeHash:
+                    if ripe.digest()[:numberOfNullBytesDemandedOnFrontOfRipeHash] == b'\x00' * numberOfNullBytesDemandedOnFrontOfRipeHash:
                         break
-                print 'Generated address with ripe digest:', ripe.digest().encode('hex')
-                print 'Address generator calculated', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix, 'addresses at', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix / (time.time() - startTime), 'addresses per second before finding one with the correct ripe-prefix.'
+                print(('Generated address with ripe digest:', ripe.digest().hex()))
+                print(('Address generator calculated', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix, 'addresses at', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix / (time.time() - startTime), 'addresses per second before finding one with the correct ripe-prefix.'))
                 address = encodeAddress(addressVersionNumber, streamNumber, ripe.digest())
 
                 # An excellent way for us to store our keys is in Wallet Import Format. Let us convert now.
                 # https://en.bitcoin.it/wiki/Wallet_import_format
-                privSigningKey = '\x80' + potentialPrivSigningKey
+                privSigningKey = b'\x80' + potentialPrivSigningKey
                 checksum = hashlib.sha256(hashlib.sha256(
                     privSigningKey).digest()).digest()[0:4]
                 privSigningKeyWIF = arithmetic.changebase(
                     privSigningKey + checksum, 256, 58)
                 # print 'privSigningKeyWIF',privSigningKeyWIF
 
-                privEncryptionKey = '\x80' + potentialPrivEncryptionKey
+                privEncryptionKey = b'\x80' + potentialPrivEncryptionKey
                 checksum = hashlib.sha256(hashlib.sha256(
                     privEncryptionKey).digest()).digest()[0:4]
                 privEncryptionKeyWIF = arithmetic.changebase(
@@ -138,7 +138,7 @@ class addressGenerator(threading.Thread):
                 shared.apiAddressGeneratorReturnQueue.put(address)
 
                 shared.UISignalQueue.put((
-                    'updateStatusBar', tr.translateText("MainWindow", "Done generating address. Doing work necessary to broadcast it...")))
+                    'updateStatusBar', tr.translateText("MainWindow", "Done generating address. Doing work necessary to broadcast it.")))
                 shared.UISignalQueue.put(('writeNewAddressToTable', (
                     label, address, streamNumber)))
                 shared.reloadMyAddressHashes()
@@ -192,12 +192,12 @@ class addressGenerator(threading.Thread):
                         ripe.update(sha.digest())
                         # print 'potential ripe.digest',
                         # ripe.digest().encode('hex')
-                        if ripe.digest()[:numberOfNullBytesDemandedOnFrontOfRipeHash] == '\x00' * numberOfNullBytesDemandedOnFrontOfRipeHash:
+                        if ripe.digest()[:numberOfNullBytesDemandedOnFrontOfRipeHash] == b'\x00' * numberOfNullBytesDemandedOnFrontOfRipeHash:
                             break
-
-                    print 'ripe.digest', ripe.digest().encode('hex')
+ 
+                    print(('ripe.digest', ripe.digest().hex()))
                     try:
-                        print 'Address generator calculated', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix, 'addresses at', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix / (time.time() - startTime), 'keys per second.'                
+                        print(('Address generator calculated', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix, 'addresses at', numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix / (time.time() - startTime), 'keys per second.'))
                     except:#Divide by zero can happen for some odd reason. However ignoring it seems to work
                         traceback.print_exc()
 
@@ -215,13 +215,13 @@ class addressGenerator(threading.Thread):
                     if saveAddressToDisk:
                         # An excellent way for us to store our keys is in Wallet Import Format. Let us convert now.
                         # https://en.bitcoin.it/wiki/Wallet_import_format
-                        privSigningKey = '\x80' + potentialPrivSigningKey
+                        privSigningKey = b'\x80' + potentialPrivSigningKey
                         checksum = hashlib.sha256(hashlib.sha256(
                             privSigningKey).digest()).digest()[0:4]
                         privSigningKeyWIF = arithmetic.changebase(
                             privSigningKey + checksum, 256, 58)
 
-                        privEncryptionKey = '\x80' + \
+                        privEncryptionKey = b'\x80' + \
                             potentialPrivEncryptionKey
                         checksum = hashlib.sha256(hashlib.sha256(
                             privEncryptionKey).digest()).digest()[0:4]
@@ -232,10 +232,10 @@ class addressGenerator(threading.Thread):
                         try:
                             shared.config.add_section(address)
                         except:
-                            print address, 'already exists. Not adding it again.'
+                            print((address, 'already exists. Not adding it again.'))
                             addressAlreadyExists = True
                         if not addressAlreadyExists:
-                            print 'label:', label
+                            print(('label:', label))
                             shared.config.set(address, 'label', label)
                             shared.config.set(address, 'enabled', 'true')
                             shared.config.set(address, 'decoy', 'false')
@@ -257,7 +257,7 @@ class addressGenerator(threading.Thread):
                             listOfNewAddressesToSendOutThroughTheAPI.append(
                                 address)
                             shared.myECCryptorObjects[ripe.digest()] = highlevelcrypto.makeCryptor(
-                                potentialPrivEncryptionKey.encode('hex'))
+                                potentialPrivEncryptionKey.hex())
                             shared.myAddressesByHash[ripe.digest()] = address
                             tag = hashlib.sha512(hashlib.sha512(encodeVarint(
                                 addressVersionNumber) + encodeVarint(streamNumber) + ripe.digest()).digest()).digest()[32:]

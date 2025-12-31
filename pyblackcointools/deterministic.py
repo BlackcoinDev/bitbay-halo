@@ -1,4 +1,4 @@
-from main import *
+from .main import *
 import hmac, hashlib
 
 ### Electrum wallets
@@ -15,7 +15,7 @@ def electrum_mpk(seed):
 def electrum_privkey(seed,n,for_change=0):
     if len(seed) == 32: seed = electrum_stretch(seed)
     mpk = electrum_mpk(seed)
-    offset = dbl_sha256(str(n)+':'+str(for_change)+':'+mpk.decode('hex'))
+    offset = dbl_sha256(str(n)+':'+str(for_change)+':'+safe_unhexlify(mpk))
     return add_privkeys(seed, offset)
 
 # Accepts (seed or stretched seed or master public key), index and secondary index
@@ -58,9 +58,9 @@ def raw_bip32_ckd(rawtuple, i):
     if i >= 2**31:
         if vbytes == PUBLIC:
             raise Exception("Can't do private derivation on public key!")
-        I = hmac.new(chaincode,'\x00'+priv[:32]+encode(i,256,4),hashlib.sha512).digest()
+        I = hmac.new(to_bytes(chaincode),to_bytes('\x00'+priv[:32]+encode(i,256,4)),hashlib.sha512).digest().decode('latin1')
     else:
-        I = hmac.new(chaincode,pub+encode(i,256,4),hashlib.sha512).digest()
+        I = hmac.new(to_bytes(chaincode),to_bytes(pub+encode(i,256,4)),hashlib.sha512).digest().decode('latin1')
 
     if vbytes == PRIVATE:
         newkey = add_privkeys(I[:32]+'\x01',priv)
@@ -103,14 +103,14 @@ def bip32_ckd(data,i):
     return bip32_serialize(raw_bip32_ckd(bip32_deserialize(data),i))
 
 def bip32_master_key(seed):
-    I = hmac.new("Bitcoin seed",seed,hashlib.sha512).digest()
+    I = hmac.new(to_bytes("Bitcoin seed"),to_bytes(seed),hashlib.sha512).digest().decode('latin1')
     return bip32_serialize((PRIVATE, 0, '\x00'*4, 0, I[32:], I[:32]+'\x01'))
 
 def bip32_bin_extract_key(data):
     return bip32_deserialize(data)[-1]
 
 def bip32_extract_key(data):
-    return bip32_deserialize(data)[-1].encode('hex')
+    return safe_hexlify(bip32_deserialize(data)[-1])
 
 # Exploits the same vulnerability as above in Electrum wallets
 # Takes a BIP32 pubkey and one of the child privkeys of its corresponding privkey
@@ -122,7 +122,7 @@ def raw_crack_bip32_privkey(parent_pub,priv):
 
     if i >= 2**31: raise Exception("Can't crack private derivation!")
 
-    I = hmac.new(pchaincode,pkey+encode(i,256,4),hashlib.sha512).digest()
+    I = hmac.new(to_bytes(pchaincode),to_bytes(pkey+encode(i,256,4)),hashlib.sha512).digest().decode('latin1')
 
     pprivkey = subtract_privkeys(key,I[:32]+'\x01')
 

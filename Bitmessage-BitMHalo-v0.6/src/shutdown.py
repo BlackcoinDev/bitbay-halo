@@ -19,15 +19,15 @@ def doCleanShutdown():
         if thread.isAlive() and isinstance(thread, StoppableThread):
             thread.stopThread()
     
-    UISignalQueue.put(('updateStatusBar','Saving the knownNodes list of peers to disk...'))
+    UISignalQueue.put(('updateStatusBar','Saving the knownNodes list of peers to disk.'))
     logger.info('Saving knownNodes list of peers to disk')
     saveKnownNodes()
     logger.info('Done saving knownNodes list of peers to disk')
     UISignalQueue.put(('updateStatusBar','Done saving the knownNodes list of peers to disk.'))
-    logger.info('Flushing inventory in memory out to disk...')
+    logger.info('Flushing inventory in memory out to disk.')
     UISignalQueue.put((
         'updateStatusBar',
-        'Flushing inventory in memory out to disk. This should normally only take a second...'))
+        'Flushing inventory in memory out to disk. This should normally only take a second.'))
     Inventory().flush()
 
     # Verify that the objectProcessor has finished exiting. It should have incremented the 

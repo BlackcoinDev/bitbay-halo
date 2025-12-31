@@ -433,7 +433,7 @@ except:
             except:
                 try:
                   # Load it from an Bitmessage.app on OSX
-                  OpenSSL = _OpenSSL('./../Frameworks/libcrypto.dylib')
+                  OpenSSL = _OpenSSL('././Frameworks/libcrypto.dylib')
                 except:
                   try:
                       from os import path
@@ -444,7 +444,7 @@ except:
                           try:
                               from ctypes.util import find_library
                               OpenSSL = _OpenSSL(find_library('ssl'))
-                          except Exception, err:
+                          except Exception as err:
                               sys.stderr.write('(On Linux) Couldn\'t find and load the OpenSSL library. You must install it. If you believe that you already have it installed, this exception information might be of use:\n')
                               from ctypes.util import find_library
                               OpenSSL = _OpenSSL(find_library('ssl'))

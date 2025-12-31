@@ -29,8 +29,8 @@ pubkeys (clears pubkeys older than 4 weeks old which we have not used personally
 knownNodes (clears addresses which have not been online for over 3 days)
 
 It resends messages when there has been no response:
-resends getpubkey messages in 5 days (then 10 days, then 20 days, etc...)
-resends msg messages in 5 days (then 10 days, then 20 days, etc...)
+resends getpubkey messages in 5 days (then 10 days, then 20 days, etc.)
+resends msg messages in 5 days (then 10 days, then 20 days, etc.)
 
 """
 
@@ -58,7 +58,7 @@ class singleCleaner(threading.Thread, StoppableThread):
 
         while state.shutdown == 0:
             queues.UISignalQueue.put((
-                'updateStatusBar', 'Doing housekeeping (Flushing inventory in memory to disk...)'))
+                'updateStatusBar', 'Doing housekeeping (Flushing inventory in memory to disk.)'))
             Inventory().flush()
             queues.UISignalQueue.put(('updateStatusBar', ''))
             
@@ -158,7 +158,7 @@ def resendPubkeyRequest(address):
         pass
 
     queues.UISignalQueue.put((
-         'updateStatusBar', 'Doing work necessary to again attempt to request a public key...'))
+         'updateStatusBar', 'Doing work necessary to again attempt to request a public key.'))
     sqlExecute(
         '''UPDATE sent SET status='msgqueued' WHERE toaddress=?''',
         address)
@@ -171,4 +171,4 @@ def resendMsg(ackdata):
         ackdata)
     queues.workerQueue.put(('sendmessage', ''))
     queues.UISignalQueue.put((
-    'updateStatusBar', 'Doing work necessary to again attempt to deliver a message...'))
+    'updateStatusBar', 'Doing work necessary to again attempt to deliver a message.'))

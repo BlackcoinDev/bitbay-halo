@@ -1,5 +1,5 @@
-import main as main
-import transaction as tx
+from . import main as main
+from . import transaction as tx
 
 # Shared secrets and uncovering pay keys
 

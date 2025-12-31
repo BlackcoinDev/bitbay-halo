@@ -1,5 +1,6 @@
 import random, re, errno, os, struct, hashlib, ast
-import sys, time, json, types, string, exceptions
+import sys, time, json, types, string
+import binascii
 
 import socket
 DEFAULT_PORTS = {'t':'50001', 's':'50002', 'h':'8081', 'g':'8082'}
@@ -34,7 +35,7 @@ def connect_electrum():
     hosts = list(DEFAULT_SERVERS.keys())
     random.shuffle(hosts)
     for host in hosts:
-        print host
+        print(host)
         port = DEFAULT_SERVERS[host]['t'] #t=tcp to avoid cert. issues with ssl
 
         #TCP socket setup
@@ -43,14 +44,14 @@ def connect_electrum():
         s.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         try:
-            s.connect(( host.encode('ascii'), int(port)))
+            s.connect(( host, int(port)))
         except:
-            print "failed to connect to:", host, str(port)
+            print(("failed to connect to:", host, str(port)))
             continue #try the next server
 
         s.settimeout(20)
         is_connected = True
-        print "connected to", host, str(port)
+        print(("connected to", host, str(port)))
         return True
     return False
 
@@ -58,7 +59,7 @@ def send_tx(raw_tx):
     global s
     global is_connected
     if not connect_electrum():
-        print "error, failed to connect to ANY electrum server"
+        print("error, failed to connect to ANY electrum server")
         socketstop()
         return False
     return get_from_electrum([str(raw_tx)],t='b')
@@ -69,7 +70,7 @@ def get_from_electrum(inputs,t='a'):
     global is_connected
 
     if not connect_electrum():
-        print "Failed to connect to ANY electrum server"
+        print("Failed to connect to ANY electrum server")
         return False
     if t=='a':
         req = 'blockchain.address.get_history'
@@ -78,7 +79,7 @@ def get_from_electrum(inputs,t='a'):
     elif t=='b':
         req = 'blockchain.transaction.broadcast'
     else:
-        print "invalid request type to electrum server"
+        print("invalid request type to electrum server")
         #todo:
         exit(1)
 
@@ -92,9 +93,9 @@ def get_from_electrum(inputs,t='a'):
             tcp_request= req,[str(input)]
 
         if not send_tcp([tcp_request]):
-            print "Failed to send request to electrum server"
+            print("Failed to send request to electrum server")
 
-        out = ''
+        out = b''
 
         while is_connected:
             try:
@@ -104,65 +105,68 @@ def get_from_electrum(inputs,t='a'):
             except socket.timeout:
                 timeout = True
 
-            except socket.error, err:
+            except socket.error as err:
                 if err.errno in [11, 10035]:
-                    print "socket errno", err.errno
+                    print(("socket errno", err.errno))
                     time.sleep(0.1)
                     continue
                 else:
-                    print "socket err: ", err.errno
+                    print(("socket err: ", err.errno))
                     raise
 
             if timeout:
                 # ping the server with server.version, as a real ping does not exist yet
                 # not sure about this, don't want to get involved in some non-standard weird ping
-                print "getting a timeout here - we'll try another server"
+                print("getting a timeout here - we'll try another server")
                 socketstop()
                 return get_from_electrum(inputs,t='a')
 
             out += msg
 
-            if msg == '':
-                print "msg is null"
+            if msg == b'':
+                print("msg is null")
                 is_connected = False
                 return
-            if out.find('\n') != -1: #means this is end of message, so break out of both loops at end
+            if out.find(b'\n') != -1: #means this is end of message, so break out of both loops at end
                 while True:
-                    x = out.find('\n')
+                    x = out.find(b'\n')
                     if x==-1:
                         break
                     c = out[0:x]
                     out = out[x+1:]
                     #ast.literal_eval is the best way to read this json stuff into python
                     #don't ask me why json.loads() doesn't work, but right now it doesn't
-                    reqreturns.append(ast.literal_eval(c))
+                    try:
+                        reqreturns.append(ast.literal_eval(c.decode('utf-8')))
+                    except:
+                         print("JSON decode error")
                 break
 
     return reqreturns
 
 def send_tcp(messages):
     global s
-    out = ''
+    out = b''
     message_id=1
 
     for m in messages:
         method, params = m
         request = json.dumps( { 'id':message_id, 'method':method, 'params':params } )
-        print "-->", request
+        print(("-->", request))
         message_id += 1
-        out += request + '\n'
+        out += (request + '\n').encode('utf-8')
         while out:
             try:
                 sent = s.send(out)
                 out = out[sent:]
-            except socket.error,e:
-                if e[0] in (errno.EWOULDBLOCK,errno.EAGAIN):
-                    print_error( "EAGAIN: retrying")
+            except socket.error as e:
+                if e.args[0] in (errno.EWOULDBLOCK,errno.EAGAIN):
+                    print( "EAGAIN: retrying")
                     time.sleep(0.1)
                     continue
                 else:
                     # this happens when we get disconnected
-                    print "Not connected, cannot send"
+                    print("Not connected, cannot send")
                     socketstop()
                     return False
 
@@ -184,7 +188,7 @@ def socketstop():
 #these functions and classes are used to support getting the balance for
 #a particular address.
 #=============================================================
-class EnumException(exceptions.Exception):
+class EnumException(Exception):
     pass
 
 class Enumeration:
@@ -196,16 +200,16 @@ class Enumeration:
         uniqueNames = [ ]
         uniqueValues = [ ]
         for x in enumList:
-            if type(x) == types.TupleType:
+            if isinstance(x, tuple):
                 x, i = x
-            if type(x) != types.StringType:
-                raise EnumException, "enum name is not a string: " + x
-            if type(i) != types.IntType:
-                raise EnumException, "enum value is not an integer: " + i
+            if not isinstance(x, str):
+                raise EnumException("enum name is not a string: " + str(x))
+            if not isinstance(i, int):
+                raise EnumException("enum value is not an integer: " + str(i))
             if x in uniqueNames:
-                raise EnumException, "enum name is not unique: " + x
+                raise EnumException("enum name is not unique: " + x)
             if i in uniqueValues:
-                raise EnumException, "enum value is not unique for " + x
+                raise EnumException("enum value is not unique for " + x)
             uniqueNames.append(x)
             uniqueValues.append(i)
             lookup[x] = i
@@ -214,8 +218,8 @@ class Enumeration:
         self.lookup = lookup
         self.reverseLookup = reverseLookup
     def __getattr__(self, attr):
-        if not self.lookup.has_key(attr):
-            raise AttributeError
+        if attr not in self.lookup:
+             raise AttributeError
         return self.lookup[attr]
     def whatis(self, value):
         return self.reverseLookup[value]
@@ -249,9 +253,15 @@ __b58base = len(__b58chars)
 def b58encode(v):
     """ encode v, which is a string of bytes, to base58."""
 
-    long_value = 0L
+    long_value = 0
+    # In Py3, iterating bytes yields ints.
+    # v is expected to be bytes.
+    if isinstance(v, str):
+        v = v.encode('latin1') # fallback logic
+
     for (i, c) in enumerate(v[::-1]):
-        long_value += (256**i) * ord(c)
+        val = c # In Py3 iterating bytes gives int
+        long_value += (256**i) * val
 
     result = ''
     while long_value >= __b58base:
@@ -264,13 +274,13 @@ def b58encode(v):
     # leading 0-bytes in the input become leading-1s
     nPad = 0
     for c in v:
-        if c == '\0': nPad += 1
+        if c == 0: nPad += 1
         else: break
 
     return (__b58chars[0]*nPad) + result
 
 def hash_160_to_bc_address(h160, addrtype = 0):
-    vh160 = chr(addrtype) + h160
+    vh160 = bytes([addrtype]) + h160
     h = hashlib.sha256(hashlib.sha256(vh160).digest()).digest()
     addr = vh160 + h[0:4]
     return b58encode(addr)
@@ -285,18 +295,18 @@ def match_decoded(decoded, to_match):
             return False
     return True
 
-def get_address_from_output_script(bytes):
-    decoded = [ x for x in script_GetOp(bytes) ]
+def get_address_from_output_script(byte_data):
+    decoded = [ x for x in script_GetOp(byte_data) ]
 
     # The Genesis Block, self-payments, and pay-by-IP-address payments look like:
-    # 65 BYTES:... CHECKSIG
+    # 65 BYTES:. CHECKSIG
     '''match = [ opcodes.OP_PUSHDATA4, opcodes.OP_CHECKSIG ]
     if match_decoded(decoded, match):
         return True, public_key_to_bc_address(decoded[0][1])
     '''
 
     # Pay-by-Bitcoin-address TxOuts look like:
-    # DUP HASH160 20 BYTES:... EQUALVERIFY CHECKSIG
+    # DUP HASH160 20 BYTES:. EQUALVERIFY CHECKSIG
     match = [ opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
     if match_decoded(decoded, match):
         return False, hash_160_to_bc_address(decoded[2][1])
@@ -308,36 +318,36 @@ def get_address_from_output_script(bytes):
 
     return False, "(None)"
 
-def script_GetOp(bytes):
+def script_GetOp(byte_data):
     i = 0
-    while i < len(bytes):
+    while i < len(byte_data):
         vch = None
-        opcode = ord(bytes[i])
+        opcode = byte_data[i] # Py3 index bytes -> int
         i += 1
         if opcode >= opcodes.OP_SINGLEBYTE_END:
             opcode <<= 8
-            opcode |= ord(bytes[i])
+            opcode |= byte_data[i]
             i += 1
 
         if opcode <= opcodes.OP_PUSHDATA4:
             nSize = opcode
             if opcode == opcodes.OP_PUSHDATA1:
-                nSize = ord(bytes[i])
+                nSize = byte_data[i]
                 i += 1
             elif opcode == opcodes.OP_PUSHDATA2:
-                (nSize,) = struct.unpack_from('<H', bytes, i)
+                (nSize,) = struct.unpack_from('<H', byte_data, i)
                 i += 2
             elif opcode == opcodes.OP_PUSHDATA4:
-                (nSize,) = struct.unpack_from('<I', bytes, i)
+                (nSize,) = struct.unpack_from('<I', byte_data, i)
                 i += 4
-            vch = bytes[i:i+nSize]
+            vch = byte_data[i:i+nSize]
             i += nSize
 
         yield (opcode, vch, i)
 
-def get_address_from_input_script(bytes):
+def get_address_from_input_script(byte_data):
     try:
-        decoded = [ x for x in script_GetOp(bytes) ]
+        decoded = [ x for x in script_GetOp(byte_data) ]
     except:
         # coinbase transactions raise an exception
         # print "cannot find address in input script", bytes.encode('hex')
@@ -353,7 +363,7 @@ def get_address_from_input_script(bytes):
     # (65 bytes) onto the stack:
     match = [ opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4 ]
     if match_decoded(decoded, match):
-        return decoded[1][1].encode("hex"), None, public_key_to_bc_address(decoded[1][1])
+        return binascii.hexlify(decoded[1][1]).decode(), None, public_key_to_bc_address(decoded[1][1])
 
     # p2sh transaction, 2 of n
     match = [ opcodes.OP_0 ]
@@ -364,20 +374,20 @@ def get_address_from_input_script(bytes):
 
         redeemScript = decoded[-1][1]
         num = len(match) - 2
-        signatures = map(lambda x:x[1][:-1].encode('hex'), decoded[1:-1])
+        signatures = [binascii.hexlify(x[1][:-1]).decode() for x in decoded[1:-1]]
 
         dec2 = [ x for x in script_GetOp(redeemScript) ]
 
         # 2 of 2
         match2 = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2, opcodes.OP_CHECKMULTISIG ]
         if match_decoded(dec2, match2):
-            pubkeys = [ dec2[1][1].encode('hex'), dec2[2][1].encode('hex') ]
+            pubkeys = [ binascii.hexlify(dec2[1][1]).decode(), binascii.hexlify(dec2[2][1]).decode() ]
             return pubkeys, signatures, hash_160_to_bc_address(hash_160(redeemScript), 5)
 
         # 2 of 3
         match2 = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_3, opcodes.OP_CHECKMULTISIG ]
         if match_decoded(dec2, match2):
-            pubkeys = [ dec2[1][1].encode('hex'), dec2[2][1].encode('hex'), dec2[3][1].encode('hex') ]
+            pubkeys = [ binascii.hexlify(dec2[1][1]).decode(), binascii.hexlify(dec2[2][1]).decode(), binascii.hexlify(dec2[3][1]).decode() ]
             return pubkeys, signatures, hash_160_to_bc_address(hash_160(redeemScript), 5)
 
     #print "cannot find address in input script", bytes.encode('hex')

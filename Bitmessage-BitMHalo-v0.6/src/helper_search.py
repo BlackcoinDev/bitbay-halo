@@ -3,14 +3,14 @@
 from helper_sql import *
 
 try:
-    from PyQt4 import QtCore, QtGui
+    from PyQt6 import QtCore, QtGui
     haveQt = True
 except:
     haveQt = False
 
 def search_translate (context, text):
     if haveQt:
-        return QtGui.QApplication.translate(context, text)
+        return QtWidgets.QApplication.translate(context, text)
     else:
         return text.lower()
 

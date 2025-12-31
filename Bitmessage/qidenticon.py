@@ -50,9 +50,9 @@ Return a PIL Image class instance which have generated identicon image.
 """
 
 # we probably don't need all of them, but i don't want to check now
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt6 import QtCore, QtGui
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 
 __all__ = ['render_identicon', 'IdenticonRendererBase']
 
@@ -98,14 +98,14 @@ class IdenticonRendererBase(object):
         # side patch
         kwds['foreColor'] = foreColor
         kwds['type'] = side[0]
-        for i in xrange(4):
+        for i in range(4):
             pos = [(1, 0), (2, 1), (1, 2), (0, 1)][i]
             image = self.drawPatchQt(pos, side[2] + 1 + i, side[1], **kwds)
             
         # corner patch
         kwds['foreColor'] = secondColor
         kwds['type'] = corner[0]
-        for i in xrange(4):
+        for i in range(4):
             pos = [(0, 0), (2, 0), (2, 2), (0, 2)][i]
             image = self.drawPatchQt(pos, corner[2] + 1 + i, corner[1], **kwds)
         
@@ -130,11 +130,11 @@ class IdenticonRendererBase(object):
         rect = [QPointF(0.,0.), QPointF(size, 0.), QPointF(size, size), QPointF(0., size)]
         rotation = [0,90,180,270]
         
-        nopen = QtGui.QPen(foreColor, Qt.NoPen)
-        foreBrush = QtGui.QBrush(foreColor, Qt.SolidPattern)
+        nopen = QtGui.QPen(QtCore.Qt.PenStyle.NoPen)
+        foreBrush = QtGui.QBrush(foreColor, QtCore.Qt.BrushStyle.SolidPattern)
         if penwidth > 0:
             pen_color = QtGui.QColor(255, 255, 255)
-            pen = QtGui.QPen(pen_color, Qt.SolidPattern)
+            pen = QtGui.QPen(pen_color, QtCore.Qt.BrushStyle.SolidPattern)
             pen.setWidth(penwidth)
         
         painter = QPainter()
@@ -153,10 +153,10 @@ class IdenticonRendererBase(object):
         if penwidth > 0:
             # draw the borders
             painter.setPen(pen)
-            painter.drawPolygon(polygon, Qt.WindingFill)
+            painter.drawPolygon(polygon, QtCore.Qt.FillRule.WindingFill)
         # draw the fill
         painter.setPen(nopen)
-        painter.drawPolygon(polygon, Qt.WindingFill)
+        painter.drawPolygon(polygon, QtCore.Qt.FillRule.WindingFill)
         
         painter.end()
         
@@ -209,9 +209,9 @@ class DonRenderer(IdenticonRendererBase):
     MIDDLE_PATCH_SET = [0, 4, 8, 15]
     
     # modify path set
-    for idx in xrange(len(PATH_SET)):
+    for idx in range(len(PATH_SET)):
         if PATH_SET[idx]:
-            p = map(lambda vec: (vec[0] / 4.0, vec[1] / 4.0), PATH_SET[idx])
+            p = list([(vec[0] / 4.0, vec[1] / 4.0) for vec in PATH_SET[idx]])
             PATH_SET[idx] = p + p[:1]
     
     def decode(self, code, twoColor):

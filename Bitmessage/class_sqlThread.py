@@ -1,15 +1,15 @@
 import threading
-import shared
+from . import shared
 import sqlite3
 import time
 import shutil  # used for moving the messages.dat file
 import sys
 import os
-from debug import logger
-from namecoin import ensureNamecoinOptions
+from .debug import logger
+from .namecoin import ensureNamecoinOptions
 import random
 import string
-import tr#anslate
+from . import tr#anslate
 
 # This thread exists because SQLITE3 is so un-threadsafe that we must
 # submit queries to it and it puts results back in a different queue. They
@@ -387,7 +387,7 @@ class sqlThread(threading.Thread):
         for row in queryreturn:
             value, = row
             if int(value) < int(time.time()) - 2592000:
-                logger.info('It has been a long time since the messages.dat file has been vacuumed. Vacuuming now...')
+                logger.info('It has been a long time since the messages.dat file has been vacuumed. Vacuuming now.')
                 try:
                     self.cur.execute( ''' VACUUM ''')
                 except Exception as err:

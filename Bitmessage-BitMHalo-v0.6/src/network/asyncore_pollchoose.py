@@ -887,7 +887,7 @@ def close_all(map=None, ignore_all=False):
 #
 # What other OS's (besides NT) support async file i/o?  [VMS?]
 #
-# Regardless, this is useful for pipes, and stdin/stdout...
+# Regardless, this is useful for pipes, and stdin/stdout.
 
 if os.name == 'posix':
     import fcntl

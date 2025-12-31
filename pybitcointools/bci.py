@@ -3,12 +3,12 @@ import json, re
 import random
 import sys
 import binascii
-from main import safe_hexlify
+from .main import safe_hexlify
 
 try:
     from urllib.request import build_opener
 except:
-    from urllib2 import build_opener
+    from urllib.request import build_opener
 
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
@@ -169,7 +169,7 @@ def helloblock_unspent(*args):
         url = 'https://mainnet.helloblock.io/v1/addresses/%s/unspents?limit=500&offset=%s'
     o = []
     for addr in addrs:
-        for offset in xrange(0, 10**9, 500):
+        for offset in range(0, 10**9, 500):
             res = make_request(url % (addr, offset))
             data = json.loads(res.decode("utf-8"))["data"]
             if not len(data["unspents"]):
@@ -233,7 +233,7 @@ def history(*args):
             if len(jsonobj["txs"]) < 50:
                 break
             offset += 50
-            sys.stderr.write("Fetching more transactions... "+str(offset)+'\n')
+            sys.stderr.write("Fetching more transactions. "+str(offset)+'\n')
     outs = {}
     for tx in txs:
         for o in tx["out"]:
@@ -259,13 +259,13 @@ def history(*args):
 # Pushes a transaction to the network using https://blockchain.info/pushtx
 def bci_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = tx.hex() if isinstance(tx, bytes) else tx
     return make_request('https://blockchain.info/pushtx', 'tx='+tx)
 
 
 def eligius_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = tx.hex() if isinstance(tx, bytes) else tx
     s = make_request(
         'http://eligius.st/~wizkid057/newstats/pushtxn.php',
         'transaction='+tx+'&send=Push')
@@ -286,13 +286,13 @@ def blockr_pushtx(tx, network='btc'):
             'Unsupported network {0} for blockr_pushtx'.format(network))
 
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = tx.hex() if isinstance(tx, bytes) else tx
     return make_request(blockr_url, '{"hex":"%s"}' % tx)
 
 
 def helloblock_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = tx.hex() if isinstance(tx, bytes) else tx
     return make_request('https://mainnet.helloblock.io/v1/transactions',
                         'rawTxHex='+tx)
 
@@ -324,7 +324,7 @@ def bci_fetchtx(txhash):
     if isinstance(txhash, list):
         return [bci_fetchtx(h) for h in txhash]
     if not re.match('^[0-9a-fA-F]*$', txhash):
-        txhash = txhash.encode('hex')
+        txhash = txhash.hex() if isinstance(txhash, bytes) else txhash
     data = make_request('https://blockchain.info/rawtx/'+txhash+'?format=hex')
     return data
 
@@ -338,13 +338,13 @@ def blockr_fetchtx(txhash, network='btc'):
         raise Exception(
             'Unsupported network {0} for blockr_fetchtx'.format(network))
     if isinstance(txhash, list):
-        txhash = ','.join([x.encode('hex') if not re.match('^[0-9a-fA-F]*$', x)
-                           else x for x in txhash])
+        txhash = ','.join([x.hex() if isinstance(x, bytes) and not re.match('^[0-9a-fA-F]*$', x.decode('latin1') if isinstance(x, bytes) else x)
+                           else (x.decode('latin1') if isinstance(x, bytes) else x) for x in txhash])
         jsondata = json.loads(make_request(blockr_url+txhash).decode("utf-8"))
         return [d['tx']['hex'] for d in jsondata['data']]
     else:
         if not re.match('^[0-9a-fA-F]*$', txhash):
-            txhash = txhash.encode('hex')
+            txhash = txhash.hex() if isinstance(txhash, bytes) else txhash
         jsondata = json.loads(make_request(blockr_url+txhash).decode("utf-8"))
         return jsondata['data']['tx']['hex']
 
@@ -353,7 +353,7 @@ def helloblock_fetchtx(txhash, network='btc'):
     if isinstance(txhash, list):
         return [helloblock_fetchtx(h) for h in txhash]
     if not re.match('^[0-9a-fA-F]*$', txhash):
-        txhash = txhash.encode('hex')
+        txhash = txhash.hex() if isinstance(txhash, bytes) else txhash
     if network == 'testnet':
         url = 'https://testnet.helloblock.io/v1/transactions/'
     elif network == 'btc':
@@ -526,7 +526,7 @@ def get_tx_composite(inputs, outputs, output_value, change_address=None, network
         data["change_address"] = change_address    # 
     jdata = json.loads(make_request(url, data))
     hash, txh = jdata.get("tosign")[0], jdata.get("tosign_tx")[0]
-    assert bin_dbl_sha256(txh.decode('hex')).encode('hex') == hash, "checksum mismatch %s" % hash
-    return txh.encode("utf-8")
+    assert bytes.fromhex(bin_dbl_sha256(bytes.fromhex(txh)).hex()) == bytes.fromhex(hash) or bin_dbl_sha256(bytes.fromhex(txh)).hex() == hash, "checksum mismatch %s" % hash
+    return txh.encode("utf-8") if isinstance(txh, str) else txh
 
 blockcypher_mktx = get_tx_composite

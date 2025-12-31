@@ -5,7 +5,7 @@
 import sqlite3
 from time import strftime, localtime
 import sys
-import shared
+from . import shared
 import string
 
 appdata = shared.lookupAppdataFolder()
@@ -15,52 +15,53 @@ conn.text_factory = str
 cur = conn.cursor()
 
 def readInbox():
-    print 'Printing everything in inbox table:'
+    print('Printing everything in inbox table:')
     item = '''select * from inbox'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
-        print row
+        print(row)
 
 def readSent():
-    print 'Printing everything in Sent table:'
+    queryreturn = list(sqlQuery('SELECT * FROM sent'))
+    print('Printing everything in Sent table:')
     item = '''select * from sent where folder !='trash' '''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         msgid, toaddress, toripe, fromaddress, subject, message, ackdata, lastactiontime, status, pubkeyretrynumber, msgretrynumber, folder, encodingtype = row
-        print msgid.encode('hex'), toaddress, 'toripe:', toripe.encode('hex'), 'fromaddress:', fromaddress, 'ENCODING TYPE:', encodingtype, 'SUBJECT:', repr(subject), 'MESSAGE:', repr(message), 'ACKDATA:', ackdata.encode('hex'), lastactiontime, status, pubkeyretrynumber, msgretrynumber, folder
+        print(msgid.hex(), toaddress, 'toripe:', toripe.hex(), 'fromaddress:', fromaddress, 'ENCODING TYPE:', encodingtype, 'SUBJECT:', repr(subject), 'MESSAGE:', repr(message), 'ACKDATA:', ackdata.hex(), lastactiontime, status, pubkeyretrynumber, msgretrynumber, folder)
 
 def readSubscriptions():
-    print 'Printing everything in subscriptions table:'
+    print('Printing everything in subscriptions table:')
     item = '''select * from subscriptions'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
-        print row
+        print(row)
 
 def readPubkeys():
-    print 'Printing everything in pubkeys table:'
+    print('Printing everything in pubkeys table:')
     item = '''select hash, transmitdata, time, usedpersonally from pubkeys'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         hash, transmitdata, time, usedpersonally = row
-        print 'Hash:', hash.encode('hex'), '\tTime first broadcast:', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(time)),'utf-8'), '\tUsed by me personally:', usedpersonally, '\tFull pubkey message:', transmitdata.encode('hex')
+        print('Hash:', hash.hex(), '\tTime first broadcast:', str(strftime('%a, %d %b %Y  %I:%M %p',localtime(time)),'utf-8'), '\tUsed by me personally:', usedpersonally, '\tFull pubkey message:', transmitdata.hex())
 
 def readInventory():
-    print 'Printing everything in inventory table:'
+    print('Printing everything in inventory table:')
     item = '''select hash, objecttype, streamnumber, payload, expirestime from inventory'''
     parameters = ''
     cur.execute(item, parameters)
     output = cur.fetchall()
     for row in output:
         hash, objecttype, streamnumber, payload, expirestime = row
-        print 'Hash:', hash.encode('hex'), objecttype, streamnumber, '\t', payload.encode('hex'), '\t', unicode(strftime('%a, %d %b %Y  %I:%M %p',localtime(expirestime)),'utf-8')
+        print('Hash:', hash.hex(), objecttype, streamnumber, '\t', payload.hex(), '\t', str(strftime('%a, %d %b %Y  %I:%M %p',localtime(expirestime)),'utf-8'))
 
 
 def takeInboxMessagesOutOfTrash():
@@ -69,7 +70,7 @@ def takeInboxMessagesOutOfTrash():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+    print('done')
 
 def takeSentMessagesOutOfTrash():
     item = '''update sent set folder='sent' where folder='trash' '''
@@ -77,7 +78,7 @@ def takeSentMessagesOutOfTrash():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+    print('done')
 
 def markAllInboxMessagesAsUnread():
     item = '''update inbox set read='0' '''
@@ -86,7 +87,7 @@ def markAllInboxMessagesAsUnread():
     output = cur.fetchall()
     conn.commit()
     shared.UISignalQueue.put(('changedInboxUnread', None))
-    print 'done'
+    print('done')
 
 def vacuum():
     item = '''VACUUM'''
@@ -94,7 +95,7 @@ def vacuum():
     cur.execute(item, parameters)
     output = cur.fetchall()
     conn.commit()
-    print 'done'
+    print('done')
 
 #takeInboxMessagesOutOfTrash()
 #takeSentMessagesOutOfTrash()

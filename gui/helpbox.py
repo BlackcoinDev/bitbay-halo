@@ -1,10 +1,10 @@
 import os
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt6 import QtCore, QtGui, uic
 
-class Explanations(QtGui.QDialog):
+class Explanations(QtWidgets.QDialog):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         base = os.path.abspath(os.path.dirname(__file__))
         uic.loadUi(base+'/forms/HelpBox1.ui', self)
         qss_main = open(base+'/styles/bay/mainwindow.css', 'r').read()
@@ -30,12 +30,12 @@ class Explanations(QtGui.QDialog):
         self.IntroductionTips_9.setHtml(text09)
         self.IntroductionTips_10.setHtml(text10)
     def retranslateUi(self, Form):
-        self.setWindowTitle("Help...")
+        self.setWindowTitle("Help.")
 
 if __name__ == "__main__":
     import sys
     import os
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     dlg = Explanations(None)
-    dlg.exec_()
+    dlg.exec()

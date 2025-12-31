@@ -9,6 +9,7 @@ if sys.version_info.major == 3:
     string_types = (str)
     string_or_bytes_types = (str, bytes)
     int_types = (int, float)
+    is_python2 = False
     # Base switching
     code_strings = {
         2: '01',

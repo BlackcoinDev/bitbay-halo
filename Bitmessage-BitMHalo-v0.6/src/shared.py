@@ -60,7 +60,7 @@ def isAddressInMyAddressBook(address):
         address)
     return queryreturn != []
 
-#At this point we should really just have a isAddressInMy(book, address)...
+#At this point we should really just have a isAddressInMy(book, address).
 def isAddressInMySubscriptionsList(address):
     queryreturn = sqlQuery(
         '''select * from subscriptions where address=?''',
@@ -139,7 +139,7 @@ def reloadBroadcastSendersForWhichImWatching():
     broadcastSendersForWhichImWatching.clear()
     MyECSubscriptionCryptorObjects.clear()
     queryreturn = sqlQuery('SELECT address FROM subscriptions where enabled=1')
-    logger.debug('reloading subscriptions...')
+    logger.debug('reloading subscriptions.')
     for row in queryreturn:
         address, = row
         status,addressVersionNumber,streamNumber,hash = decodeAddress(address)

@@ -43,7 +43,9 @@ def get_version(library):
         library.OpenSSL_version.argtypes = [ctypes.c_int]
         library.OpenSSL_version.restype = ctypes.c_char_p
         version = library.OpenSSL_version(OPENSSL_VERSION)
+        if isinstance(version, bytes): version = version.decode('utf-8')
         cflags = library.OpenSSL_version(OPENSSL_CFLAGS)
+        if isinstance(cflags, bytes): cflags = cflags.decode('utf-8')
         library.OpenSSL_version_num.restype = ctypes.c_long
         hexversion = library.OpenSSL_version_num()
     except AttributeError:
@@ -55,7 +57,9 @@ def get_version(library):
             library.SSLeay_version.restype = ctypes.c_char_p
             library.SSLeay_version.argtypes = [ctypes.c_int]
             version = library.SSLeay_version(SSLEAY_VERSION)
+            if isinstance(version, bytes): version = version.decode('utf-8')
             cflags = library.SSLeay_version(SSLEAY_CFLAGS)
+            if isinstance(cflags, bytes): cflags = cflags.decode('utf-8')
             hexversion = library.SSLeay()
         except AttributeError:
             #raise NotImplementedError('Cannot determine version of this OpenSSL library.')
@@ -490,6 +494,7 @@ class _OpenSSL:
         if data != 0:
             if sys.version_info.major == 3 and isinstance(data, type('')):
                 data = data.encode()
+                if size < len(data): size = len(data)
             buffer = self.create_string_buffer(data, size)
         else:
             buffer = self.create_string_buffer(size)
@@ -522,12 +527,12 @@ def loadOpenSSL():
             datadir = getPythonFileLocation()
         if 'darwin' in sys.platform:
             libdir.extend([
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.1.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.2.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.1.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.1.0.0.dylib'),
-                path.join(environ['RESOURCEPATH'], '..', 'Frameworks','libcrypto.0.9.8.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.1.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.2.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.1.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.1.0.0.dylib'),
+                path.join(environ['RESOURCEPATH'], '.', 'Frameworks','libcrypto.0.9.8.dylib'),
                 ])
         elif 'win32' in sys.platform or 'win64' in sys.platform:
             libdir.append(path.join(datadir, 'libeay32.dll'))
@@ -553,6 +558,7 @@ def loadOpenSSL():
     else:
         libdir.append('libcrypto.so')
         libdir.append('libssl.so')
+        libdir.append(find_library('crypto'))
     if 'linux' in sys.platform or 'darwin' in sys.platform or 'bsd' in sys.platform:
         libdir.append(find_library('ssl'))
     elif 'win32' in sys.platform or 'win64' in sys.platform:

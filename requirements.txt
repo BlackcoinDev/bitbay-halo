@@ -1,0 +1,17 @@
+PyQt6
+PyQt6-WebEngine
+rpyc
+python-bitcoinrpc
+pycryptodome
+qrcode
+requests
+beautifulsoup4
+yandex-translate
+Pillow
+PySocks
+mechanize
+selenium
+ujson
+pyright
+pylint
+pytest

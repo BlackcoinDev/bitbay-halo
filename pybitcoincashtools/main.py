@@ -10,7 +10,7 @@ import base64
 import time
 import random
 import hmac
-from ripemd import *
+from .ripemd import *
 
 # Hashing transactions for signing
 
@@ -419,7 +419,7 @@ def electrum_sig_hash(message):
 
 
 def random_key():
-    # Gotta be secure after that java.SecureRandom fiasco...
+    # Gotta be secure after that java.SecureRandom fiasco.
     entropy = random_string(32) \
         + str(random.randrange(2**256)) \
         + str(int(time.time() * 1000000))

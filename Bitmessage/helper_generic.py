@@ -1,4 +1,4 @@
-import shared
+from . import shared
 import sys
 
 def convertIntToString(n):
@@ -6,13 +6,13 @@ def convertIntToString(n):
     if a[-1:] == 'L':
         a = a[:-1]
     if (len(a) % 2) == 0:
-        return a[2:].decode('hex')
+        return bytes.fromhex(a[2:])
     else:
-        return ('0' + a[2:]).decode('hex')
+        return bytes.fromhex('0'+a[2:])
 
 
 def convertStringToInt(s):
-    return int(s.encode('hex'), 16)
+    return int(s.hex(), 16)
 
 
 def signal_handler(signal, frame):
@@ -20,7 +20,7 @@ def signal_handler(signal, frame):
         shared.doCleanShutdown()
         sys.exit(0)
     else:
-        print 'Unfortunately you cannot use Ctrl+C when running the UI because the UI captures the signal.'
+        print('Unfortunately you cannot use Ctrl+C when running the UI because the UI captures the signal.')
 
 def isHostInPrivateIPRange(host):
     if host[:3] == '10.':

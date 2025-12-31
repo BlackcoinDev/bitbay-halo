@@ -7,17 +7,18 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-import sip
-from PyQt4.QtNetwork import *
-from PyQt4.QtWebKit import QWebView,QWebPage
+from PyQt6 import sip
+from PyQt6.QtNetwork import *
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineCore import QWebEnginePage
 
-from PyQt4 import QtCore, QtGui, QtWebKit, uic, Qt
-from PyQt4.QtGui import QSizePolicy
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets, uic
+from PyQt6.QtWidgets import QSizePolicy
 import sys, os, inspect
 import traceback
 import os
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.server import SimpleXMLRPCRequestHandler
 
 #To check for memory leaks
 #import pympler
@@ -37,7 +38,7 @@ import types
 #            return ctypes.windll.shell32.IsUserAnAdmin()
 #        except:
 #            traceback.print_exc()
-#            print "Admin check failed, assuming not an admin."
+#            print("Admin check failed, assuming not an admin.")
 #            return False
 #    return True
 
@@ -74,7 +75,7 @@ application_path=getPythonFileLocation()
 #For muting some warnings or redirecting them, we install a custom message handler
 def Qhandler(msgtype, message):
     if "libpng warning: iCCP: known incorrect sRGB profile" not in str(message):
-        print str(message)
+        print(str(message))
     pass
 try:
     QtCore.qInstallMsgHandler(Qhandler)
@@ -82,15 +83,15 @@ except:
     pass
 
 try:
-    _fromUtf8 = QtCore.QString.fromUtf8
+    _fromUtf8 = lambda s: s
 except AttributeError:
     def _fromUtf8(s):
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig=None):
-        _encoding = QtGui.QApplication.UnicodeUTF8
+        _encoding = QtWidgets.QApplication.UnicodeUTF8
         if window.language!="DEFAULT" and window.language!="en":
             if window.language not in window.translations:
                 window.translations[window.language]={}
@@ -100,11 +101,11 @@ try:
                 window.translist.append(text)
             else:
                 translateThis=ast.literal_eval(window.translations[window.language][text])
-                return QtCore.QString.fromUtf8(translateThis)
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+                return str(translateThis)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig=None):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 ###################
 import subprocess
 
@@ -138,8 +139,12 @@ else:
     import curses as m
 import re #Regex for pattern matching and cfg file
 import shutil #For copying files
-import urllib2 #For checking internet
-import urllib
+import urllib.request as urllib2 #For checking internet
+import urllib.parse as urllib
+import urllib.error
+# Compatibility shim for urllib2 exceptions
+urllib2.URLError = urllib.error.URLError
+urllib2.HTTPError = urllib.error.HTTPError
 import socket
 import Crypto #Just in case we need more crypto functions
 import base64
@@ -158,6 +163,16 @@ import testblock #the api for blockchain requests
 import datetime #For comparing dates to get difference in hours.
 from bitcoinrpc.authproxy import AuthServiceProxy#Blackcoin stuff
 #Email authenitcation
+
+def safe_hexlify(a):
+    if a is None: return None
+    if isinstance(a, str): a = a.encode('latin1')
+    return binascii.hexlify(a).decode()
+
+def safe_unhexlify(a):
+    if a is None: return None
+    return binascii.unhexlify(a)
+
 import imaplib
 import smtplib
 import email
@@ -169,13 +184,42 @@ from PIL import Image#For Steganography
 from PIL.ImageQt import ImageQt
 import stepic
 from io import BytesIO
-import StringIO
-import copy
-import csv
-import xmlrpclib #RPC
+import xmlrpc.client as xmlrpclib #RPC
 import ATemplates
 import quopri
-import goslate
+#import goslate
+import platform
+import gc
+#Requesocks is not compatible with mechnanize, will use pysocks instead
+#Installing html5-parser may help the packages work together: https://html5-parser.readthedocs.io/en/latest/
+#import requesocks
+import socks
+import hashlib
+from yandex_translate import YandexTranslate
+import gtranslate as gtranslate2
+import struct
+import bsonjs
+#import numpy as np
+import ujson
+import mechanize
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+try:
+    from requests.adapters import HTTPAdapter
+    from requests.packages.urllib3.poolmanager import PoolManager
+    import ssl
+    pass
+except:
+    pass
+#import zlib
+import io
+import copy
+import csv
+
+import ATemplates
+import quopri
+#import goslate
 import platform
 import gc
 #Requesocks is not compatible with mechnanize, will use pysocks instead
@@ -405,7 +449,7 @@ BitmessageStatus={}
 MyEmail=""
 BitAddrGlob=""
 try:
-    timestamp=time.mktime(datetime.datetime.utcnow().timetuple())
+    timestamp=time.mktime(datetime.datetime.now(datetime.UTC).timetuple())
 except:
     timestamp=time.time()
 UniversalTimeStamp=timestamp
@@ -541,11 +585,11 @@ NewCoin['BackgroundImage2']="/images/bg_blackhalo_2.png"
 NewCoin['TabSelected']="#acb6c6"
 NewCoin['QTabBackground']="rgba(0, 0, 34, 250)"
 NewCoin['QFrameColor']="#00000"
-NewCoin['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgb(50, 50, 50, 250)"
+NewCoin['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgba(50, 50, 50, 250)"
 NewCoin['Symbol']="BLK"
 NewCoin['CommandLinkColor']="#fbfbfb"
 NewCoin['ProgressBarColor']="#545d6d"
-NewCoin['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgb(0, 50, 100, 250))"
+NewCoin['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
 NewCoin['NavBarIcon']="/images/navbar_arrow_bc.png"
 NewCoin['default market']="Halo Market"
 NewCoin['IRC']="https://webchat.oftc.net/?channels=%23BitHalo,%23BitBay&uio=d4"#"https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#Blackcoin" #http://webchat.freenode.net?channels=BitHalo,#Blackcoin&amp;uio=OT10cnVlJjExPTIzNg6b"
@@ -583,11 +627,11 @@ NewCoin1['BackgroundImage2']="/images/bg_bitbay_2.png"
 NewCoin1['TabSelected']="#acb6c6"
 NewCoin1['QTabBackground']="rgba(0, 0, 34, 250)"
 NewCoin1['QFrameColor']="#00000"
-NewCoin1['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgb(50, 50, 50, 250)"
+NewCoin1['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgba(50, 50, 50, 250)"
 NewCoin1['Symbol']="BAY"
 NewCoin1['CommandLinkColor']="#fbfbfb"
 NewCoin1['ProgressBarColor']="#a5d1e4"#545d6d
-NewCoin1['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgb(0, 50, 100, 250))"
+NewCoin1['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
 NewCoin1['NavBarIcon']="/images/navbar_arrow_bay.png"
 NewCoin1['default market']="BitBay"
 NewCoin1['IRC']="https://webchat.oftc.net/?channels=%23BitHalo,%23BitBay&uio=d4"#"https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#BitBay" #https://webchat.freenode.net?channels=BitHalo,#BitBay&amp;uio=OT10cnVlJjExPTIzNg6b"
@@ -614,7 +658,7 @@ if os.path.exists(os.path.join(application_path,"whitelist.dat")):
 
 Coins.append(NewCoin1)
 
-#print NewCoin1['links']
+#print(NewCoin1['links'])
 
 #NewCoin2['daemon']="bitcoind"
 #NewCoin2['datadir']="bitcoindata"
@@ -648,11 +692,11 @@ NewCoin2['BackgroundImage2']="/images/bg_bithalo_2.png"
 NewCoin2['TabSelected']="#acb6c6"
 NewCoin2['QTabBackground']="rgba(0, 0, 34, 250)"
 NewCoin2['QFrameColor']="#00000"
-NewCoin2['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgb(50, 50, 50, 250)"
+NewCoin2['FrameGradient']="qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgba(50, 50, 50, 250)"
 NewCoin2['Symbol']="BTC"
 NewCoin2['CommandLinkColor']="#fbfbfb"
 NewCoin2['ProgressBarColor']="#545d6d"
-NewCoin2['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgb(0, 50, 100, 250))"
+NewCoin2['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
 NewCoin2['NavBarIcon']="/images/navbar_arrow.png"
 NewCoin2['default market']="Halo Market"
 NewCoin2['IRC']="https://webchat.oftc.net/?channels=%23BitHalo,%23BitBay&uio=d4"#"https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#Blackcoin"#https://webchat.freenode.net?channels=BitHalo,#Blackcoin&amp;uio=OT10cnVlJjExPTIzNg6b"
@@ -661,7 +705,7 @@ NewCoin2['links']=""
 NewCoin2['Moderator']=0
 Coins.append(NewCoin2)
 
-app = QtGui.QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 
 #appfont = QtGui.QFont()
 #appfont.setPixelSize(11)
@@ -687,7 +731,7 @@ def ConvertImage(img,filetype="base64",returnpixmap=True):
             im = Image.open(BytesIO(base64.b64decode(img)))
         if filetype=="file":
             im = Image.open(img)
-        output = StringIO.StringIO()
+        output = BytesIO()
         im.save(output,"PNG")
         pm = QtGui.QPixmap()
         x=base64.b64encode(output.getvalue())
@@ -743,7 +787,7 @@ try:
         CoinSelect=copy.deepcopy(Coins[0])
     if line=="BAY":
         CoinSelect=copy.deepcopy(Coins[1])
-except Exception, e:
+except Exception as e:
     debug=0
     CoinSelect=copy.deepcopy(Coins[2])
 
@@ -754,20 +798,20 @@ if 'splash' in CoinSelect:
         splash_pix = QtGui.QPixmap(ConvertImage(application_path+'/images/'+'LoadingBitBayNew.png',"file"))
 else:
     splash_pix = QtGui.QPixmap(ConvertImage(application_path+'/images/Loading.jpg',"file"))
-splash = QtGui.QSplashScreen(splash_pix)
-#splash.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+splash = QtWidgets.QSplashScreen(splash_pix)
+#splash.setWindowFlags(QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.FramelessWindowHint)
 splash.setMask(splash_pix.mask())
 splash.show()
 splash.repaint()
 
 #Create global tx splash
 splash_px = QtGui.QPixmap(application_path+'/images/Process.png')
-txsplash = QtGui.QSplashScreen(splash_px)
+txsplash = QtWidgets.QSplashScreen(splash_px)
 txsplash.setMask(splash_px.mask())    
 
 #Create global compression splash
 splash_px = QtGui.QPixmap(application_path+'/images/Compress.png')
-compresssplash = QtGui.QSplashScreen(splash_px)
+compresssplash = QtWidgets.QSplashScreen(splash_px)
 compresssplash.setMask(splash_px.mask())    
 
 if CoinSelect['moderngui']==1:
@@ -842,14 +886,14 @@ procs = []
 os.environ['no_proxy'] = '127.0.0.1,localhost'
 
 global HaloRPC
-xmlrpclib.Marshaller.dispatch[type(0L)] = lambda _, v, w: w("<value><i8>%d</i8></value>" % v)
+xmlrpclib.Marshaller.dispatch[type(0)] = lambda _, v, w: w("<value><i8>%d</i8></value>" % v)
 try:#Test to see if its already running we can send it a command to show itself
     HaloRPC = xmlrpclib.ServerProxy('http://localhost:55779')
     socket.setdefaulttimeout(10)   
     HaloRPC.ShowHalo("password")
     sys.exit(1)
     #s.system.listMethods()
-except Exception, e:
+except Exception as e:
     try:
         socket.setdefaulttimeout(None) 
     except:
@@ -908,8 +952,8 @@ if os.name == 'nt' and MacWine == 0:
                     os.system("tskill "+CoinSelect['daemon'])
                 except:
                     pass
-        msbx=QtGui.QWidget()
-        QtGui.QMessageBox.information(msbx, "Halo", "Halo was already running or it was not a clean exit. The software has now cleaned up from the previous run. Please restart the client.")
+        msbx=QtWidgets.QWidget()
+        QtWidgets.QMessageBox.information(msbx, "Halo", "Halo was already running or it was not a clean exit. The software has now cleaned up from the previous run. Please restart the client.")
         sys.exit(-1)
 
 if os.path.exists(os.path.join(application_path,"YandexAPI.txt")):
@@ -927,7 +971,7 @@ if os.path.exists(os.path.join(application_path,"cacert.pem")):
 #    me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
 def messagebox(text, text2, text3):
-    msgBox = QtGui.QMessageBox()
+    msgBox = QtWidgets.QMessageBox()
     msgBox.setWindowTitle(CoinSelect['HaloName'])
     msgBox.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
 
@@ -935,9 +979,9 @@ def messagebox(text, text2, text3):
         qss_main = open(application_path+'/gui/styles/bay/messagebox.css', 'r')
         msgBox.setStyleSheet(qss_main.read()+"\nQMessageBox {background-color:#ffffff;}")
     msgBox.setText(text)
-    msgBox.addButton(QtGui.QPushButton(text2), QtGui.QMessageBox.YesRole)
-    msgBox.addButton(QtGui.QPushButton(text3), QtGui.QMessageBox.YesRole)
-    response = msgBox.exec_()
+    msgBox.addButton(QtWidgets.QPushButton(text2), QtWidgets.QMessageBox.ButtonRole.YesRole)
+    msgBox.addButton(QtWidgets.QPushButton(text3), QtWidgets.QMessageBox.ButtonRole.YesRole)
+    response = msgBox.exec()
     return response
 res=0
 pendingInstall = 0
@@ -975,27 +1019,38 @@ if os.name == 'nt':
         else:
             BlackHalo=None
         if skipBM != True:
-            BitMHalo=subprocess.Popen(("BitMHalo.exe path="+application_path),creationflags=win32process.CREATE_NO_WINDOW)# shell=True)#stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
+            BitMHalo=subprocess.Popen(("BitMHalo.exe path="+application_path),creationflags=win32process.CREATE_NO_WINDOW)#) shell=True#stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
         #BitMHalo=subprocess.Popen(("BitMHalo.py path="+application_path),shell=True)
     except:
         traceback.print_exc()
-        print "Could not find necessary executables."
-        print CoinSelect['daemon'], "\n", "BitMHalo"
+        print("Could not find necessary executables.")
+        print(CoinSelect['daemon'], "\n", "BitMHalo")
         sys.exit(1)
 else:
     #The frozen package can have issues finding the requests certificates so just fix it this way
     os.environ["REQUESTS_CA_BUNDLE"] = application_path + "/cacert.pem"
     try:
-        if res==0:
-            BlackHalo=subprocess.Popen([application_path+"/"+CoinSelect['daemon'], "-port="+CoinSelect['port'], "-rpcport="+CoinSelect['rpcport'], "-datadir="+sdir])
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex(('127.0.0.1', int(CoinSelect['port'])))
+        sock.close()
+        is_running = result == 0
+        if is_running:
+             print("Daemon already running on port " + CoinSelect['port'])
+             BlackHalo = None
+        elif res==0:
+             BlackHalo=subprocess.Popen([application_path+"/"+CoinSelect['daemon'], "-port="+CoinSelect['port'], "-rpcport="+CoinSelect['rpcport'], "-datadir="+sdir])
         else:
             BlackHalo=None
         if skipBM != True:
-            BitMHalo=subprocess.Popen([application_path+"/BitMHalo", "path="+application_path])
+            env = os.environ.copy()
+            env["QT_QPA_PLATFORM"] = "offscreen"
+            # Add project root to PYTHONPATH so Bitmessage module can be found
+            env["PYTHONPATH"] = application_path + (os.pathsep + env.get("PYTHONPATH", "") if env.get("PYTHONPATH") else "")
+            BitMHalo=subprocess.Popen([sys.executable, application_path+"/Bitmessage/bitmessagemain.py", "path="+application_path], env=env)
     except:
         traceback.print_exc()
-        print "Could not find necessary executables."
-        print application_path+"/"+CoinSelect['daemon'], "\n", "BitMHalo"
+        print("Could not find necessary executables.")
+        print(application_path+"/"+CoinSelect['daemon'], "\n", "BitMHalo")
         sys.exit(1)
 if skipBM:
     procs.append(None)
@@ -1090,14 +1145,14 @@ class IdenticonRendererBase(object):
         # side patch
         kwds['foreColor'] = foreColor
         kwds['type'] = side[0]
-        for i in xrange(4):
+        for i in range(4):
             pos = [(1, 0), (2, 1), (1, 2), (0, 1)][i]
             image = self.drawPatchQt(pos, side[2] + 1 + i, side[1], **kwds)
             
         # corner patch
         kwds['foreColor'] = secondColor
         kwds['type'] = corner[0]
-        for i in xrange(4):
+        for i in range(4):
             pos = [(0, 0), (2, 0), (2, 2), (0, 2)][i]
             image = self.drawPatchQt(pos, corner[2] + 1 + i, corner[1], **kwds)
         
@@ -1200,9 +1255,9 @@ class DonRenderer(IdenticonRendererBase):
     MIDDLE_PATCH_SET = [0, 4, 8, 15]
     
     # modify path set
-    for idx in xrange(len(PATH_SET)):
+    for idx in range(len(PATH_SET)):
         if PATH_SET[idx]:
-            p = map(lambda vec: (vec[0] / 4.0, vec[1] / 4.0), PATH_SET[idx])
+            p = list(map(lambda vec: (vec[0] / 4.0, vec[1] / 4.0), PATH_SET[idx]))
             PATH_SET[idx] = p + p[:1]
     
     def decode(self, code, twoColor):
@@ -1281,25 +1336,25 @@ class GarbageCollector(QtCore.QObject):
         #return self.debug_cycles() # uncomment to just debug cycles
         l0, l1, l2 = gc.get_count()
         if self.debug:
-            print ('gc_check called:', l0, l1, l2)
+            print(('gc_check called:', l0, l1, l2))
         if l0 > self.threshold[0]:
             num = gc.collect(0)
             if self.debug:
-                print ('collecting gen 0, found:', num, 'unreachable')
+                print(('collecting gen 0, found:', num, 'unreachable'))
             if l1 > self.threshold[1]:
                 num = gc.collect(1)
                 if self.debug:
-                    print ('collecting gen 1, found:', num, 'unreachable')
+                    print(('collecting gen 1, found:', num, 'unreachable'))
                 if l2 > self.threshold[2]:
                     num = gc.collect(2)
                     if self.debug:
-                        print ('collecting gen 2, found:', num, 'unreachable')
+                        print(('collecting gen 2, found:', num, 'unreachable'))
 
     def debug_cycles(self):
         gc.set_debug(gc.DEBUG_SAVEALL)
         gc.collect()
         for obj in gc.garbage:
-            print (obj, repr(obj), type(obj))
+            print((obj, repr(obj), type(obj)))
 
 #For loading numpy objects
 #json.loads(json.dumps(data, cls=NumpyEncoder), object_hook=json_numpy_obj_hook)
@@ -1338,7 +1393,7 @@ class GarbageCollector(QtCore.QObject):
 #        return np.frombuffer(data, dct['dtype']).reshape(dct['shape'])
 #    return dct
 def update_dict(data_copy, data):
-    for k, v in data_copy.iteritems():
+    for k, v in data_copy.items():
         if v != data[k]:
             if isinstance(v, dict):
                 update_dict(v, data[k])
@@ -1374,7 +1429,7 @@ def json_deep_copy(data, useast=0):
     except OverflowError:
         data_copy = json.loads(json.dumps(data))
     except Exception:
-        print ("non-json safe object passed. falling back to deepcopy")
+        print(("non-json safe object passed. falling back to deepcopy"))
         try:
             data_copy = copy.deepcopy(data)
         except:
@@ -1385,8 +1440,8 @@ def bytesString(s):
 
 def retranslateUi2():
     global translations, globfont
-    #window.Tabs.setStyleSheet(_fromUtf8("QTabWidget::pane { /* The tab widget frame */\nborder-top: 6px solid #000000;\nborder-right: 2px solid #000000;\nborder-left: 2px solid #000000;\nborder-bottom: 6px solid #000000;\nmargin-top:0px;\nbackground-color:#ececec;\nbackground: qlineargradient(x1:0, y1:1, x2:1, y2:0, stop:0 #c0c0c0, stop: 0.4 rgba(236, 236, 236, 200), stop:1 rgb(236, 236, 236, 200));\n    background-image: url(:/Images/images/bg_blackhalo.png);\n  background-position: top right;\n  background-repeat: no-repeat;\n\n}\nQTabWidget::tab-bar {\nleft: 0px; /* move to the right by 5px */\n\n}\n/* Style the tab using the tab sub-control. Note that it reads QTabBar _not_ QTabWidget */\nQTabBar::tab {\ncolor: #222222;\nopacity: 0.6;\ntext-align: center;\nbackground-color: #e8b100;\n\nbackground: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #ffc300, stop: 0.4 rgba(232, 177, 0, 250), stop:1 rgb(232, 177, 0, 250));\n\npadding: 20px 5px 20px 5px;\n/*padding: 40px 10px 10px 10px; */\nborder-right: 1px dotted #222222;\n}\nQTabBar::tab:selected, QTabBar::tab:hover {\ncolor: #fbfbfb;\n}\nQTabBar::tab:selected {\nbackground: #000000;\ncolor: #fbfbfb;\nopacity: 1;\n}\nQTabBar::tab:!selected {\nmargin-top: 0px; /* make non-selected tabs look smaller */\n\n}"))
-    #window.frame_2.setStyleSheet(_fromUtf8("QFrame#frame_2 {\n/*your qss properties here*/\nbackground: qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #202020, stop: 0.4 rgba(34, 34, 34, 250), stop:0 rgb(50, 50, 50, 250));\n    background-image: url(:/Images/images/bg_blackhalo_2.png);\n  background-position: top right;\n  background-repeat: no-repeat;\n\n}"))
+    #window.Tabs.setStyleSheet(_fromUtf8("QTabWidget::pane { /* The tab widget frame */\nborder-top: 6px solid #000000;\nborder-right: 2px solid #000000;\nborder-left: 2px solid #000000;\nborder-bottom: 6px solid #000000;\nmargin-top:0px;\nbackground-color:#ececec;\nbackground: qlineargradient(x1:0, y1:1, x2:1, y2:0, stop:0 #c0c0c0, stop: 0.4 rgba(236, 236, 236, 200), stop:1 rgba(236, 236, 236, 200));\n    background-image: url(:/Images/images/bg_blackhalo.png);\n  background-position: top right;\n  background-repeat: no-repeat;\n\n}\nQTabWidget::tab-bar {\nleft: 0px; /* move to the right by 5px */\n\n}\n/* Style the tab using the tab sub-control. Note that it reads QTabBar _not_ QTabWidget */\nQTabBar::tab {\ncolor: #222222;\nopacity: 0.6;\ntext-align: center;\nbackground-color: #e8b100;\n\nbackground: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #ffc300, stop: 0.4 rgba(232, 177, 0, 250), stop:1 rgba(232, 177, 0, 250));\n\npadding: 20px 5px 20px 5px;\n/*padding: 40px 10px 10px 10px; */\nborder-right: 1px dotted #222222;\n}\nQTabBar::tab:selected, QTabBar::tab:hover {\ncolor: #fbfbfb;\n}\nQTabBar::tab:selected {\nbackground: #000000;\ncolor: #fbfbfb;\nopacity: 1;\n}\nQTabBar::tab:!selected {\nmargin-top: 0px; /* make non-selected tabs look smaller */\n\n}"))
+    #window.frame_2.setStyleSheet(_fromUtf8("QFrame#frame_2 {\n/*your qss properties here*/\nbackground: qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #202020, stop: 0.4 rgba(34, 34, 34, 250), stop:0 rgba(50, 50, 50, 250));\n    background-image: url(:/Images/images/bg_blackhalo_2.png);\n  background-position: top right;\n  background-repeat: no-repeat;\n\n}"))
     #window.label_2.setStyleSheet(_fromUtf8("font: bold 24px \"Arial\";\ncolor: #e8b100;\n\n"))
     #window = MyApp()
     window.translations=translations
@@ -1461,9 +1516,9 @@ def retranslateUi2():
 
     window.EnableIRC.hide()
     icon = QtGui.QIcon()
-    icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+"/images/BitHalo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+"/images/BitHalo.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
     icon2 = QtGui.QIcon()
-    icon2.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+CoinSelect['logo'])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon2.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+CoinSelect['logo'])), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
     if CoinSelect['name'] == "Bitcoin":
         if CoinSelect['moderngui']==0:
             window.HaloContactsIcon_2.setIcon(icon)
@@ -1568,7 +1623,7 @@ def Reconnect(rescan=0):#Sometimes the daemon disconnects after a while. The cau
         procs[1]=BlackHalo
         rescanning=0
     except:
-        print "Connection error!"
+        print("Connection error!")
         return False
         #Should I exit here?
     return True
@@ -1600,12 +1655,14 @@ def ResetBitMHalo():
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess._subprocess.STARTF_USESHOWWINDOW
             startupinfo.wShowWindow = subprocess._subprocess.SW_HIDE
-            BitMHalo=subprocess.Popen(("BitMHalo.exe path="+application_path),creationflags=win32process.CREATE_NO_WINDOW)# shell=True)#stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
+            BitMHalo=subprocess.Popen(("BitMHalo.exe path="+application_path),creationflags=win32process.CREATE_NO_WINDOW)#) shell=True#stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
         else:
-            BitMHalo=subprocess.Popen([application_path+"/BitMHalo", "path="+application_path])
+            env = os.environ.copy()
+            env["QT_QPA_PLATFORM"] = "offscreen"
+            BitMHalo=subprocess.Popen([sys.executable, application_path+"/Bitmessage/bitmessagemain.py", "path="+application_path], env=env)
         procs[0]=BitMHalo
     except:
-        print "BitMHalo error!"
+        print("BitMHalo error!")
         return False
         #Should I exit here?
     return True
@@ -1679,29 +1736,29 @@ def Loop():
     MM=GetfromCfg("#Market#")
     SM=GetfromCfg("#Spam#")
     if NM=="1":
-        window.checkBox.setCheckState(2)
+        window.checkBox.setCheckState(QtCore.Qt.CheckState(2))
     else:
-        window.checkBox.setCheckState(0)
+        window.checkBox.setCheckState(QtCore.Qt.CheckState(0))
     if MM=="0":
-        window.FilterCustom.setCheckState(2)
+        window.FilterCustom.setCheckState(QtCore.Qt.CheckState(2))
     else:
-        window.FilterCustom.setCheckState(0)
+        window.FilterCustom.setCheckState(QtCore.Qt.CheckState(0))
     if SM=="0":
-        window.DisableSpamFilter.setCheckState(0)
+        window.DisableSpamFilter.setCheckState(QtCore.Qt.CheckState(0))
     else:
-        window.DisableSpamFilter.setCheckState(2)
+        window.DisableSpamFilter.setCheckState(QtCore.Qt.CheckState(2))
 
     if BM==" " and EM==" ":#Its default
-        window.EnableBitmessage.setCheckState(2)
-        window.EnableEmail.setCheckState(2)
+        window.EnableBitmessage.setCheckState(QtCore.Qt.CheckState(2))
+        window.EnableEmail.setCheckState(QtCore.Qt.CheckState(2))
     if BM=="Y":
-        window.EnableBitmessage.setCheckState(2)
+        window.EnableBitmessage.setCheckState(QtCore.Qt.CheckState(2))
     if BM=="N":
-        window.EnableBitmessage.setCheckState(0)
+        window.EnableBitmessage.setCheckState(QtCore.Qt.CheckState(0))
     if EM=="Y":
-        window.EnableEmail.setCheckState(2)
+        window.EnableEmail.setCheckState(QtCore.Qt.CheckState(2))
     if EM=="N":
-        window.EnableEmail.setCheckState(0)
+        window.EnableEmail.setCheckState(QtCore.Qt.CheckState(0))
 
     if CoinSelect['Symbol'] == "BTC":
         BitHaloClient=True
@@ -1788,8 +1845,8 @@ def Loop():
                                     MasterOrders[inp['output']]=''
                     except:
                         pass
-            except Exception, e:
-                print "Exception loading contracts/orders."#It's worth noting that brand new accounts throw an exception
+            except Exception as e:
+                print("Exception loading contracts/orders.")#It's worth noting that brand new accounts throw an exception
         i+=1
     avail=0
     mbl=0
@@ -1859,7 +1916,7 @@ def Loop():
     app.processEvents()
     SaveTranslations()
     if Markets=={}:
-        Markets={"MyMarkets":{CoinSelect['default market']:""},"Current":CoinSelect['default market'],"Banlist":[],"Enable":1,'Orders':[],'Sort':[0,0],'Flags':[0,time.time()],'U':os.urandom(16).encode('hex')[:10],'Reputation':{}}
+        Markets={"MyMarkets":{CoinSelect['default market']:""},"Current":CoinSelect['default market'],"Banlist":[],"Enable":1,'Orders':[],'Sort':[0,0],'Flags':[0,time.time()],'U':safe_hexlify(os.urandom(16))[:10],'Reputation':{}}
         AddMarket(CoinSelect['default market'])
     else:
         UpdateMarketList()
@@ -1894,7 +1951,7 @@ def Loop():
                 LockTHIS.pop('AP', None)
         except:
             LockTHIS.pop('AP', None)
-            print "Error in Application EVENT"
+            print("Error in Application EVENT")
             traceback.print_exc()
         ticker+=1
         ticker2+=1
@@ -1996,7 +2053,7 @@ class PegThread(QtCore.QThread):
         #Bridge and voting system:
         #To add a bridge the address will refer to the BitBay data contract
         self.testthis=0
-        self.Pegdatabase['bridgedb'] = {'TrustedStakers1':["bNgmCcxPKgQQqUe6rhNtbGWowMJFCuxjZ3", "bEfg9bMLSgmjB5TDiur9FscZij4XXrd8C5", "bTuZboysrngsaqJvRj4db4CV2Qa21Q5Jcb", "bMvqdtSZtxDDBEj6NBHAg38iCdvmFwALix", "bJvBcHh45A6mjfKhy8Qg9AagbWfHWB1abC", "bN2NGi2bF1cpcQcsxmY4daCpi2tQqW5tnS", "bS4MGJKwN3vWCSgmsmYfXoJzS3QHPCRtcB", "BJLZ29gAk9aGW9HoAnsEzqmWp6BX7tZEN8", "bP66u6L53PmFppSszfDnUN7dBh6jeNw1uJ", "BAaGqLMM8sFRvAzPAReAxDFbAwzBMQuTni", "B8FqutWoHU6ixFxceZDkqvWARLERuTc4DL", "bKu6ZW9QhaURfanGs66VW78LnHHfThbsJK"],'TrustedStakers2':["bZ8sJgk1VsgbNcqUqBY5hNR9kMaJ5kksEG","bYf1uCCEc4Ge5juuHntYpJvuZ6L6fkqc9w","bYCwwHbSGo85k86Bd5S7drLQ2m1EnUcqTq","bURCwQiJhTSX2JA72LmPwCG3vF9zCpPB6J","bUjrA5QmFntnGABYfeaHbSf5QKF1ptmztr","bJMBgyS6u4SPFwJKGpcgWnPSRcuXF8iTme","bFEEzRWNWKGxFmjAkT1SmjNs8VTD9eTYje","bCqaStDHVoU89DWDjRxrsGbVFBWhxBFdP3","bbn4mJawLC8C26gfw4TVAcfRftiRvb6hZz","bamTjYPT5R822PLgVXUUUdYG6mQTnwmLtj","bbaeKoaSbH23JP1PHM7Fa3oPAfDLQjA9fr","bbbVueUaexGJgxkh2o2Eicd7nKDkuygGoc","bE2sWfTAKR556uFwFjkeQcgMQTFZU2c5c6","bG5WbMoXhMYEVa52ucZWjnidsqTidH7XoV","bHcSb6MC3dxAZbyBSMtSfq81WUF8odrfs6","bLRmZWd5mhE8H5AeSdXuRgwsdXAfEPRdDD","bSg6gu7nH8aHwz2FTqfNF3h6TBExozfkMc","bU7Fr7yrYJWgx6dTqpLW7Xs2Ztc7DBShNC","bWVt3Qp1M2m3qNc2JgBcis6v2fu2ARoBzh","bZT1vZsC123vFHpxwiXYTAt9k9kpfmhD9Y","BGGVksKTGoemBpDTUJw9tVw9M2t7EtFfzz","BKmirMrh6b5ku5scpc7AcJiTh8GSbc3aHR","BRHq9ae4FGD2sgDjqhbJj1K5iszWxZsju8","BEvukYqnXVw9Bj6q613igbBzeu7L8qydfZ","BScLEZPVsLZHeHjciV9boq5j1i8VtcJNkV","BGLCn3mQ4y8eMqm12cZmNtHohag2FvW5oc","BNV91VFGsRHPSepK4WAS9Bg7ghK9T179mM","BEpKZUcf7xCChU1xUgy9cCkou5Ujda1FTe","BEdhKEgAT1TvF3NBpTHmnXDPTrxG8SqvPj","BADnKcGJCFrvjhGxNjNgLw4pWmMLZTPDHm","BAvARoTNQa4e3pZcpso9JMwJbDgLRV3kaG","B9MWeWrJei6UCfeMN4yVnGSsjXR2fzPE7S","BJq1ChAvpqMPQ35PA12T6cAvwksGW2zNMa","B87SXHvyT1nco2ufyQjSfgDM8aCjutnqcJ","BNWtRUezdG26bn3AKNwvG4He1X6tLbrqQj","B8xvFpfLfLSadfmAv87JhqyGMjB86MD6Kz","B5ERP1AVtwa7BrjSyw9saqWp2dVzypgmDX","BF2o4AHkviLxH1ksxfMJr9PUY4mq94nXAe","B6B7QJwDBCBnumDdVCusNaX9FecKMdeEPM","BT8Kbtrqq9EWGAADGUKkrvFDN4GLoAZ5Xu","BLwT7rbNPBDVqMLnBTfbt4ARpdexjM1U34","BGLu8AzqiapcbufCabop4VWCzqZbYP2wJ8","BNuv6rfyadJ8HjCGgBbYuE1AcNQZFQBuKs","BHGUmQJZVN2vGjKCup2rBw6xn9b24FQaPh","BBoGzB9UpLHP8XLNJNAm7iG7f3SgvCYGJa","BTWKXR8Mi3s64bUaGVYnwL1XqmP6aTMWC3","B6q2EoNLbDDabWoDawaZBwtAS3FURncaHq","B515mPDfT4rTiLRUJFid2zrFRiGySxgj4Z","BSmBt2aNscgogCShoetG9aiRbtLznD4HEU","BNz1ZmfSaZwS2pduJ5QaVeBeUVnqwRPC1p","B6mh9dJi5zVYH2coYeyEFbutWrt7389159","BAuzwad1RErngpU4vs4TGoN61otqDq9eKE","BMPh6mYvDcUrLxHJDxqopuNejZPYwz5C1s","B8oTydfgHLZvA8n5UijXiht3f8mX3cSYEj","BCfVrB6Wrec9H3LTuy6PunUXAwJEHBXbka","B6dNMw2yd4LAiefePu7FaHGY3ALNZuMk3h","BLaqBwjuvytkE1HYDCCKWsvJ9gPxNypPAf","BAnifB1UKBMqV4hu9DtTZ7Qj4JBAEm8dKB","BByxgD9v6YbxvmauuPdgqa8Yk2o5pekVPW","BAJfus7iFaQ4rFSke5KzE367qzvf5R9thM","BNFFzvTApN8JtFcWgjQHKCezKthuu6bDdv","BCJxZgskT61557Jf2DmtwYvHJVaeRrwok6","B6QNEmPwd3ZDdqWRp1o6cTXaDGnXwevkjA","BDAXuYqpAjvP6P1rCQmvcBabbXhkg9KPSb"],'N':[4,0,0],'T':[4,0,0],'X':[4,0,0],'B':[4,0,0],'M':[4,0,0],'exchanges':{},'bridges':[]} #0x8F093DBB0b56d99abBCD6fc8d283262641e12cA0 is prior Goerli contract #{'n':'Goerli Testnet','s':'ETH','l':['https://rpc.ankr.com/eth_goerli'],'i':5,'c':'0xE0e7A345D509Cb2CA4fF06802A1dedF689d1d1C1','p':30,'m':8}
+        self.Pegdatabase['bridgedb'] = {'TrustedStakers1':["bNgmCcxPKgQQqUe6rhNtbGWowMJFCuxjZ3", "bEfg9bMLSgmjB5TDiur9FscZij4XXrd8C5", "bTuZboysrngsaqJvRj4db4CV2Qa21Q5Jcb", "bMvqdtSZtxDDBEj6NBHAg38iCdvmFwALix", "bJvBcHh45A6mjfKhy8Qg9AagbWfHWB1abC", "bN2NGi2bF1cpcQcsxmY4daCpi2tQqW5tnS", "bS4MGJKwN3vWCSgmsmYfXoJzS3QHPCRtcB", "BJLZ29gAk9aGW9HoAnsEzqmWp6BX7tZEN8", "bP66u653PmFppSszfDnUN7dBh6jeNw1uJ", "BAaGqLMM8sFRvAzPAReAxDFbAwzBMQuTni", "B8FqutWoHU6ixFxceZDkqvWARLERuTc4DL", "bKu6ZW9QhaURfanGs66VW78nHHfThbsJK"],'TrustedStakers2':["bZ8sJgk1VsgbNcqUqBY5hNR9kMaJ5kksEG","bYf1uCCEc4Ge5juuHntYpJvuZ66fkqc9w","bYCwwHbSGo85k86Bd5S7drLQ2m1EnUcqTq","bURCwQiJhTSX2JA72mPwCG3vF9zCpPB6J","bUjrA5QmFntnGABYfeaHbSf5QKF1ptmztr","bJMBgyS6u4SPFwJKGpcgWnPSRcuXF8iTme","bFEEzRWNWKGxFmjAkT1SmjNs8VTD9eTYje","bCqaStDHVoU89DWDjRxrsGbVFBWhxBFdP3","bbn4mJawLC8C26gfw4TVAcfRftiRvb6hZz","bamTjYPT5R822PLgVXUUUdYG6mQTnwmLtj","bbaeKoaSbH23JP1PHM7Fa3oPAfDLQjA9fr","bbbVueUaexGJgxkh2o2Eicd7nKDkuygGoc","bE2sWfTAKR556uFwFjkeQcgMQTFZU2c5c6","bG5WbMoXhMYEVa52ucZWjnidsqTidH7XoV","bHcSb6MC3dxAZbyBSMtSfq81WUF8odrfs6","bLRmZWd5mhE8H5AeSdXuRgwsdXAfEPRdDD","bSg6gu7nH8aHwz2FTqfNF3h6TBExozfkMc","bU7Fr7yrYJWgx6dTqpLW7Xs2Ztc7DBShNC","bWVt3Qp1M2m3qNc2JgBcis6v2fu2ARoBzh","bZT1vZsC123vFHpxwiXYTAt9k9kpfmhD9Y","BGGVksKTGoemBpDTUJw9tVw9M2t7EtFfzz","BKmirMrh6b5ku5scpc7AcJiTh8GSbc3aHR","BRHq9ae4FGD2sgDjqhbJj1K5iszWxZsju8","BEvukYqnXVw9Bj6q613igbBzeu78qydfZ","BScLEZPVsLZHeHjciV9boq5j1i8VtcJNkV","BGLCn3mQ4y8eMqm12cZmNtHohag2FvW5oc","BNV91VFGsRHPSepK4WAS9Bg7ghK9T179mM","BEpKZUcf7xCChU1xUgy9cCkou5Ujda1FTe","BEdhKEgAT1TvF3NBpTHmnXDPTrxG8SqvPj","BADnKcGJCFrvjhGxNjNgLw4pWmMLZTPDHm","BAvARoTNQa4e3pZcpso9JMwJbDgLRV3kaG","B9MWeWrJei6UCfeMN4yVnGSsjXR2fzPE7S","BJq1ChAvpqMPQ35PA12T6cAvwksGW2zNMa","B87SXHvyT1nco2ufyQjSfgDM8aCjutnqcJ","BNWtRUezdG26bn3AKNwvG4He1X6tLbrqQj","B8xvFpfLfLSadfmAv87JhqyGMjB86MD6Kz","B5ERP1AVtwa7BrjSyw9saqWp2dVzypgmDX","BF2o4AHkviLxH1ksxfMJr9PUY4mq94nXAe","B6B7QJwDBCBnumDdVCusNaX9FecKMdeEPM","BT8Kbtrqq9EWGAADGUKkrvFDN4GLoAZ5Xu","BLwT7rbNPBDVqMLnBTfbt4ARpdexjM1U34","BGLu8AzqiapcbufCabop4VWCzqZbYP2wJ8","BNuv6rfyadJ8HjCGgBbYuE1AcNQZFQBuKs","BHGUmQJZVN2vGjKCup2rBw6xn9b24FQaPh","BBoGzB9UpLHP8XLNJNAm7iG7f3SgvCYGJa","BTWKXR8Mi3s64bUaGVYnwL1XqmP6aTMWC3","B6q2EoNLbDDabWoDawaZBwtAS3FURncaHq","B515mPDfT4rTiLRUJFid2zrFRiGySxgj4Z","BSmBt2aNscgogCShoetG9aiRbtLznD4HEU","BNz1ZmfSaZwS2pduJ5QaVeBeUVnqwRPC1p","B6mh9dJi5zVYH2coYeyEFbutWrt7389159","BAuzwad1RErngpU4vs4TGoN61otqDq9eKE","BMPh6mYvDcUrLxHJDxqopuNejZPYwz5C1s","B8oTydfgHLZvA8n5UijXiht3f8mX3cSYEj","BCfVrB6Wrec9H3Tuy6PunUXAwJEHBXbka","B6dNMw2yd4AiefePu7FaHGY3ALNZuMk3h","BLaqBwjuvytkE1HYDCCKWsvJ9gPxNypPAf","BAnifB1UKBMqV4hu9DtTZ7Qj4JBAEm8dKB","BByxgD9v6YbxvmauuPdgqa8Yk2o5pekVPW","BAJfus7iFaQ4rFSke5KzE367qzvf5R9thM","BNFFzvTApN8JtFcWgjQHKCezKthuu6bDdv","BCJxZgskT61557Jf2DmtwYvHJVaeRrwok6","B6QNEmPwd3ZDdqWRp1o6cTXaDGnXwevkjA","BDAXuYqpAjvP6P1rCQmvcBabbXhkg9KPSb"],'N':[4,0,0],'T':[4,0,0],'X':[4,0,0],'B':[4,0,0],'M':[4,0,0],'exchanges':{},'bridges':[]} #0x8F093DBB0b56d99abBCD6fc8d283262641e12cA0 is prior Goerli contract #{'n':'Goerli Testnet','s':'ETH','l':['https://rpc.ankr.com/eth_goerli'],'i':5,'c':'0xE0e7A345D509Cb2CA4fF06802A1dedF689d1d1C1','p':30,'m':8}
         self.Pegdatabase['publishedmessages'] = {}
         self.Pegdatabase['bridgeactive'] = True
         self.Pegdatabase['bridgepool'] = {}
@@ -2036,33 +2093,33 @@ class PegThread(QtCore.QThread):
                     if self.startexchange==1:
                         RunHalo=False
                         self.exchangecycle=self.Pegdatabase['votecycle']
-                        print "Loading exchange"
+                        print("Loading exchange")
                         res=self.LoadExchange()
                         if not res:#Database not written properly and may need manual recovery.
-                            print "Loading error!"
+                            print("Loading error!")
                             self.stopexchange=1
                             self.amrunning=False
                             self.startexchange=0
                             break
                         busy=1
                         while busy==1:
-                            print "Waiting..."
+                            print("Waiting...")
                             busy=NetSplash(1, checkwait=1, nogui=1, ld2=1)
-                            print str(lockdownload)
-                            print str(iswaiting)
+                            print(str(lockdownload))
+                            print(str(iswaiting))
                         time.sleep(1)
                         addresses=BLK.listreceivedbyaddress(0, True)
                         for i in addresses:
                             if i['address'][:1]=="B":
                                 self.exchange['addresses'][i['address']]=1
-                        print "Loading spendable"
+                        print("Loading spendable")
                         self.LoadSpendable()
-                        print "Getting balances"
+                        print("Getting balances")
                         self.ExchangeBalance,self.Spendable=self.GetBalance(self.Spendable)
                         res=self.ExchangeQueue(1)
                         res2=self.ExchangeQueue(2)
                         if res or res2:
-                            print "Reloading exchange"
+                            print("Reloading exchange")
                             self.LoadExchange()
                             self.LoadSpendable()
                             self.ExchangeQueue(1)
@@ -2087,7 +2144,7 @@ class PegThread(QtCore.QThread):
                                     busy=NetSplash(1, checkwait=1, nogui=1, ld2=1)
                                     if busy!=1:
                                         try:
-                                            print "Updating balances..."
+                                            print("Updating balances...")
                                             self.exchangebusy=1
                                             time.sleep(.5)
                                             self.ExchangeQueue(2)
@@ -2110,17 +2167,17 @@ class PegThread(QtCore.QThread):
                                             self.LoadSpendable('',1)
                                             if myblockcount % ThePeg.interval>10 and myblockcount % ThePeg.interval<75:
                                                 res=self.ProcessWithdraws()
-                                                print "Withdraw Liquid:",str(res)
+                                                print("Withdraw Liquid:",str(res))
                                             if myblockcount % ThePeg.interval>=75 and myblockcount % ThePeg.interval<120:
                                                 res=self.ProcessWithdraws('reserve')
-                                                print "Withdraw Reserve:",str(res)
+                                                print("Withdraw Reserve:",str(res))
                                             if myblockcount % ThePeg.interval>=120 and myblockcount % ThePeg.interval<145:
                                                 res=self.AccountMaintenance()
-                                                print "Account Maintenance:",str(res)
+                                                print("Account Maintenance:",str(res))
                                             if myblockcount % ThePeg.interval>=145 and myblockcount % ThePeg.interval<175:
                                                 res=self.ProcessWithdraws(checkonly=1)
-                                                print "Checking Transactions:",str(res)
-                                            print res
+                                                print("Checking Transactions:",str(res))
+                                            print(res)
                                             self.exchange['withdrawtime']=myblockcount
                                         except:
                                             traceback.print_exc()
@@ -2153,7 +2210,7 @@ class PegThread(QtCore.QThread):
                     x+=1
                 self.Pegdatabase['startblocktime']=block['time']
             x=0
-            print "Scanning blocks..."
+            print("Scanning blocks...")
             scantime=time.time()
             while x < blocks:
                 if self.queue!=[]:
@@ -2163,7 +2220,7 @@ class PegThread(QtCore.QThread):
                 if self.Pegdatabase['blockcount']==blockcount+1:
                     break
                 if self.Pegdatabase['votesblockcount2']<=self.Pegdatabase['blockcount']-(self.interval*4):#More than the MAX orphans
-                    blockrange=(((self.Pegdatabase['votesblockcount2'] - self.Pegdatabase['startingblock']) / self.interval) * self.interval) + self.Pegdatabase['startingblock']
+                    blockrange=(((self.Pegdatabase['votesblockcount2'] - self.Pegdatabase['startingblock']) // self.interval) * self.interval) + self.Pegdatabase['startingblock']
                     if str(blockrange) not in self.Pegdatabase['votedata2']:
                         self.Pegdatabase['votedata2'][str(blockrange)]={'proposals':{}}
                     if str(blockrange-(self.interval*25)) in self.Pegdatabase['votedata2']:#prune old data
@@ -2208,7 +2265,7 @@ class PegThread(QtCore.QThread):
                                         #k=public keys, s=signature, m=message, n=nonce                                        
                                         if len(signaturedata['k'])==2:
                                             mscript = mk_multisig_script(signaturedata['k'],2,2)
-                                            myaddy = scriptaddr(mscript.decode('hex'))
+                                            myaddy = scriptaddr(safe_unhexlify(mscript))
                                         else:
                                             myaddy = pubtoaddr(signaturedata['k'][0],25)
                                         rank=0
@@ -2380,11 +2437,11 @@ class PegThread(QtCore.QThread):
                         self.Pegdatabase['votesblockcount2']+=1
                     except:
                         traceback.print_exc()
-                        print 'skipping block - ', str(self.Pegdatabase['votesblockcount2'])
+                        print('skipping block - ', str(self.Pegdatabase['votesblockcount2']))
                         return False
                 #If the pruning point is beyond this check or account pools are used this needs to be revised
                 if self.Pegdatabase['votesblockcount']<=self.Pegdatabase['blockcount']-(self.interval*2):
-                    blockrange=(((self.Pegdatabase['votesblockcount'] - self.Pegdatabase['startingblock']) / self.interval) * self.interval) + self.Pegdatabase['startingblock']
+                    blockrange=(((self.Pegdatabase['votesblockcount'] - self.Pegdatabase['startingblock']) // self.interval) * self.interval) + self.Pegdatabase['startingblock']
                     if str(blockrange) not in self.Pegdatabase['votedata']:
                         self.Pegdatabase['votedata'][str(blockrange)]=[0,0,0]
                     hsh=BLK.getblockhash(self.Pegdatabase['votesblockcount'])
@@ -2429,7 +2486,7 @@ class PegThread(QtCore.QThread):
                         self.Pegdatabase['votesblockcount']+=1
                     except:
                         traceback.print_exc()
-                        print 'skipping block - ', str(self.Pegdatabase['votesblockcount'])
+                        print('skipping block - ', str(self.Pegdatabase['votesblockcount']))
                         return False
                 ThePeg.scanforchange(self.Pegdatabase['blockcount'])
                 hsh=BLK.getblockhash(self.Pegdatabase['blockcount'])
@@ -2474,18 +2531,18 @@ class PegThread(QtCore.QThread):
         sighashes=[1,2,3,80,129,130,131]
         skip=[]
         if block['previousblockhash'] != self.Pegdatabase['prevhashes'][-1] and checkonly==0:
-            print "REORGANIZE!", block['previousblockhash'], self.Pegdatabase['prevhashes'][-1]
+            print("REORGANIZE!", block['previousblockhash'], self.Pegdatabase['prevhashes'][-1])
             reorganize=0
             elements={}
             if block['height']!=self.Pegdatabase['blockcount']:
-                print 'The height is not the same somehow'
+                print('The height is not the same somehow')
             while reorganize < self.interval-2:
                 hsh=BLK.getblockhash(block['height']-reorganize)
                 block2=BLK.getblock(hsh)
                 if block2['previousblockhash'] == self.Pegdatabase['prevhashes'][-1]:
                     break
                 blockname=str(block2['height']-1)+".dat"
-                print str(blockname)
+                print(str(blockname))
                 if os.path.exists(os.path.join(pegdir,blockname)):
                     with open(os.path.join(pegdir,blockname),'rb') as f:
                         pruneblock=ujson.loads(bsonjs.dumps(f.read()))
@@ -2575,8 +2632,8 @@ class PegThread(QtCore.QThread):
             block['tx'].pop(0)
             block['tx'].append(tx)
             for tx in block['tx']:#can maybe move this to it's own function CheckTransaction
-                print tx
-                print "TIME ELAPSED A: ", str(txtime-time.time())
+                print(tx)
+                print("TIME ELAPSED A: ", str(txtime-time.time()))
                 trans=deserialize(BLK.getrawtransaction(tx))
                 whitelisted=0
                 highestfrozen=0
@@ -2596,7 +2653,7 @@ class PegThread(QtCore.QThread):
                         thescript=translate_script(trans['outs'][1]['script'])
                         if '**Y**' in thescript['message'][:5]:
                             if not self.Pegdatabase['bridgeactive']:
-                                print "Bridge is not currently active"
+                                print("Bridge is not currently active")
                                 float('a')
                             message=thescript['message'][5:]
                             x=1
@@ -2620,7 +2677,7 @@ class PegThread(QtCore.QThread):
                                     float('a')
                                 recipientScript = deserialize_script(trans['ins'][0]['script']) #The new tx will match the spending inputs sig script
                                 if message['a'][0] == 'b':
-                                    if scriptaddr(recipientScript[-1].decode('hex')) != message['a']:
+                                    if scriptaddr(recipientScriptsafe_unhexlify([-1])) != message['a']:
                                         float('a')
                                 if message['a'][0] == 'B':
                                     try:
@@ -2708,7 +2765,7 @@ class PegThread(QtCore.QThread):
                     if txin==False:#Didn't find it, either we should have had it or it's from before peg or it's a mint
                         #txin=copy.deepcopy(txin2)
                         #if txin['blocktime']>self.Pegdatabase['startblocktime']:
-                        #    self.DeleteDatabase()#Critical information was missing, sync again
+                        #    self.DeleteDatabase(#Critical information was missing, sync again)
                         #    return False
                         newstuff['txin'][txid]={}
                         if inp['outpoint']['hash']+":0" in self.Pegdatabase['mints']:
@@ -2730,7 +2787,7 @@ class PegThread(QtCore.QThread):
                             newstuff['txin'][txid]['address']=address
                             stepindex=0
                             newstuff['txin'][txid]['pool']={}
-                            print "TIME ELAPSED 0: ", str(txtime-time.time())
+                            print("TIME ELAPSED 0: ", str(txtime-time.time()))
                             #Original technique
                             #Dif=float(1)
                             #for s in self.steps:
@@ -2780,7 +2837,7 @@ class PegThread(QtCore.QThread):
                             newstuff['txin'][txid]['amount']=int(txin2['vout'][inp['outpoint']['index']]['value']*Decimal(1e8))
                         if 'address' not in newstuff['txin'][txid]:
                             newstuff['txin'][txid]['address']=address
-                    print "TIME ELAPSED 1: ", str(txtime-time.time())
+                    print("TIME ELAPSED 1: ", str(txtime-time.time()))
                     if 'frozen' in newstuff['txin'][txid]:#Sending 1 month lock funds
                         #check for whitelisted p2sh exchange key and if it's approved let it bypass the frozen timestamp
                         foundvalidsig=0
@@ -2834,7 +2891,7 @@ class PegThread(QtCore.QThread):
                         usedinputs[txid]=txid
                         pool=newstuff['txin'][txid]['pool'].copy()
                     if 'inputs' in newstuff['txin'][txid]:#It's a big pool
-                        print 'Found in pool'
+                        print('Found in pool')
                         for myinput in newstuff['txin'][txid]['inputs']:
                             if myinput not in usedinputs:
                                 usedinputs[myinput]=txid
@@ -2851,19 +2908,19 @@ class PegThread(QtCore.QThread):
                     #We could let a user take liquid without touching reserve but he may want to use reserve for a specific reason
                     #The user may end up with mixed liquidity anyways because of the size of the input. Therefore this is a simple
                     #rule to take an even mix of liquidity for each input seen deducted in the order they are seen in the block.
-                    print newstuff['txin'][txid]['amount']
+                    print(newstuff['txin'][txid]['amount'])
                     if 'inputs' in newstuff['txin'][txid]:
                         amttotake=newstuff['txin'][txid]['amount']                        
                         pool, pool2=self.CalculateOutput(pool,supply,amttotake,'Mixed', 1, 0, pool['total'])
                         newstuff['txin'][usedinputs[txid]]['pool']=pool.copy()
                         newstuff['txin'][txid]['pool2']=pool2.copy()
-                        print 'POOL TOTALS:'                        
-                        print pool2['total']
+                        print('POOL TOTALS:'                        )
+                        print(pool2['total'])
                         pool=pool2.copy()
                     try:
-                        print pool['total']
+                        print(pool['total'])
                     except:
-                        print reservetotal+liquidtotal
+                        print(reservetotal+liquidtotal)
                     empty=0
                     if 'total' in pool and 'frozen' not in pool and len(pool)==1:
                         empty=1
@@ -2878,8 +2935,8 @@ class PegThread(QtCore.QThread):
                                     reservetotal+=pool[i]
                                 else:
                                     liquidtotal+=pool[i]
-                            print 'r', reservetotal
-                            print 'l', liquidtotal
+                            print('r', reservetotal)
+                            print('l', liquidtotal)
                     else:
                         #Depending on how transactions are ordered there may be something to draw from
                         try:
@@ -3043,7 +3100,7 @@ class PegThread(QtCore.QThread):
                     pos+=1
                 if whitelisted==0:
                     continue
-                print "TIME ELAPSED 2: ", str(txtime-time.time())
+                print("TIME ELAPSED 2: ", str(txtime-time.time()))
                 stake=0
                 pos=0
                 totalout=0
@@ -3061,10 +3118,10 @@ class PegThread(QtCore.QThread):
                             bigliquiditypool[i]=liquiditypool[acct][i]
                         else:
                             bigliquiditypool[i]+=liquiditypool[acct][i]
-                print 'rtotal ', str(reservepool['total'])
-                print 'ltotal', str(bigliquiditypool['total'])
+                print('rtotal ', str(reservepool['total']))
+                print('ltotal', str(bigliquiditypool['total']))
                 txid2=txid
-                print txid2
+                print(txid2)
                 for out in trans['outs']:
                     if out['value']==0:
                         if out['script']!='':
@@ -3131,20 +3188,20 @@ class PegThread(QtCore.QThread):
                             totalout+=out['value']
                             pos+=1
                             continue #Calculate the remaining inputs after we know fees, there is no voluntary freeze on stakes
-                    print "TIME ELAPSED L: ", str(txtime-time.time())
+                    print("TIME ELAPSED L: ", str(txtime-time.time()))
                     newstuff['txout'][txid]['pool'], frozenpool, reservepool, bigliquiditypool=self.CalculateLiquid(totalin, newstuff['txout'][txid], frozenpool, reservepool, bigliquiditypool, trans['locktime'], supply, stake)
                     if pos in frozenpool and 'ftype' in frozenpool[pos]:
                         newstuff['txout'][txid]['frozen']=1
                         newstuff['txout'][txid]['ftype']=frozenpool[pos]['ftype']
-                    print "TIME ELAPSED L1: ", str(txtime-time.time())
+                    print("TIME ELAPSED L1: ", str(txtime-time.time()))
                     newstuff['txout'][txid]['block']=block['height']
                     totalout+=out['value']
                     pos+=1
                 if stake!=0:#First we save the stake input, then we calculate after all tx fees collected. We must commit fees and outputs back as well.
                     staketx=stake
-                    print 'We staked this'
+                    print('We staked this')
                 else:
-                    print 'Someone staked us!'
+                    print('Someone staked us!')
                 fees=0
                 #We should allow fee payment in both liquid and reserve to accomodate all kinds of transactions
                 for act in reservepool:
@@ -3179,17 +3236,17 @@ class PegThread(QtCore.QThread):
             if staketx=={}:                
                 if newstuff['txin']=={}:
                     if checkonly==0:
-                        print "TIME ELAPSED T: ", str(txtime-time.time())
+                        print("TIME ELAPSED T: ", str(txtime-time.time()))
                         res=self.writedatabase(newstuff, block)
-                        print "TIME ELAPSED T1: ", str(txtime-time.time())
+                        print("TIME ELAPSED T1: ", str(txtime-time.time()))
                     else:
                         res=True
                     return res
                 stakethis=0
             if stakethis==1:
-                print "TIME ELAPSED R: ", str(txtime-time.time())
+                print("TIME ELAPSED R: ", str(txtime-time.time()))
                 reward=self.CalculateReward(staketx,1, block['height'])
-                print "TIME ELAPSED R1: ", str(txtime-time.time())
+                print("TIME ELAPSED R1: ", str(txtime-time.time()))
                 for i in reward:
                     if i == 'total' or i == 'frozen':
                         continue
@@ -3200,10 +3257,10 @@ class PegThread(QtCore.QThread):
                         txfees[i]+=reward[i]
                         txfees['total']+=reward[i]
 
-                print "TIME ELAPSED 3: ", str(txtime-time.time())
-                print str(stake['liquidity']['total'])
+                print("TIME ELAPSED 3: ", str(txtime-time.time()))
+                print(str(stake['liquidity']['total']))
                 if totalout>txfees['total']+stake['liquidity']['total']:
-                    print "Adding new fees"
+                    print("Adding new fees")
                     #If we are whitelisting and we stake and there are fees not in the whitelist this can happen
                     totalout-=(txfees['total']+stake['liquidity']['total'])
                     stepindex=0
@@ -3238,16 +3295,16 @@ class PegThread(QtCore.QThread):
                     if txid not in newstuff['txout']:
                         newstuff['txout'][txid]={'address':address, 'amount':out['value'], 'index':pos}
                     if 'pool' in newstuff['txout'][txid]:
-                        print 'here'
-                        print txid
-                        print str(txfees['total'])
-                        print str(newstuff['txout'][txid]['pool']['total'])
-                        print str(out['value'])
+                        print('here')
+                        print(txid)
+                        print(str(txfees['total']))
+                        print(str(newstuff['txout'][txid]['pool']['total']))
+                        print(str(out['value']))
                         if newstuff['txout'][txid]['pool']['total']<out['value']:
                             txfees, newstuff['txout'][txid]['pool'] = self.CalculateOutput(txfees, supply, out['value']-newstuff['txout'][txid]['pool']['total'], "Mixed", 1, 0, txfees['total'], 0, newstuff['txout'][txid]['pool'])
                     else:
-                        print 'here2'
-                        print str(txfees['total'])
+                        print('here2')
+                        print(str(txfees['total']))
                         txfees, newstuff['txout'][txid]['pool'] = self.CalculateOutput(txfees, supply, out['value'], "Mixed", 1, 0, txfees['total'], 0)
                     newstuff['txout'][txid]['block']=block['height']
                     pos+=1
@@ -3255,18 +3312,18 @@ class PegThread(QtCore.QThread):
                     self.valid='Some fees were not distributed.'
                     float('a')            
             #SUCCESS!
-            print "TIME ELAPSED 4: ", str(txtime-time.time())
+            print("TIME ELAPSED 4: ", str(txtime-time.time()))
             if checkonly==0:
                 res=self.writedatabase(newstuff, block)
             else:
                 res=True
-            print "TIME ELAPSED 5: ", str(txtime-time.time())
+            print("TIME ELAPSED 5: ", str(txtime-time.time()))
             return res
         except:
             myexc=str(traceback.format_exc())
             if self.valid=='1':
                 self.valid='Block not valid: ' + myexc
-            print self.valid
+            print(self.valid)
         return False    
     def CalculateLiquid(self, amountin,myoutput,frozenpool,reservepool,liquiditypool,locktime, supply, stake=0):
         #frozenpool=json_deep_copy(frozenpool)
@@ -3296,7 +3353,7 @@ class PegThread(QtCore.QThread):
                             val1=frozenpool[frozenpool[myoutput['index']]['shared'][0]]['amount']
                             val2=frozenpool[frozenpool[myoutput['index']]['shared'][1]]['amount']
                             sharethis=1
-                            print "SHARED WITHDRAW!"
+                            print("SHARED WITHDRAW!")
                     for addy in reservepool:
                         if addy == 'total' or addy=='frozen':
                             continue
@@ -3337,7 +3394,7 @@ class PegThread(QtCore.QThread):
                         if meaning!={} and meaning['type']=="Notary/Burn":
                             if meaning['message'][:5]=="**Z**":
                                 if self.Pegdatabase['bridgeactive']==False:
-                                    print "Bridge is not currently active"
+                                    print("Bridge is not currently active")
                                     float('a')
                                 foundthis=0
                                 for bridged in self.Pegdatabase['bridgedb']['bridges']:
@@ -3346,7 +3403,7 @@ class PegThread(QtCore.QThread):
                                         general6a=False
                                         break
                                 if foundthis==0:
-                                    print "Bridge not found"
+                                    print("Bridge not found")
                                     float('a')
                     if myoutput['address'] in burnaddress or general6a:
                         #It's a burn so we can take from all pools
@@ -3419,8 +3476,8 @@ class PegThread(QtCore.QThread):
                 pos+=1
         if ltype=="Liquid":
             if liquidtotal<amount and multipleout==0:
-                print str(liquidtotal)
-                print str(amount)
+                print(str(liquidtotal))
+                print(str(amount))
                 self.valid="Not enough liquid funds"
                 float('a')
             if liquidtotal<amount:
@@ -3888,7 +3945,7 @@ class PegThread(QtCore.QThread):
         try:
             if os.path.exists(os.path.join(pegdir,"queue.dat")):
                 if os.stat(os.path.join(pegdir,"queue.dat"))[6]==0:
-                    print "Writing the queue failed, delete the database."
+                    print("Writing the queue failed, delete the database.")
                     with open(os.path.join(pegdir,"queue.dat"),'wb') as f:
                         f.write(bsonjs.loads(ujson.dumps([])))
                         f.flush()
@@ -3898,7 +3955,7 @@ class PegThread(QtCore.QThread):
                         self.DeleteDatabase()
                         return
                     except:
-                        print 'Failed deleting database.'
+                        print('Failed deleting database.')
                         return
                 else:
                     with open(os.path.join(pegdir,"queue.dat"),'rb') as f:
@@ -3907,11 +3964,11 @@ class PegThread(QtCore.QThread):
                     if self.queue=={}:#BSON saves blank lists as dictionaries
                         self.queue=[]
                     if self.queue!=[]:
-                        print 'Will finish writing queue.'
+                        print('Will finish writing queue.')
                         self.writequeue()
             if os.path.exists(os.path.join(pegdir,"index.dat")):
                 if os.stat(os.path.join(pegdir,"index.dat"))[6]==0:
-                    print "Writing the index failed, delete the database."
+                    print("Writing the index failed, delete the database.")
                     with open(os.path.join(pegdir,"index.dat"),'wb') as f:
                         f.write(bsonjs.loads(ujson.dumps([])))
                         f.flush()
@@ -3921,7 +3978,7 @@ class PegThread(QtCore.QThread):
                         self.DeleteDatabase()
                         return
                     except:
-                        print 'Failed deleting database.'
+                        print('Failed deleting database.')
                         return
                 else:
                     with open(os.path.join(pegdir,"index.dat"),'rb') as f:
@@ -3929,19 +3986,19 @@ class PegThread(QtCore.QThread):
                         f.close()
         except:
             traceback.print_exc()
-            print 'Deleting database.'
+            print('Deleting database.')
             try:
                 self.DeleteDatabase()
                 return
             except:
-                print 'Failed deleting database.'
+                print('Failed deleting database.')
                 return
     def DeleteDatabase(self):
         if os.name == 'nt':
             pegdir=application_path+"\\"+'pegdatabase'
         else:
             pegdir=application_path+"/"+'pegdatabase'
-        print "Deleting peg database in 30 seconds! Will need to sync again."
+        print("Deleting peg database in 30 seconds! Will need to sync again.")
         time.sleep(30)
         startblock=self.Pegdatabase['startingblock']
         self.Pegdatabase={}
@@ -4073,7 +4130,7 @@ class PegThread(QtCore.QThread):
             txliquidtotal=0
             pos=0
             checkaddress=''
-            print "TIME ELAPSED 0: ", str(txtime-time.time())
+            print("TIME ELAPSED 0: ", str(txtime-time.time()))
             #Near the block of a rate change we can check inputs and ask for more confirmations.
             #However for now, the software can require a bit more change or have users wait.
             for inp in trans['ins']:
@@ -4126,7 +4183,7 @@ class PegThread(QtCore.QThread):
                     if checkliquidity==0:
                         #txin=copy.deepcopy(txin2)                        
                         #if txin['blocktime']>self.Pegdatabase['startblocktime']:
-                        #    self.DeleteDatabase()#Critical information was missing, sync again
+                        #    self.DeleteDatabase(#Critical information was missing, sync again)
                         #    return False                        
                         newstuff['txin'][txid]['amount']=int(txin2['vout'][inp['outpoint']['index']]['value']*Decimal(1e8))
                         address=txin2['vout'][inp['outpoint']['index']]['scriptPubKey']['hex']
@@ -4168,7 +4225,7 @@ class PegThread(QtCore.QThread):
                             newstuff['txin'][txid]['amount']=int(txin2['vout'][inp['outpoint']['index']]['value']*Decimal(1e8))
                     if 'address' not in newstuff['txin'][txid]:
                         newstuff['txin'][txid]['address']=address
-                #print "TIME ELAPSED 1: ", str(txtime-time.time())
+                #print("TIME ELAPSED 1: ", str(txtime-time.time()))
                 if 'frozen' in newstuff['txin'][txid]:#Sending 1 month lock funds
                     #Would a stake that spends a frozen of '1' maintain same number?! If we try to carry previous value
                     #However we want a fresh value if blocktime changes
@@ -4194,7 +4251,7 @@ class PegThread(QtCore.QThread):
                     usedinputs[txid]=txid
                     pool=newstuff['txin'][txid]['pool'].copy()
                 if 'inputs' in newstuff['txin'][txid]:#It's a big pool
-                    #print 'Found in pool'
+                    #print('Found in pool')
                     for myinput in newstuff['txin'][txid]['inputs']:
                         if myinput not in usedinputs:
                             usedinputs[myinput]=txid
@@ -4210,21 +4267,21 @@ class PegThread(QtCore.QThread):
                 #The user may end up with mixed liquidity anyways because of the size of the input. Therefore this is a simple
                 #rule to take an even mix of liquidity for each input seen deducted in the order they are seen in the block.
                 
-                #print newstuff['txin'][txid]['amount']
+                #print(newstuff['txin'][txid]['amount'])
                 if 'inputs' in newstuff['txin'][txid]:
                     amttotake=newstuff['txin'][txid]['amount']                        
                     pool, pool2=self.CalculateOutput(pool,supply,amttotake,'Mixed', 1, 0, pool['total'])
                     newstuff['txin'][usedinputs[txid]]['pool']=pool.copy()
                     newstuff['txin'][txid]['pool2']=pool2.copy()
-                    #print 'POOL TOTALS:'                        
-                    #print pool2['total']
+                    #print('POOL TOTALS:'                        )
+                    #print(pool2['total'])
                     pool=pool2.copy()
                 try:
                     pass
-                    #print pool['total']
+                    #print(pool['total'])
                 except:
                     pass
-                    #print reservetotal+liquidtotal
+                    #print(reservetotal+liquidtotal)
                 empty=0
                 if 'total' in pool and 'frozen' not in pool and len(pool)==1:
                     empty=1
@@ -4239,8 +4296,8 @@ class PegThread(QtCore.QThread):
                                 reservetotal+=pool[i]
                             else:
                                 liquidtotal+=pool[i]
-                        #print 'r', reservetotal
-                        #print 'l', liquidtotal
+                        #print('r', reservetotal)
+                        #print('l', liquidtotal)
                 else:
                     #Depending on how transactions are ordered there may be something to draw from
                     try:
@@ -4401,7 +4458,7 @@ class PegThread(QtCore.QThread):
                 pos+=1
                 if checkliquidity==1:
                     break
-            print "TIME ELAPSED 2: ", str(txtime-time.time())
+            print("TIME ELAPSED 2: ", str(txtime-time.time()))
             reservepool['total']=txreservetotal
             bigliquiditypool['total']=txliquidtotal
             if whitelisted==0:
@@ -4435,8 +4492,8 @@ class PegThread(QtCore.QThread):
                         bigliquiditypool[i]=liquiditypool[acct][i]
                     else:
                         bigliquiditypool[i]+=liquiditypool[acct][i]
-            #print 'rtotal ', str(reservepool['total'])
-            #print 'ltotal', str(bigliquiditypool['total'])
+            #print('rtotal ', str(reservepool['total']))
+            #print('ltotal', str(bigliquiditypool['total']))
             txid2=txid
             for out in trans['outs']:
                 if out['value']==0:
@@ -4507,19 +4564,19 @@ class PegThread(QtCore.QThread):
                 if pos in frozenpool and 'ftype' in frozenpool[pos]:
                     newstuff['txout'][txid]['frozen']=1
                     newstuff['txout'][txid]['ftype']=frozenpool[pos]['ftype']
-                #print "TIME ELAPSED L: ", str(txtime-time.time())
-                #print str(totalin)+"\n\n"+ str(newstuff['txout'][txid])+"\n\n"+str(frozenpool)+"\n\n"+str(reservepool)+"\n\n"+str(bigliquiditypool) +"\n\n"+str(stake)
+                #print("TIME ELAPSED L: ", str(txtime-time.time()))
+                #print(str(totalin)+"\n\n"+ str(newstuff['txout'][txid])+"\n\n"+str(frozenpool)+"\n\n"+str(reservepool)+"\n\n"+str(bigliquiditypool) +"\n\n"+str(stake))
                 newstuff['txout'][txid]['pool'], frozenpool, reservepool, bigliquiditypool=self.CalculateLiquid(totalin, newstuff['txout'][txid], frozenpool, reservepool, bigliquiditypool, trans['locktime'], supply, stake)
-                #print "TIME ELAPSED L1: ", str(txtime-time.time())
+                #print("TIME ELAPSED L1: ", str(txtime-time.time()))
                 #newstuff['txout'][txid]['block']=block['height']
                 totalout+=out['value']
                 pos+=1
             if stake!=0:#First we save the stake input, then we calculate after all tx fees collected. We must commit fees and outputs back as well.
                 staketx=stake
-                #print 'We staked this'
+                #print('We staked this')
             else:
                 pass
-                #print 'Someone staked us!'
+                #print('Someone staked us!')
             fees=0
             #We should allow fee payment in both liquid and reserve to accomodate all kinds of transactions
             for act in reservepool:
@@ -4550,11 +4607,11 @@ class PegThread(QtCore.QThread):
                 if fees<(len(trans['outs'])*self.pegfeeperinput)+(len(trans['ins'])*self.pegfeeperinput):
                     self.valid="Fees are below the " + str(self.pegfeeperinput) + " satoshis per input/output minimum."
                     float('a')
-            #print "Fees total: ", str(txfees['total'])
+            #print("Fees total: ", str(txfees['total']))
             #We could add some extra fee calculations here
-            #print "TIME ELAPSED 4: ", str(txtime-time.time())
+            #print("TIME ELAPSED 4: ", str(txtime-time.time()))
             res=True
-            #print "TIME ELAPSED 5: ", str(txtime-time.time())
+            #print("TIME ELAPSED 5: ", str(txtime-time.time()))
             if returnliquid==1:
                 return res, newstuff, txfees
             return res
@@ -4562,7 +4619,7 @@ class PegThread(QtCore.QThread):
             myexc=str(traceback.format_exc())
             if self.valid=='1':
                 self.valid='Block not valid: ' + myexc
-            print self.valid
+            print(self.valid)
         return False    
     def formatfractions(self,fractions,address,value,supply=0):
         if supply==0:
@@ -4837,10 +4894,10 @@ class PegThread(QtCore.QThread):
                             except:
                                 pass
                         else:
-                            print "Didn't find USD rate"
+                            print("Didn't find USD rate")
                             return False
                 if algo=='random':
-                    #myrand=str(int((Decimal("."+str(int(os.urandom(24).encode('hex'),16)))*Decimal(3)))+1)
+                    #myrand=str(int((Decimal("."+str(int(safe_hexlify(os.urandom(24)),16)))*Decimal(3)))+1)
                     myrand=str(random.randint(1,4))
                     text='pegnochange'
                     if myrand=='1':
@@ -4860,7 +4917,7 @@ class PegThread(QtCore.QThread):
             if blockcount==0:
                 blockcount=BLK.getblockcount()
             blockrange=self.getBlockRange(blockcount)
-            votecycle=(blockcount - self.Pegdatabase['startingblock']) / self.interval
+            votecycle=(blockcount - self.Pegdatabase['startingblock']) // self.interval
             while self.Pegdatabase['votecycle']+2<votecycle:
                 blockrange=self.Pegdatabase['startingblock']+(self.interval*self.Pegdatabase['votecycle'])
                 if max(self.Pegdatabase['votedata'][str(blockrange)])!=0:
@@ -4948,7 +5005,7 @@ class PegThread(QtCore.QThread):
             else:
                 return current+1
     def getBlockRange(self, blockcount):
-        return (((blockcount - self.Pegdatabase['startingblock']) / self.interval) * self.interval) + self.Pegdatabase['startingblock']
+        return (((blockcount - self.Pegdatabase['startingblock']) // self.interval) * self.interval) + self.Pegdatabase['startingblock']
     def LoadExchange(self):
         if os.name == 'nt':
             pegdir=application_path+"\\"+'pegdatabase'
@@ -5050,7 +5107,7 @@ class PegThread(QtCore.QThread):
         return res
     def SaveExchange(self,element='',hsh='',data='',pth=''):
         if hsh=='':
-            hsh=os.urandom(16).encode('hex')
+            hsh=safe_hexlify(os.urandom(16))
         if os.name == 'nt':
             pegdir=application_path+"\\"+'pegdatabase'
             fd="\\"
@@ -5118,7 +5175,7 @@ class PegThread(QtCore.QThread):
             self.CleanWrite()
             if qselect==0 or qselect==2:
                 for x in nonces:
-                    print "New item"
+                    print("New item")
                     with open(os.path.join(pegdir+qdir+fd,str(x)),'rb') as f:
                         q=ujson.loads(bsonjs.dumps(f.read()))['1']
                         f.close()
@@ -5138,14 +5195,14 @@ class PegThread(QtCore.QThread):
                                     float('a')
                                 res=BLK.importprivkey(q1['data']['key'],'',False)
                                 address=privkey_to_address(q1['data']['key'],25)
-                                print "New key generated"
+                                print("New key generated")
                                 busy=NetSplash(0, ld2=1)
                             except:
                                 traceback.print_exc()
                                 try:                                    
                                     res=BLK.dumpprivkey(res)
                                     address=privkey_to_address(q1['data']['key'],25)
-                                    print "New key generated"
+                                    print("New key generated")
                                 except:
                                     busy=NetSplash(0, ld2=1)
                                 busy=NetSplash(0, ld2=1)
@@ -5155,17 +5212,17 @@ class PegThread(QtCore.QThread):
                                     self.SaveExchange('exchange',hsh)
                         if q1['command']=='Deposit':                            
                             if self.CheckFileHash(os.path.join(pegdir+fd,"txids.dat"),hsh):
-                                print "Deposit to account."
+                                print("Deposit to account.")
                                 self.DepositToAccount(q1['data']['name'],q1['data']['txids'])
                                 self.SaveExchange('txids',hsh)
                         if q1['command']=='Trade':
                             pth=os.path.join(pegdir+fd+str(q1['data']['user1'][:1].lower())+fd+str(q1['data']['user1'][:2][1:].lower()+fd),str(q1['data']['user1'][-3:].lower()))
                             res, data=self.CheckFileHash(pth,hsh,1,'name')
                             if res:
-                                print "Trade part 1"
+                                print("Trade part 1")
                                 deduction=self.Trade(q1['data']['user1'], q1['data']['amount'], q1['data']['user2'], q1['data']['style'],q1['data']['cycle'], showdeduction=1)
                                 if not isinstance(deduction, dict):
-                                    print str(deduction)
+                                    print(str(deduction))
                                     float('a')
                                 for i in deduction:
                                     if i=='frozen' or i=='total':
@@ -5179,7 +5236,7 @@ class PegThread(QtCore.QThread):
                             pth=os.path.join(pegdir+fd+str(q1['data']['user2'][:1].lower())+fd+str(q1['data']['user2'][:2][1:].lower()+fd),str(q1['data']['user2'][-3:].lower()))
                             res, data=self.CheckFileHash(pth,hsh,1,'name')
                             if res:
-                                print "Trade part 2"
+                                print("Trade part 2")
                                 if q1['data']['user2'] not in data['data']:
                                     data['data'][q1['data']['user2']]={'liquidity':{}}
                                 for i in deduction:
@@ -5193,7 +5250,7 @@ class PegThread(QtCore.QThread):
                                 self.SaveExchange('name',hsh,data,pth)
                             if q1['data']['withdraw']!='':                                
                                 if self.CheckFileHash(os.path.join(pegdir+fd,"exchange.dat"),hsh):
-                                    print "Trade part 3"
+                                    print("Trade part 3")
                                     self.exchange['withdraws'][q1['data']['style']].append({'ID':q1['data']['ID'],'amount':q1['data']['amount'],'cycle':q1['data']['cycle'],'address':q1['data']['withdraw'],'user':q1['data']['user1']})
                                     if q1['data']['style']=='liquid':
                                         if q1['data']['ID'] in self.liquidwithdrawcount:
@@ -5210,7 +5267,7 @@ class PegThread(QtCore.QThread):
                     self.queuecount+=1
             if qselect==0 or qselect==1:
                 for x in nonces2:
-                    print "New item"
+                    print("New item")
                     with open(os.path.join(pegdir+qdir+'2'+fd,str(x)),'rb') as f:
                         q=ujson.loads(bsonjs.dumps(f.read()))['1']
                         f.close()
@@ -5225,13 +5282,13 @@ class PegThread(QtCore.QThread):
                         if q1['command']=='Import':                            
                             res, data=self.CheckFileHash(os.path.join(pegdir+fd,"txids.dat"),hsh,1)
                             if res:
-                                print "Importing funds"
+                                print("Importing funds")
                                 self.accounts['txids'][q1['data']['txid']]['registered']=1
                                 self.SaveExchange('txids',hsh)
                             pth=os.path.join(pegdir+fd+str(q1['data']['name'][:1].lower())+fd+str(q1['data']['name'][:2][1:].lower()+fd),str(q1['data']['name'][-3:].lower()))
                             res, data=self.CheckFileHash(pth,hsh,1,'name')
                             if res:
-                                print "Exchange data"
+                                print("Exchange data")
                                 if q1['data']['name'] not in data['data']:
                                     data['data'][q1['data']['name']]={'liquidity':{}}
                                 for i in q1['data']['liquidity']:
@@ -5245,7 +5302,7 @@ class PegThread(QtCore.QThread):
                                 self.SaveExchange('name',hsh,data,pth)
                         if q1['command']=='Declined' or q1['command']=='Expired' or q1['command']=='Clear':
                             if q1['command']=='Declined' or q1['command']=='Expired':
-                                print "Expired/Declined withdraw"
+                                print("Expired/Declined withdraw")
                                 u1='withdraws'
                                 style='liquid'
                                 for w in self.exchange['withdraws']['liquid']:
@@ -5266,7 +5323,7 @@ class PegThread(QtCore.QThread):
                             res, data=self.CheckFileHash(pth,hsh,1,'name')
                             if res:
                                 if q1['command']=='Clear':
-                                    print "Clearing withdraw"
+                                    print("Clearing withdraw")
                                     deduction={}
                                     for w in self.exchange['withdraws']['liquid']:
                                         d1=''
@@ -5276,7 +5333,7 @@ class PegThread(QtCore.QThread):
                                         if 'processing' in w and w['processing']==q1['data']['txid']:
                                             d1=self.Trade(u1, amount, u2, style, cycle, showdeduction=1)
                                             if not isinstance(d1, dict):
-                                                print str(d1)
+                                                print(str(d1))
                                                 float('a')
                                         if d1!='':
                                             for d in d1:
@@ -5292,7 +5349,7 @@ class PegThread(QtCore.QThread):
                                         if 'processing' in w and w['processing']==q1['data']['txid']:
                                             d1=self.Trade(u1, amount, u2, style, cycle, showdeduction=1)
                                             if not isinstance(d1, dict):
-                                                print str(d1)
+                                                print(str(d1))
                                                 float('a')
                                         if d1!='':
                                             for d in d1:
@@ -5301,10 +5358,10 @@ class PegThread(QtCore.QThread):
                                                 else:
                                                     deduction[d]+=d1[d]
                                 else:
-                                    print "Clearing funds"
+                                    print("Clearing funds")
                                     deduction=self.Trade(u1, amount, u2, style, cycle, showdeduction=1)
                                     if not isinstance(deduction, dict):
-                                        print str(deduction)
+                                        print(str(deduction))
                                         float('a')
                                 for i in deduction:
                                     if i=='frozen' or i=='total':
@@ -5331,7 +5388,7 @@ class PegThread(QtCore.QThread):
                                     data['filehash']=hsh
                                     self.SaveExchange('name',hsh,data,pth)
                             if self.CheckFileHash(os.path.join(pegdir+fd,"exchange.dat"),hsh):
-                                print "Updating exchange database"
+                                print("Updating exchange database")
                                 if q1['command']=='Declined' or q1['command']=='Expired':
                                     pos=0
                                     found=0
@@ -5590,11 +5647,11 @@ class PegThread(QtCore.QThread):
         for user in recipients:
             outs.append({'address':user,'value':recipients[user]})
         #A notification to tell the system not to wait to register the outputs upon detection
-        uniqueid=os.urandom(16).encode('hex')
+        uniqueid=safe_hexlify(os.urandom(16))
         hexlen=""
         if len(uniqueid)>75:
             hexlen="4c"
-        outs.append({'script':"6a"+hexlen+num_to_var_int((len(hexlify(uniqueid))/2)).encode('hex')+hexlify(uniqueid), 'value':5575})
+        outs.append({'script':"6a"+hexlen+num_to_var_int(safe_hexlify((len(hexlify(uniqueid))/2)))+hexlify(uniqueid), 'value':5575})
         tx=self.SignTransaction(ins,outs)
         res=ThePeg.checktransaction(tx)
         if res==False:
@@ -5647,10 +5704,10 @@ class PegThread(QtCore.QThread):
                             self.exchange['withdraws']['history'][withdraw['ID']]['status']="Failed/Declined"      
                             for w in self.exchange['withdraws']['liquid']:
                                 if 'processing' in w and w['processing']==withdraw['txid']:
-                                    self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'ID':w['ID']},'command':'Declined'}],1)
+                                    self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'ID':w['ID']},'command':'Declined'}],1)
                             for w in self.exchange['withdraws']['reserve']:
                                 if 'processing' in w and w['processing']==withdraw['txid']:
-                                    self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'ID':w['ID']},'command':'Declined'}],1)
+                                    self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'ID':w['ID']},'command':'Declined'}],1)
                             if 'maintenance' in withdraw:
                                 self.ClearWithdraw(withdraw['txid'])
                             self.SaveExchange('exchange')
@@ -5668,7 +5725,7 @@ class PegThread(QtCore.QThread):
                                 if 'maintenance' in withdraw:
                                     self.ClearWithdraw(withdraw['txid'])
                                 else:
-                                    self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'txid':withdraw['txid']},'command':'Clear'}],1)
+                                    self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'txid':withdraw['txid']},'command':'Clear'}],1)
                                 self.SaveExchange('exchange')
                                 self.CleanWrite(1)
                     except:
@@ -5694,10 +5751,10 @@ class PegThread(QtCore.QThread):
                         self.exchange['withdraws']['history'][withdraw['ID']]['status']="Failed/Declined"
                         for w in self.exchange['withdraws']['liquid']:
                             if 'processing' in w and w['processing']==withdraw['txid']:
-                                self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'ID':w['ID']},'command':'Declined'}],1)
+                                self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'ID':w['ID']},'command':'Declined'}],1)
                         for w in self.exchange['withdraws']['reserve']:
                             if 'processing' in w and w['processing']==withdraw['txid']:
-                                self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'ID':w['ID']},'command':'Declined'}],1)
+                                self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'ID':w['ID']},'command':'Declined'}],1)
                         if 'maintenance' in withdraw:
                             self.ClearWithdraw(withdraw['txid'])
                     self.SaveExchange('exchange')
@@ -5718,10 +5775,10 @@ class PegThread(QtCore.QThread):
             if 'processing' in withdraw or 'expired' in withdraw:
                 continue
             if withdraw['cycle']<self.exchangecycle-1:
-                print "Expired transaction"
+                print("Expired transaction")
                 self.exchange['withdraws'][style][pos]['expired']=1
                 self.SaveExchange('exchange')
-                self.AddToQueue([os.urandom(16).encode('hex'),{'data':{'ID':withdraw['ID']},'command':'Expired'}],1)
+                self.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'ID':withdraw['ID']},'command':'Expired'}],1)
                 continue
             total+=withdraw['amount']
             c=int(float(withdraw['amount'])*float(self.exchange['commission']['percent']))
@@ -5791,9 +5848,9 @@ class PegThread(QtCore.QThread):
                     if pos+1==length:
                         found=1
                     if found==1:
-                        print inp['liquidity'][s3]
-                        print temptotal
-                        print inp['txid']+":"+str(inp['vout'])
+                        print(inp['liquidity'][s3])
+                        print(temptotal)
+                        print(inp['txid']+":"+str(inp['vout']))
                         temptotal-=inp['liquidity'][s3]
                         tot+=int(Decimal(inp['amount'])*Decimal(1e8))
                         remainder+=inp['liquidity']['ltotal']
@@ -5801,7 +5858,7 @@ class PegThread(QtCore.QThread):
                         testinputs.append(inp)
                         break
                     pos+=1
-                    print "Not found"
+                    print("Not found")
                 if found==1:
                     exchangeinputs.pop(pos)
                 if found==0:
@@ -5889,12 +5946,12 @@ class PegThread(QtCore.QThread):
                         myouts[addy]+=i['liquidity']['rtotal']
             if style=='reserve':
                 if pos!=0:
-                    outs.append({'value':5590,'script':"6a"+num_to_var_int((len(hexlify(shortstring))/2)).encode('hex')+hexlify(shortstring)})
+                    outs.append({'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify(shortstring))/2)))+hexlify(shortstring)})
                 else:
                     hexlen=""
                     if len(fstring)>75:
                         hexlen="4c"
-                    outs.append({'value':5590,'script':"6a"+hexlen+num_to_var_int((len(hexlify(fstring))/2)).encode('hex')+hexlify(fstring)})
+                    outs.append({'value':5590,'script':"6a"+hexlen+num_to_var_int(safe_hexlify((len(hexlify(fstring))/2)))+hexlify(fstring)})
             ins.append(json_deep_copy(myin))
             pos+=1
         notary=1
@@ -5907,13 +5964,13 @@ class PegThread(QtCore.QThread):
                 notary=0
             outs.append({'address':user,'value':myouts[user]})
         #A notification to tell the system not to wait to register the outputs upon detection and one output for malleability
-        uniqueid=os.urandom(16).encode('hex')
+        uniqueid=safe_hexlify(os.urandom(16))
         if notary==1:#Make sure we are notified
             outs.append({'address':self.exchange['exchangeaccounts'][0],'value':5575})
         hexlen=""
         if len(uniqueid)>75:
             hexlen="4c"
-        outs.append({'script':"6a"+hexlen+num_to_var_int((len(hexlify(uniqueid))/2)).encode('hex')+hexlify(uniqueid), 'value':5575})
+        outs.append({'script':"6a"+hexlen+num_to_var_int(safe_hexlify((len(hexlify(uniqueid))/2)))+hexlify(uniqueid), 'value':5575})
         tx=self.SignTransaction(ins,outs)
         res=ThePeg.checktransaction(tx)
         if res==False:
@@ -5999,7 +6056,7 @@ class PegThread(QtCore.QThread):
                         self.accounts['balances'][str(highkey)][self.accounts['txids'][s]['name']]=self.Spendable[s]['liquidity'][addy]['total']
                     else:
                         self.accounts['balances'][str(highkey)][self.accounts['txids'][s]['name']]+=self.Spendable[s]['liquidity'][addy]['total']
-                    batchsave=[os.urandom(16).encode('hex'), {'command':'Import','data':{'txid':s,'liquidity':{str(highkey):self.Spendable[s]['liquidity'][addy]['total']},'name':self.accounts['txids'][s]['name']}}]
+                    batchsave=[safe_hexlify(os.urandom(16)), {'command':'Import','data':{'txid':s,'liquidity':{str(highkey):self.Spendable[s]['liquidity'][addy]['total']},'name':self.accounts['txids'][s]['name']}}]
                 else:
                     for i in self.Spendable[s]['liquidity'][addy]:
                         if i == 'frozen' or i == 'total':
@@ -6010,7 +6067,7 @@ class PegThread(QtCore.QThread):
                             self.accounts['balances'][str(i)][self.accounts['txids'][s]['name']]=self.Spendable[s]['liquidity'][addy][str(i)]
                         else:
                             self.accounts['balances'][str(i)][self.accounts['txids'][s]['name']]+=self.Spendable[s]['liquidity'][addy][str(i)]
-                    batchsave=[os.urandom(16).encode('hex'), {'command':'Import','data':{'txid':s,'liquidity':self.Spendable[s]['liquidity'][addy],'name':self.accounts['txids'][s]['name']}}]
+                    batchsave=[safe_hexlify(os.urandom(16)), {'command':'Import','data':{'txid':s,'liquidity':self.Spendable[s]['liquidity'][addy],'name':self.accounts['txids'][s]['name']}}]
                 self.accounts['txids'][s]['registered']=1
                 self.AddToQueue(batchsave,1)
         if changeonly==0:
@@ -6136,7 +6193,7 @@ class PegThread(QtCore.QThread):
                     x-=1
                 if found==0:
                     if allowoverflow==0:
-                        print "Not enough funds for trade! Check database."
+                        print("Not enough funds for trade! Check database.")
                         ThePeg.stopexchange=1
                         break
                     else:
@@ -6211,7 +6268,7 @@ class PegThread(QtCore.QThread):
                         x-=1
                     if found==0:
                         #This probably should not happen.
-                        print "Not enough funds for trade! Check database."
+                        print("Not enough funds for trade! Check database.")
                         ThePeg.stopexchange=1
                         break
             if allowoverflow==0:
@@ -6394,7 +6451,7 @@ class PegThread(QtCore.QThread):
                             self.accounts['users'][account]['liquid']+=t
                             self.accounts['users'][account]['reserve']+=d
             x-=1
-        print str(self.accounts['users'])
+        print(str(self.accounts['users']))
         self.updatingbalance=1
         time.sleep(.5)
         if 'pool' not in self.accounts2['users']:
@@ -6531,7 +6588,7 @@ class BridgeThread(QtCore.QThread):#Safe File saving thread
                         except:
                             traceback.print_exc()
                             try:
-                                print "Restarting bridge driver"
+                                print("Restarting bridge driver")
                                 if not self.keepOpen:
                                     BridgeDriver.quit()
                             except:
@@ -6566,7 +6623,7 @@ class BridgeThread(QtCore.QThread):#Safe File saving thread
                             except:
                                 traceback.print_exc()
                                 try:
-                                    print "Restarting bridge driver"
+                                    print("Restarting bridge driver")
                                     if not self.keepOpen:
                                         BridgeDriver.quit()
                                 except:
@@ -6671,7 +6728,7 @@ class BridgeThread(QtCore.QThread):#Safe File saving thread
                             else:
                                 newvotes = {}
                                 if merkleHashes != False:
-                                    for key, val in merkleHashes['out'].iteritems():
+                                    for key, val in merkleHashes['out'].items():
                                         if merkleHashes['out'][key]['lastIndex'] < len(merkleHashes['out'][key]['list']):
                                             newvotes[key] = {}
                                             newvotes[key]['root'] = merkleHashes['out'][key]['list'][merkleHashes['out'][key]['lastIndex']][0]
@@ -6721,7 +6778,7 @@ class BridgeThread(QtCore.QThread):#Safe File saving thread
                                             pegsteps = int(result[0][x]['1'])
                                             microsteps = int(result[0][x]['2'])
                                             currentsupply = int(ThePeg.Pegdatabase['merklelist'][nonce]['supply'])
-                                            rate = 1200 / (pegsteps * microsteps)
+                                            rate = 1200 // (pegsteps * microsteps)
                                             supply = int(currentsupply / rate)
                                             section = int(supply / microsteps)
 
@@ -6740,14 +6797,14 @@ class BridgeThread(QtCore.QThread):#Safe File saving thread
                                                 inx+=1
                                             ThePeg.Pegdatabase['fundsout'][name] += tot                                
                                         except:
-                                            print "Error converting fractions"
+                                            print("Error converting fractions")
                                             #A single transaction may be discarded for an invalid address. However handle errors to make sure a valid TX is not discarded
                                             #Still, we don't want all of the other transactions to be held up because of one that fails.
                                             traceback.print_exc()
                                     for name2 in ThePeg.Pegdatabase['merklelist'][nonce]['finalTX']:
                                         ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'][name2]['leaves'].sort() #They should have been deterministic but will sort just in case
                                         ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'][name2]['root']=BridgeDriver.execute_script("return createMerkle("+str(ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'][name2]['leaves']).replace(' u','').replace('[u','[')+");")
-                                        print "Processed Merkle Tree:" + str(ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'][name2]['root'])
+                                        print("Processed Merkle Tree:" + str(ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'][name2]['root']))
                                     ThePeg.Pegdatabase['merklelist'][nonce]['finalTX'] = ast.literal_eval(json.dumps(ThePeg.Pegdatabase['merklelist'][nonce]['finalTX']))
                                     if ThePeg.Pegdatabase['merklenonceTX'] <= nonce and ThePeg.Pegdatabase['merklelist'][nonce]['transactions'] == []:
                                         pass
@@ -6767,7 +6824,7 @@ def CompressFractions(pool, currentsupply, pegsteps, microsteps):
     currentsupply = int(currentsupply)
     pegsteps = int(pegsteps)
     microsteps = int(microsteps)
-    rate = 1200 / (pegsteps * microsteps)
+    rate = 1200 // (pegsteps * microsteps)
     supply = int(currentsupply / rate)
     section = int(supply / microsteps)
     newpool = [0] * (pegsteps + microsteps)
@@ -6793,7 +6850,7 @@ def CompressFractions(pool, currentsupply, pegsteps, microsteps):
 def DecompressFractions(pool, name, section, pegsteps, microsteps):
     pegsteps = int(pegsteps)
     microsteps = int(microsteps)
-    rate = 1200 / (pegsteps * microsteps)
+    rate = 1200 // (pegsteps * microsteps)
     newpool = [0] * (1200)
     myinx = 0
     bridgepool = copy.deepcopy(ThePeg.Pegdatabase['bridgepool'][name])
@@ -6956,7 +7013,7 @@ class FileThread(QtCore.QThread):#Safe File saving thread
                         pos=i
                         pop=1
                 except:
-                    pass #print "Exception"
+                    pass #print("Exception")
                     return
             i+=1
         if pop==1:#remove the old data we will just move it to the end of the file
@@ -7016,7 +7073,7 @@ class FileThread(QtCore.QThread):#Safe File saving thread
                             f.flush()
                             os.fsync(f)
                             f.close()
-                    except Exception, e:
+                    except Exception as e:
                         traceback.print_exc()
                         f.flush()
                         os.fsync(f)
@@ -7049,7 +7106,7 @@ class FileThread(QtCore.QThread):#Safe File saving thread
                                             t[pos]['Details']['image']=""
                                     pos+=1
                                 d=str(t)+"\n"
-                            except Exception,e:
+                            except Exception as e:
                                 pass
                             f.write(str(d))#old stuff
                         f.write(str(BackupNoDetails))#Last change... contracts are the best indicator of change
@@ -7180,9 +7237,9 @@ class RPCThread(QtCore.QThread):#Api thread
                     return "Incorrect Password", ''
             if ThePeg.stopexchange==1 or ThePeg.startexchange==0:
                 return "Exchange is stopped.", ''
-            key=txhash(os.urandom(16).encode('hex')+SALT)
+            key=txhash(safe_hexlify(os.urandom(16))+SALT)
             key=encode_privkey(key, 'wif_compressed', 25)
-            res=ThePeg.AddToQueue([os.urandom(16).encode('hex'),{'data':{'key':key},'command':'NewAddress'}])
+            res=ThePeg.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'key':key},'command':'NewAddress'}])
             return key, res
         def GetSpendable(self, address='', passw=''):
             if ThePeg.apipassword!='':
@@ -7232,7 +7289,7 @@ class RPCThread(QtCore.QThread):#Api thread
                     return str(i) + " not in Spendable list yet."
                 if 'change' in ThePeg.Spendable[i] and allowchangerecovery==0:
                     return "You can not deposit change transactions."
-            res=ThePeg.AddToQueue([os.urandom(16).encode('hex'),{'data':{'name':name,'txids':txids},'command':'Deposit'}])
+            res=ThePeg.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'name':name,'txids':txids},'command':'Deposit'}])
             return res
         def GetDeposits(self, txid='', passw=''):
             if ThePeg.apipassword!='':
@@ -7317,7 +7374,7 @@ class RPCThread(QtCore.QThread):#Api thread
             if ThePeg.exchangebusy==1:
                 ThePeg.accounts2['users'][user1]['temp'][style]-=amount
                 ThePeg.accounts2['users'][user2]['temp'][style]+=amount
-            res=ThePeg.AddToQueue([os.urandom(16).encode('hex'),{'data':{'user1':user1,'user2':user2,'amount':amount,'style':style,'cycle':ThePeg.exchangecycle,'withdraw':withdraw,'ID':uniqueid},'command':'Trade'}])
+            res=ThePeg.AddToQueue([safe_hexlify(os.urandom(16)),{'data':{'user1':user1,'user2':user2,'amount':amount,'style':style,'cycle':ThePeg.exchangecycle,'withdraw':withdraw,'ID':uniqueid},'command':'Trade'}])
             return res
         def Withdraw(self, user, amount, address, style='liquid', passw=''):
             if ThePeg.apipassword!='':
@@ -7335,7 +7392,7 @@ class RPCThread(QtCore.QThread):#Api thread
                 return "Withdraw amount is too low", ''
             if ThePeg.stopexchange==1 or ThePeg.startexchange==0:
                 return "Exchange is stopped.", ''
-            uniqueid=os.urandom(16).encode('hex')
+            uniqueid=safe_hexlify(os.urandom(16))
             #Check the withdraw limit here
             if style=='liquid':
                 if ThePeg.liquidlimit<len(ThePeg.liquidwithdrawcount)+len(ThePeg.exchange['withdraws']['liquid']):
@@ -7418,17 +7475,17 @@ class RPCThread(QtCore.QThread):#Api thread
             if pw=='':
                 return True
             if coldstake=='':
-                window.setWindowState(window.windowState() & ~QtCore.Qt.WindowMinimized | QtCore.Qt.WindowActive)
+                window.setWindowState(window.windowState() & ~QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowMinimized | QtCore.Qt.WindowType.WindowType.WindowType.WindowType.WindowType.WindowActive)
                 window.activateWindow()
             window.show()
             return True
         def API(self, command):
             global RPC
             #Example of how to use the API:
-            #sig=highlevelcrypto.sign(txhash('print "Hello world"'), privatekey)
+            #sig=highlevelcrypto.sign(txhash('print("Hello world"'), privatekey))
             #sig=base64.b64encode(sig)
             #HaloRPC = xmlrpclib.ServerProxy('http://localhost:55779')
-            #HaloRPC.API({'sig':sig,'exec':'print "Hello world"'})
+            #HaloRPC.API({'sig':sig,'exec':'print("Hello world"'}))
             if RPC.public!="" and os.path.exists(os.path.join(application_path, 'API.share')):
                 myhash=txhash(command['exec'])
                 if myhash not in RPC.APIhist:
@@ -7527,7 +7584,7 @@ class RPCThread(QtCore.QThread):#Api thread
                         pos2+=1
                         tx = apply_multisignatures(tx,pos,multiscript,mysigs)
                     pos+=1
-                print "Found Cold Stake: ", txhash(tx)
+                print("Found Cold Stake: ", txhash(tx))
                 self.tx=tx
                 self.mainaccount=mainaccount
                 self.msg=msg
@@ -7541,7 +7598,7 @@ class RPCThread(QtCore.QThread):#Api thread
                 #res=BLK.submitblock(blocktemplate,{'coinstake':tx})
                 return tx, True
             except:
-                print "Cold Stake Failed!"
+                print("Cold Stake Failed!")
                 return "", False
         def ConfirmColdStake(self, tx):
             global BLK, AdvanceArray, AddNewOrders
@@ -7550,7 +7607,7 @@ class RPCThread(QtCore.QThread):#Api thread
                 #Both regular expenses and pay to email still wait on the same change.
                 NewOrder['type']="SPENT"
                 NewOrder['stake']=True
-                NewOrder['ordernumber']=os.urandom(16).encode('hex')
+                NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
                 NewOrder['total']=self.val
                 NewOrder['change']=str(Decimal(self.chg)/Decimal(1e8))#-Decimal(amount)/Decimal(1e8)-Decimal(fee)/Decimal(1e8))
                 NewOrder['currentblock']=CurrentBlock
@@ -7564,10 +7621,10 @@ class RPCThread(QtCore.QThread):#Api thread
                 NewOrder['version']=CoinSelect['HaloName'] + " " + clientversion
                 #For the sake of speed, we don't make this RPC command wait so any editing of major data needs to be done in the main thread
                 AddNewOrders.append({'mainaccount': self.mainaccount, 'msg': self.msg, 'NewOrder': NewOrder})
-                print "Cold Stake Success!"
+                print("Cold Stake Success!")
                 return True
             else:
-                print "Error adding order data from Cold Stake"
+                print("Error adding order data from Cold Stake")
                 return False
         def MessageStatus(self, status):#For dropped bitmessage imap connections, tracking the process is failsafe
             global RPC, BMStartTime
@@ -7635,7 +7692,7 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                         if result:
                             RPC.mstatus=0
                 if int(time.time())-int(BMStartTime)>720:#12 minutes have passed and no response from BitMHalo, lets reset it
-                    print "Resetting BitMHalo"
+                    print("Resetting BitMHalo")
                     BMStartTime=time.time()
                     result=ResetBitMHalo()
             except:
@@ -7703,7 +7760,7 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                                     MyMessagesX=ast.literal_eval(MyMessages)
                                 except:
                                     MyMessagesX=[]
-                                    print "Clean Inbox Response: EVAL ERROR"                             
+                                    print("Clean Inbox Response: EVAL ERROR"                             )
                                 pos1=0
                                 for mes in MyMessagesX:
                                     MyMessagesX[pos1]['archive']=1
@@ -7780,12 +7837,12 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                     except:
                         pass
                     traceback.print_exc()
-                    print "Read exception from BitTMP"
+                    print("Read exception from BitTMP")
                     try:
                         f.close()
                     except:
                         pass
-                    pass #print "error" #Maybe the file was open we can just try again later
+                    pass #print("error" #Maybe the file was open we can just try again later)
                 try:
                     if data[0] == "1":
                         emptytemp=0
@@ -7862,7 +7919,7 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                                                             content=str(Encryptthis)+str(cipher)+"###"
                                                         else:
                                                             float("A")
-                                        mrand=os.urandom(16).encode('hex')
+                                        mrand=safe_hexlify(os.urandom(16))
                                         if BitQueue[0]['MyBMAddress'] not in AdvanceArray['OUTBOX']:
                                             AdvanceArray['OUTBOX'][BitQueue[0]['MyBMAddress']]={mrand:{'ackdata':"", 'status':"Queued"}}
                                         else:
@@ -7890,7 +7947,7 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                                     BitMRPC = xmlrpclib.ServerProxy('http://localhost:8878')                                  
                                 BitQueue.pop(0)
                                 SaveQueue()
-                            except Exception,e:
+                            except Exception as e:
                                 traceback.print_exc()
                                 ChangePosition=dict(BitQueue[0])
                                 BitQueue.pop(0)
@@ -7914,8 +7971,8 @@ class BitMessageThread(QtCore.QThread):#For sending messages and pre/post proces
                                         f.flush()
                                         os.fsync(f)
                                         f.close()
-                                except Exception, g:
-                                    print str(g)
+                                except Exception as g:
+                                    print(str(g))
                                     pass
                                 try:
                                     result=BitMRPC.FileLock("2")
@@ -7999,14 +8056,17 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
             else:
                 prevsupply=(-1)
         if skipBM != True:
-            if BitMHalo.poll() != None:
-                fail=1
+                if BitMHalo.poll() != None:
+                    fail=1
+                    print("BitMHalo process exited with code " + str(BitMHalo.returncode))
         while not conn:
             try:
                 BLKurl = 'http://'+CoinSelect['rpcuser']+':'+CoinSelect['rpcpassword']+'@localhost:'+CoinSelect['rpcport']
+                print(f"Connecting to: http://{CoinSelect['rpcuser']}:****@localhost:{CoinSelect['rpcport']}")
                 if BlackHalo!=None:
                     if BlackHalo.poll() != None:
                         fail=2
+                        print("BlackHalo process exited with code " + str(BlackHalo.returncode))
                 if fail != 0:
                     count+=maxConnectAttempts
                     float("A")
@@ -8014,16 +8074,16 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                     BLK = AuthServiceProxy(BLKurl)
                     BLK.getblockcount()
                 conn=True
-                print 'connection to network successful'
-            except:
-                print ('Connection attempt: '+str(count))
+                print('connection to network successful')
+            except Exception as e:
+                print(('Connection attempt: ' + str(count) + ' Error: ' + str(e)))
                 time.sleep(3)
                 count += 1
 
             if count >= maxConnectAttempts:
                 res=0
                 if stayconnected==0:
-                    print 'exceeded max connection attempts to Halo, exiting.'
+                    print('exceeded max connection attempts to Halo, exiting.')
                 else:
                     count-=50
                     res=1
@@ -8089,11 +8149,11 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
             try:
                 pass
                 #t=BLK.getblock(rawx['blockhash'])
-                #print deserialize(BLK.getrawtransaction("1e1539452663624a9fc45697c75853e449aa55406b928ae3eae908a5f0c8c751"))
+                #print(deserialize(BLK.getrawtransaction("1e1539452663624a9fc45697c75853e449aa55406b928ae3eae908a5f0c8c751")))
                 #m.getch()
             except:
                 traceback.print_exc()
-                print "Raw not available"
+                print("Raw not available")
             try:
                 cnct=1
                 try:
@@ -8120,13 +8180,13 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                         hsh= BLK.getblock(hsh)
                     else:
                         try:
-                            thenewtime=time.mktime(datetime.datetime.utcnow().timetuple())
+                            thenewtime = time.mktime(datetime.datetime.now(datetime.UTC).timetuple())
                         except:
                             thenewtime=time.time()
                         hsh={'time':thenewtime}
                     UniversalTimeStamp=hsh['time']
                     try:
-                        timestamp=time.mktime(datetime.datetime.utcnow().timetuple())
+                        timestamp = time.mktime(datetime.datetime.now(datetime.UTC).timetuple())
                     except:
                         timestamp=time.time()
                     if timestamp > UniversalTimeStamp:
@@ -8138,9 +8198,9 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                     max1=0
                     if HaloTime:#Convertdate
                         if "1970-01-01 00:00:00" in str(HaloTime) and interneton==1:
-                            hours_difference = datetime.datetime.utcfromtimestamp(time.time())-datetime.datetime.utcfromtimestamp(hsh['time'])
+                            hours_difference = datetime.datetime.fromtimestamp(time.time(), datetime.UTC).replace(tzinfo=None)-datetime.datetime.fromtimestamp(hsh['time'], datetime.UTC).replace(tzinfo=None)
                         else:
-                            hours_difference = HaloTime-datetime.datetime.utcfromtimestamp(hsh['time'])
+                            hours_difference = HaloTime-datetime.datetime.fromtimestamp(hsh['time'], datetime.UTC).replace(tzinfo=None)
                         hours_difference = hours_difference.total_seconds()/60.0
                         hours_difference = round(hours_difference, 2)
                         max1 = count1+int(abs(hours_difference))
@@ -8165,7 +8225,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                             prvtime=time.time()
                     globperc=t
                     globcount=count1
-                except Exception, e:
+                except Exception as e:
                     if BlackHalo!=None:
                         BLK = ""
                         BLK = AuthServiceProxy(BLKurl)
@@ -8193,7 +8253,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                             connection=1
                             disconnected=0
                         except:
-                            print "Possibly disconnected from network"
+                            print("Possibly disconnected from network")
                             disconnected=1
                             disconnect+=1
                             time.sleep(1)
@@ -8208,7 +8268,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                 disconnect=0
                                 res=False
                                 while res==False:
-                                    print "Reconnecting..."
+                                    print("Reconnecting...")
                                     res=Reconnect(rescanning)
                                     time.sleep(10)
                                 BLK = ""
@@ -8228,9 +8288,9 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                             if BlackHalo.poll() != None:#This can happen if bitbayd runs out of memory or fails during rescan
                                                 rescanning=1
                                                 connection=0
-                                                print "Disconnected!"
+                                                print("Disconnected!")
                                                 break
-                                            print "Rescanning..."
+                                            print("Rescanning...")
                                             time.sleep(10)
                 if updatesomething==1:
                     if RunHalo==False:
@@ -8250,7 +8310,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                         try:
                             if time.time() > checkinfo:
                                 checkinfo = time.time() + 540
-                                coininfo = BLK.getinfo()
+                                coininfo = BLK.getnetworkinfo()
                                 try:
                                     if 'pegging' in CoinSelect and CoinSelect['pegging'] and globperc==100:
                                         if ThePeg.testthis==0:
@@ -8289,7 +8349,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                 if 'merkleHashes' in AdvanceArray:
                                                     merkleHashes = copy.deepcopy(AdvanceArray['merkleHashes'])
                                                 merkleHashes2 = BLK.merklesin(0)
-                                                for key, val in merkleHashes2.iteritems():
+                                                for key, val in merkleHashes2.items():
                                                     thename = ''
                                                     for bridgeName in myBridges:
                                                         if txhash(bytesString(bridgeName['n']))[:64] == val['brhash']:
@@ -8302,7 +8362,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                         if 'mylen' not in merkleHashes[thename]:
                                                             merkleHashes[thename]['mylen'] = 0
                                                 merkleHashes3 = BLK.merklesout(0)
-                                                sorted_merkles = sorted(merkleHashes3.iteritems(), key=lambda item: int(item[1]['blocknum']), reverse=True)
+                                                sorted_merkles = sorted(merkleHashes3.items(), key=lambda item: int(item[1]['blocknum']), reverse=True)
                                                 templist = {}
                                                 for key, val in sorted_merkles:
                                                     thename = ''
@@ -8329,7 +8389,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                             merkleHashes['out'][nm]['list'].append(el)
                                             else:
                                                 merkleHashes2 = BLK.merklesin(0)
-                                                for key, val in merkleHashes2.iteritems():
+                                                for key, val in merkleHashes2.items():
                                                     thename = ''
                                                     for bridgeName in myBridges:
                                                         if txhash(bytesString(bridgeName['n']))[:64] == val['brhash']:
@@ -8343,7 +8403,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                         if 'mylen' not in merkleHashes[thename]:
                                                             merkleHashes[thename]['mylen'] = 0
                                                 merkleHashes3 = BLK.merklesout(0)
-                                                sorted_merkles = sorted(merkleHashes3.iteritems(), key=lambda item: int(item[1]['blocknum']), reverse=True)
+                                                sorted_merkles = sorted(merkleHashes3.items(), key=lambda item: int(item[1]['blocknum']), reverse=True)
                                                 templist2 = {}
                                                 for key, val in sorted_merkles:
                                                     thename = ''
@@ -8377,12 +8437,12 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                     if bridgeName['n'] not in merkleHashes:
                                                         merkleHashes[bridgeName['n']] = {'mylen':0}
                                                 if lenchange:
-                                                    for key, val in merkleHashes.iteritems():
+                                                    for key, val in merkleHashes.items():
                                                         if isinstance(val, dict) and 'mylen' in val:
                                                             merkleHashes[key]['mylen'] = len(merkleHashes[key]) - 1
                                                             merkleHashes['noncesync'][key] = merkleHashes[key]['mylen']
                                                 if lenchange2:
-                                                    for key, val in merkleHashes['out'].iteritems():
+                                                    for key, val in merkleHashes['out'].items():
                                                         myxpos = len(merkleHashes['out'][key]['list']) - 1  # Start from the last index
                                                         for myHash in reversed(merkleHashes['out'][key]['list']):  # Reverse iteration
                                                             if myHash[0] not in merkleHashes['out'][key]["inx"]:  # Only add if not present
@@ -8390,13 +8450,13 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                             else:
                                                                 break
                                                             myxpos -= 1  # Decrement position
-                                                for key, val in merkleHashes['out'].iteritems():
+                                                for key, val in merkleHashes['out'].items():
                                                     if key in TheBridgeThread.lastHash:
                                                         merkleHashes['out'][key]['lastHash'] = TheBridgeThread.lastHash[key]
                                                         if TheBridgeThread.lastHash[key] in merkleHashes['out'][key]["inx"]:
                                                             if merkleHashes['out'][key]['lastIndex'] < merkleHashes['out'][key]["inx"][TheBridgeThread.lastHash[key]] + 1:
                                                                 merkleHashes['out'][key]['lastIndex'] = merkleHashes['out'][key]["inx"][TheBridgeThread.lastHash[key]] + 1
-                                                for key, val in TheBridgeThread.lastHash.iteritems():
+                                                for key, val in TheBridgeThread.lastHash.items():
                                                     if key in merkleHashes['out']:
                                                         if TheBridgeThread.lastHash[key] not in merkleHashes['out'][key]['inx']:
                                                             if TheBridgeThread.lastHash[key] != "0x0":
@@ -8408,9 +8468,9 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
 
                                 except:
                                     traceback.print_exc()
-                                    print "Bridge not loaded"
+                                    print("Bridge not loaded")
                         except:
-                            print "Check coin info failed"
+                            print("Check coin info failed")
                         try:
                             try:
                                 if 'pegging' in CoinSelect and CoinSelect['pegging'] and globperc==100:
@@ -8430,7 +8490,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                     mypub=repcheck['mypub']
                                     theirpub=repcheck['theirpub']
                                     review=repcheck['review']
-                                    qreview=QtCore.QString(review)
+                                    qreview=str(review)
                                     result=BLK.getrawtransaction(txresult,1)
                                     if result['vin'][0]['txid']!=tx3:
                                         float("A")
@@ -8603,7 +8663,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                 for txid in BlackUnspent2:
                                     txidlist2[txid['txid']+str(txid['vout'])]=1
                                 #Maybe there is a faster way to get the sender like using the function below, it may depend on the inputs
-                                #get_address_from_input_script(input['script'].decode('hex'))
+                                #get_address_from_input_script(inputsafe_unhexlify(['script']))
                                 i=0
                                 j=0
                                 leng=len(BlackUnspent)
@@ -8669,7 +8729,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                     foundme=0
                                                     try:
                                                         for myout in lookup3['outs']:
-                                                            if script_to_address2(myout['script'], 85)==scriptaddr(NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['script'].decode('hex')):#Check for Halo
+                                                            if script_to_address2(myout['script'], 85)==scriptaddr(safe_unhexlify(NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['script'])):#Check for Halo
                                                                 foundme=1
                                                                 NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['txid']=str(Black['txid'])+":"+str(ps)
                                                                 NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['address']=script_to_address2(myout['script'], 85)
@@ -8701,12 +8761,12 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                         #We could shortcut here and see if all the outputs are to the same address to know if its a pure change transaction
                                         l= lookup['vin'][0]['txid']#We knew the outputs, but who put the input? If there were multiple people who paid just like the first
                                         try:
-                                            res=ea.get_address_from_input_script(lookup['vin'][0]['scriptSig']['hex'].decode('hex'))
+                                            res=ea.get_address_from_input_script(safe_unhexlify(lookup['vin'][0]['scriptSig']['hex']))
                                             if len(res[0]) != 2:
                                                 msigaddr = pubkey_to_address(res[0], 25)
                                             else:
                                                 mscript = mk_multisig_script(res[0],2,2)
-                                                msigaddr = scriptaddr(mscript.decode('hex'))
+                                                msigaddr = scriptaddr(safe_unhexlify(mscript))
                                             BlackUnspent2[i]['FROM']=msigaddr
                                         except:
                                             res=BLK.getrawtransaction(l,1)
@@ -8817,7 +8877,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                 foundme=0
                                                 try:
                                                     for myout in lookup['outs']:
-                                                        if script_to_address2(myout['script'], 85)==scriptaddr(NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['script'].decode('hex')):#Check for Halo
+                                                        if script_to_address2(myout['script'], 85)==scriptaddr(safe_unhexlify(NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['script'])):#Check for Halo
                                                             foundme=1
                                                             NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['txid']=str(Black['txid'])+":"+str(ps)
                                                             NEWTxidLookup2[str(Black['txid'])+":"+str(Black['vout'])]['address']=script_to_address2(myout['script'], 85)
@@ -8871,8 +8931,8 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                         prevsupply=supply
                             except:
                                 BlackUnspent=copy.deepcopy(prevunspent)#Instead of clearing BlackUnspent on RPC issue, we can revert to original dictionary
-                                print "Second error parsing unspent list"
-                            print "Error parsing Unspent list"
+                                print("Second error parsing unspent list")
+                            print("Error parsing Unspent list")
                         IsPeg=True
                         if 'pegging' in CoinSelect and CoinSelect['pegging']:
                             if ThePeg.Pegdatabase['blockcount']<myblockcount-1:
@@ -8895,7 +8955,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                     SpendThis=list(FilterSpendable(OnOrders,Spendable,1,0))
                                     #Give OPTION for staking across all accounts
                                     mainaccount=0
-                                    print str(result['kernel']['txid']+":"+str(result['kernel']['vout']))
+                                    print(str(result['kernel']['txid']+":"+str(result['kernel']['vout'])))
                                     for inputs in BlackUnspent:#value address input
                                         if inputs['txid']+":"+str(inputs['vout'])==result['kernel']['txid']+":"+str(result['kernel']['vout']):
                                             if inputs['address'] ==  multisig:
@@ -8929,7 +8989,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                         if stakeinput['output'] in NEWTxidLookup2 or stakeinput['output'] in NEWTxidLookup or stakeinput['value']==5577:
                                             found=False
                                     if found:                                        
-                                        tx,mystake=mktx_kernel(result['kernel']['time'],0,"6a"+num_to_var_int((len(result['blocktemplatesignkey'])/2)).encode('hex')+result['blocktemplatesignkey'],[stakeinput])
+                                        tx,mystake=mktx_kernel(result['kernel']['time'],0,"6a"+num_to_var_int(safe_hexlify((len(result['blocktemplatesignkey'])/2)))+result['blocktemplatesignkey'],[stakeinput])
                                         amt=BLK.getstakesubsidy(tx)
                                         val=stakeinput['value']+result['blocktemplatefees']+amt
                                         chg=val
@@ -9010,7 +9070,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                         coldstake=2
                                             except:
                                                 traceback.print_exc()
-                                                print "Exception with multistake."
+                                                print("Exception with multistake.")
                                         else:
                                             sigs, res=create_sig_for_redemption([stakeinput], mystake['outs'], PrivKeyFilename1, PrivKeyFiledir1, result['kernel']['time'], 0, tx)
                                             if keysconnected=='2':
@@ -9034,16 +9094,16 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                 HaloRPC = xmlrpclib.ServerProxy('http://' + AdvanceArray['MySettings']['ColdStake'] + ':55779')
                                                 tx, res = HaloRPC.ColdStake(msg, multiscript, sigs, ins, outs, str(result['kernel']['time']), tx, result['blocktemplate'], str(amt), str(val), str(chg))
                                                 if res==False:
-                                                    print "Cold Stake Failed"
+                                                    print("Cold Stake Failed")
                                                 else:                                                    
                                                     res=BLK.submitblock(result['blocktemplate'],{'coinstake':tx})                                                    
                                                     if "rejected" in str(res):
-                                                        print "BLOCK REJECTED"
+                                                        print("BLOCK REJECTED")
                                                         res=False
                                                     if res!=False:
                                                         res3=HaloRPC.ConfirmColdStake(tx)
                                                         if res3==True:
-                                                            print "Block confirmed"
+                                                            print("Block confirmed")
                                             except:
                                                 trbk=str(traceback.format_exc())
                                                 if "connected host has failed to respond" in trbk:
@@ -9052,17 +9112,17 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                 res=False
                                             if res!=False:
                                                 coldstake=1
-                                                print "Cold Stake Success!"
+                                                print("Cold Stake Success!")
                                             else:
-                                                print "Cold Stake Rejected"                                                
+                                                print("Cold Stake Rejected"                                                )
                                         if coldstake==1:                                            
-                                            print "Found Stake: ", txhash(tx)
+                                            print("Found Stake: ", txhash(tx))
                                             totalstaked+=1
                                             NewOrder={}
                                             #Both regular expenses and pay to email still wait on the same change.
                                             NewOrder['type']="SPENT"
                                             NewOrder['stake']=True
-                                            NewOrder['ordernumber']=os.urandom(16).encode('hex')
+                                            NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
                                             NewOrder['total']=val
                                             NewOrder['change']=str(Decimal(chg)/Decimal(1e8))#-Decimal(amount)/Decimal(1e8)-Decimal(fee)/Decimal(1e8))
                                             NewOrder['currentblock']=CurrentBlock
@@ -9127,13 +9187,13 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                     tx = apply_multisignatures(tx,pos,multiscript,mysigs)
                                                 pos+=1
                                             if found==1:
-                                                print "Found Stake: ", txhash(tx)
+                                                print("Found Stake: ", txhash(tx))
                                                 res=BLK.submitblock(result['blocktemplate'],{'coinstake':tx})
-                                                print "RESULT:", str(res)
+                                                print("RESULT:", str(res))
                                                 if "rejected" in str(res):
-                                                    print "BLOCK REJECTED"
-                                                    #print str(result['kernel']['time'])
-                                                    #print str(timestamp)
+                                                    print("BLOCK REJECTED")
+                                                    #print(str(result['kernel']['time']))
+                                                    #print(str(timestamp))
                                                     #If the kernel time is the same as timestamp then the block
                                                     #is too early. Will have to try again.
                                                     float("a")
@@ -9157,12 +9217,12 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                             avg=1
                                                         tt=(totalstaked/avg)
                                                         ts="month"
-                                                print "Blocks found per "+ts+": ", str(int(tt))
+                                                print("Blocks found per "+ts+": ", str(int(tt)))
                                                 NewOrder={}
                                                 #Both regular expenses and pay to email still wait on the same change.
                                                 NewOrder['type']="SPENT"
                                                 NewOrder['stake']=True
-                                                NewOrder['ordernumber']=os.urandom(16).encode('hex')
+                                                NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
                                                 NewOrder['total']=val
                                                 NewOrder['change']=str(Decimal(chg)/Decimal(1e8))#-Decimal(amount)/Decimal(1e8)-Decimal(fee)/Decimal(1e8))
                                                 NewOrder['currentblock']=CurrentBlock
@@ -9202,8 +9262,8 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                         else:
                                             if coldstake!=1:
                                                 pass
-                            except Exception, e:
-                                print traceback.print_exc()
+                            except Exception as e:
+                                print(traceback.print_exc())
                         iswaiting=1
                         while 'EW' in LockTHIS:
                             time.sleep(.001)
@@ -9215,7 +9275,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                             theconfirmations = 2
                         if EscrowResults != []:
                             for command in EscrowResults:
-                                print command
+                                print(command)
                                 ps+=1
                                 if command['BitHalo']==False:
                                     if 'raw' in command and command['raw']!="":
@@ -9223,14 +9283,14 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                             su=0
                                             if 'billing' in command:
                                                 if command['time']+60>timestamp:
-                                                    print "Waiting..."
+                                                    print("Waiting...")
                                                     su=1
                                             if su==0:
                                                 try:                                                    
                                                     if 'pegging' in CoinSelect and CoinSelect['pegging'] and TestnetPeg:                                                        
                                                         res=ThePeg.checktransaction(command['raw'])
                                                         if res==False:
-                                                            print str(ThePeg.valid)
+                                                            print(str(ThePeg.valid))
                                                             float('a')
                                                         if ThePeg.Pegdatabase['blockcount']<myblockcount-1:
                                                             su=1
@@ -9254,8 +9314,8 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                             spn['liquidity']=Black['liquidity']
                                                         spn['value']=int(spn['value']*Decimal(1e8))
                                                         EscrowResults[ps]['rspns'].append(spn)
-                                            except Exception, e:
-                                                print "EXCEPTION TX: ", str(e)
+                                            except Exception as e:
+                                                print("EXCEPTION TX: ", str(e))
                                             if EscrowResults[ps]['rspns']==[] or 'txid3' in command: #Well I've had problems with this "importaddress" function before so the temporary fix is to check TXID
                                                 try:
                                                     if 'txid1' in command:
@@ -9306,8 +9366,8 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                                         spn['liquidity']=combined
                                                                         spn['liquidity']=ThePeg.filterkeys(spn['liquidity'])
                                                             EscrowResults[ps]['rspns'].append(spn)
-                                                except Exception, e:
-                                                    print "EXCEPTION TX1:", str(e)
+                                                except Exception as e:
+                                                    print("EXCEPTION TX1:", str(e))
                                                 try:
                                                     if 'txid2' in command:
                                                         rawx=BLK.getrawtransaction(command['txid2'], 1)
@@ -9338,8 +9398,8 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                                     spn['liquidity']=combined
                                                                     spn['liquidity']=ThePeg.filterkeys(spn['liquidity'])
                                                                 EscrowResults[ps]['rspns'].append(spn)
-                                                except Exception, e:
-                                                    print "EXCEPTION TX2:", str(e)
+                                                except Exception as e:
+                                                    print("EXCEPTION TX2:", str(e))
                                                 try:
                                                     if 'txid3' in command:
                                                         t=0
@@ -9373,14 +9433,14 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                                 z+=1
                                                         if t!=0:
                                                             EscrowResults[ps]['time']=t['time']#Commence their timers based on confirmed block
-                                                        print "FOUND TIMESTAMP"
-                                                except Exception, e:
+                                                        print("FOUND TIMESTAMP")
+                                                except Exception as e:
                                                     EscrowResults[ps]['rspns']=[]
                                                     #If they change the txid, we will not be getting a timestamp and will use the internet timestamp
                                                     #That does pose a slight risk of both parties having different accept times. This is why all contracts have a buffer of time.
-                                                    print "EXCEPTION TX3:", str(e), command['txid3']
-                                    print "RESPONSE"
-                                    print command['rspns']
+                                                    print("EXCEPTION TX3:", str(e), command['txid3'])
+                                    print("RESPONSE")
+                                    print(command['rspns'])
                             DontExit[1]=1
                             SaveOtherdata()
                             DontExit[1]=0
@@ -9404,7 +9464,7 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                         fnd=1
                                                         break
                                         except:
-                                            print "Error clearing old raw"
+                                            print("Error clearing old raw")
                                         if 'notxid' in command:
                                             EscrowResults.pop(i)
                                             fnd=1
@@ -9430,10 +9490,10 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                             addrlist.append(multisig)
                                     WatchlistQueue.pop(pos)
                                     l-=1
-                                    print "Success importing wallet"
-                                except Exception, e:
+                                    print("Success importing wallet")
+                                except Exception as e:
                                     pos+=1
-                                    print "IMPORT WALLET EXCEPTION:", str(e)
+                                    print("IMPORT WALLET EXCEPTION:", str(e))
                         DontExit[1]=1
                         SaveOtherdata()
                         DontExit[1]=0
@@ -9509,10 +9569,10 @@ class BlackCoinThread(QtCore.QThread):#For any Halo that uses daemon.
                                                     DontExit[1]=1
                                                     SaveQueue()
                                                     DontExit[1]=0
-                                        except Exception, ex:
-                                            print str(ex)
-                                except Exception, e:
-                                    print "Did not get raw... will try again later"
+                                        except Exception as ex:
+                                            print(str(ex))
+                                except Exception as e:
+                                    print("Did not get raw... will try again later")
                                     traceback.print_exc()
                         DontExit[1]=1
                         SaveOtherdata()
@@ -9608,7 +9668,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                     except:
                                         uploadnew[newpaste]['result']="false"
                         except:
-                            print "Exception with uploading pastebin"
+                            print("Exception with uploading pastebin")
                         try:
                             CurrentBlock=int(str(requestURL("https://blockchain.info/q/getblockcount")))
                             float(CurrentBlock)
@@ -9625,7 +9685,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                             matchObj = re.match( r'(.*)-(.*?)-(.*?) (.*?):(.*?):(.*?) UTC', HaloTime, re.M|re.I)
                             try:
                                 HaloTime = datetime.datetime(int(matchObj.group(1)),int(matchObj.group(2)),int(matchObj.group(3)),int(matchObj.group(4)),int(matchObj.group(5)),int(matchObj.group(6)))
-                                hd=HaloTime-datetime.datetime.utcnow()
+                                hd=HaloTime-datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
                                 hd=abs(hd.total_seconds())
                                 if hd > 600: #Ten minute difference in our time vs internet time, this can effect staking and synchronizing
                                     CanStakeTime=False
@@ -9655,7 +9715,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                             thecoins+=' id="id-'+'bitbay'+'price" data-usd="'+str(githubrates['BAY']['price'])+'"'+' data-btc="'+str(tbtc)+'"'+'id="id-'
                         except:
                             thecoins=''
-                            print "Exception getting rates"
+                            print("Exception getting rates")
                         try:
                             try:
                                 CoinMarketCap2=''
@@ -9692,7 +9752,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                             except:
                                 if thecoins=='':
                                     float('a')
-                                #print "Coinmarketcap exception: Using rate from github"
+                                #print("Coinmarketcap exception: Using rate from github")
                                 CoinMarketCap=thecoins
                             #Need to grab a price history for price tracking
                             if waitlock(1000) == True:
@@ -9711,7 +9771,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                         if len(AdvanceArray['charts'][coin['name']])>480:
                                             AdvanceArray['charts'][coin['name']].pop()
                         except:
-                            print "Marketcap Exception"
+                            print("Marketcap Exception")
                             try:
                                 usd,btc=GetMarketValue(CoinSelect['name'],CoinMarketCap, 0)#if the data is junk this probably will not work
                             except:
@@ -9745,7 +9805,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                     try:
                                         btchist = json.loads(requestURL('https://api.coindesk.com/v1/bpi/historical/close.json?start=2018-06-01&end=' + curtime))['bpi']                                        
                                     except:
-                                        print "Failed to retrieve BTC price feed"
+                                        print("Failed to retrieve BTC price feed")
                                         btchist = {}
                                 while startdate<HaloTime:
                                     mydate=ConvertDate(startdate,0)
@@ -9756,13 +9816,13 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                             if int(AdvanceArray['btchistory']['peak'])<int(peak):
                                                 AdvanceArray['btchistory']['peak']=AdvanceArray['btchistory'][str(startdate)[:10]]
                                                 AdvanceArray['btchistory']['date']=mydate
-                                                print "New peak price: ", AdvanceArray['btchistory']['peak'], str(mydate)
+                                                print("New peak price: ", AdvanceArray['btchistory']['peak'], str(mydate))
                                     startdate=addmonths(1,startdate)
                             
                             if HaloTime-ConvertDate(AdvanceArray['btchistory']['date'],1)>datetime.timedelta(days=31):
                                 AdvanceArray['btchistory']['peak']=str(int(Decimal(AdvanceArray['btchistory']['peak'])*Decimal(1.01)))
                                 AdvanceArray['btchistory']['date']=ConvertDate(addmonths(1,ConvertDate(AdvanceArray['btchistory']['date'],1)),0)
-                                print "New peak price: ", AdvanceArray['btchistory']['peak'], str(AdvanceArray['btchistory']['date'])
+                                print("New peak price: ", AdvanceArray['btchistory']['peak'], str(AdvanceArray['btchistory']['date']))
                             peak=Decimal(AdvanceArray['btchistory']['peak'])/Decimal('100000')
                             usd,btc=GetMarketValue(CoinSelect['name'],CoinMarketCap, 0)
                             if usd!='':
@@ -9817,7 +9877,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                     su=0
                                                     if 'billing' in command:
                                                         if command['time']+60>timestamp:
-                                                            print "Waiting..."
+                                                            print("Waiting...")
                                                             su=1
                                                     if su==0:                                                    
                                                         try:
@@ -9830,7 +9890,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                         if 'Check:' in command['history']:
                                                             try:
                                                                 command['rspns']=[json.loads(requestURL('https://blockchain.info/rawtx/'+command['history'].replace("Check:","")))]
-                                                            except Exception, e:
+                                                            except Exception as e:
                                                                 pass
                                                     try:
                                                         if 'Check:' not in command['history']:
@@ -9848,8 +9908,8 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                         #Try again later. However if blockchain.info doesn't respond for a block time, it is possible the two parties will not have an exact agreed upon time.
                                                         #So the question remains, should they find another way to agree on a start time or should they wait?
                                                         #EscrowResults[ps]['rspns']=[]#If we want to wait and keep checking for a valid time
-                                            print "RESPONSE"
-                                            print command['rspns']
+                                            print("RESPONSE")
+                                            print(command['rspns'])
                                     if waitlock() == True:
                                         if 'clearnotxid' in AdvanceArray:
                                             fnd=1
@@ -9870,7 +9930,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                                     fnd=1
                                                                     break
                                                     except:
-                                                        print "Error clearing old raw"
+                                                        print("Error clearing old raw")
                                                     if 'notxid' in command:
                                                         EscrowResults.pop(i)
                                                         fnd=1
@@ -9894,9 +9954,9 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                 spen=[]
                                                 biths=[]
                                                 rec=0
-                                                print multisig
+                                                print(multisig)
                                                 if not BitcoinCASH:
-                                                    print "Getting Bitcoin data from blockchain.info..."
+                                                    print("Getting Bitcoin data from blockchain.info...")
                                                     x= str(requestURL("https://blockchain.info/unspent?active="+multisig+"&format=json&confirmations=1"))
                                                     if "No free outputs to spend" in x:
                                                         x={}
@@ -9921,7 +9981,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                     Biteasy['history']=biths
                                                     Biteasy['api']="Blockchain"
                                                 else:
-                                                    print "Getting Bitcoin CASH data from bitcoin.com..."#Since this is only a debug feature will want users to use their own API keys or choose from a set.
+                                                    print("Getting Bitcoin CASH data from bitcoin.com...")#Since this is only a debug feature will want users to use their own API keys or choose from a set.
                                                     #Bitcoin SV is as below
                                                     #str(requestURL("https://api.whatsonchain.com/v1/bsv/main/address/"+multisig+"/unspent"))
                                                     x= str(requestURL("https://rest.bitcoin.com/v2/address/utxo/"+multisig))
@@ -9942,14 +10002,14 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                     Biteasy['received']=rec
                                                     Biteasy['history']=biths
                                                     Biteasy['api']="bitcoin.com"                                                   
-                                            except Exception, e:#Both sites may be down
+                                            except Exception as e:#Both sites may be down
                                                 Biteasy={}
                                                 #traceback.print_exc()
                                                 pass                                        
                                         #Biteasy
                                         if Biteasy=={} and not BitcoinCASH:
                                             try:
-                                                print "Getting Bitcoin data from api.biteasy.com..."
+                                                print("Getting Bitcoin data from api.biteasy.com...")
                                                 spen=[]
                                                 biths=[]
                                                 rec=0
@@ -9979,7 +10039,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                 Biteasy['received']=rec
                                                 Biteasy['history']=biths
                                                 Biteasy['api']="Biteasy"
-                                            except Exception,e:
+                                            except Exception as e:
                                                 Biteasy={}
                                                 #traceback.print_exc()
                                                 pass
@@ -9992,7 +10052,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                         #We should make it eventually so Biteasy txids are listed for electrum so only new transactions are needed
                                         #Anyways, if the first two fail we try electrum
                                         if Biteasy=={}:
-                                            print "Electrum disabled"
+                                            print("Electrum disabled")
                                             #The electrum nodes and process has changed so for now this section is disabled
                                             float('a')
                                             txdetails = ea.get_from_electrum([multisig],t='a')
@@ -10041,7 +10101,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                         if d['Txid'] not in foundtxid and 'FROM' not in d:
                                                             #Here we dont need to ask to parse str(tx['ins'][0]['outpoint']['hash']) because blockchain.info has previous output listed when the transaction is queried
                                                             try:
-                                                                print "Getting info about sender: ", d['Txid']
+                                                                print("Getting info about sender: ", d['Txid'])
                                                                 #getaddress=requestURL("https://blockchain.info/tx-index/"+d['Txid']+"?format=json")
                                                                 getaddress=requestURL("https://blockchain.info/rawtx/"+d['Txid']+"?format=json")
                                                                 try:
@@ -10067,13 +10127,13 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                                 float('a')
                                                                 raw =ea.get_from_electrum([d['Txid']],t='t')
                                                                 x=pybit.deserialize(raw[0]['result'])
-                                                                gt=ea.get_address_from_input_script(x['ins'][0]['script'].decode('hex'))
+                                                                gt=ea.get_address_from_input_script(safe_unhexlify(x['ins'][0]['script']))
                                                                 for gtt in gt:
                                                                     pass
                                                                 Biteasy['history'][i]['FROM']=gtt
                                                                 foundtxid[d['Txid']]=gtt
                                                         i+=1
-                                                    except Exception, e:
+                                                    except Exception as e:
                                                         #traceback.print_exc()
                                                         Biteasy['history'][i]['FROM']="*"
                                                         i+=1
@@ -10103,12 +10163,12 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                             Biteasy['history'].pop(j)
                                                         if next1==1:
                                                             j+=1
-                                                except Exception, e:
+                                                except Exception as e:
                                                     traceback.print_exc()
                                                     txs=0
                                                     txdetails=0
                                                     Biteasy={}
-                                            except Exception, e:
+                                            except Exception as e:
                                                 pass
                                         if Biteasy != {}:#Here we check for unconfirmed.
                                             try:                                                
@@ -10138,12 +10198,12 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                     if raw != []:
                                                         try: #Eventually we are going to have to see if the transaction is from someone else or us because it effects out sent outputs for change.
                                                             x=pybit.deserialize(raw[0]['result'])
-                                                            #ea.get_address_from_input_script(x['ins'][0]['script'].decode('hex'))
+                                                            #ea.get_address_from_input_script(safe_unhexlify(x['ins'][0]['script']))
                                                             for o in x['outs']:
-                                                                gt= ea.get_address_from_output_script(o['script'].decode('hex'))
+                                                                gt= ea.get_address_from_output_script(safe_unhexlify(o['script']))
                                                                 if multisig==gt[1]:
                                                                     v=v+o['value']
-                                                        except Exception, e:
+                                                        except Exception as e:
                                                             traceback.print_exc()
                                                     else:
                                                         getvalue=getvalue.replace(" ","")
@@ -10165,7 +10225,7 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                             else:
                                                                 break
                                                     Biteasy['unconfirmed'].append(v)
-                                            except Exception, e:
+                                            except Exception as e:
                                                 if BitcoinCASH:
                                                     Biteasy['unconfirmed']=[]
                                                 else:
@@ -10262,15 +10322,15 @@ class DownloadThread(QtCore.QThread):#For BitHalo electrum server and general do
                                                                 DontExit[2]=1
                                                                 SaveQueue()
                                                                 DontExit[2]=0
-                                                    except Exception, ex:
-                                                        pass #print Exception, ex
+                                                    except Exception as ex:
+                                                        pass #print(Exception, ex)
                                         DontExit[2]=1
                                         SaveOtherdata()
                                         DontExit[2]=0
                                         isdownloading=0
                                         time.sleep(3)
-                                    except Exception, ex:#There are a few ways we can get a download error. If it happens we have to skip it and refresh (We cant work with bad info)
-                                        print "Timeout/error trying again. "
+                                    except Exception as ex:#There are a few ways we can get a download error. If it happens we have to skip it and refresh (We cant work with bad info)
+                                        print("Timeout/error trying again. ")
                                         traceback.print_exc()
                                         #Another possible error is a list changed while iterating
                                         isdownloading=0
@@ -10374,7 +10434,7 @@ def Update():
                         AddNewOrders.pop(0)
                         break
                 except:
-                    print "Error adding orders"
+                    print("Error adding orders")
                     AddNewOrders=[]
         if 'checktime' not in AdvanceArray['StakedOrders']:
             AdvanceArray['StakedOrders']['checktime']=timestamp-1700
@@ -10442,8 +10502,8 @@ def Update():
                             webbrowser.open(CoinSelect['updatewindows'])
                         else:
                             window.Website()
-            except Exception, e:
-                print "Version checking error",e
+            except Exception as e:
+                print("Version checking error",e)
         if matchObj and matchObj.group(4)!=" " and skipBM != True:
             ourmatch=matchObj.group(4)
         if matchObj and matchObj.group(6)!=" ":
@@ -10643,7 +10703,7 @@ def Update():
                                         if "Cancel" in contract['Process'] or "Accept" in contract['Process'] or "Making" in contract['Process'] or "Failed" in contract['Process'] or "cancel" in contract:
                                             continue
                                     if contract['currentblock']+5000<CurrentBlock:
-                                        print "Removing old contracts!"
+                                        print("Removing old contracts!")
                                         if contract['currentblock']!=0:
                                             #Want to check if an offer needs to be "silenced" before getting popped. For example a handshake we would keep sending via BitMessage but maybe thats OK
                                             DontRepopulate.append(contract['ordernumber'])
@@ -10701,7 +10761,7 @@ def Update():
                                         Markets['Orders'][o]['currentblock']=CurrentBlock+288                            
                                 if contract['theiraddress']==multisig:
                                     if contract['currentblock']+258<CurrentBlock and contract['currentblock']!=0:#Its our contract, lets resubmit. So if we stay connected we will perpetually keep our contracts live.
-                                        print "Resubmitting offer to market..."
+                                        print("Resubmitting offer to market...")
                                         fnd=0
                                         mps=0
                                         for c in MyContracts:
@@ -10821,8 +10881,8 @@ def Update():
                                     gotit=1
                             if gotit==0:
                                 OnOrders.append(ord1)
-                        except Exception,ex:
-                            print "Exception!", ex
+                        except Exception as ex:
+                            print("Exception!", ex)
                             traceback.print_exc()
                             BitARGS=[]#We should just ask it to refresh everything
                             ntimeout=1
@@ -10865,8 +10925,8 @@ def Update():
                                 v=int((Black['amount'])*100000000)
                                 if 'liquidity' in spn:
                                     if (spn['liquidity']['ltotal'] + spn['liquidity']['rtotal']) != v:
-                                        print 'Error: Calculation on input incorrect'
-                                        print str(spn['liquidity']['ltotal']) + '\n' + str(spn['liquidity']['rtotal']) + '\n' + str(v)
+                                        print('Error: Calculation on input incorrect')
+                                        print(str(spn['liquidity']['ltotal']) + '\n' + str(spn['liquidity']['rtotal']) + '\n' + str(v))
                                         float('a')
                                 v=Decimal(dropzeros(Decimal(v),1))/Decimal(1e8)
                                 #v=dropzeros(Decimal(v))
@@ -11117,7 +11177,7 @@ def Update():
                                 if MyContracts[i]['type']=="CONTRACT" and MyContracts[i]['status'] == "offer":
                                     if 'inputs' in MyContracts[i]:
                                         for input1 in MyContracts[i]['inputs']:
-                                            pass #print input1
+                                            pass #print(input1)
                                             match=0
                                             for s in Spendable:
                                                 if s['output']==input1['output']:
@@ -11270,11 +11330,11 @@ def Update():
                                                                             rtot+=ltot
                                                                             ltot=0
                                                                         if ltot==0:
-                                                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(OnOrders[i]['amount'])-int(OnOrders[i]['fee'])),'script':address_to_script(multisig)}]
+                                                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(OnOrders[i]['amount'])-int(OnOrders[i]['fee'])),'script':address_to_script(multisig)}]
                                                                         else:
                                                                             p2mouts=[]
                                                                             if rtot!=0:
-                                                                                p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                                                                                p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                                                                             p2mouts.append({'value':(int(OnOrders[i]['amount'])-int(OnOrders[i]['fee'])-int(rtot)),'script':address_to_script(multisig)})
                                                                         tmptx = mktx_script(timestamp,[{'output':str(OnOrders[i]['Confirmation TXID'])+":0",'value':int(OnOrders[i]['amount']),'address':str(OnOrders[i]['Temporary Address'])}],p2mouts)
                                                                     else:
@@ -11630,7 +11690,7 @@ def requestURL(URL):
                     try:
                         text=rget(URL)
                     except:
-                        print "Mechnize URL: ", str(URL)
+                        print("Mechnize URL: ", str(URL))
                         float('a')
                 else:
                     float('a')
@@ -11646,7 +11706,7 @@ def requestURL(URL):
                     mechbrowser.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
                 except:
                     traceback.print_exc()
-                    print 'Loading of Mechanize failed'
+                    print('Loading of Mechanize failed')
                     float('a')
                 text = mechbrowser.open(URL)
                 text = text.read() 
@@ -11660,7 +11720,7 @@ def requestURL(URL):
     except:
         if AdvanceArray['MySettings']['Proxy']!='':            
             if URL[:15] not in noproxy:
-                print "Unable to use proxy on URL:"+str(URL[:15])
+                print("Unable to use proxy on URL:"+str(URL[:15]))
                 noproxy[URL[:15]]=1
             socket.socket = socket_original
             socket.create_connection = connection_original
@@ -11694,7 +11754,7 @@ def requestURL(URL):
 #            mechbrowser.set_cookiejar(mCookieJar)
 #        except:
 #            traceback.print_exc()
-#            print 'Loading of Mechanize failed'
+#            print('Loading of Mechanize failed')
 #            float('a')
 #        url='https://pastebin.com/'
 #        response = mechbrowser.open(url)
@@ -11707,10 +11767,10 @@ def requestURL(URL):
 #        response=mechbrowser.submit()
 #        x=response.read()
 #        if content not in x:
-#            print "Content not found in result"      
+#            print("Content not found in result"      )
 #            clipboard = app.clipboard()
 #            clipboard.setText(x) 
-#            print response.geturl()
+#            print(response.geturl())
 #            float('a')
 #        return str({'paste_id_repr':response.geturl()})
 #    except:
@@ -11728,7 +11788,7 @@ def fpaste(content, expire_options=604800):
         query = {"content": content, "syntax": "python", "expiry_days": 365}
         resp = rpost(URL, query, 1)
         resptext = resp.text.replace("\n","")
-        print resptext
+        print(resptext)
         if "err_" in str(resptext) or "_failure" in str(resptext) or "Error" in str(resptext) or "http" not in str(resptext):
            return False
         return str({'paste_id_repr':resptext})
@@ -11742,19 +11802,19 @@ def showpaste(ID):#Receive as a string
         if resp[0]=="u" and resp[1]=="'":
             resp=ast.literal_eval(resp)
         return str(resp)#response['result']['data']
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
-        print "PASTEBIN FAILED: ", str(ID)
+        print("PASTEBIN FAILED: ", str(ID))
         return False
 #def showpaste(ID):#Receive as a string
 #    try:
 #        ID=ast.literal_eval(ID)
 #        resp=repr(requestURL(ID['paste_id_repr']))
 #        resp=resp.split('div id="raw-content" hidden>\\n')[1].split("\\n</div>")[0]
-#        return str(resp)#response['result']['data']
-#    except Exception, e:
+#        return str(resp#response['result']['data'])
+#    except Exception as e:
 #        traceback.print_exc()
-#        print "PASTEBIN FAILED: ", str(ID)
+#        print("PASTEBIN FAILED: ", str(ID))
 #        return False
 #Unfortunately fpaste wants an API key now. And too many services change their API so we resort to scraping now.
 #If the page we are using changes then we will add more redundant services
@@ -11786,12 +11846,12 @@ def showpaste(ID):#Receive as a string
 #        response = json.loads(resp.text)
 #        resptext = resp.text
 #        if "err_" in str(resptext) or "_failure" in str(resptext):
-#            print resptext
+#            print(resptext)
 #            return False
-#        return str(response['details']['contents'])#response['result']['data']
-#    except Exception, e:
+#        return str(response['details']['contents']#response['result']['data'])
+#    except Exception as e:
 #        traceback.print_exc()
-#        print "PASTEBIN FAILED: ", str(ID)
+#        print("PASTEBIN FAILED: ", str(ID))
 #        return False
 def CheckNotary(txid):
     global MyContracts
@@ -11813,7 +11873,7 @@ def CheckNotary(txid):
                                         if mytx['txid']==tx and int(mytx['vout'])==int(n)+3:
                                             mytx2=json_deep_copy(mytx)
                                             prevrate=str((Decimal(contract['Market Data']['rate'])*((Decimal(contract['amount'])/Decimal(1e8))/Decimal(mytx['amount']))).quantize(Decimal('.00000001'), rounding=ROUND_HALF_UP))
-                                            print "Payment exchange rate: ", prevrate
+                                            print("Payment exchange rate: ", prevrate)
                                             found=0
                                             for rate in AdvanceArray['charts'][CoinSelect['name']]:                                            
                                                 thetime=ConvertDate(contract['billing'], 1)
@@ -11898,7 +11958,7 @@ def rpost(url,query,data=0):
         except:
             if AdvanceArray['MySettings']['Proxy']!='':            
                 if url[:15] not in noproxy:
-                    print "Unable to use proxy on URL:"+str(url[:15])
+                    print("Unable to use proxy on URL:"+str(url[:15]))
                     noproxy[url[:15]]=1
                 socket.socket = socket_original
                 socket.create_connection = connection_original
@@ -11914,7 +11974,7 @@ def rpost(url,query,data=0):
                 resp = reqsession.post(url,data=query)
     except:
         exc=str(traceback.format_exc())
-        print exc
+        print(exc)
         if "SSLError:" in exc:# [Errno bad ca_cert ... for example
             if reqsession=="":
                 reqsession = requests.Session()
@@ -11947,8 +12007,8 @@ def rget(url):
                 except:
                     reqsession=""
         else:
-            print stack, "\n"
-            print exc
+            print(stack, "\n")
+            print(exc)
             float('a')    
     return resp
 def GetMarketValue(thecoin, coins="", check=1):
@@ -11994,45 +12054,92 @@ def GetMarketValue(thecoin, coins="", check=1):
         try:
             try:
                 try:
-                    coins=coins.split(' id="id-'+thecoin.lower())[1].split('id="id-')[0]
+                    coins_parts = coins.split(' id="id-'+thecoin.lower())
+                    if len(coins_parts) > 1:
+                        coins = coins_parts[1].split('id="id-')[0]
+                    else:
+                        raise IndexError("Coin ID not found in page source")
                 except:
-                    coins=strIN(coins)
-                    coins=coins.split(' id="id-'+thecoin.lower())[1].split('id="id-')[0]
-            except:                
-                coinsa='price" data-usd="'+coins.split('class="cmc-link">'+thecoin+'</a>')[1].split('class="cmc-link">$')[1].split('</a>')[0].replace(",","")+'"'
+                    # Fallback or silent fail to prevent crash
+                    # print("Could not scrape coin data") 
+                    coins = ""
+            except:
+                try:
+                    link_split = coins.split('class="cmc-link">'+thecoin+'</a>')
+                    if len(link_split) > 1:
+                        price_part = link_split[1].split('class="cmc-link">$')[1].split('</a>')[0].replace(",","")
+                        coinsa='price" data-usd="'+price_part+'"'
+                    else:
+                        coinsa = ""
+                except:
+                    coinsa = ""
+                
                 if thecoin.lower()=='bitcoin':
                     coinsb=' data-btc="1"'
                 else:
-                    aa=coinsa.split('price" data-usd="')[1].split('"')[0].replace(",","")
-                    btc2=coins.split('class="cmc-link">Bitcoin</a>')[1].split('class="cmc-link">$')[1].split('</a>')[0].replace(",","")
-                    btcv=dropzeros(remove_exponent(Decimal(int((Decimal(aa)/Decimal(btc2))*Decimal(1e8)))/Decimal(1e8)),1)
-                    coinsb=' data-btc="'+btcv+'"'
+                    coinsb=""
+                    try:
+                        if coinsa:
+                            aa=coinsa.split('price" data-usd="')[1].split('"')[0].replace(",","")
+                            btc2=coins.split('class="cmc-link">Bitcoin</a>')[1].split('class="cmc-link">$')[1].split('</a>')[0].replace(",","")
+                            btcv=dropzeros(remove_exponent(Decimal(int((Decimal(aa)/Decimal(btc2))*Decimal(1e8)))/Decimal(1e8)),1)
+                            coinsb=' data-btc="'+btcv+'"'
+                    except:
+                        coinsb=""
+                        pass
                 coins=coinsa+coinsb
-            usd=coins.split('price" data-usd="')[1].split('"')[0]
-            btc=coins.split(usd+'" data-btc="')[1].split('"')[0]
-            f=float(btc)
-            f=str(int(Decimal(f)*Decimal(1e8)))
-            f=Decimal(f)/Decimal(1e8)
-            btc=str(format(Decimal(btc),"f"))[:10]
+            try:
+                parts = coins.split('price" data-usd="')
+                if len(parts) > 1:
+                    usd = parts[1].split('"')[0]
+                    parts_btc = coins.split(usd+'" data-btc="')
+                    if len(parts_btc) > 1:
+                        btc = parts_btc[1].split('"')[0]
+                        f=float(btc)
+                        f=str(int(Decimal(f)*Decimal(1e8)))
+                        f=Decimal(f)/Decimal(1e8)
+                        btc=str(format(Decimal(btc),"f"))[:10]
+                    else:
+                        raise ValueError("BTC data not found")
+                else:
+                    raise ValueError("USD data not found")
+            except Exception as e:
+                 # Fallback logic or pass
+                 pass
         except:
             if thecoin==CoinSelect['name'] or thecoin=='Bitcoin':
                 pass
             try:
                 if thecoins!='':
                     coins=thecoins
-                coins=coins.split(' id="id-'+thecoin.lower())[1].split('id="id-')[0]
-                usd=coins.split('price" data-usd="')[1].split('"')[0]
-                btc=coins.split(usd+'" data-btc="')[1].split('"')[0]
-                f=float(btc)
-                f=str(int(Decimal(f)*Decimal(1e8)))
-                f=Decimal(f)/Decimal(1e8)
-                btc=str(format(Decimal(btc),"f"))[:10]
+                
+                parts_id = coins.split(' id="id-'+thecoin.lower())
+                if len(parts_id) > 1:
+                    coins = parts_id[1].split('id="id-')[0]
+                    
+                    parts_usd = coins.split('price" data-usd="')
+                    if len(parts_usd) > 1:
+                        usd = parts_usd[1].split('"')[0]
+                        
+                        parts_btc = coins.split(usd+'" data-btc="')
+                        if len(parts_btc) > 1:
+                            btc = parts_btc[1].split('"')[0]
+                            f=float(btc)
+                            f=str(int(Decimal(f)*Decimal(1e8)))
+                            f=Decimal(f)/Decimal(1e8)
+                            btc=str(format(Decimal(btc),"f"))[:10]
+                        else:
+                             raise ValueError("BTC data not found in block 2")
+                    else:
+                         raise ValueError("USD data not found in block 2")
+                else:
+                     raise ValueError("ID not found in block 2")
             except:
                 if thecoin==CoinSelect['name'] or thecoin=='Bitcoin':
                     CoinMarketCap=" "
                     traceback.print_exc()
-                    print "RESET RATE"
-                    print thecoin
+                    print("RESET RATE")
+                    print(thecoin)
                 usd=""
                 btc=""
         if usd!="" and check==1 and coinsG!="":
@@ -12045,13 +12152,13 @@ def UpdateMarketList():
     window.MarketBox.blockSignals(True)
     try:
         list1=[]
-        for name, mark in Markets['MyMarkets'].iteritems():
+        for name, mark in Markets['MyMarkets'].items():
             list1.append(name)
         list1.sort()
         list1.append("ALL")
         window.MarketBox.clear()
         window.MarketBox.addItems(list1)
-        index = window.MarketBox.findText(Markets['Current'], QtCore.Qt.MatchFixedString)
+        index = window.MarketBox.findText(Markets['Current'], QtCore.Qt.MatchFlag.MatchFixedString)
         if index >= 0:
              window.MarketBox.setCurrentIndex(index)
     except:
@@ -12138,17 +12245,17 @@ def ModerationCheck(multisig, priv, contract, Mpub="", Orgpub=""):
         if 'verify' in contract['Market Data']:
             contract['Market Data'].pop('verify')
         ordernumber=make_hash(contract)#Since we use ast a lot, this is a safe method for getting the hash
-        print "HASH:", ordernumber
+        print("HASH:", ordernumber)
         sig=highlevelcrypto.sign(ordernumber[:19],priv)
         sig=base64.b64encode(sig)
         contract['Market Data']['verify']=sig
-        print "SIZE:", sys.getsizeof(str(contract))
+        print("SIZE:", sys.getsizeof(str(contract)))
         if "*"+ident[:10] in Markets['Banlist'] or "*"+ident[-10:] in Markets['Banlist'] or "*" + BitAddr in Markets['Banlist'][:10] or "*"+multisig[:10] in Markets['Banlist'] or "*" + mypub[:10] in Markets['Banlist'] or mypub[:10] in Markets['Banlist']:
             QuestionBox("Sorry, this option is no longer available.", "OK")
             return False
         #We can fill in the rest of the market data later
         return contract
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         return False
 ###########################################################
@@ -12198,7 +12305,7 @@ def ScanMessages():
                         MyMessages2.append(mes)
                 #messages can only be removed on something like dontrepopulate
             except:
-                print "Archive Exception"
+                print("Archive Exception")
     #If we have read the messages and nothing is new why keep reading every few seconds?
     for message in MyMessages2:
         #Because UI and back end are mixed the quick fix is to update the UI here when contracts
@@ -12217,7 +12324,7 @@ def ScanMessages():
                     LockTHIS.pop('AP', None)
             except:
                 LockTHIS.pop('AP', None)
-                print "Error in Application EVENT"
+                print("Error in Application EVENT")
                 traceback.print_exc()
             if myorigEmail != MyEmail:
                 break
@@ -12276,7 +12383,7 @@ def ScanMessages():
                         if body['ordernumber'] in DontRepopulate:
                                 continue
                         if body['type']!='CONTRACT':
-                            print float("A")
+                            print(float("A"))
                         test=body['ordernumber']+"A"
                         test=json_deep_copy(body['sigs'],1)
                         test=json_deep_copy(body['Order'],1)
@@ -12312,7 +12419,7 @@ def ScanMessages():
                         if body['ordernumber'] in DontRepopulate:
                                 continue
                         if body['type']!='CONTRACT':
-                            print float("A")
+                            print(float("A"))
                         test=body['ordernumber']+"A"
                         test=body['public']+"A"
                         test=body['MyBMAddress']+"A"
@@ -12335,7 +12442,7 @@ def ScanMessages():
                         if body['ordernumber'] in DontRepopulate:
                                 continue
                         if body['type']!='CONTRACT':
-                            print float("A")
+                            print(float("A"))
                         test=body['ordernumber']+"A"
                         test=body['oldordernumber']+"A"
                         test=body['public']+"A"
@@ -12382,17 +12489,17 @@ def ScanMessages():
             if "PAY TO EMAIL BASE64 IMAGE:" in str(body):
                 try:
                     try:
-                        rawimg=StringIO.StringIO(base64.b64decode(body.replace("PAY TO EMAIL BASE64 IMAGE:","")))
+                        rawimg=BytesIO(base64.b64decode(body.replace("PAY TO EMAIL BASE64 IMAGE:","")))
                         im=Image.open(rawimg)
                         body=stepic.decode(im)
                         ordernumber = body.split('***')[1].split('###')[0]
                         rawimg.close()
                         rawimg=""
-                    except Exception, e:
+                    except Exception as e:
                         rawimg.close()
                         rawimg=""
-                        print "EXCEPTION"
-                        print e
+                        print("EXCEPTION")
+                        print(e)
                         continue
                     if ordernumber in DontRepopulate:
                         continue
@@ -12485,11 +12592,11 @@ def ScanMessages():
                                             rtot+=ltot
                                             ltot=0
                                         if ltot==0:
-                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(content['amount'])-int(content['fee'])),'script':address_to_script(multisig)}]
+                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(content['amount'])-int(content['fee'])),'script':address_to_script(multisig)}]
                                         else:
                                             p2mouts=[]
                                             if rtot!=0:
-                                                p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                                                p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                                             p2mouts.append({'value':(int(content['amount'])-int(content['fee'])-int(rtot)),'script':address_to_script(multisig)})
                                         tmptx = mktx_script(timestamp,[{'output':str(content['Confirmation TXID'])+":0",'value':int(content['amount']),'address':str(content['Temporary Address'])}],p2mouts)
                                     else:
@@ -12562,7 +12669,7 @@ def ScanMessages():
                                         content['MyBMAddress']=""
                                         content['TheirBMAddress']=""
                                     MyContracts.append(content)
-                except Exception, e:
+                except Exception as e:
                     traceback.print_exc()
                     if ordernumber in DontRepopulate:
                         continue
@@ -12600,7 +12707,7 @@ def ScanMessages():
                         MyCipher=base64.b64decode(MyCipher)
                         MyCipher=decrypt(MyCipher, contract['myprivate'])
                         body=ast.literal_eval(MyCipher)
-                    except Exception, e:
+                    except Exception as e:
                         continue
                 if body['ordernumber']==contract['ordernumber']:#Great! A match... they want to tell us something
                     if 'fromAddress' in message:
@@ -12773,7 +12880,7 @@ def ScanMessages():
                                                                 MyContracts[pos]['MyRequests'].append("Time extended: " + str(mposx) + " Days")
                                                                 Notification(1, "Time Extended!")
                                                                 break
-                                                except Exception, e:
+                                                except Exception as e:
                                                     pass
                                             MyContracts[pos]['Read'].append(body['MessageID'])
                                             if 'uid' in message:
@@ -12934,10 +13041,10 @@ def ScanMessages():
                                     f+=1
                                 if theirtotal!=0:
                                     theirtotal+=int(contract['fee']*f)#They spent one funding temporary
-                                theirs['output']=unicode(str(contract['tx1'])+":0")#If they put anything else in the temporary the funding will not work
+                                theirs['output']=str(str(contract['tx1'])+":0")#If they put anything else in the temporary the funding will not work
                                 theirs['value']=theirtotal
                                 theirs['address']=contract['theirtemp']
-                                mine['output']=unicode(str(contract['tx2'])+":0")
+                                mine['output']=str(str(contract['tx2'])+":0")
                                 mine['value']=mytotal
                                 mine['address']=contract['mytemp']#Redundant code is redundant... this will all be cleaner at some point
                                 if mytotal!=0:
@@ -12964,7 +13071,7 @@ def ScanMessages():
                                     instantoutputs=[]
                                     refundins={}
                                     refundout={}
-                                    refundins['output']=unicode(MyContracts[pos]['tx3']+":1")
+                                    refundins['output']=str(MyContracts[pos]['tx3']+":1")
                                     refundins['value']=int(contract['fee']+contract['instantamount'])
                                     refundins['address']=contract['escrow']
                                     if "I am" in contract['instantwhopays']:
@@ -12994,7 +13101,7 @@ def ScanMessages():
                                 timeoutputs=[]
                                 timeins={}
                                 timeout={}
-                                timeins['output']=unicode(MyContracts[pos]['tx3']+":0")#Its always vout 0
+                                timeins['output']=str(MyContracts[pos]['tx3']+":0")#Its always vout 0
                                 timeins['value']=int(contract['mydeposit']+contract['theirdeposit']+contract['amount']+contract['fee'])#The question of wether or not to give to miners is a good one. Since this works for POS it means we send to Bitcoineater!!
                                 timeins['address']=contract['escrow']
                                 if BitHaloClient==False:
@@ -13098,10 +13205,10 @@ def ScanMessages():
                                             f+=1
                                         if theirtotal!=0:
                                             theirtotal+=int(contract['fee']*f)#They spent one funding temporary
-                                        theirs['output']=unicode(str(body['tx2'])+":0")#If they put anything else in the temporary the funding will not work
+                                        theirs['output']=str(str(body['tx2'])+":0")#If they put anything else in the temporary the funding will not work
                                         theirs['value']=theirtotal
                                         theirs['address']=body['theirtemp']
-                                        mine['output']=unicode(str(contract['tx1'])+":0")
+                                        mine['output']=str(str(contract['tx1'])+":0")
                                         mine['value']=mytotal
                                         mine['address']=contract['mytemp']
                                         if theirtotal!=0:
@@ -13129,14 +13236,14 @@ def ScanMessages():
                                                 if theirtotal!=0:
                                                     ps1+=1
                                                 if BitHaloClient==True:
-                                                    sigg=pybit.transaction.multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate'])
+                                                    sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate'])
                                                     sigs.append(sigg)
-                                                    sigg=pybit.transaction.multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate2'])
+                                                    sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate2'])
                                                     sigs.append(sigg)
                                                 else:
-                                                    sigg=multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate'])
+                                                    sigg=multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate'])
                                                     sigs.append(sigg)
-                                                    sigg=multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate2'])
+                                                    sigg=multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate2'])
                                                     sigs.append(sigg)
                                         except:
                                             MyContracts[pos]['Process']="Failed: "
@@ -13160,7 +13267,7 @@ def ScanMessages():
                                             instantoutputs=[]
                                             refundins={}
                                             refundout={}
-                                            refundins['output']=unicode(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
+                                            refundins['output']=str(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
                                             refundins['value']=int(contract['fee']+contract['instantamount'])
                                             refundins['address']=body['escrow']
                                             if "I am" in contract['instantwhopays']:
@@ -13189,7 +13296,7 @@ def ScanMessages():
                                         timeoutputs=[]
                                         timeins={}
                                         timeout={}
-                                        timeins['output']=unicode(MyContracts[pos]['tx3']+":0")#Its always vout 0
+                                        timeins['output']=str(MyContracts[pos]['tx3']+":0")#Its always vout 0
                                         timeins['value']=int(contract['mydeposit']+contract['theirdeposit']+contract['amount']+contract['fee'])#The question of wether or not to give to miners is a good one. Since this works for POS it means we send to Bitcoineater!!
                                         timeins['address']=body['escrow']
                                         if BitHaloClient==False:
@@ -13224,9 +13331,9 @@ def ScanMessages():
                                         BitQueue.append(Reply)
                                         SaveQueue()
                                         ivereadthis=1
-                                    except Exception, e:
+                                    except Exception as e:
                                         ivereadthis=1
-                                        print "Exception accepting offer!"
+                                        print("Exception accepting offer!")
                         if 'Counter' in body['Process']:#A counter. But is it new? Also we need to make sure it is their turn so they dont try to spam counters
                             if contract['lock']=='0':#ok it was their turn so we were expecting something
                                 isvalid=CheckValidity(body)
@@ -13395,7 +13502,7 @@ def ScanMessages():
                     if body['ordernumber'] in DontRepopulate:
                         continue
                     if CheckValidity(body,1)==0:
-                        print "Verification error"
+                        print("Verification error")
                         DontRepopulateThis(message, multisig, body['ordernumber'])
                         continue
                     if CoinSelect['HaloName'] not in body['theirversion']:
@@ -13466,7 +13573,7 @@ def ScanMessages():
                                                     res=window.SendMyContract(newbody)
                                                 except:
                                                     res=False
-                                                    print "Autoaccept Failed"
+                                                    print("Autoaccept Failed")
                                                 SilenceUI=0
                                                 Templates.reply2={}
                                             if res==True:
@@ -13584,7 +13691,7 @@ def ScanMessages():
                             if 'dontclear' in accorder['Market Data'] and c['Process']=="Market Order":#We hold a higher quantity, so no direct acceptance possible(input conflicts on multiple acceptance at once), however we can update the market of the newer quantities
                                 tempord=False
                             if tempord==False:
-                                print "Reply verification error"
+                                print("Reply verification error")
                                 float("A")
                             accorder=FilterContract(body,accorder,1)
                             if 'match' in tempord['Market Data']['reply']:#Some templates used to not have bidding criteria for example...  and "Custom" not in c['Market Data']['Template']
@@ -13766,7 +13873,7 @@ def ScanMessages():
                         continue
                     res=VerifyMarketData(body)
                     if res==False:
-                        print "VERIFICATION FAILURE"
+                        print("VERIFICATION FAILURE")
                         DontRepopulateThis(message, multisig, body['ordernumber'])
                     else:
                         mps=0
@@ -13806,7 +13913,7 @@ def ScanMessages():
                         continue
                     res=VerifyMarketData(body)
                     if res==False:
-                        print "VERIFICATION FAILURE"
+                        print("VERIFICATION FAILURE")
                         DontRepopulateThis(message, multisig, body['ordernumber'])
                     else:
                         Reputation(body)
@@ -13833,7 +13940,7 @@ def ScanMessages():
                                             try:
                                                 Markets['Reputation'][Markets['Orders'][pos]['Market Data']['orgpublic']]['Reputation']['Rating']-=5
                                             except:
-                                                print "Rating error"
+                                                print("Rating error")
                                             ps=0
                                             for cn in MyContracts:
                                                 if cn['ordernumber']==mark['ordernnumber'] and cn['Process']=="Market Order":
@@ -13861,7 +13968,7 @@ def ScanMessages():
                                     try:
                                         Markets['Reputation'][Markets['Orders'][pos]['Market Data']['orgpublic']]['Reputation']['Rating']-=5
                                     except:
-                                        print "Rating error"
+                                        print("Rating error")
                                     Markets['Orders'].pop(pos)
                                     break
                                 pos+=1
@@ -13900,7 +14007,7 @@ def ScanMessages():
                             if body['data']['block']>CurrentBlock+100:#too far into the future
                                 DontRepopulateThis(message, multisig, body['ordernumber'])
                             if body['data']['block']<CurrentBlock:
-                                print "Receiving reputation data"
+                                print("Receiving reputation data")
                                 AdvanceArray['repcheck'].append(body['data'])
                                 DontRepopulateThis(message, multisig, body['ordernumber'])
                 if body['Process']=='Market Message':
@@ -13936,17 +14043,17 @@ def ScanMessages():
                                     CheckAuction(body, 0)
                         except:
                             traceback.print_exc()
-                            print "Error receiving message"
+                            print("Error receiving message")
                         DontRepopulateThis(message, multisig, body['ordernumber'])            
             except:
                 DontRepopulateThis(message, multisig, body['ordernumber'])
-                print "Market Order Error"
+                print("Market Order Error")
                 traceback.print_exc()
-        except Exception,ex:#Eventually we may want to delete the offending email or figure out what is throwing it off
+        except Exception as ex:#Eventually we may want to delete the offending email or figure out what is throwing it off
             try:
                 if 'uid' in message:
                     if message['toAddress'][:16].lower()==MyEmail[:16].lower():
-                        print "Adding uid to list..."
+                        print("Adding uid to list...")
                         DontRepopulateThis(message, multisig)
             except:
                 pass
@@ -14061,7 +14168,7 @@ def Step1(contract, priv="", pub=""):#Step1 is sending the contract... we send o
         if res==True:
             pass
         else:
-            print "Verification failed on sending"
+            print("Verification failed on sending")
             return
     global updatesomething
     updatesomething=1
@@ -14083,7 +14190,7 @@ def Step1(contract, priv="", pub=""):#Step1 is sending the contract... we send o
     Order['fee']=fee
     Order['theiraddress']=address
     Order['type']="CONTRACT"
-    Order['ordernumber']=os.urandom(16).encode('hex')
+    Order['ordernumber']=safe_hexlify(os.urandom(16))
     Order['status']="offer"
     Order['version']="1.0"
     Order['total']=Total
@@ -14112,34 +14219,34 @@ def CheckValidity(contract, market=0):
                 float("A")
         newcontract['mydeposit']=contract['mydeposit']+1
         if newcontract['mydeposit']<1:
-            print float("A")
+            print(float("A"))
         newcontract['theirdeposit']=contract['theirdeposit']+1
         if newcontract['theirdeposit']<1:
-            print float("A")
+            print(float("A"))
         newcontract['timestamp']=contract['timestamp']+1
         if newcontract['timestamp']<1:
-            print float("A")
+            print(float("A"))
         newcontract['amount']=contract['amount']+1
         if newcontract['amount']<5500:
-            print float("A")
+            print(float("A"))
         newcontract['whopays']=contract['whopays']+"A"
         newcontract['instantamount']=contract['instantamount']+1
         if newcontract['instantamount']<1:
-            print float("A")
+            print(float("A"))
         newcontract['instantwhopays']=contract['instantwhopays']+"A"
         newcontract['timeout']=contract['timeout']+1
         newcontract['MyBMAddress']=contract['MyBMAddress']+"A"
         newcontract['fee']=contract['fee']+1
         if newcontract['fee']<=5500:#May want to calculate in future
-            print float("A")
+            print(float("A"))
         newcontract['TheirBMAddress']=contract['TheirBMAddress']+"A"
         newcontract['currentblock']=contract['currentblock']+1
         if newcontract['currentblock']<1:
-            print float("A")
+            print(float("A"))
         newcontract['Process']=contract['Process']+"A"
         newcontract['status']=contract['status']
         if newcontract['status']!="offer":
-            print float("A")
+            print(float("A"))
         newcontract['version']=contract['version']+"A"
         newcontract['Command']=contract['Command']+"A"
         newcontract['type']=contract['type']+"A"
@@ -14305,25 +14412,25 @@ def CheckValidity(contract, market=0):
             if contract!=orig:
                 for k in contract:
                     if orig[k]!=contract[k]:
-                        print orig[k]
-                        print contract[k]
+                        print(orig[k])
+                        print(contract[k])
                     if k not in orig:
-                        print k, " not found"
+                        print(k, " not found")
                 for k in contract['Market Data']:
                     if orig['Market Data'][k]!=contract['Market Data'][k]:
-                        print k
+                        print(k)
                     if k not in orig['Market Data']:
-                        print k, " not found"
+                        print(k, " not found")
             res=VerifyMarketData(contract)
             if res==False:
                 pass
-                print float("A")
+                print(float("A"))
         for k in contract:#They may try to cram in extra information but we will not allow it!
             if k not in newcontract:
-                print k, "Found! Please check order."
-                print float("A")
+                print(k, "Found! Please check order.")
+                print(float("A"))
         return 1
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         pass
     return 0
@@ -14556,7 +14663,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                             return False
                         if 'quantity' in contract['Market Data']:
                             if int(Decimal(body['amount']))>contract['Market Data']['quantity']:
-                                print "Exceeds quantity"
+                                print("Exceeds quantity")
                                 body['Market Data']['reply']['match']=0#It will want more coins than remaining
             if "Custom" in contract['Market Data']['Template']:#Autoaccept conditions for custom orders goes here
                 if found==1:
@@ -14706,7 +14813,7 @@ def CompleteContract(contract, result, txresult):
                     Reply['TheirBMAddress']=contract['Market Data']['Market Address']
             else:
                 Reply['TheirBMAddress']=contract['TheirBMAddress']
-            Reply['ordernumber']=os.urandom(16).encode('hex')
+            Reply['ordernumber']=safe_hexlify(os.urandom(16))
             data=ModerationCheck(multisig, priv, Reply, pub)
             if data==False:
                 pass
@@ -14717,7 +14824,7 @@ def CompleteContract(contract, result, txresult):
                     BitQueue.append(Reply)
                     SaveQueue()
         except:
-            print "Reputation data error"
+            print("Reputation data error")
     if multisig not in HistoryDetail:
         HistoryDetail[multisig]=[{'Label':'','Type':'','Amount':'','Details':''}]
     hist2={}
@@ -14764,8 +14871,8 @@ def CheckEscrow():
                     hours_difference = 999999
                 try:
                     blocks_difference = contract['blocks']-CurrentBlock
-                except Exception, e:
-                    pass #print e
+                except Exception as e:
+                    pass #print(e)
                     blocks_difference = 999999
                 if float(hours_difference)<0 and int(blocks_difference)<0 and 'TXcomplete' not in contract: #Time is up, we send tx4 and delete the deal
                     MyContracts[pos]['TXdestroyed']=1
@@ -14870,9 +14977,9 @@ def CheckEscrow():
                                                 res=""
                                                 if str(contract['billing']) not in contract['payments']:
                                                     try:
-                                                        print str(apicontract)
+                                                        print(str(apicontract))
                                                         rawtx, res = window.SendNormal(apicontract)
-                                                        print res
+                                                        print(res)
                                                     except:
                                                         traceback.print_exc()
                                                         rawtx=False
@@ -15036,7 +15143,7 @@ def CheckEscrow():
                                 theirtotal+=contract['amount']
                             else:
                                 mytotal+=contract['amount']
-                            inp['output']=unicode(str(contract['tx3'])+":0")
+                            inp['output']=str(str(contract['tx3'])+":0")
                             inp['value']=theirtotal+mytotal
                             inp['address']=contract['escrow']
                             inputs.append(inp)
@@ -15129,7 +15236,7 @@ def CheckEscrow():
                                             CompleteContract(contract, "Completed", txhash(rawtx))
                                             MyContracts[pos]['Process']="Complete:*Counter party submitted first* " + txhash(rawtx)
                                 else:
-                                    print str(rspns)
+                                    print(str(rspns))
                                     CompleteContract(contract, "Completed", txhash(rawtx))
                                     MyContracts[pos]['Process']="Complete: " + txhash(rawtx)
                                     MyContracts[pos]['checkcomplete']=1
@@ -15152,7 +15259,7 @@ def CheckEscrow():
                                 mytotal+=contract['amount']
                             else:
                                 theirtotal+=contract['amount']
-                            inp['output']=unicode(str(contract['tx3'])+":0")
+                            inp['output']=str(str(contract['tx3'])+":0")
                             inp['value']=theirtotal+mytotal
                             inp['address']=contract['escrow']
                             inputs.append(inp)
@@ -15254,7 +15361,7 @@ def CheckEscrow():
                         Reply={}
                         Reply['Process']='Signing again...'#Ok we will look for the message id
                         Reply['Command']='Send'
-                        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+                        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
                         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
                         Reply['TheirBMAddress']=contract['TheirBMAddress']
                         Reply['tx3']=contract['tx3']
@@ -15264,7 +15371,7 @@ def CheckEscrow():
                         timeoutputs=[]
                         timeins={}
                         timeout={}
-                        timeins['output']=unicode(contract['tx3']+":0")#Its always vout 0
+                        timeins['output']=str(contract['tx3']+":0")#Its always vout 0
                         timeins['value']=int(contract['mydeposit']+contract['theirdeposit']+contract['amount']+contract['fee'])#The question of wether or not to give to miners is a good one. Since this works for POS it means we send to Bitcoineater!!
                         timeins['address']=contract['escrow']
                         if BitHaloClient==False:
@@ -15301,7 +15408,7 @@ def CheckEscrow():
                                     Reply['Process']='Signing again...'#Ok we will look for the message id
                                     Reply['Command']='Send'
                                     Reply['tx3']=contract['tx3']
-                                    Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+                                    Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
                                     Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
                                     Reply['TheirBMAddress']=contract['TheirBMAddress']
                                     Reply['ordernumber']=contract['ordernumber']
@@ -15309,7 +15416,7 @@ def CheckEscrow():
                                     instantoutputs=[]
                                     refundins={}
                                     refundout={}
-                                    refundins['output']=unicode(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
+                                    refundins['output']=str(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
                                     refundins['value']=int(contract['fee']+contract['instantamount'])
                                     refundins['address']=contract['escrow']
                                     if "I am" in contract['instantwhopays']:
@@ -15461,7 +15568,7 @@ def CheckEscrow():
                                         if ThePeg.Pegdatabase['blockcount']<myblockcount-1:
                                             rspns=0
                                     if rspns !=0:
-                                        print 'Found cancel!'
+                                        print('Found cancel!')
                                         EscrowResults.pop(ps2)
                                         if True:
                                             multisig,multiscript=create_multisig_address(PrivKeyFilename1)
@@ -15500,11 +15607,11 @@ def CheckEscrow():
                                                                     rtot+=ltot
                                                                     ltot=0
                                                                 if ltot==0:
-                                                                    outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(spendme['value'])-int(MyContracts[pos]['fee'])),'script':address_to_script(multisig)}]
+                                                                    outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(spendme['value'])-int(MyContracts[pos]['fee'])),'script':address_to_script(multisig)}]
                                                                 else:
                                                                     outs=[]
                                                                     if rtot!=0:
-                                                                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                                                                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                                                                     outs.append({'value':(int(spendme['value'])-int(MyContracts[pos]['fee'])-int(rtot)),'script':address_to_script(multisig)})
                                                         else:
                                                             submitthis=1
@@ -15541,7 +15648,7 @@ def CheckEscrow():
                                                         break
                                                 except Exception as e:
                                                     traceback.print_exc()
-                                                    print "Exception with cancel of broadcast"
+                                                    print("Exception with cancel of broadcast")
                             except:
                                 pass
                         if MyContracts[i]['theirtempconfirm']=="no":
@@ -15716,7 +15823,7 @@ def CheckEscrow():
                                                 mytuple=ConvertDate(NewTime, 0)#0 is to tuple and 1 is back
                                                 MyContracts[i]['time']=mytuple
                                             if mytime!=0:#If we found a time to agree on, we use it
-                                                print "\n\nNEW TIME: ", mytime
+                                                print("\n\nNEW TIME: ", mytime)
                                                 mytime=datetime.datetime.utcfromtimestamp(mytime)
                                                 NewTime=mytime+ datetime.timedelta(hours=MyContracts[i]['timeout'])
                                                 mytuple=ConvertDate(NewTime, 0)#0 is to tuple and 1 is back
@@ -15776,7 +15883,7 @@ def CheckEscrow():
                                                     found=1
                                                     ps2=ps1
                                                     rspns=results['rspns']
-                                                    pass #print rspns
+                                                    pass #print(rspns)
                                             skipthis=0
                                             if 'pegging' in CoinSelect and CoinSelect['pegging']:
                                                 if myblockcount % ThePeg.interval < 10 or myblockcount % ThePeg.interval > ThePeg.interval-37:
@@ -15802,13 +15909,13 @@ def CheckEscrow():
                                             if rspns !=0:
                                                 if "TX rejected" in str(rspns):
                                                     EscrowResults.pop(ps2)
-                                                    pass #print rspns #It will keep trying because timeouts or other things
+                                                    pass #print(rspns #It will keep trying because timeouts or other things)
                                                     MyContracts[i]['Rejections']+=1#Not sure when we give up but for now I dont specify... i use this again later
                                                 else:
                                                     EscrowResults.pop(ps2)
                                                     if MyContracts[i]['Result']==9 or MyContracts[i]['Result']==0:
                                                         MyContracts[i]['Result']+=1
-                                                    pass #print MyContracts[i]['Result']
+                                                    pass #print(MyContracts[i]['Result'])
                                             rawtx=contract['tx2raw']
                                             rspns=0
                                             found=0
@@ -15835,12 +15942,12 @@ def CheckEscrow():
                                                 if "TX rejected" in str(rspns):
                                                     EscrowResults.pop(ps2)
                                                     MyContracts[i]['Rejections']+=1
-                                                    pass #print rspns
+                                                    pass #print(rspns)
                                                 else:
                                                     EscrowResults.pop(ps2)
                                                     if MyContracts[i]['Result']==1 or MyContracts[i]['Result']==0:
                                                         MyContracts[i]['Result']+=9
-                                                    pass #print rspns
+                                                    pass #print(rspns)
                                             if MyContracts[i]['Result']==10:
                                                 ps1=-1
                                                 for results in EscrowResults:
@@ -16084,12 +16191,12 @@ def PopulateMarkets():
     window.OfferTable.setRowCount(len(showlist))
     pos=0
     for ord1 in showlist:
-        item = QtGui.QTableWidgetItem()
+        item = QtWidgets.QTableWidgetItem()
         window.OfferTable.setVerticalHeaderItem(pos,item)
         pos+=1
     pos=0
     for i in items:
-        item = QtGui.QTableWidgetItem()
+        item = QtWidgets.QTableWidgetItem()
         window.OfferTable.setHorizontalHeaderItem(pos, item)
         item = window.OfferTable.horizontalHeaderItem(pos)
         item.setText(Gtranslate(i))
@@ -16101,7 +16208,7 @@ def PopulateMarkets():
     mycolumns=list(CustomColumns)
     for ord1 in showlist:        
         usd,btc=GetMarketValue(ord1['Market Data']['Payment Method'],CoinMarketCap, 0)
-        #window.OfferTable.setItem(pos, 0, QtGui.QTableWidgetItem(str("<img src=\"data:image/jpeg;base64,"+b64img+"\"/>")))
+        #window.OfferTable.setItem(pos, 0, QtWidgets.QTableWidgetItem(str("<img src=\"data:image/jpeg;base64,"+b64img+"\"/>")))
         pos2=0
         window.OfferTable.setRowHeight(pos, 70)
         for i in items:
@@ -16112,20 +16219,20 @@ def PopulateMarkets():
                         b64img=ord1['Details']['image']
                         if b64img=="":#make default
                             if "Coins" in ord1['Market Data']['Template']:
-                                b64img="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"
+                                b64img="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"
                             if "Custom" in ord1['Market Data']['Template']:
-                                b64img="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"
+                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKAPnXx7+3h8/h/4s1Hw9dSatqV7p8rW9xJp1orxJKpwybmdclSCDgYyOtc//wAPIvhT/wA+fiT/AMAYv/jtcJ+zbqGneHdY/aT8QX/h0+JTpWtvOllDbLNM+JrrIQEHHQEnsAT2qyP22PDZH/JDNQ/8BY//AI1QB2X/AA8i+FP/AD5+JP8AwBi/+O13fwf/AGw/h58a/FA8O6HNqFnq7xtLDb6lbCPzwoJYIVZhkAE4OOAcZwa8Wh/bT8NzTxRj4F6mS7BQEs42Y5PYeXyfaup+NWk+Dfgx8WdO+NevXNvo0Nlo6adomhW0Ijlur1vP3vKijOxEmUHGT+IVXAPqZ9Ss49QjsGuoFvpIzKlsZAJWQHBYLnJAPerNfhx4q+M/xI+M/wAfbHxz4TudRg8UzXCfYrTTzLMqMkY82DywC8W3bIyjkbSQxPJb9qvAkmuy+CtCfxPHFF4iayhOopBjYtxsHmAYJH3s9OPTigDdooooAKKKKAPif9lu68Q2Os/tKz+E7K21HxJHrhNja3j7IpJfOusBjke/cfUda0H+IH7ZCsQPhx4cYA4DCa2wfzvazf2YNH1PxBqn7TOnaNrZ8Oapca0yW+qqu42zedd/N1GO4z1GcjkVq+Hf2ffi3ea5ZR3X7RFxfWfmq1xb2N5KZniBBcJ8/B25we1AG94f+Nfxd+HGiav4v+OVn4f8JeF9OgPk2VkEkvdRuGB2RRlbh1Xpkk9h2AZl/Nf4tfG/xH+1T8Qr7xJrsaPoBYQ6Xp+CyhVfK+WP7oI64y7Ek44FdV+2j+0dbftH/FWbR01G8t/CWkXBsbW189WhmdSQ6sQAVMu1Wyckj5Qx219KfsZ/s/6F4I8ReDvEvj9Eh17XXb/hFfDzx/OFjjaQ3cifwqFX5M9Mg9SuAD1b9iL9kOL4U6e/jfxbpkH/AAmWpiOS3hliBl06NVdRk9RIyyNuHYbQeRx9d0UUAFFFFABRRRQB8I/s84Q1nXP2jvDPjDXrTRLDWtce3Jnv47WV18663GMuecZXsRzggg4rvPh18CPgd8JtQ1TVfDHxJtYtbutNuNPt7zUNbs51tGlXHnIihMsPc4wSO+a77xz+xZ8KfiD4ovvEGpaHPDqV85luWs7ySFJZCcs5UHAYnk4xk89Sawf+HfPwc/6BWpf+DKSgDhfgP8Asufs9fBLxB/wk7eNND8QeLGcStqM+rQQRq4zykaScZychmYHuKq+MPEWmeKf+Ci/wxudF1S01eyj0R0M1hcJPGjCK/yCUJAOCvHuK9E/4d8/Bz/oFal/4MpK7b4U/srfDj4Na9JrfhzRpE1ZozEl3d3ztEp+8E3HCkjgnGccZwTkA9cooooAKKKKAP/2Q=="
                             if "Something" in ord1['Market Data']['Template']:
-                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACivCv2xP2il/Zz+FEuqWJgl8T6lJ9k0m3nG5d/V5WHdUXJ9NxQHrXwD/w8y+NP/Pzof/gtH/xVAH650V+Rn/DzL40/8/Oh/wDgtH/xVegfAf8A4KU+MtQ+KOi2HxEn0lfCt9J9lubmG18g2rNwkxbd90NjdngKWPYUAfpnRSA5GR0paACiiigAooooA/Nr/gq94b1ubxb4L1xbO7l8PxadJbNdIjNBDOZckMRwjMCmM43beM7ePibxH8OvE3hHRtE1bWdDvtN07WoTPp9zcQsiXChip2kj2zj0ZT0INfrj+3148174c/s9XereHNRbTNQ/tG1hMyxpJlGY5GHUjsO3avXPhLfXHiH4S+CdQ1WQ3t/daLY3NxNOAWklaBGZz7liTQB+Gniz4b+J/Ax0ga9od7pZ1a1S8shcQlTPE/3SvufTryOOam8RfCrxh4T8R2Ogar4a1Oz1q+iimtbB7V/OnWRQy7FAyx5wQOQQQeQRX75vFHKVLorlTlSwBwfUV8aftUfGHxh4I/a8+DHh3RNaex0XVZ7GO8tBDE4lWW+8qXllLDcny5BHtg0AfVXw10++0n4deFbHVA41K20q1huhI25hKsKh8nudwPNdJRRQAUUUUAFFFFAHgv7a3wj8SfGz4IT+GfCttDdarJqFvOEnnWFdiE7jubjuOK+Hbf8AYc/aZtII4IL94YYlCJHH4j2qigYAADcADtX6uUUAflN/wxJ+09/0FJv/AApT/wDF1s/Db9hz466b8YvAviXxPHBf2ej61Y3c89xrK3EkcEVwkj7QSSeAeB3r9QKKACiiigAooooA/9k="
+                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACivCv2xP2il/Zz+FEuqWJgl8T6lJ9k0m3nG5d/V5WHdUXJ9NxQHrXwD/w8y+NP/Pzof/gtH/xVAH650V+Rn/DzL40/8/Oh/wDgtH/xVegfAf8A4KU+MtQ+KOi2HxEn0lfCt9J9lubmG18g2rNwkxbd90NjdngKWPYUAfpnRSA5GR0paACiiigAooooA/Nr/gq94b1ubxb41xbO7l8PxadJbNdIjNBDOZckMRwjMCmM43beM7ePibxH8OvE3hHRtE1bWdDvtN07WoTPp9zcQsiXChip2kj2zj0ZT0INfrj+3148174c/s9XereHNRbTNQ/tG1hMyxpJlGY5GHUjsO3avXPhLfXHiH4S+CdQ1WQ3t/daLY3NxNOAWklaBGZz7liTQB+Gniz4b+J/Ax0ga9od7pZ1a1S8shcQlTPE/3SvufTryOOam8RfCrxh4T8R2Ogar4a1Oz1q+iimtbB7V/OnWRQy7FAyx5wQOQQQeQRX75vFHKVLorlTlSwBwfUV8aftUfGHxh4I/a8+DHh3RNaex0XVZ7GO8tBDE4lWW+8qXllLDcny5BHtg0AfVXw10++0n4deFbHVA41K20q1huhI25hKsKh8nudwPNdJRRQAUUUUAFFFFAHgv7a3wj8SfGz4IT+GfCttDdarJqFvOEnnWFdiE7jubjuOK+Hbf8AYc/aZtII4IL94YYlCJHH4j2qigYAADcADtX6uUUAflN/wxJ+09/0FJv/AApT/wDF1s/Db9hz466b8YvAviXxPHBf2ej61Y3c89xrK3EkcEVwkj7QSSeAeB3r9QKKACiiigAooooA/9k="
                             if "Find" in ord1['Market Data']['Template']:
-                                b64img="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"
+                                b64img="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"
                             if "Hire" in ord1['Market Data']['Template']:
-                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKAGeYtYfivx94b8CWkVz4j13T9DgmYpFJqFykIkI6hdxGfwrxnxl+3B8MPBHirVNAv7nVJb7Tbh7a4NtZF4xIpwwBLDOCCM47V81+N/2h/hT8Sf2kLTxN4ntL7W/A9poX2OGzu7QtsuvMJ3eVuxjDHn1x6CgD7ZsP2gfhpql7DaWnj3w9PczMEjiTUotzsegHzda77zAK/OT4ufFL9m3X/hxr1h4U8InT/Ec1vixuV0zydkoYEHcH4GAa9d+HX7enw30L4feGdN1m61qfV7PTbe3vJRZb98yRqrndu55B570AfX4IYZFLXG/Cj4qeH/jF4Rj8ReG55ptPaZ4D9oiMbpIuMqQfYg8Z612VABRRRQAUUUUAfkP+0p8OfEulfFfxtrc+j3LaNdazdyx6jbr51vgzMcNImVVueVYhh3ArzLw94X1HxRNcJYRRlbaPzp57idIIYU3BQXkchVyWAGTySAK9B+L3jDXfB3x++IVxoWsX2jztr17ueyuGi3fv34baRkexotPizceOfDmueH/ABbqlnZm+WGSDVv7KjDiSOTdtmeCMSMpBbk7sEDjnIAOTn+GWtRWtxPE+l3wt4mmkisNWtbmURqMswjjkLEKAScA4AJPANYOkaJqPiC+jstLsLnUryThLe0haWRvoqgk133g+Tw/8O9bXxDH4psNauLS3nEFhDp87edK8TxoGE0apsy4LZzkAjBzisvVvjX411eyaybXp7GwYYaz0pEsYGHoY4FRSPqKAP0b/YS8J6r4M+B76drNr9ivv7VuJGtzIrPGCseA4UnY3HKtgjjIr6Jr5f8A+CdfP7PspPU6zc8/8Air6goAKKKKACiiigD8jvj78JvG0/xt8dTw+ENcuLefWbqeKaDTppI5I3lZlZWVSCCCDxXBf8Ki8df9CV4i/wDBVP8A/EV+11FAH4o/8Ki8df8AQleIv/BVP/8AEUf8Ki8df9CV4i/8FU//AMRX7XUUAfOX7BXhjV/CnwGW11rTLvSbqXVLiZIL2FopChCANtYAgEqevpX0bRRQAUUUUAf/2Q=="
+                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKAGeYtYfivx94b8CWkVz4j13T9DgmYpFJqFykIkI6hdxGfwrxnxl+3B8MPBHirVNAv7nVJb7Tbh7a4NtZF4xIpwwBLDOCCM47V81+N/2h/hT8Sf2kLTxN4ntL7W/A9poX2OGzu7QtsuvMJ3eVuxjDHn1x6CgD7ZsP2gfhpql7DaWnj3w9PczMEjiTUotzsegHzda77zAK/OT4ufFL9m3X/hxr1h4U8InT/Ec1vixuV0zydkoYEHcH4GAa9d+HX7enw304feGdN1m61qfV7PTbe3vJRZb98yRqrndu55B570AfX4IYZFLXG/Cj4qeH/jF4Rj8ReG55ptPaZ4D9oiMbpIuMqQfYg8Z612VABRRRQAUUUUAfkP+0p8OfEulfFfxtrc+j3aNdazdyx6jbr51vgzMcNImVVueVYhh3ArzLw94X1HxRNcJYRRlbaPzp57idIIYU3BQXkchVyWAGTySAK9B+L3jDXfB3x++IVxoWsX2jztr17ueyuGi3fv34baRkexotPizceOfDmueH/ABbqlnZm+WGSDVv7KjDiSOTdtmeCMSMpBbk7sEDjnIAOTn+GWtRWtxPE+l3wt4mmkisNWtbmURqMswjjkLEKAScA4AJPANYOkaJqPiC+jstLsLnUryThLe0haWRvoqgk133g+Tw/8O9bXxDH4psNauLS3nEFhDp87edK8TxoGE0apsy4ZzkAjBzisvVvjX411eyaybXp7GwYYaz0pEsYGHoY4FRSPqKAP0b/YS8J6r4M+B76drNr9ivv7VuJGtzIrPGCseA4UnY3HKtgjjIr6Jr5f8A+CdfP7PspPU6zc8/8Air6goAKKKKACiiigD8jvj78JvG0/xt8dTw+ENcuLefWbqeKaDTppI5I3lZlZWVSCCCDxXBf8Ki8df9CV4i/wDBVP8A/EV+11FAH4o/8Ki8df8AQleIv/BVP/8AEUf8Ki8df9CV4i/8FU//AMRX7XUUAfOX7BXhjV/CnwGW11rTLvSbqXVLiZIL2FopChCANtYAgEqevpX0bRRQAUUUUAf/2Q=="
                             if "Barter" in ord1['Market Data']['Template']:
-                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACivN/jr+0B4Q/Z58Jrrviu6lxNJ5Npp9mokurt+pEaEgYA5LMQo4GclQfzU/aH/wCChHjr4q6zFF4OvtR8BeHLcDbDY3Wy7uHz9+SVACB2CKcepbsAfrnRX5afB7/gqB438Jpp+neOdLtfF+mQ4jl1CH/R9QKZ+8SP3chUdAVUtjlsktX2H+0j+0pp/hj9lS7+Ifg3Womm1qGGDQ7xMEmaVsHgggSRoszFWGQYmBGRigD6Ior83f2Ofi1+058ZPFOmXEGvHVPAWm6jDHrF3q1rbKrxFw0sUcvl+Y8vlkkBSduU3FQy5/SKgAooooAKKKwPiB4hPhHwH4k10WbagdM025vfsiyeWZ/LiZ9gfB27tuM4OM5oA/J//goE66j8ZdS1We8ubu9m1K6tIRNITHHZW8dtFGkS9FUXAvQcdXD9818+658P/FHhnRtN1fV/DmraXpOpRrLZX97ZSxQXSMoZWjkZQrgqQRgngg96+gdS+HHiD4y/EP4P+JvHj/Zrf4h6x9jstDsYjDHZaRDLEp8ok/IGEshUYJODIzMZOf1D+J3jHw/8CPg3rGuXNpFDoOgacI4LCKP5GACxQQKOgDMY0HYZ5wKAPwcr2b4dfstfGH4px6Np+k+FtXh0PUAt9bX2oq9vpyo4A8/e3y8qAflBZlAwG4r6u8E/sqx6n+xJ4+8Ya1aQaj4+8Y6e/iVLkW6eZDFG32qGKHHCGUKWbbtz5oU8IK+rP2QfFNl4v/Zh+GV/YuWjTQbSzkVxh45YYxFIjDsysjAj2oA3PgB8G7D4C/CnRfBtjcG9NmrSXN6yBDczuxaR8dhk4AJJCqoycZr0SiigAooooAK83/aO1PXtK+BvjKTwxoMviXXZrFrO202FSzOZmELPtAO4IsjSFe4QjIzkekUUAfL/AMbPAafDP9n/AOFmvajGLnUfhXdaJdXD6bF5jSwRGG2vEi3AHYUYyc4z5S5xWd+1D8TNE+JP/CmfBdix1fwh48121utQvI0fyZrGKaNlgbgEeZIyZ5BXyzkc19Y0UAMSGOOERKirEq7QgGFA6Yx6V81fss6jY/Crxl47+CUttdWz6PrNxqOhSfZZPs02mzpHOqCXBHmRtIysCRngjJ3BfpiigAooooAKKKKAP//Z"
+                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACivN/jr+0B4Q/Z58Jrrviu6lxNJ5Npp9mokurt+pEaEgYA5MQo4GclQfzU/aH/wCChHjr4q6zFF4OvtR8BeHLcDbDY3Wy7uHz9+SVACB2CKcepbsAfrnRX5afB7/gqB438Jpp+neOdLtfF+mQ4jl1CH/R9QKZ+8SP3chUdAVUtjlsktX2H+0j+0pp/hj9lS7+Ifg3Womm1qGGDQ7xMEmaVsHgggSRoszFWGQYmBGRigD6Ior83f2Ofi1+058ZPFOmXEGvHVPAWm6jDHrF3q1rbKrxFw0sUcvl+Y8vlkkBSduU3FQy5/SKgAooooAKKKwPiB4hPhHwH4k10WbagdM025vfsiyeWZ/LiZ9gfB27tuM4OM5oA/J//goE66j8ZdS1We8ubu9m1K6tIRNITHHZW8dtFGkS9FUXAvQcdXD9818+658P/FHhnRtN1fV/DmraXpOpRrLZX97ZSxQXSMoZWjkZQrgqQRgngg96+gdS+HHiD4y/EP4P+JvHj/Zrf4h6x9jstDsYjDHZaRDLEp8ok/IGEshUYJODIzMZOf1D+J3jHw/8CPg3rGuXNpFDoOgacI4CKP5GACxQQKOgDMY0HYZ5wKAPwcr2b4dfstfGH4px6Np+k+FtXh0PUAt9bX2oq9vpyo4A8/e3y8qAflBZlAwG4r6u8E/sqx6n+xJ4+8Ya1aQaj4+8Y6e/iVLkW6eZDFG32qGKHHCGUKWbbtz5oU8IK+rP2QfFNl4v/Zh+GV/YuWjTQbSzkVxh45YYxFIjDsysjAj2oA3PgB8G7D4C/CnRfBtjcG9NmrSXN6yBDczuxaR8dhk4AJJCqoycZr0SiigAooooAK83/aO1PXtK+BvjKTwxoMviXXZrFrO202FSzOZmELPtAO4IsjSFe4QjIzkekUUAfL/AMbPAafDP9n/AOFmvajGLnUfhXdaJdXD6bF5jSwRGG2vEi3AHYUYyc4z5S5xWd+1D8TNE+JP/CmfBdix1fwh48121utQvI0fyZrGKaNlgbgEeZIyZ5BXyzkc19Y0UAMSGOOERKirEq7QgGFA6Yx6V81fss6jY/Crxl47+CUttdWz6PrNxqOhSfZZPs02mzpHOqCXBHmRtIysCRngjJ3BfpiigAooooAKKKKAP//Z"
                             if "Python" in ord1['Market Data']['Template']:
-                                b64img="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"
-                        headerItem = QtGui.QTableWidgetItem("")
+                                b64img="/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAvAEQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKbJIsUbO7BEUFmZjgAdyTQA6vi34uf8FCbjwt4o1nSvCfhSPVrTSp2tZ9UvZHERkVivCqBwSMDJGcHFfQmtftM/Czw/qM9hf+OdIhu4HKSxCYuUYHBB2gjNfnndNqsGg+L/Den/EjwSnh3xFqLX88Mty5kLbyVIbycjjGRmgD0nSv+Cmfi6O5B1Pwjotxb5GRaPNE4HflmYH8q+4PhL8UtG+Mngaw8UaG0gtLkFXhmGJIJV4eNvcHuOCMHvX40+JNDXw9qr2SanYauqqrfatNkaSFsjOAWVTkd+K+zv2XP2j/AAx+z3+zzp8niS11S7/tbXb5bdNMhSQjy4rcsW3ugA/eL3PWgD75orzH4J/tFeD/AI+WV54amuo7mzx9osb+IRzxg52sQrMCDjqCa9OoAKKKKACvB/22fHl94B/Z+1qfTbhrW91GWLTUmQkOiyE79pHQlFYZ9694r52/b183PiX9nXVZLWJpn0u7g1B1XqEUlHP4ByfwoA/K2ul8M/DPxd40gabw/4X1nW4VJBl0+wlnUY68qpHes/wnpcWueKdG02YssN5ew27lOoV3CnHvg12fxd8c6s3j7XdLsL640zRNLvprKw060maOGGKNzGuFBxuIQZP4dAAACOP9nT4pSED/hXviRP9qTTJkA+pKgD8avfFeOLwj4J8IeA5mC71jSpr3UdT+zSCRLaa48lRb7hwWRbdS2MgF8Z4OPPn8R6tIpDapesDwQbhzn9azqAPor9gXXbjSf2lNEs4ifK1S1u7WYZ/hWB5h/49EtfqjX5s/8E7/hbqWt/Fc+NJbOSPRdFtpkiu3UhZLiRDHsU/xYRnJx049a/SagAooooAKrajp1tq1jPZXsCXNrOhjlhlXKup6girNFAHgC/sNfCeDxFDrNnpN7YXUNyt1FHb3riJHVgwwpzxkdK/Mj4mqy/EnxYrghxq12GBHfznr9tq+YfjZ+wZ4T+K/ia88Q6bq1x4V1W9bzLkQwLPbyyd38sspDHvhgCecZJoA+RPgX4u8cfETUofC+lal4J0eLTrDzhca/olltaGLaCpkNuzu20555IBJI619g/sgRaP8AF34QDXPEvhvw3f6ouoXFs00Oi20SlV2lRtVAOjdcV5vpP/BMLTYbpW1P4g3V3bd47TSlgc/RmlcfpX1t8Mfhpofwk8GWPhnw/A0On2oJ3SNueVzyzue7E/4DAFAHRWOn2ul2sdtZ20NpbRjCQwRhEUegA4FWKKKACiiigD//2Q=="
+                        headerItem = QtWidgets.QTableWidgetItem("")
                         if txhash(b64img) not in imagecache:
                             pm=ConvertImage(b64img,"base64")
                             imagecache[txhash(b64img)]=pm
@@ -16161,16 +16268,16 @@ def PopulateMarkets():
                         ordtype="Reverse Auction"
                     if 'StartingBid' in ord1['Market Data'] and "Sell Something" in ordtype:
                         ordtype="Auction"
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(ordtype))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(ordtype))
                 if items[pos2]=="Description":
                     if "Barter" in ord1['Market Data']['Template']:
-                        window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(strOUT(ord1['Market Data']['notes'])))
+                        window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(strOUT(ord1['Market Data']['notes'])))
                     else:
-                        window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(strOUT(ord1['Details']['description'])))
+                        window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(strOUT(ord1['Details']['description'])))
                 if items[pos2]=="Title":
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(strOUT(ord1['Market Data']['title'])))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(strOUT(ord1['Market Data']['title'])))
                 if items[pos2]=="Job Length":
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(strOUT(ord1['Market Data']['Job Length'])))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(strOUT(ord1['Market Data']['Job Length'])))
                 Dif=1
                 if usd!="" and usd !=" ":
                     if "Coins" in ord1['Market Data']['Template']:
@@ -16187,12 +16294,12 @@ def PopulateMarkets():
                 if items[pos2]=="Price Per Coin":
                     window.OfferTable.setColumnWidth(pos2,130)
                     if ord1['Market Data']['tracking']==0:
-                        window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem("$"+str(ord1['Market Data']['rate'])))
+                        window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem("$"+str(ord1['Market Data']['rate'])))
                     else:
                         if usd!="" and usd !=" ":
-                            window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem("$"+str(dropzeros(Decimal(ord1['Market Data']['rate'])*Decimal(Dif),1))))
+                            window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem("$"+str(dropzeros(Decimal(ord1['Market Data']['rate'])*Decimal(Dif),1))))
                         else:
-                            window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem("$"+str(ord1['Market Data']['rate'])+"  Updating..."))
+                            window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem("$"+str(ord1['Market Data']['rate'])+"  Updating..."))
                 if items[pos2]=="Price" or items[pos2]=="Amount":
                     if "Custom" in ord1['Market Data']['Template'] or "Coins" in ord1['Market Data']['Template'] or "Something" in ord1['Market Data']['Template'] or "Hire Someone" in ord1['Market Data']['Template'] or "Find Job" in ord1['Market Data']['Template'] or "Barter" in ord1['Market Data']['Template'] or "Python" in ord1['Market Data']['Template']:
                         conv=""
@@ -16213,14 +16320,14 @@ def PopulateMarkets():
                         freq=""
                         if "Hire Someone" in ord1['Market Data']['Template'] or "Find Job" in ord1['Market Data']['Template']:
                             freq=ord1['Market Data']['Pay Frequency'] + ": "
-                        window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(freq)+str(Decimal(int((Decimal(ord1['amount'])*Dif2)))/Decimal(1e8))+conv+", "+ord1['Market Data']['Payment Method']))#Divide by dif if tracking usd
+                        window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(freq)+str(Decimal(int((Decimal(ord1['amount'])*Dif2)))/Decimal(1e8))+conv+", "+ord1['Market Data']['Payment Method']))#Divide by dif if tracking usd
                 if items[pos2]=="Supply":
                     things=''
                     for thing in ord1['Market Data']['barteritems']['supply']:
                         if things != '':
                             things += ', '
                         things+=thing
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(things))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(things))
                 if items[pos2]=="Demand":
                     things=''
                     for thing in ord1['Market Data']['barteritems']['demand']:
@@ -16229,7 +16336,7 @@ def PopulateMarkets():
                         things+=thing
                     if things=='':
                         things='Anything'
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(things))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(things))
                 if items[pos2]=="My Deposit" or items[pos2]=="Their Deposit":
                     conv=""
                     Dif2=1
@@ -16247,7 +16354,7 @@ def PopulateMarkets():
                             st=str(int(Decimal(depositamount)/Decimal(1e8)*Decimal(usd)*Dif2*Decimal(100)))
                         st=str(Decimal(st)/Decimal(100))
                         conv=", $"+st
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(Decimal(int((Decimal(depositamount)*Dif2)))/Decimal(1e8))+conv+", "+ord1['Market Data']['Payment Method']))#Divide by dif if tracking usd
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(Decimal(int((Decimal(depositamount)*Dif2)))/Decimal(1e8))+conv+", "+ord1['Market Data']['Payment Method']))#Divide by dif if tracking usd
                 if items[pos2]=="Shipping":
                     ship=""
                     try:
@@ -16256,10 +16363,10 @@ def PopulateMarkets():
                     except:
                         ship = str(ord1['Market Data']['shipping'])
                     window.OfferTable.setColumnWidth(pos2,130)
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(ship))                
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(ship))                
                 if items[pos2]=="Service Charge":
                     window.OfferTable.setColumnWidth(pos2,130)
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem("%" + str(dropzeros((Decimal(ord1['Market Data']['service'])-1)*100,1))))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem("%" + str(dropzeros((Decimal(ord1['Market Data']['service'])-1)*100,1))))
                 if items[pos2]=="Funding Methods":
                     window.OfferTable.setColumnWidth(pos2,130)
                     dat=""
@@ -16285,7 +16392,7 @@ def PopulateMarkets():
                         if dat!="":
                             dat+=", "
                         dat+="Other"
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(dat))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(dat))
                 if items[pos2]=="Contact":
                     st=""
                     if "BM-" in ord1['Market Data']['Preferred']:
@@ -16294,19 +16401,19 @@ def PopulateMarkets():
                         st="Email"
                     if "BM-" not in ord1['Market Data']['Preferred'] and "@" not in ord1['Market Data']['Preferred']:
                         st="Direct"
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(st)+"  "+ord1['theiraddress']))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(st)+"  "+ord1['theiraddress']))
                 if items[pos2]=="Deposits":
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(ord1['Market Data']['style'])))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(ord1['Market Data']['style'])))
                 if items[pos2]=="Duration":
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(ord1['timeout'])+ " Hours"))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(ord1['timeout'])+ " Hours"))
                 if items[pos2]=="Date":
                     t=ConvertDate(ord1['Market Data']['date'],1)
                     t=t.strftime('%m/%d/%Y')
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(str(t)))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(str(t)))
                 if items[pos2]=="Order Number":
-                    window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(ord1['ordernumber']))
+                    window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(ord1['ordernumber']))
             except:
-                window.OfferTable.setItem(pos, pos2, QtGui.QTableWidgetItem(""))
+                window.OfferTable.setItem(pos, pos2, QtWidgets.QTableWidgetItem(""))
             pos2+=1
         pos+=1
     #window.OfferTable.resizeColumnsToContents()
@@ -16352,9 +16459,9 @@ def PopulateHistory():
     i=0
     for d in HistoryDetail[multisig]:
         pend=0
-        window.FullHistory.setItem(i, 0, QtGui.QTableWidgetItem(d['Label']))
-        newitem = QtGui.QTableWidgetItem(str(d['Type']))
-        window.FullHistory.setItem(i, 2, QtGui.QTableWidgetItem(str(d['Amount'])))
+        window.FullHistory.setItem(i, 0, QtWidgets.QTableWidgetItem(d['Label']))
+        newitem = QtWidgets.QTableWidgetItem(str(d['Type']))
+        window.FullHistory.setItem(i, 2, QtWidgets.QTableWidgetItem(str(d['Amount'])))
         if 'Pending' in d['Details']:
             if d['Details']['Pending']==True:
                 pend=1
@@ -16362,11 +16469,11 @@ def PopulateHistory():
             t=ConvertDate(d['Details']['date'],1)
             t=t.strftime('%m/%d/%Y')
             if pend==1:
-                window.FullHistory.setItem(i, 3, QtGui.QTableWidgetItem(str("Pending    Click for more detals...")))
+                window.FullHistory.setItem(i, 3, QtWidgets.QTableWidgetItem(str("Pending    Click for more detals...")))
             else:
-                window.FullHistory.setItem(i, 3, QtGui.QTableWidgetItem(str("Date: "+str(t)+"   Click for more detals...")))
+                window.FullHistory.setItem(i, 3, QtWidgets.QTableWidgetItem(str("Date: "+str(t)+"   Click for more detals...")))
         else:
-            window.FullHistory.setItem(i, 3, QtGui.QTableWidgetItem(str(d['Details'])))
+            window.FullHistory.setItem(i, 3, QtWidgets.QTableWidgetItem(str(d['Details'])))
         app.processEvents()
         if d['Type']!='' and d['Type']:
             if d['Type']=="Exotic":
@@ -16383,7 +16490,7 @@ def PopulateHistory():
                 newitem.setTextColor(QtGui.QColor(130,130,20))
             if d['Type']=="Contract":
                 newitem.setTextColor(QtGui.QColor(18,18,110))
-        window.FullHistory.setItem(i, 1, QtGui.QTableWidgetItem(newitem))
+        window.FullHistory.setItem(i, 1, QtWidgets.QTableWidgetItem(newitem))
         i+=1
     window.FullHistory.blockSignals(False)
 def PopulateOpen():
@@ -16439,7 +16546,7 @@ def PopulateContracts():
                 window.MyPendingOffers.addItem(newitem)
     except:
         traceback.print_exc()
-        print "Error displaying market order"
+        print("Error displaying market order")
     for c in MyContracts:
         try:#Here we add some style and signals for whose turn it is.
             newitem = QtGui.QListWidgetItem()
@@ -16468,7 +16575,7 @@ def PopulateContracts():
             if c['status']=="offer":
                 try:
                     data=" Order number: "+str(c['ordernumber']) + "  Their Address: " + str(c['TheirBMAddress']) + "  Amount: " + str(Satoshis(c['amount'])) + "  My Deposit: " + str(Satoshis(c['mydeposit'])) + "  Their Deposit: " + str(Satoshis(c['theirdeposit'])) + "  Instant Refund: " + str(Satoshis(c['instantamount'])) + "  Time Limit: " + str(c['timeout'])
-                except Exception, e:
+                except Exception as e:
                     try:
                         data=" Order number: "+str(c['ordernumber']) + "  Their Address: " + str(c['theiraddress']) + "  Amount: " + str(Satoshis(c['amount'])) + "  My Deposit: " + str(Satoshis(c['mydeposit'])) + "  Their Deposit: " + str(Satoshis(c['theirdeposit'])) + "  Instant Refund: " + str(Satoshis(c['instantamount'])) + "  Time Limit: " + str(c['timeout'])
                     except:
@@ -16658,10 +16765,10 @@ def GetEmailPassword():
             if AdvanceArray['MySettings']['AntiLogger']:
                 AntiLogger.reset()
                 AntiLogger.setWindowTitle("Please enter your Email password:")
-                AntiLogger.exec_()                
+                AntiLogger.exec()                
                 text=str(AntiLogger.inputString)
             else:
-                text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter your Email password:'), QtGui.QLineEdit.Password)
+                text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter your Email password:'), QtWidgets.QLineEdit.Password)
                 text=str(text)
         except:
             text=""            
@@ -16692,14 +16799,14 @@ def GetEmailPassword():
                     headers = "\r\n".join(headers)
                     connection.login(username, text)
                     connection.close()
-                except Exception, e:
+                except Exception as e:
                     try:
                         connection.close()
                     except:
                         pass
                     ret = False
                 if ret==False:
-                    print str(e)
+                    print(str(e))
                     QuestionBox(Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail. If you have changed IP addresses or your location recently please check to see if your email provider denied the login.\n\nReply from server:\n")+str(e), Gtranslate("OK"),1)
                     window.EmailStatus.setText("")
                     ManualPassword="*"
@@ -16933,14 +17040,14 @@ def sendBTCtx(tx):
                     float('a')
             except:
                 traceback.print_exc()
-                print str(rspns.text)
+                print(str(rspns.text))
                 float('a')
         else:
             #Manual submission
-            #print str(tx)
+            #print(str(tx))
             #w=m.getch()
             #if w=="d":
-            #    print str(txhash(str(tx)))
+            #    print(str(txhash(str(tx))))
             #else:
             #    float('a')
             #rspns = str(txhash(str(tx)))
@@ -16948,7 +17055,7 @@ def sendBTCtx(tx):
                 #Might need cloudflare-scrape to make blockexplorer api work
                 url='https://blockexplorer.com/api/tx/send'
                 rspns = rpost(url,{'rawtx':tx}).text
-                print str(rspns)
+                print(str(rspns))
                 if "txid" not in str(rspns).lower():
                     if False:#Need new custom electrum library
                         rspns = ea.send_tx(tx)
@@ -16959,7 +17066,7 @@ def sendBTCtx(tx):
                         text=str(pybit2.bci.bci_pushtx(tx))
                         if "submitted" in text.lower():
                             rspns=txhash(tx)
-                            print "Transaction submitted"
+                            print("Transaction submitted")
                         else:
                             rspns="TX rejected"
                     except:
@@ -16968,10 +17075,10 @@ def sendBTCtx(tx):
                     #rs = blockcypher.pushtx(tx_hex=tx)
                     pass
                 if " fail" in str(rspns).lower():
-                    print str(rspns)
+                    print(str(rspns))
                     rspns = "TX rejected"
                 if rspns == "" or rspns == False: #If it's False it means no connections were made. We can potentially fall back on blockchain.info pybit.pushtx commands in chainz. May need to read responses differently.
-                    print str(rspns)
+                    print(str(rspns))
                     if rspns != False:
                         rspns = "TX rejected"
                     else:
@@ -16979,14 +17086,14 @@ def sendBTCtx(tx):
                 #Some nodes say things like "transaction submitted" or can vary their responses. So best to not assume you will get a hash on a good TX.
                 #if "TX rejected" not in rspns:
                 #    if len(rspns) < 35 or len(rspns) > 96: #Hashes are supposed to be 64 characters in length, what is the server trying to say?
-                #        print "Potentially not a hash returned in response message: ", str(rspns)
+                #        print("Potentially not a hash returned in response message: ", str(rspns))
                 #        rspns = "TX rejected"
                 #    else:
                 #        pass
     except:
         rspns = "TX rejected"
     if "rejected" in str(rspns):
-        print str(tx)
+        print(str(tx))
     return rspns
 
 #Splash screen while waiting.
@@ -17028,9 +17135,9 @@ def NetSplash(showsplash=1, lockthings=1, waitforthreads=1, checkwait=0, timelim
                     iswt2=iswaiting
             if timeit>timelimit:
                 busy=1
-                print str(LockTHIS)
-                print str(iswt2)
-                print str(iswt)
+                print(str(LockTHIS))
+                print(str(iswt2))
+                print(str(iswt))
                 break
         #You could try locking things if you want
         if 'BM' not in LockTHIS and 'DL' not in LockTHIS and 'BL' not in LockTHIS and isdownloading!=1 and iswt2==1:     
@@ -17045,12 +17152,12 @@ def NetSplash(showsplash=1, lockthings=1, waitforthreads=1, checkwait=0, timelim
 
 #For locktime scripts
 def serializeTime(txobj):
-    o=encode(txobj,256,4)[::-1].encode('hex')
+    o=safe_hexlify(encode(txobj,256,4))[::-1]
     return o
 
 #For decoding locktime scripts
 def deserializeTime(txobj):
-    txobj = txobj.decode('hex')
+    txobj = safe_unhexlify(txobj)
     pos = [0]
     pos[0] += 4
     return decode(txobj[pos[0]-4:pos[0]][::-1],256)
@@ -17065,7 +17172,7 @@ def hexlen(data):
 #Freezing script based on a p2sh
 def FreezeScript(freezetime, addressScript):
     encTime = serializeTime(int(freezetime))
-    #deserializeTime(encTime.decode('hex'))
+    #deserializeTime(safe_unhexlify(encTime))
     #OP_2,BYTES of key to push, key1, BYTES of key to push, key2, OP_2(2 of 2), CHECKMULTISIG (ae)    
     lockscript = hexlen(encTime)+encTime+"b175"+addressScript
     return lockscript
@@ -17137,11 +17244,11 @@ def create_sig_for_tx(inputs, outputs, priv, pub,pub2, timest):#If they try to s
     txpos=0
     sigs=[]
     for d in inputs:
-        if unicode(d['address'])==unicode(msigaddr):
+        if str(d['address'])==str(msigaddr):
             if BitHaloClient == True:
-                sig = pybit.transaction.multisign(tmptx.decode('hex'),txpos,mscript.decode('hex'),priv)
+                sig = pybit.transaction.multisign(safe_unhexlify(tmptx),txpos,safe_unhexlify(mscript),priv)
             else:
-                sig = multisign(tmptx.decode('hex'),txpos,mscript.decode('hex'),priv)
+                sig = multisign(safe_unhexlify(tmptx),txpos,safe_unhexlify(mscript),priv)
             sigs.append(sig)
             txpos+=1
     return sigs, True
@@ -17193,7 +17300,7 @@ def create_sig_for_redemption(inputs, outputs, uniqueid, dir1, timest, privme=0,
     if splashme==1:
         NetSplash(1,0,0)
     for d in inputs:
-        if d['address']==unicode(msigaddr):
+        if d['address']==str(msigaddr):
             sigscript=mscript
             if d['output'] in NEWTxidLookup:#Exotic Spend
                 if 'script' in NEWTxidLookup[d['output']]:
@@ -17201,11 +17308,11 @@ def create_sig_for_redemption(inputs, outputs, uniqueid, dir1, timest, privme=0,
                         sigscript=NEWTxidLookup[d['output']]['script']
             if BitHaloClient == True:
                 if not BitcoinCASH:
-                    sig = pybit.transaction.multisign(tmptx.decode('hex'),txpos,sigscript.decode('hex'),priv)
+                    sig = pybit.transaction.multisign(safe_unhexlify(tmptx),txpos,safe_unhexlify(sigscript),priv)
                 else:
                     sig = pybit2.segwit.segwit_multisign(tmptx,txpos,sigscript,priv, d['value'], 65)
             else:
-                sig = multisign(tmptx.decode('hex'),txpos,sigscript.decode('hex'),priv)
+                sig = multisign(safe_unhexlify(tmptx),txpos,safe_unhexlify(sigscript),priv)
             sigs.append(sig)
             txpos+=1
     if splashme==1:
@@ -17249,7 +17356,7 @@ def broadcast_tx_to_network(sigs,sigs2,inputs,outputs,pub1,pub2, timest, skipbro
                 rspns = "TX rejected"
     else:
         rspns = ""
-    pass #print "Electrum server sent back:",txhash(tx),"\n",rspns
+    pass #print("Electrum server sent back:",txhash(tx),"\n",rspns)
     return tx, rspns
 
 #This function is for basic braodcasting a normal send and combining signatures
@@ -17313,7 +17420,7 @@ def broadcast_to_network(sigs,sigs2,inputs,outputs,uniqueid1, timest, skipbroadc
                         if meaning['hashbefore']!="":
                             if meaning['hashbefore'] in AdvanceArray['hashpasswords']:
                                 if hash160(AdvanceArray['hashpasswords'][meaning['hashbefore']])==meaning['hashbefore']:
-                                    sg=AdvanceArray['hashpasswords'][meaning['hashbefore']].encode('hex')
+                                    sg=AdvanceArray['hashpasswords'][safe_hexlify(meaning['hashbefore'])]
                                     scrip.insert(-1,sg)                                    
                                     scrip.insert(-1,81)
                         else:
@@ -17322,7 +17429,7 @@ def broadcast_to_network(sigs,sigs2,inputs,outputs,uniqueid1, timest, skipbroadc
                         if meaning['hashafter']!="":
                             if meaning['hashafter'] in AdvanceArray['hashpasswords']:
                                 if hash160(AdvanceArray['hashpasswords'][meaning['hashafter']])==meaning['hashafter']:
-                                    sg=AdvanceArray['hashpasswords'][meaning['hashafter']].encode('hex')
+                                    sg=AdvanceArray['hashpasswords'][safe_hexlify(meaning['hashafter'])]
                                     scrip.insert(-1,sg)
                                     scrip.insert(-1,None)
                         else:
@@ -17339,7 +17446,7 @@ def broadcast_to_network(sigs,sigs2,inputs,outputs,uniqueid1, timest, skipbroadc
                 res=ThePeg.checktransaction(tx)
                 rspns="TX rejected: " + str(ThePeg.valid)
                 if res==False:
-                    print str(tx)
+                    print(str(tx))
                     return tx, rspns
         if BitHaloClient:
             if splashme==1:
@@ -17348,7 +17455,7 @@ def broadcast_to_network(sigs,sigs2,inputs,outputs,uniqueid1, timest, skipbroadc
         else:
             try:
                 rspns = BLK.sendrawtransaction(tx)
-                print txhash(tx)
+                print(txhash(tx))
                 if splashme==1:
                     NetSplash(0)
             except:
@@ -17367,17 +17474,17 @@ def broadcast_to_network(sigs,sigs2,inputs,outputs,uniqueid1, timest, skipbroadc
                             res=QuestionBox('Another possibility is that the counter-party spent the time locked input using custom software and did not notify you. If you want, you can investigate the individual inputs. An investigation would require you to check manually and put the inputs in question on hold until the investigation completes.', ' Investigate the inputs ', ' I will try again later ')
                             if res==0:
                                 for i in involvedinputs:
-                                    for nkey, nvalue in NEWTxidLookup.iteritems():
+                                    for nkey, nvalue in NEWTxidLookup.items():
                                         if 'script' in nvalue:
                                             if 'txid' in nvalue:
                                                 if nkey != nvalue['txid']:                                                
                                                     AdvanceArray[msigaddr]['investigate'][nvalue['txid']]=True
                                 QuestionBox('The exotic inputs in this transaction have been placed on hold. You should be able to spend normally again. You can investigate the inputs by clicking on them in the history tab.', 'OK')
                 try:                    
-                    print deserialize(tx)
+                    print(deserialize(tx))
                     traceback.print_exc()
                 except:
-                    print str(tx)
+                    print(str(tx))
     else:
         rspns = ""
     return tx, rspns
@@ -17387,7 +17494,7 @@ def ResendTransactions():
         mempool=BLK.getrawmempool()
         for m1 in mempool:
             res=BLK.sendrawtransaction(BLK.getrawtransaction(m1))
-            print "Sent: ", str(res)
+            print("Sent: ", str(res))
             time.sleep(1)
         return mempool
     except:
@@ -17467,9 +17574,9 @@ def translate_script(myscript):
             if str(scr[3])=="2" and str(scr[6])=="2" and str(scr[7])=="174" and len(scr)<9:
                 mymscript=serialize_script([scr[3],scr[4],scr[5],scr[6],scr[7]])
                 if BitHaloClient==False:
-                    msigaddr = scriptaddr(mymscript.decode('hex'))
+                    msigaddr = scriptaddr(safe_unhexlify(mymscript))
                 else:
-                    msigaddr = pybit.transaction.scriptaddr(mymscript.decode('hex'))
+                    msigaddr = pybit.transaction.scriptaddr(safe_unhexlify(mymscript))
             else:
                 msigaddr = " (address type unsupported by Halo) "
             meaning['destination']=msigaddr
@@ -17484,27 +17591,27 @@ def translate_script(myscript):
             #perhaps something like OP_LESSTHANOREQUAL(CODE 161, hex a1)
             if str(scr[1])=="169":#Hash Puzzle
                 if str(scr[3])!="136":#Not scripted properly
-                    print "Not 136"
+                    print("Not 136")
                     float('a')
                 meaning['hashbefore']=scr[2]
                 offset+=3
             if str(scr[1+offset])=="2" and str(scr[4+offset])=="2" and str(scr[5+offset])=="174" and str(scr[6+offset])=="103":
                 mymscript=serialize_script([scr[1+offset],scr[2+offset],scr[3+offset],scr[4+offset],scr[5+offset]])
                 if BitHaloClient==False:
-                    msigaddr = scriptaddr(mymscript.decode('hex'))
+                    msigaddr = scriptaddr(safe_unhexlify(mymscript))
                 else:
-                    msigaddr = pybit.transaction.scriptaddr(mymscript.decode('hex'))                
+                    msigaddr = pybit.transaction.scriptaddr(safe_unhexlify(mymscript))                
             else:
                 msigaddr = " (address type unsupported by Halo) "
-                print "address not right"
+                print("address not right")
                 float("a")#Why bother if it is not supported
             if str(scr[6+offset])!="103":#Not for Halo
-                print "Not 103"
+                print("Not 103")
                 float('a')                
             ExpectedLength+=6#It can't just be a hash puzzle, there also needs to be a recipient
             meaning['timestamp']=deserializeTime(scr[ExpectedLength+offset])
             if str(scr[ExpectedLength+offset+1])!="177" and str(scr[ExpectedLength+offset+2])!="117":
-                print 'Not 177'
+                print('Not 177')
                 float('a')
             ExpectedLength+=3
             meaning['before']=msigaddr            
@@ -17544,24 +17651,24 @@ def translate_script(myscript):
                     meaning['description']+="the coins are destroyed."
                     ExpectedLength+=2
                 else:
-                    print "Not 104"
+                    print("Not 104")
                     float('a')
             else:
                 if str(scr[10+offset])=="169":
                     if str(scr[12+offset])!="136":#Not scripted properly
-                        print "not 2nd 136"
+                        print("not 2nd 136")
                         float('a')
                     meaning['hashafter']=scr[11+offset]
                     offset+=3         
                 if str(scr[10+offset])=="2" and str(scr[13+offset])=="2" and str(scr[14+offset])=="174" and str(scr[15+offset])=="104":
                     mymscript=serialize_script([scr[10+offset],scr[11+offset],scr[12+offset],scr[13+offset],scr[14+offset]])
                     if BitHaloClient==False:
-                        msigaddr = scriptaddr(mymscript.decode('hex'))
+                        msigaddr = scriptaddr(safe_unhexlify(mymscript))
                     else:
-                        msigaddr = pybit.transaction.scriptaddr(mymscript.decode('hex'))
+                        msigaddr = pybit.transaction.scriptaddr(safe_unhexlify(mymscript))
                 else:
                     msigaddr = " (address type unsupported by Halo) "
-                    print "not 2nd address"
+                    print("not 2nd address")
                     float('a')
                 ExpectedLength+=6#It can't just be a hash puzzle, there also needs to be a recipient                    
                 meaning['destination']=msigaddr
@@ -17584,13 +17691,13 @@ def translate_script(myscript):
                 if meaning['hashafter']!="":
                     meaning['description']+=" if he solves a hash puzzle (password)"                            
             if len(scr) != ExpectedLength+offset:#We cannot have them adding anything at the end of the script.
-                print "Not Expected ",ExpectedLength+offset
+                print("Not Expected ",ExpectedLength+offset)
                 float('a')
     except:
         meaning={}
         traceback.print_exc()
-        print traceback.extract_stack()
-        print "Exotic script cannot be translated"
+        print(traceback.extract_stack())
+        print("Exotic script cannot be translated")
     return meaning
 def SignCode(code):
     priv,check=DecryptPrivateKey(PrivKeyFilename1, PrivKeyFiledir1,"0", "", "1")
@@ -17640,7 +17747,7 @@ def validateCode(code):
                             return code
     except:
         traceback.print_exc()
-    print "Code validation failed: " + str(txhash(code))
+    print("Code validation failed: " + str(txhash(code)))
     return False    
 #we assume: exactly two signatures are applied, which can be any
 #of buyer,seller and escrow. If the order in which they are provided is
@@ -17756,7 +17863,7 @@ def MakeCipherOutputs(xhex, burn=0):
     outs=[]
     if burn==1:
         text=hexlify(xhex[:(CoinSelect['6aLength'])])
-        hexleng=num_to_var_int((len(text)/2)).encode('hex')
+        hexleng=num_to_var_int(safe_hexlify((len(text)/2)))
         if len(xhex)>75:
             hexleng="4c"+hexleng
         outs.append(str("6a"+hexleng+text))
@@ -17766,7 +17873,7 @@ def MakeCipherOutputs(xhex, burn=0):
         mystr+=h
         if j ==20:
             j=0
-            addr=hash_to_address(("55").decode('hex'),mystr)#This can only be a maximum of twenty bits
+            addr=safe_unhexlify(hash_to_address(("55"),mystr))#This can only be a maximum of twenty bits
             mystr=""
             outs.append(addr)
     #Check to see if there is a partial string. This will also be a valid address
@@ -17774,7 +17881,7 @@ def MakeCipherOutputs(xhex, burn=0):
         length = len(mystr)
         while len(mystr)<20:#Pad it on the end
             mystr+="*"
-        addr=hash_to_address(("55").decode('hex'),mystr)
+        addr=safe_unhexlify(hash_to_address(("55"),mystr))
         outs.append(addr)
     return outs
 #Here we decode all the addresses from a list of addresses and add them to a string
@@ -17809,14 +17916,14 @@ def ConvertScriptToOuts(myscript):
         else:
             text="*"+text+"#"
         hexscr=hexlify(text)        
-        hexleng=num_to_var_int((len(hexscr)/2)).encode('hex')
+        hexleng=num_to_var_int(safe_hexlify((len(hexscr)/2)))
         if len(text)>75:
             hexleng="4c"+hexleng
         outs.append({'value':5576,'script':"6a"+hexleng+hexscr})
         i+=1
     #Unfortunately many coins have rules saying you can add only one 6a per output however because we
     #can store more in 6a, we should simply add outputs
-    #hash_to_address(("55").decode('hex'),"11111111111111111111") is how you generate this burn address
+    #hash_to_addresssafe_unhexlify(("55"),"11111111111111111111") is how you generate this burn address
     x = len(outs)
     y = 0
     while y < x:
@@ -17849,7 +17956,7 @@ def script_to_address2(script,vbyte=0):#for magic bytes on BIP0016
     except:
         pass
     if re.match('^[0-9a-fA-F]*$',script):
-        script = script.decode('hex')
+        script = safe_unhexlify(script)
     if script[:3] == '\x76\xa9\x14' and script[-2:] == '\x88\xac' and len(script) == 25:
         return bin_to_b58check(script[3:-2],25) # pubkey hash addresses
     else:
@@ -17983,7 +18090,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
                         found = 1
                         DenomCount[j-1] += 1 #Counting to make sure it is not over 5
                         if DenomCount[j-1] >  Maxdenom: #We throw it in the pool with the rest of the loose change. Eventually it will become a larger bill
-                            pass #print "OVERTHELIMIT:",d,e
+                            pass #print("OVERTHELIMIT:",d,e)
                             SpendDenom[j-1].append(d) #We are over the limit so lets try and change the smaller bills into larger bills. Most of the time it will come right back to us(lets keep it very transparent.)
                             changecount+=1
                             TempTotal[j-1] += val
@@ -18034,7 +18141,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
     pairs=[]
     for d in Spendthis:
         if d['output'] in NEWTxidLookup:                        
-            for nkey, nvalue in NEWTxidLookup.iteritems():
+            for nkey, nvalue in NEWTxidLookup.items():
                 if 'script' in nvalue:            
                     if 'txid' in nvalue: 
                         if nvalue['txid']!=nkey:#We found the pair
@@ -18075,7 +18182,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
             denominations = sorted(denominations, key=lambda k: k['liquidity']['ltotal'])
     else:
         denominations = sorted(denominations, key=lambda k: k['value'])
-    pass #print "Remaining Inputs:", denominations, "\n\n"
+    pass #print("Remaining Inputs:", denominations, "\n\n")
     pairs=[]
     Total3=Total
     remainder=0
@@ -18099,7 +18206,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
             if mybuffer==2:
                 Total2-=d['liquidity']['nfreeze']
             if d['output'] in NEWTxidLookup:
-                for nkey, nvalue in NEWTxidLookup.iteritems():
+                for nkey, nvalue in NEWTxidLookup.items():
                     if 'script' in nvalue:            
                         if 'txid' in nvalue: 
                             if nvalue['txid']!=nkey:#We found the pair
@@ -18158,13 +18265,13 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
                         if denominations[i]['liquidity']['rating'][0]<ThePeg.subpremiumrating and denominations[i] not in SkipOneTime:#It's subpremium, save it as a last resort
                             skpme=1
                 if val2 >= purchaseamount-Total3 and skpme==0:
-                    pass #print "Want to spend this:", denominations[i], "\nCost - total inputs so far:", purchaseamount-Total
+                    pass #print("Want to spend this:", denominations[i], "\nCost - total inputs so far:", purchaseamount-Total)
                     if denominations[i] in SkipOneTime:
                         SkipOneTime.remove(denominations[i])
                     if denominations[i]['output'] in NEWTxidLookup:#They want to spend a potential exotic spend
                         if NEWTxidLookup[denominations[i]['output']]!={}:
                             pair=""
-                            for nkey, nvalue in NEWTxidLookup.iteritems():
+                            for nkey, nvalue in NEWTxidLookup.items():
                                 if nkey==denominations[i]['output']:
                                     if 'txid' in nvalue:
                                         if nvalue['txid']!=denominations[i]['output']:#Notification or pair found
@@ -18212,7 +18319,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
                     Total += val
                     break
                 if i+1==length or i+1==(length-len(SkipOneTime)):
-                    pass #print "No denoms big enough found so I want to spend this:", denominations[i], "\nCost - total inputs so far:", purchaseamount-Total
+                    pass #print("No denoms big enough found so I want to spend this:", denominations[i], "\nCost - total inputs so far:", purchaseamount-Total)
                     if rtx==1:#wait to add the remainders and sort liquidity
                         if val2==0:
                             break
@@ -18228,7 +18335,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
                     if denominations[i]['output'] in NEWTxidLookup:#They want to spend a potential exotic spend
                         if NEWTxidLookup[denominations[i]['output']]!={}:
                             pair=""
-                            for nkey, nvalue in NEWTxidLookup.iteritems():
+                            for nkey, nvalue in NEWTxidLookup.items():
                                 if nkey==denominations[i]['output']:
                                     if 'txid' in nvalue:
                                         if nvalue['txid']!=denominations[i]['output']:#Notification or pair found
@@ -18285,7 +18392,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
                 if len(denominations)>0:
                     denominations = sorted(denominations, key=lambda k: k['liquidity']['ltotal'])
     #Priority inputs that are time locked and set to eventually trigger. For now, we will make all of them a priority
-    for nkey, nvalue in NEWTxidLookup.iteritems():
+    for nkey, nvalue in NEWTxidLookup.items():
         if 'script' in nvalue:
             if 'txid' in nvalue: 
                 if nvalue['txid']!=nkey:#We found the pair
@@ -18354,7 +18461,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
         while remaining >= denom[deno]:
             i+=1
             coinCount[deno] += 1
-            pass #print coinCount[deno]
+            pass #print(coinCount[deno])
             difference = remaining
             remaining -= denom[deno]
             difference = difference - remaining
@@ -18363,13 +18470,13 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
         deno += 1
 
     #   Report the results.
-    pass #print "Total being spent:", Total
-    pass #print "Cost:", purchaseamount
-    pass #print "Your change is ", change + frozentransfer
+    pass #print("Total being spent:", Total)
+    pass #print("Cost:", purchaseamount)
+    pass #print("Your change is ", change + frozentransfer)
     for deno in range(0, ndenominations):
-        pass #print denom[deno], "coins: ", coinCount[deno]
+        pass #print(denom[deno], "coins: ", coinCount[deno])
     if remaining:
-        pass #print "Left over:", remaining
+        pass #print("Left over:", remaining)
     if remaining > 0:
         if remaining < 5500:#The ridiculous anti-dust minimum. We should add it to our smallest input.
             changelist.sort()
@@ -18384,9 +18491,9 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
     for v in changelist:
         out={'value':int(v),'address':str(myaddress)}
         outputs.append(out)
-    #print Spendthis
-    #print "TOTAL:", Total
-    #print "CHANGE:", change
+    #print(Spendthis)
+    #print("TOTAL:", Total)
+    #print("CHANGE:", change)
     if 'pegging' in CoinSelect and CoinSelect['pegging']:
         if specialtx==1:
             Spendthis = sorted(Spendthis, key=lambda k: k['liquidity']['rtotal'], reverse=True)
@@ -18399,7 +18506,7 @@ def MakeChange (inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spe
         for i in ExoticInputs:
             Spendthis.remove(i)
             Spendthis.insert(0+pos, i)
-            outputs.insert(0, {'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)).encode('hex')+hexlify('**'+str(ftype)+'**'+str(inx))})
+            outputs.insert(0, {'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)))+hexlify('**'+str(ftype)+'**'+str(inx))})
             inx+=1
             pos+=1
         inx=len(ExoticInputs)
@@ -18461,7 +18568,7 @@ def HideAnyFileInImage(path,path1,filename):
         im2.save(path1,'PNG')
         QuestionBox("File is now hidden. To unhide return to the File Menu, select Key To Image, and load the image.", "OK")
         return
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         QuestionBox("File is too large to hide, please choose a larger image for hiding.", "OK")
         return
@@ -18477,11 +18584,11 @@ def SelectKeyForHide(path=""):
         if res==2:
             restext="Open the image you wish to extract your file or key from."
             resfiles="Image File (*.jpg *.jpeg *.png)"
-        path = QtGui.QFileDialog.getOpenFileName(window,Gtranslate(restext),MacDir()+"",resfiles)
+        path = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate(restext),MacDir()+"",resfiles)[0]
     if path=="":
         return
     file1=QtCore.QDir(path)
-    filename=strOUT(strIN(QtCore.QString(file1.dirName())))
+    filename=strOUT(strIN(str(file1.dirName())))
     path=strOUT(strIN(path))
     if ".jpeg" in path or ".jpg" in path or ".png" in path:
         try:
@@ -18489,7 +18596,7 @@ def SelectKeyForHide(path=""):
             data=stepic.decode(im)
             mbox = QuestionBox("Would you like to extract the file from this image?", " Yes ", " No ")
             if mbox == 0:
-                path1 = strOUT(strIN(QtGui.QFileDialog.getExistingDirectory(window,Gtranslate("Choose the directory where you want to save the file."),MacDir()+"",QtGui.QFileDialog.ShowDirsOnly)))
+                path1 = strOUT(strIN(QtWidgets.QFileDialog.getExistingDirectory(window,Gtranslate("Choose the directory where you want to save the file."),MacDir()+"",QtWidgets.QFileDialog.ShowDirsOnly)))
                 if path1=="":
                     return
                 try:
@@ -18499,9 +18606,9 @@ def SelectKeyForHide(path=""):
                 return
             else:
                 return
-        except Exception, e:
+        except Exception as e:
             pass
-    path2 = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open the image you wish to use for hiding the file. PNG is preferred, both JPEG and PNG are supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))
+    path2 = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open the image you wish to use for hiding the file. PNG is preferred, both JPEG and PNG are supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))[0]
     if path2=="":
         return
     if ".private" not in path:
@@ -18538,7 +18645,7 @@ def LoadHiddenImage(path):
     data=ast.literal_eval(data)
     return data
 def ResizeImage(path, maxsize, message=1):#Resizes an image in bytes and saves it in a backup file and returns an object to be encoded into a base64 encoded string
-    output = StringIO.StringIO()
+    output = BytesIO()
     size = os.stat(path).st_size
     im = Image.open(path)
     mquality = 90
@@ -18555,7 +18662,7 @@ def ResizeImage(path, maxsize, message=1):#Resizes an image in bytes and saves i
             compresssplash.show()
             compresssplash.repaint()
         while size > maxsize:
-            output = StringIO.StringIO()
+            output = BytesIO()
             if mquality != 10:
                 im.save(output, 'JPEG', quality=mquality)
                 im.save(path+"backup"+".jpg",'JPEG',quality=mquality)
@@ -18576,11 +18683,11 @@ def ResizeImage(path, maxsize, message=1):#Resizes an image in bytes and saves i
 def EncryptPrivateKey(dir1="",file=""):
     QuestionBox("Important! You can give each private key a different password if you wish. If you forget any of your passwords the wallet will be useless. This is also true if you are on a joint account. If your partner forgets their password neither of you will be able to spend from the account! You can use the same password for both keys or you can choose to protect only one. Backing up the original keys in a safety deposit box is highly recommended! If you have backed up already, make sure those files don't contain your unencrypted key. Think carefully before proceeding. Passphrases are superior to passwords. (Hint: A line from your favorite book with a number on the end)", "OK")
     if file=="":
-        privpath1 = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open the key you want to password protect/encrypt."),MacDir()+"key1.private","Private Key File (*.private *.jpg *.jpeg *.png)")
+        privpath1 = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open the key you want to password protect/encrypt."),MacDir()+"key1.private","Private Key File (*.private *.jpg *.jpeg *.png)")[0]
         #Convert qstring to strings
         file1=QtCore.QDir(privpath1)
-        filedir1=strOUT(strIN(QtCore.QString(file1.path().replace(file1.dirName(),""))))
-        file1=strOUT(strIN(QtCore.QString(file1.dirName())))
+        filedir1=strOUT(strIN(str(file1.path().replace(file1.dirName(),""))))
+        file1=strOUT(strIN(str(file1.dirName())))
     else:
         file1=file
         filedir1=dir1
@@ -18599,10 +18706,10 @@ def EncryptPrivateKey(dir1="",file=""):
         QuestionBox("This file is already protected.", "OK")
         return
     try:
-        text, ok = QtGui.QInputDialog.getText(window, file1, Gtranslate('Enter the password for this private key:'), QtGui.QLineEdit.Password)
+        text, ok = QtWidgets.QInputDialog.getText(window, file1, Gtranslate('Enter the password for this private key:'), QtWidgets.QLineEdit.Password)
         if str(text)=="":
             return
-        text1, ok = QtGui.QInputDialog.getText(window, file1, Gtranslate('Confirm the password for this private key:'), QtGui.QLineEdit.Password)
+        text1, ok = QtWidgets.QInputDialog.getText(window, file1, Gtranslate('Confirm the password for this private key:'), QtWidgets.QLineEdit.Password)
         if str(text) != str(text1):
             QuestionBox("The passwords typed did not match try again.", "OK")
             return
@@ -18647,10 +18754,10 @@ def DecryptPrivateKey(key,dir1,check,text="", nolock=""):
             if AdvanceArray['MySettings']['AntiLogger']:
                 AntiLogger.setWindowTitle("Enter your password for "+str(key)+":")
                 AntiLogger.reset()
-                AntiLogger.exec_()                
+                AntiLogger.exec()                
                 text=str(AntiLogger.inputString)
             else:
-                text, ok = QtGui.QInputDialog.getText(window, key, Gtranslate('Enter the password for this private key:'), QtGui.QLineEdit.Password)
+                text, ok = QtWidgets.QInputDialog.getText(window, key, Gtranslate('Enter the password for this private key:'), QtWidgets.QLineEdit.Password)
             if text=="":
                 return "Failed", "1"
         encrypted = data[3].replace("PASSWORDPROTECTED:","")
@@ -18825,9 +18932,9 @@ def GetNewUser():
                                 for inp in o['inputs']:
                                     MasterOrders[inp['output']]=''
                     except:
-                        print "Exception building order list"
+                        print("Exception building order list")
             except:
-                pass #print "Exception"
+                pass #print("Exception")
         i+=1
     if found==0:
         OnOrders=[]
@@ -18955,26 +19062,26 @@ def NewWallet(path1="", path2="", ask=0):
             window.MakeJointAccount()
             return
     if path1=="":
-        privpath1 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Create your first key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)")
+        privpath1 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Create your first key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)")[0]
         if privpath1=="":
             return False #Either need to set default variables for keys on cancel or just default to no keys connected
         if res==0:
             QuestionBox("Create your second key and store it in a different directory than the first. If you wish to create only one key, you can cancel and open a wallet with a second key later.", "OK")
-            privpath2 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Create your second key and store it somewhere you will remember. You may also cancel."),MacDir()+"key2.private","Private Key File (*.private)")
+            privpath2 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Create your second key and store it somewhere you will remember. You may also cancel."),MacDir()+"key2.private","Private Key File (*.private)")[0]
     if path1!="":
-        privpath1=QtCore.QString(path1)
+        privpath1=str(path1)
     if path2!="":
-        privpath2=QtCore.QString(path2)
+        privpath2=str(path2)
     if "pegdatabase" in str(privpath1) or "pegdatabase" in str(privpath2):
         QuestionBox("The directory you chose was not valid. Please choose a different directory.", " OK ")
         return False
     #converting between strings and qstrings
     file1=QtCore.QDir(privpath1)
-    filedir1=strOUT(strIN(QtCore.QString(file1.path().replace(file1.dirName(),""))))
-    file1=strOUT(strIN(QtCore.QString(file1.dirName())))
+    filedir1=strOUT(strIN(str(file1.path().replace(file1.dirName(),""))))
+    file1=strOUT(strIN(str(file1.dirName())))
     file2=QtCore.QDir(privpath2)
-    filedir2=strOUT(strIN(QtCore.QString(file2.path().replace(file2.dirName(),""))))
-    file2=strOUT(strIN(QtCore.QString(file2.dirName())))
+    filedir2=strOUT(strIN(str(file2.path().replace(file2.dirName(),""))))
+    file2=strOUT(strIN(str(file2.dirName())))
     #Don't let a user overwrite a key
     try:
         if os.path.exists(os.path.join(filedir1,file1)):
@@ -19110,7 +19217,7 @@ def OpenWallet():
     global mycfg, PrivKeyFilename1, PrivKeyFilename2, PrivKeyFiledir1, PrivKeyFiledir2, keysconnected, NewUser, updatesomething, MyEmail, WatchlistQueue
     #Check to see if this filters the directory
     res=QuestionBox("Please select the type of account you wish to open.", " Normal account ", " Shared(2FA Two Step)/Joint Account ")
-    privpath1 = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open your first private key."),MacDir()+"key1.private","Private Key File (*.private *.jpg *.jpeg *.png)")
+    privpath1 = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open your first private key."),MacDir()+"key1.private","Private Key File (*.private *.jpg *.jpeg *.png)")[0]
     if privpath1=="":
         return False
     hidden1=0
@@ -19118,8 +19225,8 @@ def OpenWallet():
         hidden1 = 1
     #converting between strings and qstrings
     file1=QtCore.QDir(privpath1)
-    filedir1=strOUT(strIN(QtCore.QString(file1.path().replace(file1.dirName(),""))))
-    file1=strOUT(strIN(QtCore.QString(file1.dirName())))
+    filedir1=strOUT(strIN(str(file1.path().replace(file1.dirName(),""))))
+    file1=strOUT(strIN(str(file1.dirName())))
     #extension check
     needspair=""
     if ".private" not in file1 and hidden1 == 0:
@@ -19127,7 +19234,7 @@ def OpenWallet():
     #Need to make sure the key has been paired
     try:#Even if its encrypted the program will assume its valid
         if hidden1==1:
-            d=LoadHiddenImage(strOUT(strIN(QtCore.QString(privpath1))))
+            d=LoadHiddenImage(strOUT(strIN(str(privpath1))))
             needspair=d[1].strip()
         else:
             f = os.path.join(filedir1,file1)
@@ -19140,13 +19247,13 @@ def OpenWallet():
         QuestionBox("There was an error opening the private key file.", "OK")
         return False
     if needspair == "COMBINE THIS KEY WITH ANOTHER PRIVATE OR SHARE FILE TO FINISH CREATING THE ACCOUNT.":
-        privpath2 = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Please open a second share or private key to finish creating/pairing this account."),MacDir()+"key2.share","Key Files (*.private *.share  *.jpg *.jpeg *.png)")
+        privpath2 = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Please open a second share or private key to finish creating/pairing this account."),MacDir()+"key2.share","Key Files (*.private *.share  *.jpg *.jpeg *.png)")[0]
         if privpath2=="":
             QuestionBox("The private key has not been paired yet!", "OK")
             return False
     else:
         if res==0:
-            privpath2 = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open your second private key or cancel if you are only checking contracts or using 2 Step Sending."),MacDir()+"key2.private","Key Files (*.private *.share  *.jpg *.jpeg *.png)")
+            privpath2 = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open your second private key or cancel if you are only checking contracts or using 2 Step Sending."),MacDir()+"key2.private","Key Files (*.private *.share  *.jpg *.jpeg *.png)")[0]
             if privpath2 == "":
                 res=1
         else:
@@ -19230,8 +19337,8 @@ def OpenWallet():
         d3=[]
         d4=[]
         file2=QtCore.QDir(privpath2)
-        filedir2=strOUT(strIN(QtCore.QString(file2.path().replace(file2.dirName(),""))))
-        file2=strOUT(strIN(QtCore.QString(file2.dirName())))
+        filedir2=strOUT(strIN(str(file2.path().replace(file2.dirName(),""))))
+        file2=strOUT(strIN(str(file2.dirName())))
         try:
             if hidden1==1 or hidden2==1:
                 usingimage=1
@@ -19250,13 +19357,13 @@ def OpenWallet():
                         d4=fi.readlines()
                         fi.close()
                 if hidden1==1:
-                    d=LoadHiddenImage(strOUT(strIN(QtCore.QString(privpath1))))
+                    d=LoadHiddenImage(strOUT(strIN(str(privpath1))))
                     needspair=d[1].strip()
                     if needspair == "COMBINE THIS KEY WITH ANOTHER PRIVATE OR SHARE FILE TO FINISH CREATING THE ACCOUNT.":
                         QuestionBox("The private key has not been paired yet!", "OK")
                         return False
                 if hidden2==1:
-                    d2=LoadHiddenImage(strOUT(strIN(QtCore.QString(privpath2))))
+                    d2=LoadHiddenImage(strOUT(strIN(str(privpath2))))
                     needspair=d2[1].strip()
                     if needspair == "COMBINE THIS KEY WITH ANOTHER PRIVATE OR SHARE FILE TO FINISH CREATING THE ACCOUNT.":
                         QuestionBox("The private key has not been paired yet!", "OK")
@@ -19382,7 +19489,7 @@ def BackupWallet():
             ext=".jpeg"
         if ".png" in PrivKeyFilename1:
             ext=".png"
-        privpath1 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your key."),(MacDir()+"key1"+ext),"Private Key File (*.private *.jpg *.jpeg *.png)")
+        privpath1 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your key."),(MacDir()+"key1"+ext),"Private Key File (*.private *.jpg *.jpeg *.png)")[0]
         if ".private" not in privpath1 and ".jpg" not in privpath1 and ".jpeg" not in privpath1 and ".png" not in privpath1:
             QuestionBox("Must have a valid path.", "OK")
             return
@@ -19392,14 +19499,14 @@ def BackupWallet():
         file1 = os.path.join(PrivKeyFiledir1,PrivKeyFilename1)
         #Don't let a user overwrite a key
         try:
-            if os.path.exists(strOUT(strIN(QtCore.QString(privpath1)))):
+            if os.path.exists(strOUT(strIN(str(privpath1)))):
                 QuestionBox("You must not overwrite an existing private key. Please try again.", " OK ")
                 return False
         except:
             traceback.print_exc()
             QuestionBox("Backup failed!", " OK ")
             return False
-        shutil.copyfile(file1, strOUT(strIN(QtCore.QString(privpath1))))
+        shutil.copyfile(file1, strOUT(strIN(str(privpath1))))
         #Open the private key file and see if its encrypted and create necessary public key files.
         f = os.path.join(PrivKeyFiledir1,PrivKeyFilename1)
         with open(f,'r') as fi:
@@ -19432,11 +19539,11 @@ def BackupWallet():
             textreplace2=".jpeg"
         if ".png" in PrivKeyFilename2:
             textreplace2=".png"
-        privpath1 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your key. Your public keys will also be saved here."),(MacDir()+"key1"+textreplace),"Private Key File (*.private *.jpg *.jpeg *.png)")
+        privpath1 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your key. Your public keys will also be saved here."),(MacDir()+"key1"+textreplace),"Private Key File (*.private *.jpg *.jpeg *.png)")[0]
         privpath1=strOUT(strIN(privpath1))
         if strIN(privpath1)=="":
             return False
-        privpath2 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your second key. Your public keys will also be saved here."),(MacDir()+"key2"+textreplace),"Private Key File (*.private *.jpg *.jpeg *.png)")
+        privpath2 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location and name for your second key. Your public keys will also be saved here."),(MacDir()+"key2"+textreplace),"Private Key File (*.private *.jpg *.jpeg *.png)")[0]
         privpath2=strOUT(strIN(privpath2))
         if strIN(privpath2)=="":
             return False
@@ -19725,7 +19832,7 @@ def AddToConfig(string):
 #Creates private key and stores in a file
 def create_tmp_address_and_store_keypair(uniqueid,path, joint=""):
     global SALT
-    priv = sha256(str(os.urandom(256)+SALT))
+    priv = sha256(os.urandom(256)+SALT.encode())
     pub = privtopub(priv)
     #Since users will use keys independently, we should make a note.
     #If we are being supplied a public key, we can make a joint account here
@@ -19736,7 +19843,7 @@ def create_tmp_address_and_store_keypair(uniqueid,path, joint=""):
     tmpaddr = pubtoaddr(pub) #We create a temporary address out of the new private key
     #write data to file
     try:
-        with open(os.path.join(path,uniqueid),'wb') as f: #changed from uniqueid+'.private'
+        with open(os.path.join(path,uniqueid),'w') as f: #changed from uniqueid+'.private'
             f.write('DO NOT LOSE, ALTER OR SHARE THIS FILE - WITHOUT THIS FILE, YOUR MONEY IS AT RISK. BACK UP! YOU HAVE BEEN WARNED!\n')
             f.write(addr+'\n')
             f.write(pub+'\n')
@@ -19753,7 +19860,7 @@ def create_tmp_address_and_store_keypair(uniqueid,path, joint=""):
 
 #Stores the shared key in a file
 def store_share(pubkey,uniqueid,path):
-    with open(os.path.join(path,uniqueid),'wb') as f:
+    with open(os.path.join(path,uniqueid),'w') as f:
         f.write("THIS FILE IS SAFE TO SHARE WITH OTHERS. SEND IT TO YOUR COUNTERPARTY TO ALLOW THEM TO MAKE NEW ACCOUNTS WITH YOU.\n")
         f.write(pubkey+'\n')
         f.flush()
@@ -19773,10 +19880,10 @@ def create_multisig_address(uniqueid1, dir1=""):
         return ('','')
     if BitHaloClient == True:
         mscript = pybit.transaction.mk_multisig_script(pubs,2,2)
-        msigaddr = pybit.transaction.scriptaddr(mscript.decode('hex'))
+        msigaddr = pybit.transaction.scriptaddr(safe_unhexlify(mscript))
     else:
         mscript = mk_multisig_script(pubs,2,2)
-        msigaddr = scriptaddr(mscript.decode('hex'))
+        msigaddr = scriptaddr(safe_unhexlify(mscript))
     prevmsig['ID']=uniqueid1
     if dir1!="":
         prevmsig['Dir']=dir1
@@ -19805,10 +19912,10 @@ def create_multisig_from_publics(pub1,pub2):
         return ('','')
     if BitHaloClient == False:
         mscript = mk_multisig_script(pubs,2,2)
-        msigaddr = scriptaddr(mscript.decode('hex'))
+        msigaddr = scriptaddr(safe_unhexlify(mscript))
     else:
         mscript = pybit.transaction.mk_multisig_script(pubs,2,2)
-        msigaddr = pybit.transaction.scriptaddr(mscript.decode('hex'))
+        msigaddr = pybit.transaction.scriptaddr(safe_unhexlify(mscript))
     return (msigaddr,mscript)
 #Public keys are used to make multisig. The keys are sorted and returned so that the multisig is the same each time. PrivKeyFiledir1 is the directory of our primary private key since its always the first loaded.
 #Since there is single key options, the .share files are  not very useful for multisig creation. We have them backed up in each private key to avoid errors so we just open the private file instead
@@ -19877,7 +19984,7 @@ def addBridgeTX(txid):
     hist={}
     details={}
     details['type']="Bridge"    
-    details['ordernumber']=os.urandom(16).encode('hex')
+    details['ordernumber']=safe_hexlify(os.urandom(16))
     details['total']=amount
     details['change']=0
     details['currentblock']=CurrentBlock
@@ -19929,21 +20036,21 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
     for i,d in enumerate(txs):
         rawtx=d['result']#The client crashes here with a key error sometimes "error key result" it probably has something to do with timeout of the electrum servers
         tx=pybit.deserialize(rawtx) #the full tx
-        txid=txhash(rawtx).encode('hex') #the txid
+        txid=safe_hexlify(txhash(rawtx)) #the txid
         pos = -1
         #Its important to know exactly which output and which position in each specific txid belongs to us
         for output in tx['outs']:
             SpendableOutput = {}
             pos+=1
             ispubkey,addr = \
-            ea.get_address_from_output_script(output['script'].decode('hex'))
+            ea.get_address_from_output_script(safe_unhexlify(output['script']))
             if not addr == addr_to_test: continue
             bitcoins =  output['value'] #* 0.00000001
-            prev_outs[str(txid.decode('hex'))+":"+str(pos)]=bitcoins
-            myoutputtxid = txid.decode('hex') + ":" + str(pos)
-            SpendableOutput['output']=unicode(myoutputtxid)
+            prev_outs[str(safe_unhexlify(txid))+":"+str(pos)]=bitcoins
+            myoutputtxid = safe_unhexlify(txid) + ":" + str(pos)
+            SpendableOutput['output']=str(myoutputtxid)
             SpendableOutput['value']=output['value']
-            SpendableOutput['address']=unicode(addr)
+            SpendableOutput['address']=str(addr)
             SpendableList.append(SpendableOutput)
     filterthis=[]
     for i,y in enumerate(txs):
@@ -19954,11 +20061,11 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
         myvouts = []
         rawtx = y['result']
         tx = pybit.deserialize(rawtx)
-        txh = txhash(rawtx).encode('hex')
-        dict1 ['Txid']=txh.decode('hex') #The magical txid
+        txh = safe_hexlify(txhash(rawtx))
+        dict1 ['Txid']=safe_unhexlify(txh) #The magical txid
         for input1 in tx['ins']:
             pubkeys,signatures, addr = \
-            ea.get_address_from_input_script(input1['script'].decode('hex'))
+            ea.get_address_from_input_script(safe_unhexlify(input1['script']))
             myinputs.extend([addr])
             if not addr == addr_to_test: continue
             #we need to find which previous output is being spent - it must exist.
@@ -19966,7 +20073,7 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
             #in this case, its fortunately defined in the index of the outpoint
             try:
                 bitcoins_being_spent = prev_outs[str(input1['outpoint']['hash'])+":"+str(input1['outpoint']['index'])]
-            except Exception, e:
+            except Exception as e:
                 traceback.print_exc()
                 print("failed to find the reference to which output's being spent!")
             #We have found something that was spent. We can now deduct the value and add the txid and position to a list so it doesnt become spendable later
@@ -19978,7 +20085,7 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
         for output in tx['outs']:
             pos+=1
             ispubkey,addr = \
-            ea.get_address_from_output_script(output['script'].decode('hex'))
+            ea.get_address_from_output_script(safe_unhexlify(output['script']))
             if not addr == addr_to_test: continue
             bitcoins =  output['value']
             myoutputs.append(addr)
@@ -19987,7 +20094,7 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
             #For now, lets not allow spending of unconfirmed. Perhaps in the future we can give the option to take the risk.
             if args[i][1]==0:
                 myoutputtxid = txhash(rawtx) + ":" + str(pos)
-                print "Filter unconfirmed: ", myoutputtxid
+                print("Filter unconfirmed: ", myoutputtxid)
                 filterthis.append(myoutputtxid)
                 unconf += bitcoins
             received_btc +=bitcoins
@@ -20018,7 +20125,7 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
                 gotdata = SpendableList[i]['output']
             except IndexError:
                 break
-            if SpendableList[i]['output']==unicode(d):
+            if SpendableList[i]['output']==str(d):
                 #Removed from spendable
                 SpendableList.remove(SpendableList[i])
                 length=length-1
@@ -20028,9 +20135,9 @@ def get_balance_lspnr(addr_to_test,txdetails,txs,args):
     MyHistory=list(reversed(MyHistory))
     received_btc=float(Decimal(received_btc)/Decimal(1e8))
     unconf=float(Decimal(unconf)/Decimal(1e8))
-    pass #print "Final unconfirmed balance: ", received_btc
-    pass #print "Final confirmed balance: ", received_btc - unconf
-    pass #print "\n\nThe history: ", MyHistory
+    pass #print("Final unconfirmed balance: ", received_btc)
+    pass #print("Final confirmed balance: ", received_btc - unconf)
+    pass #print("\n\nThe history: ", MyHistory)
     return received_btc-unconf,received_btc, unconf, MyHistory, SpendableList
 
 def GetCurrentOrder(current):
@@ -20153,10 +20260,10 @@ def AcceptOffer(contract, rep=0):
             f+=1
         if theirtotal!=0:
             theirtotal+=int(contract['fee']*f)#They spent one funding temporary
-        theirs['output']=unicode(str(contract['tx2'])+":0")#If they put anything else in the temporary the funding will not work
+        theirs['output']=str(str(contract['tx2'])+":0")#If they put anything else in the temporary the funding will not work
         theirs['value']=theirtotal
         theirs['address']=contract['theirtemp']
-        mine['output']=unicode(str(contract['tx1'])+":0")
+        mine['output']=str(str(contract['tx1'])+":0")
         mine['value']=mytotal
         mine['address']=contract['mytemp']
         if theirtotal!=0:
@@ -20184,14 +20291,14 @@ def AcceptOffer(contract, rep=0):
                 if theirtotal!=0:
                     ps1+=1
                 if BitHaloClient==True:
-                    sigg=pybit.transaction.multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate'])
+                    sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate'])
                     sigs.append(sigg)
-                    sigg=pybit.transaction.multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate2'])
+                    sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate2'])
                     sigs.append(sigg)
                 else:
-                    sigg=multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate'])
+                    sigg=multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate'])
                     sigs.append(sigg)
-                    sigg=multisign(tmptx.decode('hex'),ps1,mscrip.decode('hex'),MyContracts[pos]['myprivate2'])
+                    sigg=multisign(safe_unhexlify(tmptx),ps1,safe_unhexlify(mscrip),MyContracts[pos]['myprivate2'])
                     sigs.append(sigg)
         except:
             MyContracts[pos]['Process']="Failed: "
@@ -20213,7 +20320,7 @@ def AcceptOffer(contract, rep=0):
             instantoutputs=[]
             refundins={}
             refundout={}
-            refundins['output']=unicode(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
+            refundins['output']=str(MyContracts[pos]['tx3']+":1")#If they put anything else in the temporary the funding will not work... both parties sign each position with a sig
             refundins['value']=int(contract['fee']+contract['instantamount'])
             refundins['address']=contract['escrow']
             if "I am" in contract['instantwhopays']:
@@ -20239,7 +20346,7 @@ def AcceptOffer(contract, rep=0):
         timeoutputs=[]
         timeins={}
         timeout={}
-        timeins['output']=unicode(MyContracts[pos]['tx3']+":0")#Its always vout 0
+        timeins['output']=str(MyContracts[pos]['tx3']+":0")#Its always vout 0
         timeins['value']=int(contract['mydeposit']+contract['theirdeposit']+contract['amount']+contract['fee'])#The question of wether or not to give to miners is a good one. Since this works for POS it means we send to Bitcoineater!!
         timeins['address']=contract['escrow']
         if BitHaloClient==False:
@@ -20280,11 +20387,11 @@ def AcceptOffer(contract, rep=0):
         BitQueue.append(Reply)
         SaveQueue()
         return True
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
     return False
 def RemoveFromMarket(order, accnumber=""):
-    print traceback.extract_stack()
+    print(traceback.extract_stack())
     multisig,mscript=create_multisig_address(PrivKeyFilename1)
     Reply={}
     Reply['acc']=accnumber[:7]
@@ -20302,7 +20409,7 @@ def RemoveFromMarket(order, accnumber=""):
                 Reply['MyBMAddress']=GetfromCfg("#BitMessage#")
                 bmaddy=order['Market Data']['Market Address']
     Reply['TheirBMAddress']=bmaddy
-    Reply['ordernumber']=os.urandom(16).encode('hex')
+    Reply['ordernumber']=safe_hexlify(os.urandom(16))
     data=ModerationCheck(multisig, priv, Reply, pub)
     if data==False:
         return
@@ -20325,7 +20432,7 @@ def Resubmit(contract):
         for c in MyContracts:
             if c['ordernumber']==contract['ordernumber']:
                 ordernumber=str(contract['ordernumber'])
-                MyContracts[i]['ordernumber']=os.urandom(16).encode('hex')+"##"+MyContracts[i]['ordernumber']
+                MyContracts[i]['ordernumber']=safe_hexlify(os.urandom(16))+"##"+MyContracts[i]['ordernumber']
                 MyContracts[i]['currentblock']=cblock
                 break
             i+=1
@@ -20347,7 +20454,7 @@ def Resubmit(contract):
             try:
                 OnOrders[j]['currentblock']=cblock
             except:
-                print "Order Index Not Found... is this a guarantor?"
+                print("Order Index Not Found... is this a guarantor?")
         else:
             MyContracts[i]['ordernumber']=ordernumber
     else:#Should we obtain the private key here instead?!
@@ -20364,7 +20471,7 @@ def Resubmit(contract):
         else:
             Step1(contract)
 timedseconds=300
-class TimedMessageBox(QtGui.QMessageBox):#For situations where we don't want to hang the gui
+class TimedMessageBox(QtWidgets.QMessageBox):#For situations where we don't want to hang the gui
     @QtCore.pyqtSlot()
     def timeoutSlot(self):
 
@@ -20375,7 +20482,7 @@ class TimedMessageBox(QtGui.QMessageBox):#For situations where we don't want to 
         timedseconds -= 1
 
         #Update QMessageBox text here
-        #QtGui.QMessageBox.setText(self,"QMessageBox will close after "+QtCore.QString.number(timedseconds)+" seconds")
+        #QtWidgets.QMessageBox.setText(self,"QMessageBox will close after "+str.number(timedseconds)+" seconds")
         #If reached 0,close the messagebox
         if timedseconds==0:
             timedseconds=300
@@ -20394,7 +20501,7 @@ def QuestionBox(text,button1,button2="",button3="", notrans=0,timed=0, defres=0)
         button3=""
         notrans=1
     if timed==0:
-        msgBox = QtGui.QMessageBox()
+        msgBox = QtWidgets.QMessageBox()
     else:
         msgBox = TimedMessageBox()
     msgBox.setWindowTitle(CoinSelect['HaloName'])
@@ -20410,34 +20517,41 @@ def QuestionBox(text,button1,button2="",button3="", notrans=0,timed=0, defres=0)
     else:
         msgBox.setText(text)
     if notrans==0:
-        msgBox.addButton(QtGui.QPushButton(Gtranslate(button1, mylang)), QtGui.QMessageBox.YesRole)
+        msgBox.addButton(QtWidgets.QPushButton(Gtranslate(button1, mylang)), QtWidgets.QMessageBox.ButtonRole.YesRole)
     else:
-        msgBox.addButton(button1, QtGui.QMessageBox.YesRole)
+        msgBox.addButton(button1, QtWidgets.QMessageBox.ButtonRole.YesRole)
     if button2!="":
         if notrans==0:
-            msgBox.addButton(QtGui.QPushButton(Gtranslate(button2, mylang)), QtGui.QMessageBox.YesRole)
+            msgBox.addButton(QtWidgets.QPushButton(Gtranslate(button2, mylang)), QtWidgets.QMessageBox.ButtonRole.YesRole)
         else:
-            msgBox.addButton(button2, QtGui.QMessageBox.YesRole)
+            msgBox.addButton(button2, QtWidgets.QMessageBox.ButtonRole.YesRole)
     if button3!="":
         if notrans==0:
-            msgBox.addButton(QtGui.QPushButton(Gtranslate(button3, mylang)), QtGui.QMessageBox.YesRole)
+            msgBox.addButton(QtWidgets.QPushButton(Gtranslate(button3, mylang)), QtWidgets.QMessageBox.ButtonRole.YesRole)
         else:
-            msgBox.addButton(button3, QtGui.QMessageBox.YesRole)
+            msgBox.addButton(button3, QtWidgets.QMessageBox.ButtonRole.YesRole)
     if timed==0:
-        response = msgBox.exec_()
+        msgBox.exec()
+        clicked = msgBox.clickedButton()
+        buttons = msgBox.buttons()
+        # Ensure we return the index of the button to match previous behavior (0, 1, 2)
+        if clicked in buttons:
+            response = buttons.index(clicked)
+        else:
+            response = -1 # Should not happen if a button was clicked
     else:
         response=defres
         timer = QtCore.QTimer()
-        msgBox.connect(timer,QtCore.SIGNAL("timeout()"),msgBox,QtCore.SLOT("timeoutSlot()"))
+        timer.timeout.connect(msgBox.timeoutSlot)
         timer.start(1000)
-        newres=msgBox.exec_()
+        newres=msgBox.exec()
         if newres!=99:
             response=newres
     return response
 def DeleteContract(contract):
     global MyContracts, DontRepopulate
-    print "\nREMOVING CONTRACT:"
-    print traceback.extract_stack()
+    print("\nREMOVING CONTRACT:")
+    print(traceback.extract_stack())
     #Can delete by position, ordernumber or contract
     Priv=""
     try:
@@ -20486,8 +20600,8 @@ def DeleteContract(contract):
                 pass
     return False
 def DeleteOrder(ordernumber):
-    print "\nREMOVING ORDER:"
-    print traceback.extract_stack()
+    print("\nREMOVING ORDER:")
+    print(traceback.extract_stack())
     global OnOrders
     o=-1
     for order in OnOrders:#The time we keep contracts in our inputs is before escrow funds because the inputs are tied on orders
@@ -20649,13 +20763,13 @@ def CheckAuction(contract, findbestbid=1):
     except:
         traceback.print_exc()
         return False
-class MyConsole(QtGui.QWidget):
+class MyConsole(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(700, 500)
         font = QtGui.QFont()
         font.setPixelSize(15)
-        self.printarea = QtGui.QListWidget(Form)
+        self.printarea = QtWidgets.QListWidget(Form)
         self.printarea.setGeometry(QtCore.QRect(10, 10, 680, 480))
         self.printarea.setFont(font)
         self.printarea.setObjectName(_fromUtf8("printarea"))        
@@ -20667,7 +20781,7 @@ class MyConsole(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def updatethis(self):
         global debug
@@ -20682,11 +20796,11 @@ class MyConsole(QtGui.QWidget):
 def ChangeLanguage(init=0):
     global langlist
     global mylang
-    langselect=QtGui.QDialog()
+    langselect=QtWidgets.QDialog()
     langselect.resize(270, 125)
     font = QtGui.QFont()
     font.setPixelSize(15)
-    langselect.LangSelect = QtGui.QComboBox(langselect)
+    langselect.LangSelect = QtWidgets.QComboBox(langselect)
     langselect.LangSelect.setGeometry(QtCore.QRect(10, 10, 250, 30))
     langselect.LangSelect.setMaximumSize(QtCore.QSize(300, 16777215))
     langselect.LangSelect.setFont(font)
@@ -20694,14 +20808,14 @@ def ChangeLanguage(init=0):
     langselect.LangSelect.addItem(_fromUtf8("Select Language..."))
     langselect.LangSelect.addItem(_fromUtf8("English(default)"))
 
-    langselect.LangLabel = QtGui.QLabel(langselect)
+    langselect.LangLabel = QtWidgets.QLabel(langselect)
     langselect.LangLabel.setGeometry(QtCore.QRect(10, 45, 250, 30))
     langselect.LangLabel.setMaximumSize(QtCore.QSize(300, 16777215))
     langselect.LangLabel.setFont(font)
     langselect.LangLabel.setObjectName(_fromUtf8("LangButton"))
     langselect.LangLabel.setText(Gtranslate(" Hello World! ",mylang,init))
 
-    langselect.LangButton = QtGui.QPushButton(langselect)
+    langselect.LangButton = QtWidgets.QPushButton(langselect)
     langselect.LangButton.setGeometry(QtCore.QRect(10, 85, 75, 30))
     langselect.LangButton.setMaximumSize(QtCore.QSize(300, 16777215))
     langselect.LangButton.setFont(font)
@@ -20738,7 +20852,7 @@ def ChangeLanguage(init=0):
         return
 
     langselect.LangButton.clicked.connect(Langclick)
-    langselect.LangSelect.connect(langselect.LangSelect,QtCore.SIGNAL("currentIndexChanged(int)"),Langchg)
+    langselect.LangSelect.currentIndexChanged.connect(Langchg)
     langl=[]
     current=""
     for l in langlist:
@@ -20765,26 +20879,26 @@ def ChangeLanguage(init=0):
         langselect.LangSelect.blockSignals(False)
     langselect.setWindowTitle(CoinSelect['HaloName'])
     langselect.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-    langselect.exec_()
+    langselect.exec()
 
 def TranslationEditor(init=0):
     global langlist
     global mylang
     global translations
-    langselect=QtGui.QDialog()    
+    langselect=QtWidgets.QDialog()    
     langselect.resize(500, 500)
     langselect.index=0
     langselect.index2=0
     font = QtGui.QFont()
     font.setPixelSize(15)
-    OriginalTransLabel = QtGui.QLabel(langselect)
+    OriginalTransLabel = QtWidgets.QLabel(langselect)
     OriginalTransLabel.setGeometry(QtCore.QRect(10, 10, 250, 30))
     OriginalTransLabel.setMaximumSize(QtCore.QSize(300, 16777215))
     OriginalTransLabel.setFont(font)
     OriginalTransLabel.setObjectName(_fromUtf8("OriginalTransLabel"))
     OriginalTransLabel.setText("English")
 
-    NewTransLabel = QtGui.QLabel(langselect)
+    NewTransLabel = QtWidgets.QLabel(langselect)
     NewTransLabel.setGeometry(QtCore.QRect(10, 210, 250, 30))
     NewTransLabel.setMaximumSize(QtCore.QSize(300, 16777215))
     NewTransLabel.setFont(font)
@@ -20794,7 +20908,7 @@ def TranslationEditor(init=0):
         return
     NewTransLabel.setText(langlist[mylang])
 
-    OriginalTrans = QtGui.QTextEdit(langselect)
+    OriginalTrans = QtWidgets.QTextEdit(langselect)
     OriginalTrans.setGeometry(QtCore.QRect(10, 45, 480, 150))
     OriginalTrans.setMaximumSize(QtCore.QSize(480, 16777215))
     OriginalTrans.setFont(font)
@@ -20802,42 +20916,42 @@ def TranslationEditor(init=0):
     OriginalTrans.setReadOnly(True)
 
 
-    NewTrans = QtGui.QTextEdit(langselect)
+    NewTrans = QtWidgets.QTextEdit(langselect)
     NewTrans.setGeometry(QtCore.QRect(10, 245, 480, 150))
     NewTrans.setMaximumSize(QtCore.QSize(480, 16777215))
     NewTrans.setFont(font)
     NewTrans.setObjectName(_fromUtf8("NewTrans"))
 
 
-    Search = QtGui.QLabel(langselect)
+    Search = QtWidgets.QLabel(langselect)
     Search.setGeometry(QtCore.QRect(10, 210, 250, 30))
     Search.setMaximumSize(QtCore.QSize(300, 16777215))
     Search.setFont(font)
     Search.setObjectName(_fromUtf8("Search"))
     Search.setText(langlist[mylang])
 
-    AutoTranslate = QtGui.QPushButton(langselect)
+    AutoTranslate = QtWidgets.QPushButton(langselect)
     AutoTranslate.setGeometry(QtCore.QRect(10, 410, 150, 30))
     AutoTranslate.setMaximumSize(QtCore.QSize(300, 16777215))
     AutoTranslate.setFont(font)
     AutoTranslate.setObjectName(_fromUtf8("Translate Online"))
     AutoTranslate.setText(" Translate Online ")
 
-    Save = QtGui.QPushButton(langselect)
+    Save = QtWidgets.QPushButton(langselect)
     Save.setGeometry(QtCore.QRect(10, 450, 150, 30))
     Save.setMaximumSize(QtCore.QSize(300, 16777215))
     Save.setFont(font)
     Save.setObjectName(_fromUtf8("Save"))
     Save.setText(" Save Translation ")
 
-    Next = QtGui.QPushButton(langselect)
+    Next = QtWidgets.QPushButton(langselect)
     Next.setGeometry(QtCore.QRect(330, 450, 150, 30))
     Next.setMaximumSize(QtCore.QSize(300, 16777215))
     Next.setFont(font)
     Next.setObjectName(_fromUtf8("Next"))
     Next.setText(" Next ")
 
-    Prev = QtGui.QPushButton(langselect)
+    Prev = QtWidgets.QPushButton(langselect)
     Prev.setGeometry(QtCore.QRect(170, 450, 150, 30))
     Prev.setMaximumSize(QtCore.QSize(300, 16777215))
     Prev.setFont(font)
@@ -20904,7 +21018,7 @@ def TranslationEditor(init=0):
 
     langselect.setWindowTitle("Translation Editor - Powered by Yandex and Google Translate")
     langselect.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-    langselect.exec_()
+    langselect.exec()
     SaveTranslations()
 def translateInParts(txt, lang):
     global gcodes
@@ -20920,13 +21034,13 @@ def translateInParts(txt, lang):
         test=txt.replace(' ','')
         if len(test)==0:
             txt=''
-        print "TEXT REMAINING: ", str(len(txt))
+        print("TEXT REMAINING: ", str(len(txt)))
         if len(txt)==0:
             break
         if x==50:
-            print "Iteration too long"
+            print("Iteration too long")
             float('a')
-    print repr(txt2)
+    print(repr(txt2))
     return txt2
 def Gtranslate(txt, lang="", init=0):
     global mylang
@@ -20939,15 +21053,15 @@ def Gtranslate(txt, lang="", init=0):
         return txt
     if len(txt)>50 and YandexAPI == "":
         window.translist.append(txt)
-        print "text too long(translate this manually)"
-        print txt
+        print("text too int(translate this manually)")
+        print(txt)
         return txt
     try:
         if lang in translations:
             if txt in translations[lang]:
                 translateThis=ast.literal_eval(translations[lang][txt])
                 if translateThis!=txt:
-                    return QtCore.QString.fromUtf8(translateThis)
+                    return str(translateThis)
         else:
             translations[lang]={}
         if YandexAPI != "":            
@@ -20955,54 +21069,24 @@ def Gtranslate(txt, lang="", init=0):
             resp = resp['text'][0]
         else:
             resp = translateInParts(txt, lang) #Google translate in parts            
-        langtext = QtGui.QLabel()
+        langtext = QtWidgets.QLabel()
         langtext.setText(resp)
         x=langtext.text()
         st=repr(x)
-        st=st.replace("PyQt4.QtCore.QString(","")[:-1]
+        st=st.replace("PyQt6.str(","")[:-1]
         translateThis=ast.literal_eval(st)
         translations[lang][txt]=st
         if init==0:#File thread not loaded yet
             SaveTranslations()
-        return QtCore.QString.fromUtf8(translateThis)
+        return str(translateThis)
     except:
-        print traceback.extract_stack()
+        print(traceback.extract_stack())
         traceback.print_exc()
         return txt
-def strIN(st, rep=1):#For input from QStrings and files, dictionary objects we wrote to
-    try:
-        if st=="":
-            return ""
-        if "PyQt4.QtCore.QString(" in repr(st[0:21]):
-            st=repr(st)
-            st=st[21:][:-1]
-        if st[0]=='u' and st[1]=="'" or st[0]=='u' and st[1]=='"':
-            if rep==1:
-                return st
-            else:
-                return ast.literal_eval(st)
-        st1=repr(st)
-        if st1[0]=='u' and st1[1]=="'" or st1[0]=='u' and st1[1]=='"':
-            if rep==1:
-                return st1
-            else:
-                return ast.literal_eval(st1)
-        return st
-    except:
-        return ""
-def strOUT(st):#For output to unicode QStrings or files
-    try:
-        if st=="":
-            return st
-        if st[0]=='u' and st[1]=="'" or st[0]=='u' and st[1]=='"':
-            return ast.literal_eval(st)
-        else:
-            st1=repr(st)
-            if st1[0]=='u' and st1[1]=="'" or st1[0]=='u' and st1[1]=='"':
-                return ast.literal_eval(st1)
-            return st
-    except:
-        return ""
+def strIN(st, rep=1):
+    return st
+def strOUT(st):
+    return st
 def DebugExec():
     global dwindow
     try:
@@ -21046,7 +21130,7 @@ def CountVotes(addy, start, finish):
                     float("a")
                 nextone=1
                 if MySettings.stopcount==1:
-                    print "Voting Counting Stopped"
+                    print("Voting Counting Stopped")
                     break
                 try:
                     hsh=BLK.getblockhash(start)
@@ -21123,7 +21207,7 @@ def MessageMarkets(message, cont):
             Reply['TheirBMAddress']=contract['Market Data']['Market Address']
         else:
             Reply['TheirBMAddress']=contract['TheirBMAddress']
-        Reply['ordernumber']=os.urandom(16).encode('hex')
+        Reply['ordernumber']=safe_hexlify(os.urandom(16))
         data=ModerationCheck(multisig, priv, Reply, pub)
         if data==False:
             pass
@@ -21139,15 +21223,15 @@ def ApplyCSS(mywindow, other=1, font=1):
         qss_main = open(application_path+'/gui/styles/bay/generic.css', 'r')
         mywindow.setStyleSheet(qss_main.read())
         if other==1:
-            t=mywindow.findChildren(QtGui.QTextEdit)
+            t=mywindow.findChildren(QtWidgets.QTextEdit)
             for thing in t:
                 thing.setStyleSheet(qss_main.read())
-            t=mywindow.findChildren(QtGui.QLineEdit)
+            t=mywindow.findChildren(QtWidgets.QLineEdit)
             for thing in t:
                 thing.setStyleSheet(qss_main.read())
         if mylang=="DEFAULT" or mylang=="en":
             if font==1:
-                t=mywindow.findChildren(QtGui.QLabel)
+                t=mywindow.findChildren(QtWidgets.QLabel)
                 for thing in t:
                     s = thing.font()
                     s.setFamily("Roboto")
@@ -21155,7 +21239,7 @@ def ApplyCSS(mywindow, other=1, font=1):
 import time
 import webbrowser
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt6 import QtGui, QtCore
 
 #########################
 #Custom buttons and forms
@@ -21165,13 +21249,13 @@ ContractSelected = {}
 PendingSelected = {}
 
 #def getObject(qobj, name):
-#    return qobj.findChild((QtGui.QLabel,QtGui.QTextEdit,QtGui.QComboBox,QtGui.QLineEdit,QtGui.QPushButton,QtGui.QCheckBox),name)
+#    return qobj.findChild((QtWidgets.QLabel,QtWidgets.QTextEdit,QtWidgets.QComboBox,QtWidgets.QLineEdit,QtWidgets.QPushButton,QtWidgets.QCheckBox),name)
 #The call below doesn't work because while iterating every object returned for whatever reason gets assigned the same function call as the most current object.
 #So eventually can exchange exec calls for template setups so be explicit or solve how to safely interact with return values. In the meantime, exec calls are an iterative way to handle hundreds of objects.
-#getObject(self.Window,"DepositSettings"+spos).connect(getObject(self.Window,"DepositSettings"+spos),QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.StandardDepositChange(spos))
+#getObject(self.Window,"DepositSettings"+spos).connect(getObject(self.Window,"DepositSettings"+spos),"currentIndexChanged",lambda: Templates.StandardDepositChange(spos))
 
 #protectOBF1
-class TemplateWindow(QtGui.QWidget):
+class TemplateWindow(QtWidgets.QWidget):
     def setup_Ui(self, Dialog):
         global AdvanceArray
         self.Window=ATemplates.MyForm()
@@ -21234,16 +21318,16 @@ class TemplateWindow(QtGui.QWidget):
                 if spos=="1":
                     spos=""
                 if pos<2:
-                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+".connect(self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+",QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.DepositChange('"+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+"'))\n")
+                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+".currentIndexChanged.connect(lambda: Templates.DepositChange('"+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+"'))\n")
                     if pos==1:
-                        exec("self.Window."+"DepositSettings"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+".connect(self.Window."+"DepositSettings"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+",QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.StandardDepositChange('"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+"'))\n")
+                        exec("self.Window."+"DepositSettings"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+".currentIndexChanged.connect(lambda: Templates.StandardDepositChange('"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+"'))\n")
                         if spos=="":
                             spos="1"
                         if spos!="8":
                             exec("self.Window."+"SaveContinue"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+".clicked.connect(lambda: Templates.SaveAndContinue('"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+"'))\n")
                             exec("self.Window."+"ClearForm"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+".clicked.connect(lambda: Templates.ClearMyForm('"+re.sub(r"[^A-Za-z0-9_]+", '',spos)+"'))\n")
                 else:
-                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+".connect(self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+",QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.DaysChange('"+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+"'))\n")
+                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+".currentIndexChanged.connect(lambda: Templates.DaysChange('"+re.sub(r"[^A-Za-z0-9_]+", '',obj+spos)+"'))\n")
                 pos2+=1
             pos+=1
         pos=1
@@ -21274,15 +21358,15 @@ class TemplateWindow(QtGui.QWidget):
 
         exec("self.Window.Accept.clicked.connect(lambda: Templates.MakeOrder(0))\n")
         exec("self.Window.Counter.clicked.connect(lambda: Templates.MakeOrder(1))\n")
-        exec("self.Window.Drop1.connect(self.Window.Drop1,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(1))\n")
-        exec("self.Window.Drop2.connect(self.Window.Drop2,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(2))\n")
-        exec("self.Window.Drop3.connect(self.Window.Drop3,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(3))\n")
-        exec("self.Window.Drop4.connect(self.Window.Drop4,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(4))\n")
-        exec("self.Window.DepositSettings10.connect(self.Window.DepositSettings10,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(5))\n")
-        exec("self.Window.MyDepositUSD10.connect(self.Window.MyDepositUSD10,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(6))\n")
-        exec("self.Window.TheirDepositUSD10.connect(self.Window.TheirDepositUSD10,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(7))\n")
-        exec("self.Window.TimeLimitDays10.connect(self.Window.TimeLimitDays10,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(8))\n")
-        exec("self.Window.SelectContact.connect(self.Window.SelectContact,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeOrderIndex(9))\n")
+        exec("self.Window.Drop1.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(1))\n")
+        exec("self.Window.Drop2.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(2))\n")
+        exec("self.Window.Drop3.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(3))\n")
+        exec("self.Window.Drop4.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(4))\n")
+        exec("self.Window.DepositSettings10.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(5))\n")
+        exec("self.Window.MyDepositUSD10.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(6))\n")
+        exec("self.Window.TheirDepositUSD10.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(7))\n")
+        exec("self.Window.TimeLimitDays10.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(8))\n")
+        exec("self.Window.SelectContact.currentIndexChanged.connect(lambda: Templates.ChangeOrderIndex(9))\n")
 
         exec("self.Window.SellAttachImage.clicked.connect(lambda: window.AddImage('Sell'))\n")
         exec("self.Window.BuyAttachImage.clicked.connect(lambda: window.AddImage('Buy'))\n")
@@ -21300,46 +21384,46 @@ class TemplateWindow(QtGui.QWidget):
         exec("self.Window.LoadFormPython.clicked.connect(lambda: Templates.PythonCodePath(0))\n")
         exec("self.Window.LoadMyPython.clicked.connect(lambda: Templates.PythonCodePath(1))\n")
         exec("self.Window.LoadTheirPython.clicked.connect(lambda: Templates.PythonCodePath(2))\n")
-        exec("self.Window.PythonSelect.connect(self.Window.PythonSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.PythonIndex(0))\n")
+        exec("self.Window.PythonSelect.currentIndexChanged.connect(lambda: Templates.PythonIndex(0))\n")
         exec("self.Window.AddItemSupply.clicked.connect(lambda: Templates.ShowItem(0))\n")
         exec("self.Window.AddItemDemand.clicked.connect(lambda: Templates.ShowItem(1))\n")
         exec("self.Window.MyOfferNotInList.clicked.connect(lambda: Templates.ShowItem(2))\n")
         exec("self.Window.AddItemToList.clicked.connect(lambda: Templates.AddItem())\n")
         exec("self.Window.RemoveItemFromList.clicked.connect(lambda: Templates.RemoveItem())\n")
-        exec("self.Window.AddShippingSelect.connect(self.Window.AddShippingSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.AddMaxSizeSelect.connect(self.Window.AddMaxSizeSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.EstValueSelect.connect(self.Window.EstValueSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.SetMinSelect.connect(self.Window.SetMinSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.SetMaxSelect.connect(self.Window.SetMaxSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.QuantitySelect.connect(self.Window.QuantitySelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.AddShippingSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.AddMaxSizeSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.EstValueSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMinSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMaxSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.QuantitySelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
         exec("self.Window.MakeOfferBarter.clicked.connect(lambda: Templates.OfferBarter(1))\n")
         exec("self.Window.CancelBarter.clicked.connect(lambda: Templates.OfferBarter(0))\n")
 
-        exec("self.Window.SetMaxSelect.connect(self.Window.SetMaxSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.SetMaxSelect.connect(self.Window.SetMaxSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.SetMaxSelect.connect(self.Window.SetMaxSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
-        exec("self.Window.SetMaxSelect.connect(self.Window.SetMaxSelect,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMaxSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMaxSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMaxSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.SetMaxSelect.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
 
-        exec("self.Window.RequestAll.connect(self.Window.RequestAll,QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeBarterIndex())\n")
+        exec("self.Window.RequestAll.currentIndexChanged.connect(lambda: Templates.ChangeBarterIndex())\n")
 
-        QtCore.QObject.connect(self.Window.SupplyBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.SupplyClick)
-        QtCore.QObject.connect(self.Window.DemandBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.DemandClick)
+        self.Window.SupplyBox.itemClicked.connect( self.SupplyClick)
+        self.Window.DemandBox.itemClicked.connect(self.DemandClick)
 
-        QtCore.QObject.connect(self.Window.TheirSupplyBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.SupplyClick2)
-        QtCore.QObject.connect(self.Window.TheirDemandBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.DemandClick2)
+        self.Window.TheirSupplyBox.itemClicked.connect(self.SupplyClick2)
+        self.Window.TheirDemandBox.itemClicked.connect(self.DemandClick2)
 
-        QtCore.QObject.connect(self.Window.MyDemandBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.SupplyClick3)
-        QtCore.QObject.connect(self.Window.MySupplyBox, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.DemandClick3)
+        self.Window.MyDemandBox.itemClicked.connect(self.SupplyClick3)
+        self.Window.MySupplyBox.itemClicked.connect(self.DemandClick3)
 
         self.objlist=["WireSelect","WUSelect","MGSelect","DebitSelect","OtherFundSelect","CashMailSelect","MailingSelect","ContactSelect","ContactSelectConfirm","MailingSelectConfirm","BankSelectConfirm","WUSelectConfirm","MGSelectConfirm","DebitSelectConfirm","OtherSelectConfirm"]
         for obj in self.objlist:
-            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+".connect(self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+",QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ChangeIndex('"+re.sub(r"[^A-Za-z0-9_]+", '',obj)+"'))\n")
+            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+".currentIndexChanged.connect(lambda: Templates.ChangeIndex('"+re.sub(r"[^A-Za-z0-9_]+", '',obj)+"'))\n")
         self.objcombos=["MaxIncreaseBuy", "MaxDecreaseBuy", "MinOrderBuy", "MaxOrderBuy", "MaxIncreaseSell", "MaxDecreaseSell", "MinOrderSell", "MaxOrderSell", "RateBox", "RateBox2", "AmountUSD2", "AmountUSD", "ServiceCharge", "JobUSD", "JobSelect1", "SellSelect", "BuyoutSellUSD", "BidSellUSD", "CountrySellSelect", "ShippingSellSelect", "ShipCountryBuy", "BuySelect", "BuyoutBuyUSD", "BidBuyUSD", "RequestAll", "AddShippingSelect", "EstValueUSD", "AddMaxSizeSelect", "SetMinSelect", "SetMaxSelect", "EstValueSelect", "DepositServiceSelect", "SentToSelect", "FindUSD"]
         for obj in self.objcombos:
-            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+".connect(self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+",QtCore.SIGNAL('currentIndexChanged(int)'),lambda: Templates.ShowAdvanced('"+re.sub(r"[^A-Za-z0-9_]+", '',obj)+"'))\n")
+            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj)+".currentIndexChanged.connect(lambda: Templates.ShowAdvanced('"+re.sub(r"[^A-Za-z0-9_]+", '',obj)+"'))\n")
 
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setup_Ui(self)
     def retranslateUi(self):
         self.Window.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
@@ -21350,7 +21434,7 @@ class TemplateWindow(QtGui.QWidget):
         webbrowser.open("https://www.imgur.com")
     def PythonCodePath(self,box):
         QuestionBox("Please open the file to your python code.", " OK ")
-        path = QtGui.QFileDialog.getOpenFileName(self.Window,Gtranslate("Please open your python file."),MacDir()+"","Python (*.py)")
+        path = QtWidgets.QFileDialog.getOpenFileName(self.Window,Gtranslate("Please open your python file."),MacDir()+"","Python (*.py)")[0]
         if box==0:
             self.Window.CodeOfferFormBox.setText(path)
         if box==1:
@@ -21369,7 +21453,7 @@ class TemplateWindow(QtGui.QWidget):
                 self.Window.PythonSelect.setCurrentIndex(0)
             except:
                 traceback.print_exc()
-                print "Error populating Python Index"
+                print("Error populating Python Index")
             self.Window.PythonSelect.blockSignals(False)
         else:
             if self.Window.PythonSelect.currentIndex() > 1:
@@ -21432,7 +21516,7 @@ class TemplateWindow(QtGui.QWidget):
                 h3 = text2
                 if txhash(h1+h2+h3)!=c:
                     QuestionBox("The hash does not match the code. Please make sure that the code has not been changed from it's original text.", " OK ")
-                    print txhash(h1+h2+h3)
+                    print(txhash(h1+h2+h3))
                     self.Window.CodeOfferFormBox.clear()
                     self.Window.CodeDuringEscrow.clear()
                     self.Window.CodeEscrowWindow.clear()
@@ -21567,7 +21651,7 @@ class TemplateWindow(QtGui.QWidget):
                                 if self.Window.SetMaxUSD.currentIndex()==0:
                                     st=str(((Decimal(myitem['SetMaxBox']))*Dif).quantize(Decimal('.01')))
                                     self.Window.SetMaxBox.setText(st)
-                self.Window.AddMeetupCheck.setCheckState(myitem['AddMeetupCheck'])
+                self.Window.AddMeetupCheck.setCheckState(QtCore.Qt.CheckState(myitem['AddMeetupCheck']))
 
                 self.barteritems['selected']=myitem['AddTitleBox']
             except:
@@ -21575,7 +21659,7 @@ class TemplateWindow(QtGui.QWidget):
                 return
         Templates.Window.Pages.setCurrentIndex(15)
         if self.origin<9:
-            response=Templates.Window.exec_()
+            response=Templates.Window.exec()
             Templates.Window.show()
             Templates.Window.Pages.setCurrentIndex(returnpage)
         else:
@@ -21605,7 +21689,7 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.QuantitySelect.setCurrentIndex(0)
         self.Window.DepositServiceSelect.setCurrentIndex(0)
 
-        self.Window.AddMeetupCheck.setCheckState(0)
+        self.Window.AddMeetupCheck.setCheckState(QtCore.Qt.CheckState(0))
         self.ChangeBarterIndex()
     def AddItem(self,item=''):
         myitem={}
@@ -21671,7 +21755,7 @@ class TemplateWindow(QtGui.QWidget):
                     myitem['ActualValue']=int((Decimal(myitem['EstValueBox'])*Decimal(1e8)))
         res=self.TestHighValue(0, myitem)
         if res==False:
-            print "High value failed"
+            print("High value failed")
             return
         if self.origin==0 or self.origin==3:
             if myitem['AddTitleBox'] in self.barteritems['supply']:
@@ -21893,13 +21977,13 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.MaxItems.hide()
                     self.Window.MaxItemsBox.setText(str(self.order['Market Data']['itemlimit']))
                 if self.order['Market Data']['offernotinlist']==1:
-                    self.Window.OfferNotInList.setCheckState(2)
+                    self.Window.OfferNotInList.setCheckState(QtCore.Qt.CheckState(2))
                 else:
-                    self.Window.OfferNotInList.setCheckState(0)
+                    self.Window.OfferNotInList.setCheckState(QtCore.Qt.CheckState(0))
                 if self.order['Market Data']['buymultiple']==1:
-                    self.Window.BuyMultiple.setCheckState(2)
+                    self.Window.BuyMultiple.setCheckState(QtCore.Qt.CheckState(2))
                 else:
-                    self.Window.BuyMultiple.setCheckState(0)
+                    self.Window.BuyMultiple.setCheckState(QtCore.Qt.CheckState(0))
                 if self.mode!=1:
                     self.Window.SupplyBox.clear()
                     self.Window.DemandBox.clear()
@@ -22112,7 +22196,7 @@ class TemplateWindow(QtGui.QWidget):
             denom=' in coins'
         if myitem['EstValueSelect']!=1:
             if quantity=='':
-                text, ok = QtGui.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter how much of this item you would like to barter '+denom+'.'))
+                text, ok = QtWidgets.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter how much of this item you would like to barter '+denom+'.'))
                 try:
                     text=Decimal(str(text))
                     myitem['quantityusd']=str(text)
@@ -22167,7 +22251,7 @@ class TemplateWindow(QtGui.QWidget):
         else:
             if Decimal(myitem['AddQuantityBox'])>Decimal(1):
                 if quantity=='':
-                    text, ok = QtGui.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter how much of this item you would like to order.'))
+                    text, ok = QtWidgets.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter how much of this item you would like to order.'))
                     try:
                         text=Decimal(str(text))
                     except:
@@ -22339,10 +22423,10 @@ class TemplateWindow(QtGui.QWidget):
             return False
     def Button1(self):
         try:
-            w = QtGui.QDialog()
+            w = QtWidgets.QDialog()
             w.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
             w.setWindowTitle(CoinSelect['HaloName'])
-            pic = QtGui.QLabel(w)
+            pic = QtWidgets.QLabel(w)
             #pm = QtGui.QPixmap()
             #pm.loadFromData(base64.b64decode(self.order['Details']['image']))
             pm = ConvertImage(self.order['Details']['image'])
@@ -22350,7 +22434,7 @@ class TemplateWindow(QtGui.QWidget):
             w.resize(pm.width(),pm.height())
             if pm.width()<20 or pm.height()<20:
                 return
-            a=w.exec_()
+            a=w.exec()
         except:
             traceback.print_exc()
     def Button2(self):
@@ -22754,10 +22838,10 @@ class TemplateWindow(QtGui.QWidget):
             self.Window.BuyImageBox.clear()
             self.Window.PythonImageBox.clear()
             self.Window.AllowPriceTracking.hide()
-            self.Window.AllowPriceTracking.setCheckState(0)
+            self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(0))
             self.Window.AutoAcceptValid.show()
-            self.Window.AutoAcceptValid.setCheckState(0)            
-            self.Window.AllowCounters.setCheckState(0)              
+            self.Window.AutoAcceptValid.setCheckState(QtCore.Qt.CheckState(0))            
+            self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(0))              
             self.Window.ContractSummary.setText("Contract:  ")
             self.Window.AmountSummary.setText("Amount:  ")
             self.Window.MyDepositSummary.setText("My Deposit:  ")
@@ -22768,7 +22852,7 @@ class TemplateWindow(QtGui.QWidget):
         for h in self.defaulthidden:
             exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".hide()\n")
         for h in self.defaultchecked:
-            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".setCheckState(2)\n")
+            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".setCheckState(QtCore.Qt.CheckState(2)\n")
         for obj1 in self.objlist:
             exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',obj1)+".blockSignals(True)\n")
         for obj1 in self.objcombos:
@@ -22800,13 +22884,13 @@ class TemplateWindow(QtGui.QWidget):
             if "savedpages" in AdvanceArray[multisig]:
                 self.savedpages=AdvanceArray[multisig]['savedpages']
         except:
-            print "Exception loading forms"
+            print("Exception loading forms")
         try:
             if "savedbarter" in AdvanceArray[multisig]:
                 self.barteritems=AdvanceArray[multisig]['savedbarter']
                 self.PopulateBarter()
         except:
-            print "Exception loading saved barter"            
+            print("Exception loading saved barter"            )
         if self.savedpages==[]:
             self.savedpages.append({"saved":0,"dropdowns":{"RateBox":"","PriceUSD":"","AmountUSD":"","ServiceCharge":"","MinOrderSell":"","MaxOrderSell":"","MaxIncreaseSell":"","MaxDecreaseSell":""},"numberboxes":{"PriceBox":"","AmountBox":"","ServiceChargeBox":"","MinOrderSellBox":"","MaxOrderSellBox":"","MaxIncreaseSellBox":"","MaxDecreaseSellBox":""},"textboxes":{},"checkboxes":{"BankWireCheck":"","MoneyGramCheck":"","CashMailCheck":"","WUCheck":"","DebitCheck":"","OtherCheck":"","ShowAdvancedCash":""},"lists":{},"image":{}})
             self.savedpages.append({"saved":0,"dropdowns":{"RateBox2":"","PriceUSD2":"","AmountUSD2":"","ServiceCharge2":"","MinOrderBuy":"","MaxOrderBuy":"","MaxIncreaseBuy":"","MaxDecreaseBuy":""},"numberboxes":{"PriceBox2":"","AmountBox2":"","MinOrderBuyBox":"","MaxOrderBuyBox":"","MaxIncreaseBuyBox":"","MaxDecreaseBuyBox":""},"textboxes":{},"checkboxes":{"BankWireCheck2":"","MoneyGramCheck2":"","CashMail2":"","WUCheck2":"","DebitCheck2":"","OtherCheck2":"","ShowAdvancedCashBuy":""},"lists":{},"image":{}})
@@ -22847,9 +22931,9 @@ class TemplateWindow(QtGui.QWidget):
                     exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+".setCurrentIndex(self.savedpages[self.pos]['dropdowns']['"+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+"'])\n")
             for self.savevar in self.savedpages[page]['checkboxes']:
                 if clear==1:
-                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+".setCheckState(0)\n")
+                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+".setCheckState(QtCore.Qt.CheckState(0)\n")
                 else:
-                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+".setCheckState(self.savedpages[self.pos]['checkboxes']['"+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+"'])\n")
+                    exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+".setCheckState(QtCore.Qt.CheckState(self.savedpages[self.pos]['checkboxes']['"+re.sub(r"[^A-Za-z0-9_]+", '',self.savevar)+"'])\n")
             for self.savevar in self.savedpages[page]['numberboxes']:
                 try:
                     if clear==1:
@@ -22878,7 +22962,7 @@ class TemplateWindow(QtGui.QWidget):
             pg+=1
             if pg==8:
                 pg+=1
-            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(pg))+".setCheckState(2)\n")
+            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(pg))+".setCheckState(QtCore.Qt.CheckState(2)\n")
             #Different defaults
             if clear==1:
                 self.barteritems={'supply':{},'demand':{}}
@@ -22897,7 +22981,7 @@ class TemplateWindow(QtGui.QWidget):
             pg+=1
             if pg==8:
                 pg+=1
-            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(pg))+".setCheckState(0)\n")
+            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(pg))+".setCheckState(QtCore.Qt.CheckState(0)\n")
         if self.rate=="":
             self.Window.RateBox.setCurrentIndex(1)
             self.Window.ExchangeRate.setText("Exchange Rate: Not loaded")
@@ -22920,9 +23004,9 @@ class TemplateWindow(QtGui.QWidget):
         for h in self.defaulthidden:
             exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".hide()\n")
         for h in self.defaultchecked:
-            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".setCheckState(2)\n")
+            exec("self.Window."+re.sub(r"[^A-Za-z0-9_]+", '',h)+".setCheckState(QtCore.Qt.CheckState(2)\n")
         if save==1:
-            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(orgpos))+".setCheckState(0)\n")
+            exec("self.Window.SaveFuture"+re.sub(r"[^A-Za-z0-9_]+", '',str(orgpos))+".setCheckState(QtCore.Qt.CheckState(0)\n")
     def ChangeIndex(self, obj):
         global AdvanceArray
         multisig,mscript=create_multisig_address(PrivKeyFilename1)
@@ -22971,7 +23055,7 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.Pages.setCurrentIndex(page)
         self.returntoconfirm=1
         self.LoadProfiles()
-        response = Templates.Window.exec_()
+        response = Templates.Window.exec()
     def ClearProfiles(self):
         self.Window.WireSelect.clear()
         self.Window.BankSelectConfirm.clear()
@@ -23000,14 +23084,14 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.CountryBox1.clear()
         self.Window.Pickup1.clear()
         self.Window.OtherBox2.clear()
-        self.Window.Secret1.setCheckState(0)
+        self.Window.Secret1.setCheckState(QtCore.Qt.CheckState(0))
 
         self.Window.NameBox2.clear()
         self.Window.PhoneBox2.clear()
         self.Window.CountryBox2.clear()
         self.Window.FundsPickup2.clear()
         self.Window.OtherBox3.clear()
-        self.Window.Secret2.setCheckState(0)
+        self.Window.Secret2.setCheckState(QtCore.Qt.CheckState(0))
 
         self.Window.DebitBox.clear()
 
@@ -23021,7 +23105,7 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.ZipCashBox.clear()
         self.Window.AddressCashBox.clear()
         self.Window.OtherInfoCashBox.clear()
-        self.Window.InsuranceCheckCash.setCheckState(0)
+        self.Window.InsuranceCheckCash.setCheckState(QtCore.Qt.CheckState(0))
 
         self.Window.NameMailBox.clear()
         self.Window.PhoneMailBox.clear()
@@ -23031,7 +23115,7 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.ZipMailBox.clear()
         self.Window.AddressMailBox.clear()
         self.Window.OtherMailBox.clear()
-        self.Window.InsuranceMailCheck.setCheckState(0)
+        self.Window.InsuranceMailCheck.setCheckState(QtCore.Qt.CheckState(0))
 
         self.Window.EmailContactBox.clear()
         self.Window.PhoneContactBox.clear()
@@ -23108,9 +23192,9 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.Pickup1.setText(AdvanceArray[multisig]['Profiles'][profile][0]['city'])
                     self.Window.OtherBox2.setText(AdvanceArray[multisig]['Profiles'][profile][0]['other'])
                     if AdvanceArray[multisig]['Profiles'][profile][0]['secret']=="":
-                        self.Window.Secret1.setCheckState(0)
+                        self.Window.Secret1.setCheckState(QtCore.Qt.CheckState(0))
                     else:
-                        self.Window.Secret1.setCheckState(2)
+                        self.Window.Secret1.setCheckState(QtCore.Qt.CheckState(2))
                     for i in AdvanceArray[multisig]['Profiles'][profile]:
                         self.Window.WUSelect.addItem(i['string'].replace("\n", "  "))
                         self.Window.WUSelectConfirm.addItem(i['string'].replace("\n", "  "))
@@ -23121,9 +23205,9 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.FundsPickup2.setText(AdvanceArray[multisig]['Profiles'][profile][0]['city'])
                     self.Window.OtherBox3.setText(AdvanceArray[multisig]['Profiles'][profile][0]['other'])
                     if AdvanceArray[multisig]['Profiles'][profile][0]['secret']=="":
-                        self.Window.Secret2.setCheckState(0)
+                        self.Window.Secret2.setCheckState(QtCore.Qt.CheckState(0))
                     else:
-                        self.Window.Secret2.setCheckState(2)
+                        self.Window.Secret2.setCheckState(QtCore.Qt.CheckState(2))
                     for i in AdvanceArray[multisig]['Profiles'][profile]:
                         self.Window.MGSelect.addItem(i['string'].replace("\n", "  "))
                         self.Window.MGSelectConfirm.addItem(i['string'].replace("\n", "  "))
@@ -23147,9 +23231,9 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.AddressCashBox.setText(AdvanceArray[multisig]['Profiles'][profile][0]['address'])
                     self.Window.OtherInfoCashBox.setText(AdvanceArray[multisig]['Profiles'][profile][0]['other'])
                     if AdvanceArray[multisig]['Profiles'][profile][0]['insurance']=="":
-                        self.Window.InsuranceCheckCash.setCheckState(0)
+                        self.Window.InsuranceCheckCash.setCheckState(QtCore.Qt.CheckState(0))
                     else:
-                        self.Window.InsuranceCheckCash.setCheckState(2)
+                        self.Window.InsuranceCheckCash.setCheckState(QtCore.Qt.CheckState(2))
                     for i in AdvanceArray[multisig]['Profiles'][profile]:
                         self.Window.CashMailSelect.addItem(i['string'].replace("\n", "  "))
                         if self.cashmail==1:
@@ -23164,9 +23248,9 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.AddressMailBox.setText(AdvanceArray[multisig]['Profiles'][profile][0]['address'])
                     self.Window.OtherMailBox.setText(AdvanceArray[multisig]['Profiles'][profile][0]['other'])
                     if AdvanceArray[multisig]['Profiles'][profile][0]['insurance']=="":
-                        self.Window.InsuranceMailCheck.setCheckState(0)
+                        self.Window.InsuranceMailCheck.setCheckState(QtCore.Qt.CheckState(0))
                     else:
-                        self.Window.InsuranceMailCheck.setCheckState(2)
+                        self.Window.InsuranceMailCheck.setCheckState(QtCore.Qt.CheckState(2))
                     for i in AdvanceArray[multisig]['Profiles'][profile]:
                         self.Window.MailingSelect.addItem(i['string'].replace("\n", "  "))
                         if self.cashmail==0:
@@ -23385,7 +23469,7 @@ class TemplateWindow(QtGui.QWidget):
             Profile['tox']=strOUT(strIN(self.Window.ToxContactBox.text()))
             Profile['other']=strOUT(strIN(self.Window.OtherContactBox.toPlainText()))
             if Profile['email']=="" and Profile['phone']=="" and Profile['irc']=="" and Profile['tox']=="" and Profile['other']=="":
-                print Profile
+                print(Profile)
                 QuestionBox("Please fill out enough of the form to continue.","OK")
                 return False
             mystr=""
@@ -23420,7 +23504,7 @@ class TemplateWindow(QtGui.QWidget):
             if res==0:
                 return False, ""
             if res==1:
-                text, ok = QtGui.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars.\nYou can find this rate online. Please be as precise as possible.'))
+                text, ok = QtWidgets.QInputDialog.getText(self.Window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars.\nYou can find this rate online. Please be as precise as possible.'))
                 try:
                     a=float(Decimal(str(text)))
                 except:
@@ -23507,7 +23591,7 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.BankConfirm.show()
                     if AdvanceArray[multisig]['Profiles']['Bank']==[]:
                         self.Window.Pages.setCurrentIndex(1)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['Bank'].append(AdvanceArray[multisig]['Profiles']['Bank'][0]['string'])
@@ -23518,7 +23602,7 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.WUConfirm.show()
                     if AdvanceArray[multisig]['Profiles']['WU']==[]:
                         self.Window.Pages.setCurrentIndex(2)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['WU'].append(AdvanceArray[multisig]['Profiles']['WU'][0]['string'])
@@ -23529,7 +23613,7 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.MGConfirm.show()
                     if AdvanceArray[multisig]['Profiles']['MG']==[]:
                         self.Window.Pages.setCurrentIndex(3)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['MG'].append(AdvanceArray[multisig]['Profiles']['MG'][0]['string'])
@@ -23540,7 +23624,7 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.DebitConfirm.show()
                     if AdvanceArray[multisig]['Profiles']['Card']==[]:
                         self.Window.Pages.setCurrentIndex(4)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['Card'].append(AdvanceArray[multisig]['Profiles']['Card'][0]['string'])
@@ -23551,7 +23635,7 @@ class TemplateWindow(QtGui.QWidget):
                     self.Window.OtherConfirm.show()
                     if AdvanceArray[multisig]['Profiles']['Other']==[]:
                         self.Window.Pages.setCurrentIndex(5)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['Other'].append(AdvanceArray[multisig]['Profiles']['Other'][0]['string'])
@@ -23563,7 +23647,7 @@ class TemplateWindow(QtGui.QWidget):
                     found=1
                     if AdvanceArray[multisig]['Profiles']['Cash']==[]:
                         self.Window.Pages.setCurrentIndex(6)
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['Cash'].append(AdvanceArray[multisig]['Profiles']['Cash'][0]['string'])
@@ -23663,7 +23747,7 @@ class TemplateWindow(QtGui.QWidget):
                 else:
                     customdeposit=1
                 self.Window.AllowCounters.hide()#We already allow partial bids.
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==1:
                 if self.Window.OtherCheck2.isChecked():
                     if 'tip6' not in AdvanceArray:
@@ -23676,7 +23760,7 @@ class TemplateWindow(QtGui.QWidget):
                                 else:
                                     return
                         except:
-                            print 'Exception in notes'
+                            print('Exception in notes')
                 found=0
                 if self.Window.BankWireCheck2.isChecked():
                     found=1
@@ -23791,7 +23875,7 @@ class TemplateWindow(QtGui.QWidget):
                 else:
                     customdeposit=1
                 self.Window.AllowCounters.hide()#We already allow partial bids.
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==4:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -23838,7 +23922,7 @@ class TemplateWindow(QtGui.QWidget):
                     if AdvanceArray[multisig]['Profiles']['Mail']==[]:
                         QuestionBox("Since you have requested that the buyer calculate the rate of shipping in their offer, please supply some mailing information so that they can correctly estimate the cost.", " OK ")
                         self.Window.Pages.setCurrentIndex(7)                                    
-                        response=Templates.Window.exec_()
+                        response=Templates.Window.exec()
                         if response==0:
                             return
                     self.Data['Profiles']['Mail'].append(AdvanceArray[multisig]['Profiles']['Mail'][0]['string'])
@@ -23896,13 +23980,13 @@ class TemplateWindow(QtGui.QWidget):
                 if self.Window.SellSelect.currentIndex()==1:
                     self.Window.AllowCounters.hide()#Auctions are bids.
                     self.Window.AutoAcceptValid.hide()#Auto Accept Auctions!? Would we do this on timeout?
-                    self.Window.AllowCounters.setCheckState(2)
+                    self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
                 else:
                     self.Window.AutoAcceptValid.show()
                     self.Window.AllowCounters.show()
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==5:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -23924,7 +24008,7 @@ class TemplateWindow(QtGui.QWidget):
                 if AdvanceArray[multisig]['Profiles']['Mail']==[]:
                     QuestionBox("Please supply some mailing information so that the seller can know where to send the product.", " OK ")
                     self.Window.Pages.setCurrentIndex(7)                                    
-                    response=Templates.Window.exec_()
+                    response=Templates.Window.exec()
                     if response==0:
                         return
                 self.Data['Profiles']['Mail'].append(AdvanceArray[multisig]['Profiles']['Mail'][0]['string'])
@@ -23977,11 +24061,11 @@ class TemplateWindow(QtGui.QWidget):
                 #Buyer should allow bids, they may not know the item or shipping until offer
                 self.Window.AllowCounters.hide()
                 self.Window.AutoAcceptValid.hide()
-                self.Window.AllowCounters.setCheckState(2)
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
 
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)            
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))            
             if pos-1==2:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -24061,11 +24145,11 @@ class TemplateWindow(QtGui.QWidget):
                     self.Data['totalusd']="(not available)"
                 #Autoaccept is not needed for this template
                 self.Window.AutoAcceptValid.hide()
-                self.Window.AllowCounters.setCheckState(2)
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
 
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==3:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -24136,11 +24220,11 @@ class TemplateWindow(QtGui.QWidget):
                     self.Data['totalusd']="(not available)"
                 #Autoaccept is not needed for this template
                 self.Window.AutoAcceptValid.hide()
-                self.Window.AllowCounters.setCheckState(2)
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
 
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==7:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -24215,8 +24299,8 @@ class TemplateWindow(QtGui.QWidget):
                     self.Data['totalusd']="(not available)"
                 #Autoaccept is not needed for this template
                 self.Window.AutoAcceptValid.hide()
-                self.Window.AllowCounters.setCheckState(2)
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
                 if 'pythontip' not in AdvanceArray:
                     res=QuestionBox("Please be aware of the risks of Python contracts. It is your responsibility to audit the code of each of these custom contracts especially ones that are not in the list of known contracts. However even known contracts should be audited by the users as there could be a variety of content creators and this code is open source and always subject to change.", " I understand ", " Do not show this message again. ")
                     if res==1:
@@ -24224,7 +24308,7 @@ class TemplateWindow(QtGui.QWidget):
                 QuestionBox("You will now be asked to sign all of the requested code so that your computer is authorized to run it.", " OK ")
                 SignCode([self.Data['code1'],self.Data['code2'],self.Data['code3']])
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))
             if pos-1==6:
                 customdeposit=0
                 usd,btc=self.RateCheck()
@@ -24269,7 +24353,7 @@ class TemplateWindow(QtGui.QWidget):
                         highest=highvalue
                         besttitle=item
                     totaldemand+=self.barteritems['demand'][item]['ActualValue']
-                print str(highest), besttitle
+                print(str(highest), besttitle)
                 self.Data['barteritems']=self.barteritems
                 self.Data['buymultiple']=0
                 self.Data['offernotinlist']=0
@@ -24297,12 +24381,12 @@ class TemplateWindow(QtGui.QWidget):
                     self.Data['totalusd']="(not available)"
                 #Autoaccept is not needed for this template
                 self.Window.AutoAcceptValid.hide()
-                self.Window.AllowCounters.setCheckState(2)
+                self.Window.AllowCounters.setCheckState(QtCore.Qt.CheckState(2))
                 self.Window.AllowCounters.hide()
-                self.Window.AllowChat.setCheckState(2)
+                self.Window.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
                 self.Window.AllowPriceTracking.show()
-                self.Window.AllowPriceTracking.setCheckState(2)
-            print "POS " + str(pos-1)
+                self.Window.AllowPriceTracking.setCheckState(QtCore.Qt.CheckState(2))
+            print("POS " + str(pos-1))
             if exchangeratenotify==1:
                 QuestionBox(Gtranslate("Please confirm the exchange rate online:\n")+"USD:"+self.rate+"->"+CoinSelect['name']+"\n\n\n"+Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."), Gtranslate("OK"),1)
             if guarantornotice==1:
@@ -24343,7 +24427,7 @@ class TemplateWindow(QtGui.QWidget):
                 self.Window.ContactConfirm.show()
                 if AdvanceArray[multisig]['Profiles']['Contact']==[]:
                     self.Window.Pages.setCurrentIndex(8)
-                    response=Templates.Window.exec_()
+                    response=Templates.Window.exec()
                     if response==0:
                         return
                 self.Data['Profiles']['Contact'].append(AdvanceArray[multisig]['Profiles']['Contact'][0]['string'])
@@ -24351,15 +24435,15 @@ class TemplateWindow(QtGui.QWidget):
             mps=0
             for market in Markets['MyMarkets']:
                 self.Window.SentToSelect.addItem(market)
-                self.Window.SentToSelect.setItemData(mps,QtCore.QVariant(mps))
+                self.Window.SentToSelect.setItemData(mps,mps)
                 mps+=1
             if Markets['Current']=="ALL":
                 mark=CoinSelect['default market']
             else:
                 mark=Markets['Current']
             self.Window.SentToSelect.addItem("Private Email/BitMessage/Coin Address...")
-            self.Window.SentToSelect.setItemData(mps,QtCore.QVariant(9999999))
-            index = self.Window.SentToSelect.findText(mark, QtCore.Qt.MatchFixedString)
+            self.Window.SentToSelect.setItemData(mps,9999999)
+            index = self.Window.SentToSelect.findText(mark, QtCore.Qt.MatchFlag.MatchFixedString)
             self.Window.SentToSelect.setCurrentIndex(index)
             self.Window.ContractSummary.setText("Contract:  " + self.Data['Template'])
             self.Window.AmountSummary.setText("Amount:  " + self.Data['amount'] + "  ($" + self.Data['totalusd'] + ")")
@@ -24612,7 +24696,7 @@ class TemplateWindow(QtGui.QWidget):
                 Templates.LoadProfiles()
                 Templates.dontremoveonupdate=0
                 Templates.returntoconfirm=0
-                response=Templates.Window.exec_()
+                response=Templates.Window.exec()
                 Templates.Window.hide()
                 if response==0:
                     QuestionBox("You requested to supply additional information. In order to continue you must set up a profile.", "OK")
@@ -24670,7 +24754,7 @@ class TemplateWindow(QtGui.QWidget):
                 Templates.LoadProfiles()
                 Templates.dontremoveonupdate=0
                 Templates.returntoconfirm=1
-                response=Templates.Window.exec_()
+                response=Templates.Window.exec()
                 Templates.returntoconfirm=0
                 Templates.Window.hide()                
                 if response==0 or AdvanceArray[multisig]['Profiles'][self.reply['selected']]==[]:
@@ -24782,7 +24866,7 @@ class TemplateWindow(QtGui.QWidget):
                     Templates.LoadProfiles()
                     Templates.dontremoveonupdate=0
                     Templates.returntoconfirm=1
-                    response=Templates.Window.exec_()
+                    response=Templates.Window.exec()
                     Templates.returntoconfirm=0
                     Templates.Window.hide()
                     Templates.LoadProfiles()                    
@@ -25120,7 +25204,7 @@ class TemplateWindow(QtGui.QWidget):
                 Templates.LoadProfiles()
                 Templates.dontremoveonupdate=0
                 Templates.returntoconfirm=1
-                response=Templates.Window.exec_()
+                response=Templates.Window.exec()
                 Templates.returntoconfirm=0
                 Templates.Window.Pages.setCurrentIndex(19)
                 Templates.LoadProfiles()
@@ -25128,11 +25212,11 @@ class TemplateWindow(QtGui.QWidget):
                 self.Window.SelectContact.clear()
                 for i in AdvanceArray[multisig]['Profiles']['Contact']:
                     self.Window.SelectContact.addItem(i['string'].replace("\n", "  "))
-                    self.Window.SelectContact.setItemData(ps,QtCore.QVariant(ps))
+                    self.Window.SelectContact.setItemData(ps,ps)
                     ps+=1
                 if ps>0:
                     self.Window.SelectContact.addItem("Add/Edit profiles...")
-                    self.Window.SelectContact.setItemData(ps,QtCore.QVariant(9999999))
+                    self.Window.SelectContact.setItemData(ps,9999999)
                     self.Window.SelectContact.setCurrentIndex(0)
         #if index==1 or index==2 or index==5:
         #    self.readonly=0
@@ -25264,9 +25348,9 @@ class TemplateWindow(QtGui.QWidget):
                 self.Window.CheckBox1.hide()
             if self.order['Market Data']['allowcounters']==0 or self.order['Market Data']['tracking']==2:
                 if self.order['Market Data']['requirereport']==0:
-                    self.Window.CheckBox1.setCheckState(0)            
+                    self.Window.CheckBox1.setCheckState(QtCore.Qt.CheckState(0))            
                 if self.order['Market Data']['requirereport']==1:
-                    self.Window.CheckBox1.setCheckState(2)
+                    self.Window.CheckBox1.setCheckState(QtCore.Qt.CheckState(2))
             if self.mode!=1:
                 if self.order['Market Data']['resume']!="0":
                     if self.order['Market Data']['resume']!="1":
@@ -25344,7 +25428,7 @@ class TemplateWindow(QtGui.QWidget):
         multisig,mscript=create_multisig_address(PrivKeyFilename1)
         self.Window.Accept.setText("Accept")
         self.blockAllSignals(0)
-        self.Window.SupplyAdditional10.setCheckState(2)
+        self.Window.SupplyAdditional10.setCheckState(QtCore.Qt.CheckState(2))
         self.readonly=1
         self.order=json_deep_copy(order,1)
         self.reply={}        
@@ -25356,11 +25440,11 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.SelectContact.clear()
         for i in AdvanceArray[multisig]['Profiles']['Contact']:
             self.Window.SelectContact.addItem(i['string'].replace("\n", "  "))
-            self.Window.SelectContact.setItemData(ps,QtCore.QVariant(ps))
+            self.Window.SelectContact.setItemData(ps,ps)
             ps+=1
         if ps>0 and mode==0:
             self.Window.SelectContact.addItem("Add/Edit profiles...")
-            self.Window.SelectContact.setItemData(ps,QtCore.QVariant(9999999))
+            self.Window.SelectContact.setItemData(ps,9999999)
         if order['Market Data']['allowcounters']==1 and order['Market Data']['Template']!="Sell Coins" and order['Market Data']['Template']!="Buy Coins":
             self.Window.Counter.show()
         else:            
@@ -25415,7 +25499,7 @@ class TemplateWindow(QtGui.QWidget):
         self.Window.TheirDepositUSD10.setCurrentIndex(1)
         self.Window.TimeLimitDays10.setCurrentIndex(1)
         self.Window.CheckBox1.hide()
-        self.Window.SupplyAdditional10.setCheckState(2)
+        self.Window.SupplyAdditional10.setCheckState(QtCore.Qt.CheckState(2))
         self.Window.Drop2.show()
         self.ChangeOrderIndex(1000)
         f=0
@@ -25594,17 +25678,17 @@ class TemplateWindow(QtGui.QWidget):
                 data+="<br />" + amtstring + str(dropzeros(((Decimal(order['amount'])/Decimal(1e8))*Dif).quantize(Decimal('.00000001')),1))+conv+", "+order['Market Data']['Payment Method'] + "<br />"
         if 'StartingBid' in self.order['Market Data'] and mode==0:
             self.Window.Drop1.addItem("Buyout Price: " + str(dropzeros(((Decimal(order['amount'])/Decimal(1e8))*Dif).quantize(Decimal('.00000001')),1))+conv+", "+order['Market Data']['Payment Method'])
-            self.Window.Drop1.setItemData(0,QtCore.QVariant(0))
+            self.Window.Drop1.setItemData(0,0)
         else:
             if "Coins" in order['Market Data']['Template']:
                 self.Window.Drop1.addItem("Amount: " + str(dropzeros((Decimal(order['amount'])/Decimal(1e8)).quantize(Decimal('.00000001')),1))+conv+", "+order['Market Data']['Payment Method'])
-                self.Window.Drop1.setItemData(0,QtCore.QVariant(0))
+                self.Window.Drop1.setItemData(0,0)
             else:
                 if 'Barter' in order['Market Data']['Template']:
                     self.Window.Drop1.addItem("Amount: " + str(dropzeros(((Decimal(order['amount'])/Decimal(1e8))).quantize(Decimal('.00000001')),1))+conv+", "+order['Market Data']['Payment Method'])
                 else:
                     self.Window.Drop1.addItem("Amount: " + str(dropzeros(((Decimal(order['amount'])/Decimal(1e8))*Dif).quantize(Decimal('.00000001')),1))+conv+", "+order['Market Data']['Payment Method'])
-                self.Window.Drop1.setItemData(0,QtCore.QVariant(0))                
+                self.Window.Drop1.setItemData(0,0)                
         skip=0
         if "Coins" in order['Market Data']['Template'] and 'minorder' not in order['Market Data']:#Countering in the UI
             skip=1
@@ -25612,21 +25696,21 @@ class TemplateWindow(QtGui.QWidget):
             if self.order['Market Data']['Template']!="Custom" and self.order['Market Data']['Template']!="Python" and self.order['Market Data']['Template']!="Barter":
                 if "Coins" in order['Market Data']['Template']:
                     self.Window.Drop1.addItem("Request a different amount...")
-                    self.Window.Drop1.setItemData(1,QtCore.QVariant(999))
+                    self.Window.Drop1.setItemData(1,999)
                 if "Something" in order['Market Data']['Template']:
                     if 'StartingBid' not in self.order['Market Data']:
                         if order['Market Data']['tracking']!=2 and order['Market Data']['allowcounters']==1:#Counters are allowed
                             kr=0
                             if 'keepratio' not in order['Market Data']:
                                 self.Window.Drop1.addItem("Request a different amount...")
-                                self.Window.Drop1.setItemData(1,QtCore.QVariant(999))
+                                self.Window.Drop1.setItemData(1,999)
                                 kr=1
                             if 'quantity' in order['Market Data'] and order['Market Data']['quantity']>1:
                                 self.Window.Drop1.addItem("Order higher quantity...")
-                                self.Window.Drop1.setItemData(1+kr,QtCore.QVariant(998))
+                                self.Window.Drop1.setItemData(1+kr,998)
                     else:
                         self.Window.Drop1.addItem("Bid on this auction...")
-                        self.Window.Drop1.setItemData(1,QtCore.QVariant(999))
+                        self.Window.Drop1.setItemData(1,999)
         data+=str(order['whopays'])+"<br /><br />"
         if "Coins" in self.order['Market Data']['Template']:
             try:
@@ -25651,7 +25735,7 @@ class TemplateWindow(QtGui.QWidget):
             if order['mydeposit']==0:
                 data+="They are the guarantor!<br />"
         self.Window.DepositSettings10.addItem(str(order['Market Data']['style']))
-        self.Window.DepositSettings10.setItemData(0,QtCore.QVariant(0))
+        self.Window.DepositSettings10.setItemData(0,0)
         data+="Date: " + str(t) + "<br />"
         if 'minorder' in order['Market Data']:
             if "Coins" in order['Market Data']['Template']:
@@ -25729,9 +25813,9 @@ class TemplateWindow(QtGui.QWidget):
             if order['Market Data']['requirereport']==1:
                 data+="Progress reports required for payment"+"<br />"
             if self.order['Market Data']['requirereport']==0:
-                self.Window.CheckBox1.setCheckState(0)            
+                self.Window.CheckBox1.setCheckState(QtCore.Qt.CheckState(0))            
             if self.order['Market Data']['requirereport']==1:
-                self.Window.CheckBox1.setCheckState(2)
+                self.Window.CheckBox1.setCheckState(QtCore.Qt.CheckState(2))
             if order['Market Data']['interview']==1:
                 data+="Interview requested"+"<br />"
             if order['Market Data']['resume']=="1":
@@ -25794,7 +25878,7 @@ class TemplateWindow(QtGui.QWidget):
                     if order['Market Data']['tracking']!=2 and order['Market Data']['allowcounters']==1:
                         if 'keepratio' not in order['Market Data']:#Counters are allowed
                             self.Window.DepositSettings10.addItem("Request different deposits...")
-                            self.Window.DepositSettings10.setItemData(1,QtCore.QVariant(999))
+                            self.Window.DepositSettings10.setItemData(1,999)
         data2=""
         try:
             if mode==1:
@@ -25819,7 +25903,7 @@ class TemplateWindow(QtGui.QWidget):
                 data2+=str(r)+")<br />" +Review+"<br />"
                 r+=1
         except:
-            print "EXCEPTION LOADING PROFILE"
+            print("EXCEPTION LOADING PROFILE")
         self.data3=data
         self.data4=data2
         if "Coins" in order['Market Data']['Template']:
@@ -25829,8 +25913,8 @@ class TemplateWindow(QtGui.QWidget):
             data3=data2
             data4=data
             try:
-                output = StringIO.StringIO()
-                image_string = StringIO.StringIO(base64.b64decode(self.order['Details']['image']))
+                output = BytesIO()
+                image_string = BytesIO(base64.b64decode(self.order['Details']['image']))
                 image = Image.open(image_string)
                 image.save(output, 'PNG')#Used to be JPEG
                 self.b64img= base64.b64encode(output.getvalue())
@@ -25847,7 +25931,7 @@ class TemplateWindow(QtGui.QWidget):
                     image=image.resize((int(ratio*w),int(ratio*h)), Image.ANTIALIAS)
                     h=210
                 tup=image.size
-                output = StringIO.StringIO()
+                output = BytesIO()
                 image.save(output, 'PNG')#Used to be JPEG
                 b64img= base64.b64encode(output.getvalue())
                 data3="<img src=\"data:image/png;base64,"+b64img+"\"/>"
@@ -25892,13 +25976,13 @@ class TemplateWindow(QtGui.QWidget):
                 else:
                     res=QuestionBox('Contract hash: \n'+thehash, Gtranslate(" Proceed to contract "), Gtranslate(" Let me audit the code first "), Gtranslate(" Save the code "), 1)
                 if res==1:
-                    ewindow=QtGui.QDialog()
+                    ewindow=QtWidgets.QDialog()
                     ewindow.resize(700, 700)
-                    Display1 = QtGui.QTextBrowser((ewindow))
+                    Display1 = QtWidgets.QTextBrowser((ewindow))
                     Display1.setGeometry(QtCore.QRect(10, 10, 670, 220))
-                    Display2 = QtGui.QTextBrowser((ewindow))
+                    Display2 = QtWidgets.QTextBrowser((ewindow))
                     Display2.setGeometry(QtCore.QRect(10, 240, 670, 220))
-                    Display3 = QtGui.QTextBrowser((ewindow))
+                    Display3 = QtWidgets.QTextBrowser((ewindow))
                     Display3.setGeometry(QtCore.QRect(10, 470, 670, 220))
                     try:
                         Display1.setText("Code For Offer Forms:<br /><br />"+order['Market Data']['code1'].replace('\n','<br/>').replace(' ', '&nbsp;'))
@@ -25910,9 +25994,9 @@ class TemplateWindow(QtGui.QWidget):
                         return
                     ewindow.setWindowTitle("Python Contract")
                     ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-                    ewindow.exec_()
+                    ewindow.exec()
                 if res==2:
-                    dir1 = strOUT(strIN(QtGui.QFileDialog.getExistingDirectory(self,Gtranslate("Open a folder to save the source code"),MacDir()+"",QtGui.QFileDialog.ShowDirsOnly)))
+                    dir1 = strOUT(strIN(QtWidgets.QFileDialog.getExistingDirectory(self,Gtranslate("Open a folder to save the source code"),MacDir()+"",QtWidgets.QFileDialog.ShowDirsOnly)))
                     if dir1=="":
                         return
                     try:
@@ -25937,7 +26021,7 @@ class TemplateWindow(QtGui.QWidget):
                 if res!=0:
                     return
                 if thehash not in ApprovedContracts and mode!=2:
-                    text, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please type "yes" in the box if you understand the risks of unknown custom Python contracts:'))
+                    text, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please type "yes" in the box if you understand the risks of unknown custom Python contracts:'))
                     if str(text).lower()!='yes':
                         QuestionBox('You must type "yes" in the box if you wish to continue and see this contract.', ' OK ')
                         self.Window.hide()
@@ -25999,7 +26083,7 @@ class TemplateWindow(QtGui.QWidget):
                             highvalue=av
                             highvalue=self.TestHighValue(highvalue, myitem)
                             if highvalue==False:
-                                print "High value check failed!"
+                                print("High value check failed!")
                                 self.barterwindow=1
                                 return
                             if highvalue>highest:
@@ -26012,14 +26096,14 @@ class TemplateWindow(QtGui.QWidget):
                             highvalue=av
                             highvalue=self.TestHighValue(highvalue, myitem)
                             if highvalue==False:
-                                print "High value check failed!"
+                                print("High value check failed!")
                                 self.barterwindow=1
                                 return
                             if highvalue>highest:
                                 highest=highvalue
                                 besttitle=item
                             totaldemand+=av
-                        print str(highest), besttitle
+                        print(str(highest), besttitle)
                         self.order['mydeposit']=str(int(Decimal(highest*2)))
                         self.order['theirdeposit']=str(int(Decimal(highest*2)))
                         self.orgmydeposit=self.order['mydeposit']
@@ -26069,7 +26153,7 @@ class TemplateWindow(QtGui.QWidget):
                 self.barteritems2={'supply':{},'demand':{}}
                 self.barteritems=self.order['Market Data']['barteritems']
                 self.PopulateBarter(2)
-                res=Templates.Window.exec_()
+                res=Templates.Window.exec()
 
                 self.Window.DepositSettings10.clear()
                 self.Window.DepositSettings10.addItem(str(self.order['Market Data']['style']))
@@ -26179,20 +26263,21 @@ class InputState:
     LOWER = 0
     CAPITAL = 1
 
-class KeyButton(QtGui.QPushButton):
+class KeyButton(QtWidgets.QPushButton):
+    sigKeyButtonClicked = QtCore.pyqtSignal(object)
     def __init__(self, key):
         super(KeyButton, self).__init__()       
         self._key = key
         self._activeSize = QtCore.QSize(50,50)
-        self.connect(self, QtCore.SIGNAL("clicked()"), self.emitKey)
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
+        self.clicked.connect( self.emitKey)
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
 
         self.ticker = 0
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.tick)
 
     def emitKey(self):
-        self.emit(QtCore.SIGNAL("sigKeyButtonClicked"), self._key)
+        self.sigKeyButtonClicked.emit(self._key)
 
     def tick(self):
         self.ticker+=1.5
@@ -26216,17 +26301,18 @@ class KeyButton(QtGui.QPushButton):
     def sizeHint(self):
         return QtCore.QSize(40, 40)
 
-class VirtualKeyboard(QtGui.QDialog):
+class VirtualKeyboard(QtWidgets.QDialog):
+    sigInputString = QtCore.pyqtSignal(object)
     def __init__(self):
         super(VirtualKeyboard, self).__init__()
         
         self.setWindowTitle("Enter your password:")
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         #self.setWindowTitle(Gtranslate("Enter your password:"))
-        self.globalLayout = QtGui.QVBoxLayout(self)
-        self.keysLayout = QtGui.QGridLayout()
-        self.buttonLayout = QtGui.QHBoxLayout()
-        self.progress = QtGui.QProgressBar()
+        self.globalLayout = QtWidgets.QVBoxLayout(self)
+        self.keysLayout = QtWidgets.QGridLayout()
+        self.buttonLayout = QtWidgets.QHBoxLayout()
+        self.progress = QtWidgets.QProgressBar()
         self.keyListByLines = [
                     ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
                     ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z'],
@@ -26239,16 +26325,16 @@ class VirtualKeyboard(QtGui.QDialog):
         self.inputString = ""
         self.state = InputState.LOWER
 
-        self.stateButton = QtGui.QPushButton()
+        self.stateButton = QtWidgets.QPushButton()
         self.stateButton.setText('Shift')
-        self.backButton = QtGui.QPushButton()
+        self.backButton = QtWidgets.QPushButton()
         self.backButton.setText('Back')
-        self.okButton = QtGui.QPushButton()
+        self.okButton = QtWidgets.QPushButton()
         self.okButton.setText('OK')
-        self.cancelButton = QtGui.QPushButton()
+        self.cancelButton = QtWidgets.QPushButton()
         self.cancelButton.setText("Cancel")
 
-        self.inputLine = QtGui.QLineEdit()
+        self.inputLine = QtWidgets.QLineEdit()
         self.inputLine.setText("")
 
         for lineIndex, line in enumerate(self.keyListByLines):
@@ -26257,16 +26343,16 @@ class VirtualKeyboard(QtGui.QDialog):
                 self.__setattr__(buttonName, KeyButton(key))
                 self.keysLayout.addWidget(self.getButtonByKey(key), self.keyListByLines.index(line), line.index(key))
                 self.getButtonByKey(key).setText(key)
-                self.connect(self.getButtonByKey(key), QtCore.SIGNAL("sigKeyButtonClicked"), self.addInputByKey)
+                self.getButtonByKey(key).sigKeyButtonClicked.connect(self.addInputByKey)
                 self.keysLayout.setColumnMinimumWidth(keyIndex, 50)
             self.keysLayout.setRowMinimumHeight(lineIndex, 50)
 
         ApplyCSS(self)
 
-        self.connect(self.stateButton, QtCore.SIGNAL("clicked()"), self.switchState)
-        self.connect(self.backButton, QtCore.SIGNAL("clicked()"), self.backspace)
-        self.connect(self.okButton, QtCore.SIGNAL("clicked()"), self.emitInputString)
-        self.connect(self.cancelButton, QtCore.SIGNAL("clicked()"), self.emitCancel)
+        self.stateButton.clicked.connect( self.switchState)
+        self.backButton.clicked.connect( self.backspace)
+        self.okButton.clicked.connect( self.emitInputString)
+        self.cancelButton.clicked.connect( self.emitCancel)
         self.inputLine.textChanged.connect(self.changed)
 
 
@@ -26280,7 +26366,7 @@ class VirtualKeyboard(QtGui.QDialog):
         self.globalLayout.addLayout(self.keysLayout)
 
         self.globalLayout.addLayout(self.buttonLayout)
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
     def reset(self):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.inputLine.setText("")
@@ -26329,14 +26415,14 @@ class VirtualKeyboard(QtGui.QDialog):
 
     def emitInputString(self):
         pass
-        #print str(self.inputString)
+        #print(str(self.inputString))
         self.accept() 
-        #self.emit(QtCore.SIGNAL("sigInputString"), self.inputString)
+        self.sigInputString.emit(self.inputString)
 
     def emitCancel(self):
         self.inputString=""
         self.accept()
-        #self.emit(QtCore.SIGNAL("sigInputString"), "")
+        self.sigInputString.emit("")
 
     def sizeHint(self):
         return QtCore.QSize(480,272)
@@ -26372,7 +26458,7 @@ def shippingcalculator(clientinfo="", manualoffer=0):
     url=QtCore.QUrl("https://www.fedex.com/ratefinder/home")
     calcbrowser.load(url)
     
-    grid = QtGui.QGridLayout()
+    grid = QtWidgets.QGridLayout()
     #grid.addWidget(url_input, 1, 0)
     #grid.addWidget(action_box, 2, 0)
     grid.addWidget(calcbrowser, 3, 0)
@@ -26399,7 +26485,7 @@ def shippingcalculator(clientinfo="", manualoffer=0):
             if res2==1:
                 return rate
     if manualoffer==0:
-        calcmain_frame.exec_()
+        calcmain_frame.exec()
         if bestcalcrate!=[]:
             res = QuestionBox(Gtranslate("The Fedex shipping calculator has estimated the following rate in dollars.")+"\n\n"+str(bestcalcrate[0])+": "+str(bestcalcrate[1])," Use this rate ", " Let me offer a different rate ",1)
             if res==0:
@@ -26410,9 +26496,9 @@ def shippingcalculator(clientinfo="", manualoffer=0):
                 return ""
     if res==1:
         if usd=="":
-            text, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter what you have estimated shipping to be in coins:'))
+            text, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter what you have estimated shipping to be in coins:'))
         else:
-            text, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter what you have estimated shipping to be in dollars:'))
+            text, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter what you have estimated shipping to be in dollars:'))
         try:
             if str(text)=="":
                 return ""
@@ -26435,7 +26521,7 @@ def findrates(text):
     mylist=[]
     mylist2=[]
     def myprint(d):
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(v, dict):
                 myprint(v)
             else:
@@ -26445,7 +26531,7 @@ def findrates(text):
                     mylist2.append(v)
     myprint(text)
     return mylist, mylist2
-class CalcUrlInput(QtGui.QLineEdit):
+class CalcUrlInput(QtWidgets.QLineEdit):
     def __init__(self, calcbrowser):
         super(CalcUrlInput, self).__init__()
         self.calcbrowser = calcbrowser
@@ -26454,7 +26540,7 @@ class CalcUrlInput(QtGui.QLineEdit):
     def _return_pressed(self):
         url = QtCore.QUrl(self.text())
         calcbrowser.load(url)
-class CalcJavaScriptEvaluator(QtGui.QLineEdit):
+class CalcJavaScriptEvaluator(QtWidgets.QLineEdit):
     def __init__(self, calcpage):
         super(CalcJavaScriptEvaluator, self).__init__()
         self.calcpage = calcpage
@@ -26463,7 +26549,7 @@ class CalcJavaScriptEvaluator(QtGui.QLineEdit):
     def _return_pressed(self):
         frame = self.calcpage.currentFrame()
         result = frame.evaluateJavaScript(self.text())
-class CalcActionInputBox(QtGui.QLineEdit):
+class CalcActionInputBox(QtWidgets.QLineEdit):
     def __init__(self, calcpage):
         super(CalcActionInputBox, self).__init__()
         self.calcpage = calcpage
@@ -26473,14 +26559,14 @@ class CalcActionInputBox(QtGui.QLineEdit):
         frame = self.calcpage.currentFrame()
         action_string = str(self.text()).lower()
         if action_string == "b":
-            self.calcpage.triggerAction(QWebPage.Back)
+            self.calcpage.triggerAction(QWebEnginePage.Back)
         elif action_string == "f":
-            self.calcpage.triggerAction(QWebPage.Forward)
+            self.calcpage.triggerAction(QWebEnginePage.Forward)
         elif action_string == "s":
-            self.calcpage.triggerAction(QWebPage.Stop)
+            self.calcpage.triggerAction(QWebEnginePage.Stop)
         elif action_string == "r":
-            self.calcpage.triggerAction(QWebPage.Reload)
-class CalcRequestsTable(QtGui.QTableWidget):
+            self.calcpage.triggerAction(QWebEnginePage.Reload)
+class CalcRequestsTable(QtWidgets.QTableWidget):
     header = ["url", "status", "content-type"]
 
     def __init__(self):
@@ -26498,7 +26584,7 @@ class CalcRequestsTable(QtGui.QTableWidget):
         for col, dat in enumerate(data, 0):
             if not dat:
                 continue
-            self.setItem(last_row, col, QtGui.QTableWidgetItem(dat))
+            self.setItem(last_row, col, QtWidgets.QTableWidgetItem(dat))
 class CalcManager(QNetworkAccessManager):
     def __init__(self, table):
         QNetworkAccessManager.__init__(self)
@@ -26509,11 +26595,11 @@ class CalcManager(QNetworkAccessManager):
         global bestcalcrate
         headers = reply.rawHeaderPairs()
         headers = {str(k):str(v) for k,v in headers}
-        #print str(headers)
+        #print(str(headers))
         frame = calcpage.mainFrame()
-        if "Amounts are shown in USD" in unicode(frame.toHtml()).encode('utf-8'):
+        if "Amounts are shown in USD" in str(frame.toHtml()).encode('utf-8'):
             try:
-                rates, prods=findrates(unicode(frame.toHtml()).encode('utf-8'))
+                rates, prods=findrates(str(frame.toHtml()).encode('utf-8'))
                 bestval=0
                 bestprod=""
                 pos=0
@@ -26549,12 +26635,12 @@ def compareFont(Label1, Label2):
     except:
         traceback.print_exc()
     return True
-class myQLabel(QtGui.QLabel):
+class myQLabel(QtWidgets.QLabel):
     def __init__(self, *args, **kargs):
         super(myQLabel, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
-                                             QtGui.QSizePolicy.Ignored))
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
+                                             QtWidgets.QSizePolicy.Policy.Ignored))
 
         self.setMinSize(6)
 
@@ -26597,43 +26683,43 @@ class myQLabel(QtGui.QLabel):
         self.setFont(f)
 
 #More UI windows
-class Settings(QtGui.QWidget):
+class Settings(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(683, 681)
         
         self.stopcount=0
         self.connectioncount=""
-        self.SettingsTabs = QtGui.QTabWidget(Form)
+        self.SettingsTabs = QtWidgets.QTabWidget(Form)
         self.SettingsTabs.setGeometry(QtCore.QRect(10, 10, 671, 661))
         self.SettingsTabs.setObjectName(_fromUtf8("SettingsTabs"))
-        self.tab = QtGui.QWidget()
+        self.tab = QtWidgets.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
-        self.ProxyEdit = QtGui.QTextEdit(self.tab)
+        self.ProxyEdit = QtWidgets.QTextEdit(self.tab)
         self.ProxyEdit.setGeometry(QtCore.QRect(10, 40, 591, 41))
         self.ProxyEdit.setObjectName(_fromUtf8("ProxyEdit"))
-        self.ProxyLabel = QtGui.QLabel(self.tab)
+        self.ProxyLabel = QtWidgets.QLabel(self.tab)
         self.ProxyLabel.setGeometry(QtCore.QRect(10, 10, 551, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(19)
         self.ProxyLabel.setFont(font)
         self.ProxyLabel.setObjectName(_fromUtf8("ProxyLabel"))
-        self.RunSetupWizard = QtGui.QPushButton(self.tab)
+        self.RunSetupWizard = QtWidgets.QPushButton(self.tab)
         self.RunSetupWizard.setGeometry(QtCore.QRect(10, 90, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.RunSetupWizard.setFont(font)
         self.RunSetupWizard.setObjectName(_fromUtf8("RunSetupWizard"))
-        self.ShowReputation = QtGui.QPushButton(self.tab)
+        self.ShowReputation = QtWidgets.QPushButton(self.tab)
         self.ShowReputation.setGeometry(QtCore.QRect(210, 90, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.ShowReputation.setFont(font)
         self.ShowReputation.setObjectName(_fromUtf8("ShowReputation"))
-        self.EditProfiles = QtGui.QPushButton(self.tab)
+        self.EditProfiles = QtWidgets.QPushButton(self.tab)
         self.EditProfiles.setGeometry(QtCore.QRect(410, 90, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26641,7 +26727,7 @@ class Settings(QtGui.QWidget):
         self.EditProfiles.setFont(font)
         self.EditProfiles.setObjectName(_fromUtf8("EditProfiles"))
 
-        self.Info = QtGui.QPushButton(self.tab)
+        self.Info = QtWidgets.QPushButton(self.tab)
         self.Info.setGeometry(QtCore.QRect(610, 40, 41, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26650,42 +26736,42 @@ class Settings(QtGui.QWidget):
         self.Info.setObjectName(_fromUtf8("Info"))
         self.Info.setText("?")
 
-        self.ActivateAntiKeylogger = QtGui.QCheckBox(self.tab)
+        self.ActivateAntiKeylogger = QtWidgets.QCheckBox(self.tab)
         self.ActivateAntiKeylogger.setGeometry(QtCore.QRect(10, 150, 591, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.ActivateAntiKeylogger.setFont(font)
         self.ActivateAntiKeylogger.setObjectName(_fromUtf8("ActivateAntiKeylogger"))
-        self.DontSavePasswords = QtGui.QCheckBox(self.tab)
+        self.DontSavePasswords = QtWidgets.QCheckBox(self.tab)
         self.DontSavePasswords.setGeometry(QtCore.QRect(10, 190, 591, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.DontSavePasswords.setFont(font)
         self.DontSavePasswords.setObjectName(_fromUtf8("DontSavePasswords"))
-        self.FilterCurrencies = QtGui.QCheckBox(self.tab)
+        self.FilterCurrencies = QtWidgets.QCheckBox(self.tab)
         self.FilterCurrencies.setGeometry(QtCore.QRect(10, 270, 591, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.FilterCurrencies.setFont(font)
         self.FilterCurrencies.setObjectName(_fromUtf8("FilterCurrencies"))
-        self.ClearKeysOnExit = QtGui.QCheckBox(self.tab)
+        self.ClearKeysOnExit = QtWidgets.QCheckBox(self.tab)
         self.ClearKeysOnExit.setGeometry(QtCore.QRect(10, 230, 591, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.ClearKeysOnExit.setFont(font)
         self.ClearKeysOnExit.setObjectName(_fromUtf8("ClearKeysOnExit"))
-        self.DebugOnExit = QtGui.QCheckBox(self.tab)
+        self.DebugOnExit = QtWidgets.QCheckBox(self.tab)
         self.DebugOnExit.setGeometry(QtCore.QRect(10, 310, 591, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.DebugOnExit.setFont(font)
         self.DebugOnExit.setObjectName(_fromUtf8("DebugOnExit"))
-        self.NetworkConnections = QtGui.QLabel(self.tab)
+        self.NetworkConnections = QtWidgets.QLabel(self.tab)
         self.NetworkConnections.setGeometry(QtCore.QRect(10, 590, 551, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26696,9 +26782,9 @@ class Settings(QtGui.QWidget):
         self.SettingsTabs.addTab(self.tab, _fromUtf8(""))
 
 
-        self.tab_2 = QtGui.QWidget()
+        self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
-        self.ColdStakingLabel = QtGui.QLabel(self.tab_2)
+        self.ColdStakingLabel = QtWidgets.QLabel(self.tab_2)
         self.ColdStakingLabel.setGeometry(QtCore.QRect(10, 10, 641, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26706,38 +26792,38 @@ class Settings(QtGui.QWidget):
         self.ColdStakingLabel.setFont(font)
         self.ColdStakingLabel.setObjectName(_fromUtf8("ColdStakingLabel"))
         if 'pegging' in CoinSelect and CoinSelect['pegging']:
-            self.RewardsLabel = QtGui.QLabel(self.tab_2)
+            self.RewardsLabel = QtWidgets.QLabel(self.tab_2)
             self.RewardsLabel.setGeometry(QtCore.QRect(410, 250, 641, 300))
             font = QtGui.QFont()
             font.setFamily(_fromUtf8("Courier"))
             font.setPixelSize(13)
             self.RewardsLabel.setFont(font)
             self.RewardsLabel.setObjectName(_fromUtf8("RewardsLabel"))
-        self.EnableStaking = QtGui.QCheckBox(self.tab_2)
+        self.EnableStaking = QtWidgets.QCheckBox(self.tab_2)
         self.EnableStaking.setGeometry(QtCore.QRect(10, 100, 641, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.EnableStaking.setFont(font)
         self.EnableStaking.setObjectName(_fromUtf8("EnableStaking"))
-        self.ColdStakingIP = QtGui.QTextEdit(self.tab_2)
+        self.ColdStakingIP = QtWidgets.QTextEdit(self.tab_2)
         self.ColdStakingIP.setGeometry(QtCore.QRect(10, 40, 591, 41))
         self.ColdStakingIP.setObjectName(_fromUtf8("ColdStakingIP"))
-        self.AddRemoveVotes = QtGui.QPushButton(self.tab_2)
+        self.AddRemoveVotes = QtWidgets.QPushButton(self.tab_2)
         self.AddRemoveVotes.setGeometry(QtCore.QRect(10, 150, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.AddRemoveVotes.setFont(font)
         self.AddRemoveVotes.setObjectName(_fromUtf8("AddRemoveVotes"))
-        self.CountVotes = QtGui.QPushButton(self.tab_2)
+        self.CountVotes = QtWidgets.QPushButton(self.tab_2)
         self.CountVotes.setGeometry(QtCore.QRect(210, 150, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
         self.CountVotes.setFont(font)
         self.CountVotes.setObjectName(_fromUtf8("CountVotes"))
-        self.AddAccounts = QtGui.QPushButton(self.tab_2)
+        self.AddAccounts = QtWidgets.QPushButton(self.tab_2)
         self.AddAccounts.setGeometry(QtCore.QRect(410, 150, 241, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26745,7 +26831,7 @@ class Settings(QtGui.QWidget):
         self.AddAccounts.setFont(font)
         self.AddAccounts.setObjectName(_fromUtf8("AddAccounts"))
 
-        self.DonateStake = QtGui.QPushButton(self.tab_2)
+        self.DonateStake = QtWidgets.QPushButton(self.tab_2)
         self.DonateStake.setGeometry(QtCore.QRect(410, 570, 241, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -26753,10 +26839,10 @@ class Settings(QtGui.QWidget):
         self.DonateStake.setFont(font)
         self.DonateStake.setObjectName(_fromUtf8("DonateStake"))
 
-        self.listWidget = QtGui.QListWidget(self.tab_2)
+        self.listWidget = QtWidgets.QListWidget(self.tab_2)
         self.listWidget.setGeometry(QtCore.QRect(10, 210, 391, 401))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
-        self.PeggingVote = QtGui.QComboBox(self.tab_2)
+        self.PeggingVote = QtWidgets.QComboBox(self.tab_2)
         self.PeggingVote.setGeometry(QtCore.QRect(410, 210, 241, 41))
         self.PeggingVote.setObjectName(_fromUtf8("PeggingVote"))
         self.PeggingVote.addItem(_fromUtf8(""))
@@ -26767,17 +26853,17 @@ class Settings(QtGui.QWidget):
         self.SettingsTabs.addTab(self.tab_2, _fromUtf8(""))
 
         if 'pegging' in CoinSelect and CoinSelect['pegging']:
-            self.tab_3 = QtGui.QWidget()
+            self.tab_3 = QtWidgets.QWidget()
             self.tab_3.setObjectName(_fromUtf8("tab_3"))
             font = QtGui.QFont()
             font.setFamily(_fromUtf8("Courier"))
             font.setPixelSize(13)
-            self.EnableBridge = QtGui.QCheckBox(self.tab_3)
+            self.EnableBridge = QtWidgets.QCheckBox(self.tab_3)
             self.EnableBridge.setGeometry(QtCore.QRect(10, 10, 641, 31))
             self.EnableBridge.setFont(font)
             self.EnableBridge.setObjectName(_fromUtf8("EnableBridge"))
-            self.BridgeInfo = QtGui.QTextEdit(self.tab_3)
-            self.BridgeInfo.setAlignment(QtCore.Qt.AlignLeft)
+            self.BridgeInfo = QtWidgets.QTextEdit(self.tab_3)
+            self.BridgeInfo.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
             self.BridgeInfo.setGeometry(QtCore.QRect(10, 50, 641, 500))
             self.BridgeInfo.setMaximumSize(QtCore.QSize(641, 16777215))
             self.BridgeInfo.setReadOnly(True)
@@ -26802,10 +26888,10 @@ class Settings(QtGui.QWidget):
         self.CountVotes.clicked.connect(self.CountMyVotes)
         self.DonateStake.clicked.connect(self.DonateMyStake)
 
-        self.PeggingVote.connect(self.PeggingVote,QtCore.SIGNAL("currentIndexChanged(int)"),self.PegVote)
-        self.SettingsTabs.connect(self.SettingsTabs,QtCore.SIGNAL("currentChanged(int)"),self.changetab)
+        self.PeggingVote.currentIndexChanged.connect(self.PegVote)
+        self.SettingsTabs.currentChanged.connect(self.changetab)
         
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.ClearVote)
+        self.listWidget.itemClicked.connect( self.ClearVote)
     def retranslateUi(self, Form):
         self.ProxyLabel.setText(Gtranslate("Proxy/Tor:"))
         self.RunSetupWizard.setText(Gtranslate("Run Setup Wizard"))
@@ -26839,7 +26925,7 @@ class Settings(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def Load(self):
         global AdvanceArray, isdownloading, connectioncount, BridgeAdmin
@@ -26862,17 +26948,17 @@ class Settings(QtGui.QWidget):
             AdvanceArray['MySettings']['EnableBridge'] = False
         if 'pegging' in CoinSelect:
             if AdvanceArray['MySettings']['EnableBridge']:
-                self.EnableBridge.setCheckState(2)
+                self.EnableBridge.setCheckState(QtCore.Qt.CheckState(2))
                 BridgeAdmin = True
             else:
-                self.EnableBridge.setCheckState(0)
+                self.EnableBridge.setCheckState(QtCore.Qt.CheckState(0))
                 BridgeAdmin = False
         if AdvanceArray['MySettings']['CreateDebug']:
             UpdateCfg('#Debug#',"1")
-            self.DebugOnExit.setCheckState(2)
+            self.DebugOnExit.setCheckState(QtCore.Qt.CheckState(2))
         else:
             UpdateCfg('#Debug#',"0")
-            self.DebugOnExit.setCheckState(0)
+            self.DebugOnExit.setCheckState(QtCore.Qt.CheckState(0))
         self.ColdStakingIP.setText(AdvanceArray['MySettings']['ColdStake'])
         if AdvanceArray['MySettings']['Proxy']!='':
             try:
@@ -26886,7 +26972,7 @@ class Settings(QtGui.QWidget):
                     x = rget('https://ip.42.pl/raw')
                 except:
                     x = rget('https://duckduckgo.com')
-                    print "Proxy failed"
+                    print("Proxy failed")
                 self.ProxyEdit.setText(AdvanceArray['MySettings']['Proxy'])
             except:
                 AdvanceArray['MySettings']['Proxy']=''
@@ -26897,25 +26983,25 @@ class Settings(QtGui.QWidget):
             socket.socket = socket_original
             socket.create_connection = connection_original
         if AdvanceArray['MySettings']['AntiLogger']:
-            self.ActivateAntiKeylogger.setCheckState(2)
+            self.ActivateAntiKeylogger.setCheckState(QtCore.Qt.CheckState(2))
         else:
-            self.ActivateAntiKeylogger.setCheckState(0)
+            self.ActivateAntiKeylogger.setCheckState(QtCore.Qt.CheckState(0))
         if AdvanceArray['MySettings']['ManualLogin']:
-            self.DontSavePasswords.setCheckState(2)
+            self.DontSavePasswords.setCheckState(QtCore.Qt.CheckState(2))
         else:
-            self.DontSavePasswords.setCheckState(0)
+            self.DontSavePasswords.setCheckState(QtCore.Qt.CheckState(0))
         if AdvanceArray['MySettings']['ClearLocation']:
-            self.ClearKeysOnExit.setCheckState(2)
+            self.ClearKeysOnExit.setCheckState(QtCore.Qt.CheckState(2))
         else:
-            self.ClearKeysOnExit.setCheckState(0)
+            self.ClearKeysOnExit.setCheckState(QtCore.Qt.CheckState(0))
         if AdvanceArray['MySettings']['FilterOther']:
-            self.FilterCurrencies.setCheckState(2)
+            self.FilterCurrencies.setCheckState(QtCore.Qt.CheckState(2))
         else:
-            self.FilterCurrencies.setCheckState(0)
+            self.FilterCurrencies.setCheckState(QtCore.Qt.CheckState(0))
         if AdvanceArray['MySettings']['Staking']:
-            self.EnableStaking.setCheckState(2)
+            self.EnableStaking.setCheckState(QtCore.Qt.CheckState(2))
         else:
-            self.EnableStaking.setCheckState(0)
+            self.EnableStaking.setCheckState(QtCore.Qt.CheckState(0))
     def BridgeThis(self):
         global BridgeAdmin, MySettingsInfo
         if self.EnableBridge.isChecked():
@@ -26959,7 +27045,7 @@ class Settings(QtGui.QWidget):
                         x = rget('https://ip.42.pl/raw')
                     except:
                         x = rget('https://duckduckgo.com')
-                        print "Proxy failed"
+                        print("Proxy failed")
                 except:
                     socket.socket = socket_original
                     socket.create_connection = connection_original
@@ -27021,9 +27107,9 @@ class Settings(QtGui.QWidget):
         SetupWizard.show()
     def ShowRep(self):
         global Markets
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(500, 500)
-        Display = QtWebKit.QWebView(ewindow)
+        Display = QtWebEngineWidgets.QWebEngineView(ewindow)
         Display.setGeometry(QtCore.QRect(10, 10, 480, 480))
         try:
             pubs=get_ordered_pubkeys(PrivKeyFilename1)
@@ -27047,7 +27133,7 @@ class Settings(QtGui.QWidget):
                 r+=1
         except:
             data=""
-            print "EXCEPTION LOADING PROFILE"
+            print("EXCEPTION LOADING PROFILE")
         Display.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
         "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
         "p, li { white-space: pre-wrap; }\n"
@@ -27056,16 +27142,16 @@ class Settings(QtGui.QWidget):
 
         ewindow.setWindowTitle("Reputation")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-        ewindow.exec_()        
+        ewindow.exec()        
     def MyProfiles(self):
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(305, 610)
 
-        ContactSelectConfirm = QtGui.QComboBox(ewindow)
+        ContactSelectConfirm = QtWidgets.QComboBox(ewindow)
         ContactSelectConfirm.setGeometry(QtCore.QRect(20, 50, 211, 40))
         ContactSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         ContactSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        ContactSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        ContactSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         ContactSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27074,11 +27160,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         ContactSelectConfirm.setObjectName(_fromUtf8("ContactSelectConfirm"))
-        MailingSelectConfirm = QtGui.QComboBox(ewindow)
+        MailingSelectConfirm = QtWidgets.QComboBox(ewindow)
         MailingSelectConfirm.setGeometry(QtCore.QRect(20, 120, 211, 40))
         MailingSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         MailingSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        MailingSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        MailingSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         MailingSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27087,11 +27173,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         MailingSelectConfirm.setObjectName(_fromUtf8("MailingSelectConfirm"))
-        BankSelectConfirm = QtGui.QComboBox(ewindow)
+        BankSelectConfirm = QtWidgets.QComboBox(ewindow)
         BankSelectConfirm.setGeometry(QtCore.QRect(20, 190, 211, 40))
         BankSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         BankSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        BankSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        BankSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         BankSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27100,11 +27186,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         BankSelectConfirm.setObjectName(_fromUtf8("BankSelectConfirm"))
-        WUSelectConfirm = QtGui.QComboBox(ewindow)
+        WUSelectConfirm = QtWidgets.QComboBox(ewindow)
         WUSelectConfirm.setGeometry(QtCore.QRect(20, 260, 211, 40))
         WUSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         WUSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        WUSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        WUSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         WUSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27113,11 +27199,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         WUSelectConfirm.setObjectName(_fromUtf8("WUSelectConfirm"))
-        MGSelectConfirm = QtGui.QComboBox(ewindow)
+        MGSelectConfirm = QtWidgets.QComboBox(ewindow)
         MGSelectConfirm.setGeometry(QtCore.QRect(20, 330, 211, 40))
         MGSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         MGSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        MGSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        MGSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         MGSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27126,11 +27212,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         MGSelectConfirm.setObjectName(_fromUtf8("MGSelectConfirm"))
-        DebitSelectConfirm = QtGui.QComboBox(ewindow)
+        DebitSelectConfirm = QtWidgets.QComboBox(ewindow)
         DebitSelectConfirm.setGeometry(QtCore.QRect(20, 400, 211, 40))
         DebitSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         DebitSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        DebitSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        DebitSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         DebitSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27139,11 +27225,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         DebitSelectConfirm.setObjectName(_fromUtf8("DebitSelectConfirm"))
-        OtherSelectConfirm = QtGui.QComboBox(ewindow)
+        OtherSelectConfirm = QtWidgets.QComboBox(ewindow)
         OtherSelectConfirm.setGeometry(QtCore.QRect(20, 470, 211, 40))
         OtherSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         OtherSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        OtherSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        OtherSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         OtherSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27152,11 +27238,11 @@ class Settings(QtGui.QWidget):
         "border-width: 2px;\n"
         "border-color: lightgrey;"))
         OtherSelectConfirm.setObjectName(_fromUtf8("OtherSelectConfirm"))
-        CashSelectConfirm = QtGui.QComboBox(ewindow)
+        CashSelectConfirm = QtWidgets.QComboBox(ewindow)
         CashSelectConfirm.setGeometry(QtCore.QRect(20, 540, 211, 40))
         CashSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         CashSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        CashSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        CashSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         CashSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
         "color: #24282C;\n"
         "background-color:rgba(251, 251, 251, 80%);\n"
@@ -27166,61 +27252,61 @@ class Settings(QtGui.QWidget):
         "border-color: lightgrey;"))
         CashSelectConfirm.setObjectName(_fromUtf8("CashSelectConfirm"))
 
-        ContactConfirm = QtGui.QLabel(ewindow)
+        ContactConfirm = QtWidgets.QLabel(ewindow)
         ContactConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         ContactConfirm.setGeometry(QtCore.QRect(20, 20, 201, 29))
         ContactConfirm.setObjectName(_fromUtf8("ContactConfirm"))
-        MailingConfirm = QtGui.QLabel(ewindow)
+        MailingConfirm = QtWidgets.QLabel(ewindow)
         MailingConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         MailingConfirm.setGeometry(QtCore.QRect(20, 90, 201, 29))
         MailingConfirm.setObjectName(_fromUtf8("MailingConfirm"))
-        BankConfirm = QtGui.QLabel(ewindow)
+        BankConfirm = QtWidgets.QLabel(ewindow)
         BankConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         BankConfirm.setGeometry(QtCore.QRect(20, 160, 201, 29))
         BankConfirm.setObjectName(_fromUtf8("BankConfirm"))
-        WUConfirm = QtGui.QLabel(ewindow)
+        WUConfirm = QtWidgets.QLabel(ewindow)
         WUConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         WUConfirm.setGeometry(QtCore.QRect(20, 230, 201, 29))
         WUConfirm.setObjectName(_fromUtf8("WUConfirm"))
-        MGConfirm = QtGui.QLabel(ewindow)
+        MGConfirm = QtWidgets.QLabel(ewindow)
         MGConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         MGConfirm.setGeometry(QtCore.QRect(20, 300, 201, 29))
         MGConfirm.setObjectName(_fromUtf8("MGConfirm"))
-        DebitConfirm = QtGui.QLabel(ewindow)
+        DebitConfirm = QtWidgets.QLabel(ewindow)
         DebitConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         DebitConfirm.setGeometry(QtCore.QRect(20, 370, 201, 29))
         DebitConfirm.setObjectName(_fromUtf8("DebitConfirm"))
-        OtherConfirm = QtGui.QLabel(ewindow)
+        OtherConfirm = QtWidgets.QLabel(ewindow)
         OtherConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         OtherConfirm.setGeometry(QtCore.QRect(20, 440, 201, 29))
         OtherConfirm.setObjectName(_fromUtf8("OtherConfirm"))
-        CashConfirm = QtGui.QLabel(ewindow)
+        CashConfirm = QtWidgets.QLabel(ewindow)
         CashConfirm.setStyleSheet(_fromUtf8("font: 14px \"Courier\";\ncolor: #24282C;"))
         CashConfirm.setGeometry(QtCore.QRect(20, 510, 201, 29))
         CashConfirm.setObjectName(_fromUtf8("CashConfirm"))
         
-        ContactEdit = QtGui.QPushButton(ewindow)
+        ContactEdit = QtWidgets.QPushButton(ewindow)
         ContactEdit.setGeometry(QtCore.QRect(230, 50, 51, 41))
         ContactEdit.setObjectName(_fromUtf8("ContactEdit"))
-        AddressEdit = QtGui.QPushButton(ewindow)
+        AddressEdit = QtWidgets.QPushButton(ewindow)
         AddressEdit.setGeometry(QtCore.QRect(230, 120, 51, 41))
         AddressEdit.setObjectName(_fromUtf8("AddressEdit"))
-        BankEdit = QtGui.QPushButton(ewindow)
+        BankEdit = QtWidgets.QPushButton(ewindow)
         BankEdit.setGeometry(QtCore.QRect(230, 190, 51, 41))
         BankEdit.setObjectName(_fromUtf8("BankEdit"))
-        WUEdit = QtGui.QPushButton(ewindow)
+        WUEdit = QtWidgets.QPushButton(ewindow)
         WUEdit.setGeometry(QtCore.QRect(230, 260, 51, 41))
         WUEdit.setObjectName(_fromUtf8("WUEdit"))
-        DebitEdit = QtGui.QPushButton(ewindow)
+        DebitEdit = QtWidgets.QPushButton(ewindow)
         DebitEdit.setGeometry(QtCore.QRect(230, 400, 51, 41))
         DebitEdit.setObjectName(_fromUtf8("DebitEdit"))
-        MGEdit = QtGui.QPushButton(ewindow)
+        MGEdit = QtWidgets.QPushButton(ewindow)
         MGEdit.setGeometry(QtCore.QRect(230, 330, 51, 41))
         MGEdit.setObjectName(_fromUtf8("MGEdit"))
-        OtherEdit = QtGui.QPushButton(ewindow)
+        OtherEdit = QtWidgets.QPushButton(ewindow)
         OtherEdit.setGeometry(QtCore.QRect(230, 470, 51, 41))
         OtherEdit.setObjectName(_fromUtf8("OtherEdit"))
-        CashEdit = QtGui.QPushButton(ewindow)
+        CashEdit = QtWidgets.QPushButton(ewindow)
         CashEdit.setGeometry(QtCore.QRect(230, 540, 51, 41))
         CashEdit.setObjectName(_fromUtf8("CashEdit"))        
         
@@ -27274,7 +27360,7 @@ class Settings(QtGui.QWidget):
             Templates.LoadProfiles()
             Templates.dontremoveonupdate=0
             Templates.returntoconfirm=1
-            response=Templates.Window.exec_()
+            response=Templates.Window.exec()
             Templates.returntoconfirm=0
             Templates.Window.hide()
             Templates.LoadProfiles()
@@ -27292,17 +27378,17 @@ class Settings(QtGui.QWidget):
         
         ewindow.setWindowTitle("Edit Profiles")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-        ewindow.exec_()   
+        ewindow.exec()   
     def ProxyInfo(self, event):
         QuestionBox("Enter the proxy in this format:\nIP:port\n\nFor example TOR would look like this...\n127.0.0.1:9150", "OK")
     def AddAccount(self, event):
         global AdvanceArray
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(300, 500)
-        AccountList = QtGui.QListWidget(ewindow)
+        AccountList = QtWidgets.QListWidget(ewindow)
         AccountList.setGeometry(QtCore.QRect(10, 10, 280, 435))
         AccountList.setObjectName(_fromUtf8("AccountList"))
-        AddStake = QtGui.QPushButton(ewindow)
+        AddStake = QtWidgets.QPushButton(ewindow)
         AddStake.setGeometry(QtCore.QRect(55, 450, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
@@ -27319,7 +27405,7 @@ class Settings(QtGui.QWidget):
             AdvanceArray['StakingAccounts']={}
         def PopulateList():
             AccountList.clear()
-            for key, value in AdvanceArray['StakingAccounts'].iteritems():
+            for key, value in AdvanceArray['StakingAccounts'].items():
                 text=str(key)
                 if AdvanceArray['StakingAccounts'][key]['key2']=='':
                     text='Cold Stake: ' + text
@@ -27335,7 +27421,7 @@ class Settings(QtGui.QWidget):
         def StakeTHIS():
             global AdvanceArray, isdownloading, BLK, rescanning, WatchlistQueue
             QuestionBox("Please open the first private key."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key."),MacDir()+"","Private Key (*.private)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key."),MacDir()+"","Private Key (*.private)")[0]
             path = strOUT(strIN(path))
             if path == '':
                 return
@@ -27360,7 +27446,7 @@ class Settings(QtGui.QWidget):
             AdvanceArray['StakingAccounts'][msg]['dir2']=''
             AdvanceArray['StakingAccounts'][msg]['pw2']=''
             QuestionBox("Please open the second private key. You can also cancel to only load one key and cold stake this account."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key."),MacDir()+"","Private Key (*.private)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key."),MacDir()+"","Private Key (*.private)")[0]
             path = strOUT(strIN(path))
             if path == '':
                 PopulateList()
@@ -27386,16 +27472,16 @@ class Settings(QtGui.QWidget):
                 SaveOtherdata()
                 self.imported=1
             except:
-                print "Was not able to import address: " + str(msg)
+                print("Was not able to import address: " + str(msg))
 
         PopulateList()
         AddStake.clicked.connect(lambda: StakeTHIS())
-        QtCore.QObject.connect(AccountList, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), ClearItem)
+        AccountList.itemClicked.connect( ClearItem)
 
         ewindow.setWindowTitle("Stake Multiple Accounts")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.imported=0
-        ewindow.exec_()
+        ewindow.exec()
         if self.imported==1:
             res=QuestionBox("Since you have imported some new accounts to stake with, we recommend a rescan of the blockchain. This can take several minutes to complete. Would you like to do rescan now?", " Yes ", " No ")
             if res==0:
@@ -27477,7 +27563,7 @@ class Settings(QtGui.QWidget):
             QuestionBox('The maximum number of 20 addresses has been reached.', "OK")
             return
         if text=='':
-            text, ok = QtGui.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the name of your vote (248 characters maximum):'))
+            text, ok = QtWidgets.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the name of your vote (248 characters maximum):'))
             text=str(text)
             if len(text)>248:
                 QuestionBox('The name of your vote cannot be more than 248 characters in length.', "OK")
@@ -27488,7 +27574,7 @@ class Settings(QtGui.QWidget):
                 QuestionBox('The name of your vote is reserved for the peg.', ' OK ')
                 return
         if text2=='':
-            text2, ok = QtGui.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the amount of times you wish to cast this vote:'))
+            text2, ok = QtWidgets.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the amount of times you wish to cast this vote:'))
             if text2=='':
                 return
             try:
@@ -27529,57 +27615,57 @@ class Settings(QtGui.QWidget):
         self.PopulateVotes()
     def CountMyVotes(self):
         global AdvanceArray
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(300, 500)
 
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier"))
         font.setPixelSize(12)
 
-        AddyLabel = QtGui.QLabel(ewindow)
+        AddyLabel = QtWidgets.QLabel(ewindow)
         AddyLabel.setGeometry(QtCore.QRect(10, 10, 281, 31))
         AddyLabel.setFont(font)
         AddyLabel.setObjectName(_fromUtf8("Voting address to count: "))
         AddyLabel.setText(Gtranslate("Voting address to count: "))
 
-        VoteBox = QtGui.QTextEdit(ewindow)
+        VoteBox = QtWidgets.QTextEdit(ewindow)
         VoteBox.setGeometry(QtCore.QRect(10, 60, 281, 31))
         VoteBox.setFont(font)
         VoteBox.setObjectName(_fromUtf8("Vote Box"))
 
-        StartLabel = QtGui.QLabel(ewindow)
+        StartLabel = QtWidgets.QLabel(ewindow)
         StartLabel.setGeometry(QtCore.QRect(10, 100, 281, 31))
         StartLabel.setFont(font)
         StartLabel.setObjectName(_fromUtf8("Starting Counting At Block Number: "))
         StartLabel.setText(Gtranslate("Starting Counting At Block Number: "))
 
-        StartBlock = QtGui.QTextEdit(ewindow)
+        StartBlock = QtWidgets.QTextEdit(ewindow)
         StartBlock.setGeometry(QtCore.QRect(10, 140, 281, 31))
         StartBlock.setFont(font)
         StartBlock.setObjectName(_fromUtf8("Start Block"))
 
-        FinishLabel = QtGui.QLabel(ewindow)
+        FinishLabel = QtWidgets.QLabel(ewindow)
         FinishLabel.setGeometry(QtCore.QRect(10, 180, 281, 31))
         FinishLabel.setFont(font)
         FinishLabel.setObjectName(_fromUtf8("Finish Counting At Block Number: "))
         FinishLabel.setText(Gtranslate("Finish Counting At Block Number: "))
 
-        FinishBlock = QtGui.QTextEdit(ewindow)
+        FinishBlock = QtWidgets.QTextEdit(ewindow)
         FinishBlock.setGeometry(QtCore.QRect(10, 220, 281, 31))
         FinishBlock.setFont(font)
         FinishBlock.setObjectName(_fromUtf8("Finish Block"))
 
-        CountTHIS = QtGui.QPushButton(ewindow)
+        CountTHIS = QtWidgets.QPushButton(ewindow)
         CountTHIS.setGeometry(QtCore.QRect(10, 270, 131, 31))
         CountTHIS.setFont(font)
         CountTHIS.setObjectName(_fromUtf8("Count Votes"))
         CountTHIS.setText(Gtranslate("Count Votes"))
 
-        self.CountProgress = QtGui.QProgressBar(ewindow)
+        self.CountProgress = QtWidgets.QProgressBar(ewindow)
         self.CountProgress.setGeometry(QtCore.QRect(10, 320, 281, 31))
         self.CountProgress.hide()
 
-        MyResults = QtGui.QTextBrowser(ewindow)
+        MyResults = QtWidgets.QTextBrowser(ewindow)
         MyResults.setGeometry(QtCore.QRect(10, 360, 281, 31))
 
         def CountMe():
@@ -27603,7 +27689,7 @@ class Settings(QtGui.QWidget):
 
         ewindow.setWindowTitle("Count Votes")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-        ewindow.exec_()
+        ewindow.exec()
         self.stopcount=1
     def StakeNotify(self):
         global AdvanceArray
@@ -27617,7 +27703,7 @@ class Settings(QtGui.QWidget):
                     window.BitPayTo.setText(str(multisig))
                     window.BitAmount.setText(str("0.0001"))
                     QuestionBox("Please review the information to confirm the address is your own. To break for change, you simply make a payment to yourself. When ready, simply click 'Send'.", "OK")
-                    self.EnableStaking.setCheckState(0)
+                    self.EnableStaking.setCheckState(QtCore.Qt.CheckState(0))
         if 'pegging' in CoinSelect:
             if 'votenotify' not in AdvanceArray:
                 res = QuestionBox("This coin allows users to control the price stability by voting on the supply when you stake. By default the vote is automated however you may choose how you wish to vote for the health of the economy. This revolutionary feature gives you more control over the coin in a fair way. To keep voting constant, you must occasionally come back to this page for the vote count to refresh. This ensures that users are actively using the software.", " OK ", " Do not show this message again. ")
@@ -27629,7 +27715,7 @@ class Settings(QtGui.QWidget):
                     AdvanceArray['algorithmnotify']=1
             self.PegVote()
     def DonateMyStake(self):
-        text, ok = QtGui.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the address you wish to donate to:'))
+        text, ok = QtWidgets.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Enter the address you wish to donate to:'))
         text=str(text)
         test=1
         try:
@@ -27647,24 +27733,24 @@ class Settings(QtGui.QWidget):
         except:
             AdvanceArray['MySettings']['Voting'].insert(0,{'vote':"**DONATETOTHISADDRESS**",'quantity':1000000, 'address': text})        
         self.PopulateVotes()
-class CustomTemplate(QtGui.QWidget):
+class CustomTemplate(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(312, 248)
         
-        self.verticalLayout_2 = QtGui.QVBoxLayout(Form)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
 
-        self.SendTo = QtGui.QLabel(Form)
+        self.SendTo = QtWidgets.QLabel(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.SendTo.setFont(font)
         self.SendTo.setObjectName(_fromUtf8("SendTo"))
         self.verticalLayout.addWidget(self.SendTo)
 
-        self.MarketSelect = QtGui.QComboBox(Form)
+        self.MarketSelect = QtWidgets.QComboBox(Form)
         self.MarketSelect.setMaximumSize(QtCore.QSize(300, 16777215))
         font = QtGui.QFont()
         font.setPixelSize(15)
@@ -27673,7 +27759,7 @@ class CustomTemplate(QtGui.QWidget):
         self.MarketSelect.addItem(_fromUtf8(""))
         self.verticalLayout.addWidget(self.MarketSelect)
 
-        self.MarketSelectBox = QtGui.QLineEdit(Form)
+        self.MarketSelectBox = QtWidgets.QLineEdit(Form)
         self.MarketSelectBox.setMaximumSize(QtCore.QSize(300, 16777215))
         font = QtGui.QFont()
         font.setPixelSize(15)
@@ -27682,45 +27768,45 @@ class CustomTemplate(QtGui.QWidget):
         self.verticalLayout.addWidget(self.MarketSelectBox)
         self.MarketSelectBox.hide()
 
-        self.AutoAccept = QtGui.QCheckBox(Form)
+        self.AutoAccept = QtWidgets.QCheckBox(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.AutoAccept.setFont(font)
-        self.AutoAccept.setCheckState(2)
+        self.AutoAccept.setCheckState(QtCore.Qt.CheckState(2))
         self.AutoAccept.setObjectName(_fromUtf8("AutoAccept"))
         self.verticalLayout.addWidget(self.AutoAccept)
-        self.AllowCounter = QtGui.QCheckBox(Form)
+        self.AllowCounter = QtWidgets.QCheckBox(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.AllowCounter.setFont(font)
         self.AllowCounter.setObjectName(_fromUtf8("AllowCounter"))
         self.verticalLayout.addWidget(self.AllowCounter)
 
-        self.SupplyAdditional = QtGui.QCheckBox(Form)
+        self.SupplyAdditional = QtWidgets.QCheckBox(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.SupplyAdditional.setFont(font)
         self.SupplyAdditional.setObjectName(_fromUtf8("SupplyAdditional"))
         self.verticalLayout.addWidget(self.SupplyAdditional)
-        self.SupplyAdditional.setCheckState(2)
+        self.SupplyAdditional.setCheckState(QtCore.Qt.CheckState(2))
 
-        self.AllowChat = QtGui.QCheckBox(Form)
+        self.AllowChat = QtWidgets.QCheckBox(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.AllowChat.setFont(font)
         self.AllowChat.setObjectName(_fromUtf8("AllowChat"))
         self.verticalLayout.addWidget(self.AllowChat)
-        self.AllowChat.setCheckState(2)
+        self.AllowChat.setCheckState(QtCore.Qt.CheckState(2))
 
-        self.TrackPrice = QtGui.QCheckBox(Form)
+        self.TrackPrice = QtWidgets.QCheckBox(Form)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.TrackPrice.setFont(font)
         self.TrackPrice.setObjectName(_fromUtf8("TrackPrice"))
         self.verticalLayout.addWidget(self.TrackPrice)
-        self.TrackPrice.setCheckState(2)        
+        self.TrackPrice.setCheckState(QtCore.Qt.CheckState(2))        
 
-        self.AcceptMe = QtGui.QPushButton(Form)
+        self.AcceptMe = QtWidgets.QPushButton(Form)
         self.AcceptMe.setMaximumSize(QtCore.QSize(100, 16777215))
         font = QtGui.QFont()
         font.setPixelSize(15)
@@ -27735,7 +27821,7 @@ class CustomTemplate(QtGui.QWidget):
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.AcceptMe.clicked.connect(self.Accept)
 
-        self.MarketSelect.connect(self.MarketSelect,QtCore.SIGNAL("currentIndexChanged(int)"),self.MarketChange)
+        self.MarketSelect.currentIndexChanged.connect(self.MarketChange)
     def retranslateUi(self, Form):
         self.SendTo.setText(_translate("","Send Contract To:"))
         self.MarketSelect.setItemText(0, "Private Email/BitMessage/Coin Address...")
@@ -27748,7 +27834,7 @@ class CustomTemplate(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def MarketChange(self):
         text=str(self.MarketSelect.currentText())
@@ -27761,13 +27847,13 @@ class CustomTemplate(QtGui.QWidget):
         self.MarketSelect.blockSignals(True)
         try:
             list1=[]
-            for name, mark in Markets['MyMarkets'].iteritems():
+            for name, mark in Markets['MyMarkets'].items():
                 list1.append(name)
             list1.sort()
             list1.append("Private Email/BitMessage/Coin Address...")
             self.MarketSelect.clear()
             self.MarketSelect.addItems(list1)
-            index = self.MarketSelect.findText(Markets['Current'], QtCore.Qt.MatchFixedString)
+            index = self.MarketSelect.findText(Markets['Current'], QtCore.Qt.MatchFlag.MatchFixedString)
             if index >= 0:
                  self.MarketSelect.setCurrentIndex(index)
         except:
@@ -27789,7 +27875,7 @@ class CustomTemplate(QtGui.QWidget):
             Templates.LoadProfiles()
             Templates.dontremoveonupdate=0
             Templates.returntoconfirm=1
-            response=Templates.Window.exec_()
+            response=Templates.Window.exec()
             if response==0:
                 QuestionBox("You requested to supply additional information. In order to continue you must set up a profile.", "OK")
                 return
@@ -27819,7 +27905,7 @@ class CustomTemplate(QtGui.QWidget):
                     Templates.reply={}                     
                     return False
                 if res==1:
-                    text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
+                    text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
                     try:
                         a=float(Decimal(str(text)))
                     except:
@@ -27868,31 +27954,31 @@ class CustomTemplate(QtGui.QWidget):
         self.MarketSelectBox.hide()
         self.hide()
         return True
-class PayToEmail(QtGui.QDialog):
+class PayToEmail(QtWidgets.QDialog):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(492, 226)
         
-        self.checkBox = QtGui.QCheckBox(Form)
+        self.checkBox = QtWidgets.QCheckBox(Form)
         self.checkBox.setGeometry(QtCore.QRect(130, 190, 181, 31))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
-        self.pushButton = QtGui.QPushButton(Form)
+        self.pushButton = QtWidgets.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(20, 190, 75, 23))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.textEdit = QtGui.QTextEdit(Form)
+        self.textEdit = QtWidgets.QTextEdit(Form)
         self.textEdit.setGeometry(QtCore.QRect(20, 60, 261, 111))
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
-        self.comboBox = QtGui.QComboBox(Form)
+        self.comboBox = QtWidgets.QComboBox(Form)
         self.comboBox.setGeometry(QtCore.QRect(20, 10, 261, 31))
         self.comboBox.setObjectName(_fromUtf8("comboBox"))
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.addItem(_fromUtf8(""))
-        self.comboBox_2 = QtGui.QComboBox(Form)
+        self.comboBox_2 = QtWidgets.QComboBox(Form)
         self.comboBox_2.setGeometry(QtCore.QRect(300, 10, 171, 31))
         self.comboBox_2.setObjectName(_fromUtf8("comboBox_2"))
         self.comboBox_2.addItem(_fromUtf8(""))
         self.comboBox_2.addItem(_fromUtf8(""))
-        self.webview = QtWebKit.QWebView(Form)
+        self.webview = QtWebEngineWidgets.QWebEngineView(Form)
         self.webview.setGeometry(QtCore.QRect(300, 60, 171, 111))
         self.webview.setObjectName(_fromUtf8("webview"))
         ApplyCSS(self)
@@ -27900,8 +27986,8 @@ class PayToEmail(QtGui.QDialog):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.pushButton.clicked.connect(self.Accept)
-        self.comboBox.connect(self.comboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.ChangeIndex)
-        self.comboBox_2.connect(self.comboBox_2,QtCore.SIGNAL("currentIndexChanged(int)"),self.ChangeIndex2)
+        self.comboBox.currentIndexChanged.connect(self.ChangeIndex)
+        self.comboBox_2.currentIndexChanged.connect(self.ChangeIndex2)
 
     def retranslateUi(self, Form):
         self.checkBox.setText(_translate("Form", "Password Protect Payment", None))
@@ -27914,7 +28000,7 @@ class PayToEmail(QtGui.QDialog):
         self.setWindowTitle(CoinSelect['HaloName'])
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
     def ChangeIndex(self):
         if self.comboBox.currentIndex()==0:
@@ -27926,11 +28012,11 @@ class PayToEmail(QtGui.QDialog):
         self.comboBox_2.blockSignals(True)
         try:
             if self.comboBox_2.currentIndex()==1:
-                path = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Please choose the image you want to use as your default."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))
+                path = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Please choose the image you want to use as your default."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))[0]
                 size = os.stat(path).st_size
                 if size>45000:
                     try:
-                        output = StringIO.StringIO()
+                        output = BytesIO()
                         output=ResizeImage(str(path), 45000,1)
                         path=path+"backup"+".jpg"
                         output.close()
@@ -27946,7 +28032,7 @@ class PayToEmail(QtGui.QDialog):
                 try:
                     im=Image.open(path)
                     testcontent="1234567890!@#$%^&*()-=_+~`qwertyuiopasdfghjkl;[]:/.,mnbvcxz"*300
-                    rawout=StringIO.StringIO()
+                    rawout=BytesIO()
                     im2=stepic.encode(im, testcontent)
                     im2.save(rawout,"BMP")#It must be losses PNG or BMP. BMP works well with the pyzmail library
                     b64= base64.b64encode(rawout.getvalue())
@@ -27971,7 +28057,7 @@ class PayToEmail(QtGui.QDialog):
         if refresh==0:
             self.comboBox.setCurrentIndex(0)
             self.comboBox_2.setCurrentIndex(0)
-            self.checkBox.setCheckState(0)
+            self.checkBox.setCheckState(QtCore.Qt.CheckState(0))
             self.textEdit.setText("")
             self.textEdit.hide()
         self.b64img=""
@@ -27980,7 +28066,7 @@ class PayToEmail(QtGui.QDialog):
         if 'p2mpath' not in AdvanceArray:
             AdvanceArray['p2mpath']=defaultpath
         try:
-            output = StringIO.StringIO()
+            output = BytesIO()
             image = Image.open(AdvanceArray['p2mpath'])
             image.save(output, 'JPEG')
             self.b64img= base64.b64encode(output.getvalue())
@@ -27997,7 +28083,7 @@ class PayToEmail(QtGui.QDialog):
                 image=image.resize((int(ratio*w),int(ratio*h)), Image.ANTIALIAS)
                 h=100
             tup=image.size
-            output = StringIO.StringIO()
+            output = BytesIO()
             image.save(output, 'PNG')#Used to be JPEG
             b64img= base64.b64encode(output.getvalue())
             output.close()
@@ -28007,7 +28093,7 @@ class PayToEmail(QtGui.QDialog):
             output=""
             AdvanceArray['p2mpath']=defaultpath
             QuestionBox("Loading Image failed", "OK")
-            self.b64img="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AAAAD3ByaW50U2l4dGVlbkJpdGJvb2wAAAAAC3ByaW50ZXJOYW1lVEVYVAAAACQASABQACAATABhAHMAZQByAEoAZQB0ACAAMQAwADAAIABjAG8AbABvAHIAIABNAEYAUAAgAE0AMQA3ADUAIABQAEMATAA2AAAAOEJJTQQ7AAAAAAGyAAAAEAAAAAEAAAAAABJwcmludE91dHB1dE9wdGlvbnMAAAASAAAAAENwdG5ib29sAAAAAABDbGJyYm9vbAAAAAAAUmdzTWJvb2wAAAAAAENybkNib29sAAAAAABDbnRDYm9vbAAAAAAATGJsc2Jvb2wAAAAAAE5ndHZib29sAAAAAABFbWxEYm9vbAAAAAAASW50cmJvb2wAAAAAAEJja2dPYmpjAAAAAQAAAAAAAFJHQkMAAAADAAAAAFJkICBkb3ViQG/gAAAAAAAAAAAAR3JuIGRvdWJAb+AAAAAAAAAAAABCbCAgZG91YkBv4AAAAAAAAAAAAEJyZFRVbnRGI1JsdAAAAAAAAAAAAAAAAEJsZCBVbnRGI1JsdAAAAAAAAAAAAAAAAFJzbHRVbnRGI1B4bEBSAJOAAAAAAAAACnZlY3RvckRhdGFib29sAQAAAABQZ1BzZW51bQAAAABQZ1BzAAAAAFBnUEMAAAAATGVmdFVudEYjUmx0AAAAAAAAAAAAAAAAVG9wIFVudEYjUmx0AAAAAAAAAAAAAAAAU2NsIFVudEYjUHJjQFkAAAAAAAA4QklNA+0AAAAAABAASAJOAAEAAQBIAk4AAQABOEJJTQQmAAAAAAAOAAAAAAAAAAAAAD+AAAA4QklNBA0AAAAAAAQAAAAeOEJJTQQZAAAAAAAEAAAAHjhCSU0D8wAAAAAACQAAAAAAAAAAAQA4QklNJxAAAAAAAAoAAQAAAAAAAAACOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAAAAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////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YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxNS0wNy0wNlQxODowNzoxNy0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvanBlZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE0QUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkEzQUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6QTNBQUM0QkQyRDI0RTUxMThDRDRFNjVBODRCQUU4QzUiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkEzQUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiBzdEV2dDp3aGVuPSIyMDE1LTA3LTA2VDE4OjA3OjE3LTA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9wbmcgdG8gaW1hZ2UvanBlZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6QTRBQUM0QkQyRDI0RTUxMThDRDRFNjVBODRCQUU4QzUiIHN0RXZ0OndoZW49IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzUgV2luZG93cyIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPD94cGFja2V0IGVuZD0idyI/Pv/iDFhJQ0NfUFJPRklMRQABAQAADEhMaW5vAhAAAG1udHJSR0IgWFlaIAfOAAIACQAGADEAAGFjc3BNU0ZUAAAAAElFQyBzUkdCAAAAAAAAAAAAAAABAAD21gABAAAAANMtSFAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNwcnQAAAFQAAAAM2Rlc2MAAAGEAAAAbHd0cHQAAAHwAAAAFGJrcHQAAAIEAAAAFHJYWVoAAAIYAAAAFGdYWVoAAAIsAAAAFGJYWVoAAAJAAAAA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"
+            self.b64img="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dGJvb2wAAAAAC3ByaW50ZXJOYW1lVEVYVAAAACQASABQACAATABhAHMAZQByAEoAZQB0ACAAMQAwADAAIABjAG8AbABvAHIAIABNAEYAUAAgAE0AMQA3ADUAIABQAEMATAA2AAAAOEJJTQQ7AAAAAAGyAAAAEAAAAAEAAAAAABJwcmludE91dHB1dE9wdGlvbnMAAAASAAAAAENwdG5ib29sAAAAAABDbGJyYm9vbAAAAAAAUmdzTWJvb2wAAAAAAENybkNib29sAAAAAABDbnRDYm9vbAAAAAAATGJsc2Jvb2wAAAAAAE5ndHZib29sAAAAAABFbWxEYm9vbAAAAAAASW50cmJvb2wAAAAAAEJja2dPYmpjAAAAAQAAAAAAAFJHQkMAAAADAAAAAFJkICBkb3ViQG/gAAAAAAAAAAAAR3JuIGRvdWJAb+AAAAAAAAAAAABCbCAgZG91YkBv4AAAAAAAAAAAAEJyZFRVbnRGI1JsdAAAAAAAAAAAAAAAAEJsZCBVbnRGI1JsdAAAAAAAAAAAAAAAAFJzbHRVbnRGI1B4bEBSAJOAAAAAAAAACnZlY3RvckRhdGFib29sAQAAAABQZ1BzZW51bQAAAABQZ1BzAAAAAFBnUEMAAAAATGVmdFVudEYjUmx0AAAAAAAAAAAAAAAAVG9wIFVudEYjUmx0AAAAAAAAAAAAAAAAU2NsIFVudEYjUHJjQFkAAAAAAAA4QklNA+0AAAAAABAASAJOAAEAAQBIAk4AAQABOEJJTQQmAAAAAAAOAAAAAAAAAAAAAD+AAAA4QklNBA0AAAAAAAQAAAAeOEJJTQQZAAAAAAAEAAAAHjhCSU0D8wAAAAAACQAAAAAAAAAAAQA4QklNJxAAAAAAAAoAAQAAAAAAAAACOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAAAAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAADhCSU0ECAAAAAAAEAAAAAEAAAJAAAACQAAAAAA4QklNBB4AAAAAAAQAAAAAOEJJTQQaAAAAAAM9AAAABgAAAAAAAAAAAAABBgAAAaMAAAAEAEQAbwBnAGUAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAaMAAAEGAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAABudWxsAAAAAgAAAAZib3VuZHNPYmpjAAAAAQAAAAAAAFJjdDEAAAAEAAAAAFRvcCBsb25nAAAAAAAAAABMZWZ0bG9uZwAAAAAAAAAAQnRvbWxvbmcAAAEGAAAAAFJnaHRsb25nAAABowAAAAZzbGljZXNWbExzAAAAAU9iamMAAAABAAAAAAAFc2xpY2UAAAASAAAAB3NsaWNlSURsb25nAAAAAAAAAAdncm91cElEbG9uZwAAAAAAAAAGb3JpZ2luZW51bQAAAAxFU2xpY2VPcmlnaW4AAAANYXV0b0dlbmVyYXRlZAAAAABUeXBlZW51bQAAAApFU2xpY2VUeXBlAAAAAEltZyAAAAAGYm91bmRzT2JqYwAAAAEAAAAAAABSY3QxAAAABAAAAABUb3AgbG9uZwAAAAAAAAAATGVmdGxvbmcAAAAAAAAAAEJ0b21sb25nAAABBgAAAABSZ2h0bG9uZwAAAaMAAAADdXJsVEVYVAAAAAEAAAAAAABudWxsVEVYVAAAAAEAAAAAAABNc2dlVEVYVAAAAAEAAAAAAAZhbHRUYWdURVhUAAAAAQAAAAAADmNlbGxUZXh0SXNIVE1MYm9vbAEAAAAIY2VsbFRleHRURVhUAAAAAQAAAAAACWhvcnpBbGlnbmVudW0AAAAPRVNsaWNlSG9yekFsaWduAAAAB2RlZmF1bHQAAAAJdmVydEFsaWduZW51bQAAAA9FU2xpY2VWZXJ0QWxpZ24AAAAHZGVmYXVsdAAAAAtiZ0NvbG9yVHlwZWVudW0AAAARRVNsaWNlQkdDb2xvclR5cGUAAAAATm9uZQAAAAl0b3BPdXRzZXRsb25nAAAAAAAAAApsZWZ0T3V0c2V0bG9uZwAAAAAAAAAMYm90dG9tT3V0c2V0bG9uZwAAAAAAAAALcmlnaHRPdXRzZXRsb25nAAAAAAA4QklNBCgAAAAAAAwAAAACP/AAAAAAAAA4QklNBBQAAAAAAAQAAAABOEJJTQQMAAAAABb+AAAAAQAAAKAAAABkAAAB4AAAu4AAABbiABgAAf/Y/+0ADEFkb2JlX0NNAAH/7gAOQWRvYmUAZIAAAAAB/9sAhAAMCAgICQgMCQkMEQsKCxEVDwwMDxUYExMVExMYEQwMDAwMDBEMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAQ0Cw0ODRAODhAUDg4OFBQODg4OFBEMDAwMDBERDAwMDAwMEQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABkAKADASIAAhEBAxEB/90ABAAK/8QBPwAAAQUBAQEBAQEAAAAAAAAAAwABAgQFBgcICQoLAQABBQEBAQEBAQAAAAAAAAABAAIDBAUGBwgJCgsQAAEEAQMCBAIFBwYIBQMMMwEAAhEDBCESMQVBUWETInGBMgYUkaGxQiMkFVLBYjM0coLRQwclklPw4fFjczUWorKDJkSTVGRFwqN0NhfSVeJl8rOEw9N14/NGJ5SkhbSVxNTk9KW1xdXl9VZmdoaWprbG1ub2N0dXZ3eHl6e3x9fn9xEAAgIBAgQEAwQFBgcHBgU1AQACEQMhMRIEQVFhcSITBTKBkRShsUIjwVLR8DMkYuFygpJDUxVjczTxJQYWorKDByY1wtJEk1SjF2RFVTZ0ZeLys4TD03Xj80aUpIW0lcTU5PSltcXV5fVWZnaGlqa2xtbm9ic3R1dnd4eXp7fH/9oADAMBAAIRAxEAPwDi/wA+AYEwSZIH3KJee+v+sKcsl0id07dpiDP50j/oqG2f9e6tRFrpGli8wQfwUC8/EjsUZuO+CQORr4Ib2FmpAnxIUoiQGOxbDeYjSB8AkHkkbnHbxHMDsNVCx0kT2AaD5BQn/cgSupIX66SRA3EjyUHOMfKTz8Ei/SAYa7nTTRRiRxx3+KaSmlvilfUWOa0lriWh3sIfoRv/ADN35rvez8z89S2En2ydRzzqf+/IZbJiErKqYHXUHz8k+oaYIIMSO5/O/wCiplh+HhPCjtGvj4/3IeaqXbG0zHaOZ/s/1f6yk0CJPbwUtxtva54aJcwENaGiAWt+gwNb9FbP1jwg212TSPaP5yPD97+ymmcYzjE/p3SaJBPZyqcTIvvOPVG4A73B3taPo7nvZu/9SLQf0Nu4D7Tts0Ia2oQP/BNyo9OyRiZE2GK7BtefDWWu/srT6v085rBl44m+tsOY3lzB9E1/8I3/AKajyymMgjxcESNJVxfaoVV7tO3oeWB+hLLj4A7TH9S3b/59WdY2yp5qtaa3jlrxDvxVjH6pm47oFnqMHLLdR8N384z/ADlt0343UcWcrHc5g4qcNR/Lqv8AbsZ/K/8AA0TPJj1yASj+9Hf7EaHZ5yZOpgzz2Sbq5sdiJVzM6c6qv7Vjy/GGjw7V9ZB/wu3b6lbv9Oz/AK56aqNLt7Wu7ODfLnuWqQSEhcTadtC//9DicXHzs3KOPhNpfbLQ1lt1dLnOeYY2oZNlPqu/4tRuOXiNFlzaTW55rFtdrLWl7W13PaLKLLGeyu+rd/23/OJdNvqw/rBiZWQS2nHuZZaQNxDGmXu2j3OVvoXWm9PxsHGde+qoZxt6hWxpLX45rx6dloH8/W7bksfjfnqSU8sJmhYHh/e/S9X7v7q+QvQtnpnW8aqq1uRj1PcWkMMvEOH0vovCysnqQdZIZWWzMAuiPk785bVHXenjDwq3WtbTS3DacQsve5j6KLMzJYz1P2ZX6noZNv2mhtmXf8Aa7Mayj9Ndcp1fWHGFVhvyg+yyy+39dmQ/7Qx7GV4uP6WNZTj3egyp+N6Oc+ijGrs9TG/wAJWnnmspifRL+X+As4BpqHlXZLp1a0H5qByDxA11jVbn1X6nj9Nba+zKfjWm7HdsHqhr6qzY67XB25Ft7d36HGtyMXBs+nf766vTuY31gx6bqaabnMxKsfJbTpYyqnJtyMuyjL9F9O7+g3V4/r436xj13/o/5r0lHLNk4pAQMuHr30/urgPF5f1zEw2PHVIZHBIEf3bs6nij6y0dSsc2yqv0xZfXW8zYyv0vtnpZr33ZL6b9l2/I9KzN9H1aqfVVmnqzg01O649ucXUOf1UV3HdXW7IdZh7/T+3ZO316m/a6aqb31/ZrP0OHiISy5BXpOwPX/vU088651ba3nZFg3N2uBIAc6v3bHOdU/c36FjfU2enb/NWJhkOngGefmujyuu0tx8g9HdZgXWM2Y7Km+m6tpzs3PFLLav5rZi5GP/ADT/APgEbL6r0+/E6ljMvLce+7KsxseuuypxNtvq4ofWN/TsjG/mn2WZDcTqOJ6fp41lnoYyIyZdLgdTX9vypouAav8AYE3oiDJAIiAZkz4f1Vftp2kgjugGsucGgTK0DAKlEhh0/HNufj1jvY2fgPfx/ZXXPxHWjdYNgIgsdrI4QuidKqw2i5zd2Q4e6x3Wn81v7jVoZcNZuGqyebmJz9Pyw/6TJj9I8S8pmfV59Ti7HfLOQ09vg791P09ufizU6svZ+YJjZrr9Ie5n/BroGVucJ+ke6fYASIS+9TMKmBLxKDjjehpojomBnu+05G1ljezDIe793Ibp/5NTyqr8RsOaC3hz2at/wCj9Fv9ZHfgWutbdjh25p1aJjX89v8AKVLF6ll35hlm2lhjc72H+1/W/dUHFll14oxHynThXcMRt1a9eSyu/wBGfdbL2zxoAH1uH9UrI6jhNxMoCkEU3xZWJ0br76v7H5i3uo9WxDeyat7x7mvDGumTt9r/AOysjLvsy7mWOaGtboxg5An8/wDlOV3lYTsS4TGMo+q/+bwscwCT3f/R5l2Ph0t6rZmUOurqpx3taxza37jexul767/Ra5m/fsr96lmdEw8anLL2331dPfmba27K3vFd2FisdZc2ix/6NuX62R/O/Q/QfZ2W2oTm5HVcq+umsvsIoqa1jmhrnWWtxqm2+q9ntdZY3b9P9/OenX+kTHpfVsdv25tzQa22X1205XWEN9mZZj+lb6r3UR+t+n+Z/pqlJmEfclWQD1fKT4aRZ5AEkuoOk4Ou0PdhZD/WyjQzHDWBtQpxcW8ty8b0HMtst+0Osyf6PsZRdb/xVOj6s4FrcKp1t/rXNwLLXsD3y3NdRW5m37I3FxvT+0P8AQvdnX+rdi2Vvq/T+njAr6V1St5rqvBN7jXe6rKaWh1TDklmdbXb6bfQoZZdvtfZVX6N3v31JO6V1BtVdRyGV4tfp30vOS1uOHXGxuO+gusFTMi19OR+5bX6V1l3o/pFFwkDTMNh1/wCd/wBwtMfJz+pYmEzBozcKu2uu919Tq73ixwOOav0rba2Ufzrcn31bP0b2fT/SLYzOj9OGVkU2DIdk3W9SFVrXVsrYMFrrqt2NXQ1r/W2bL2V/Z66/5ypY2RjW44sruaQ6kvDqnE+14O21rmfmv3M2WrcyPqyG5F1Yuz2/Z7KmHJvp202faLacS37f6v89Z9p9ZrP+1dFVvqJ0/RwgzI+auv93/uFVTX+rGNhZDK3X44seeo41ZsIa6Kn05T7KPSsY5nv989/wDO+l/oVPC6RgX41V1MhlGXTQ59Xsvtn7aMC30H+gxz3vrb6tTa21fpv0H6Wn9Eg1dMy6KLba37azufsbYBY+mmx1X2t2Kx3qejXcz2u/M/nf5pnrLRp6eQ1m6tzAXsIrta9jDU37ReLH1ucz9Gxvrfub/wCa32J0gLMvcqyOv7nzJAaHUOmU0Opdit/V76y+t+82Alr31WbH2U4WQ3bs2Orycat/qfv1KlbT6ciNZC6G3Byr7C82Nuse5tVb33B5teW766cZ73u+0O9N7fY13+EZX/PWemsi5os1a3dugN8eeVJjlYAu6+qQU+UwlztwjU/ervQOmNyLHZFghrTtYVrZ31dzW12OFe57XEaDwMf67lfxsSrF6W6y+xtDWQ2X6ax/1bla5qYGM8Ju9NGfIIVYO5eaysvqH7YbjYz7H1lwDqRt9MN/OdY3b6jdm1/6X1fprUup9UyTHl4BGGb097gyqwFz9B+aX/M/9Sp2D2/wWRks16eEBiAA63bTdl0Y7GM1fY8wyqsbrHn+Qz/qn/QrQMXMxM97jSSy6oxbTYCx7T4PYf8Aq2IWR0dz7X312Gt9tT8expBILH/S2P8ApVq10T6t4WG5tpcbrdp9x0aGn81iVQMN/V2W6iW2jp1Nc6otIG1wj4fylRz8NjCTUZke7tJ7+0rbtqZW0eegHKz8qoF5AM/wUZgV8JB47qFRfW3JMixnscNB7R9H6P0dqqVj3Ag9xqD46a6vQRRZtHGsDxHuWLWCQHAaAgHXuT/AOYrU5WXFiHgaRKPq0f/0uJxOsP6XmPuaxtkupfDiYmi1uZW32n631enZ/ISd1JwgMC+ltd2Tk4b2vkPBvL/VL2z/ADlLrPapYF1TBnNF1OLmvbW2i/IEsDJf9rpHst9Oy5mz3+l/M1XYv/an0rtSzqnSLcnKuGRR9hsyMyzOodUfUyW2OecB2KHML/5t1VeIz1Kf2bkV2ZFnpfzlhyTqcvReuu/8v6rKdygd9bftNzasljacd77HP3vtuYwW03Yr8WnHa+r70/bfsYzFb9oxP5z9b9GupPZ9ZsfDsGNgt3YjaaGWejbfjF1lLsi3ey7d9qdQ/7bdVd6zK/tH89XXh/ofSp/V/qWJg1Vi51TbH5+P9p9SsWH7Jtsbmt91dn6u/2/aKm/zqM3OwKulhtd9H2evGLWYYrJv+3B+5mWHur8vX+1et/Qf8n/APddRkRuuA8Ogqzw+aL8WllXWWWXC+r7PkF9v2mS+d7nnc173PdW6j+a+nvf/hv0qvZOVk29Tb1PIaKrTZVmU0vc41kEsspFMk+21rPb/walbn4j/rT1HN+0VPGQ7IswcwtJqZZaN+HdYw1+x1bHelvdT+rZX6b/A+otHG6p01tjy7IodkBmG19/wDNVPrqqdXmUN3YeV6lX2j+k0VVU/bv8F6ql9zQegy9Pj+nw8UVwLXf1XMrwq6MhpZW+stpJtsFZpdZY+XYW8Y9zvU9fF9Wz6dX85j+r+lWi/rr7C226vbWbH3Vk22+1xHpObi2Sz7JTQ4/oPs/8x/hPWVTB6l0wUsZXbXRkCmuutz3GttdYyc+67F9e7Gz/wDBX4Njmen+sY7PR9b1P1e8tfVunEMay6tjKvtrMKsE1Cl9t9d1FjLLse51NVuF6tGLfZVZ6F3859k/pDARGyPaOkjrch88d0p7OvWixzw0kFwsY1t1tcvDGUbsiyh1b8v1fRrsu9TZZZb/AIWv1Fz7rbKXeptL2NIk+Bn6Xt+i9G6pl4z8i2yiyqxgLGbai4bnem3172bqcdr633799np0/pv5qj0XrPdk2AQRIkGO/8AnqbFCMRYHDYFhNaPp1H1mxa6jTY31arydjXTvb29079zXLF+teTXf0+mmNza7fUAmDxtnaNzX/ubVznq2DJFu4amWtbMydAGu/6S28rFyL8Kt9euQ3UtImG9zDvpOU3M8MSCBVnVdk4aIHd5yjpeTdaDjulrolp0j4fyl6Nj0VegwWsLnBgBLiBwInlcTRm5OPaxxYLNmhLQWGPh9By3GfWfDLQGNtsc7R1batZ/de76KqZNRswxPc06rcZomfo+HKMGMOoER2Gmip4XUDksLjW6oE+0Oifj7JVhodYZd9EceajoDoy1eqV10c8CVn5Fg3GNR4q36ZOriB5BAyaDtmDqNB5HhNldLowcbMLn1vPE6fJc4ykMt2HncNTxz/5FdZZSdsHSAey57NqDcnTuR+VWeQlpKJZOB//T8zvcfVdPKHKuswTkY+bkssAswgyx1JBl1Tn/AGe21r/+Butxv0f7l3/Aoz/q9nufVXjgXWuopttZLawx+SHW4eIx9z2faMrIxfTurpp/T2fpa2VfoLE6WSNmz1Xndy5U2OIM6HyMH8qs/sfqQwvt3oH7OWueHbm7tjH+hZaKd3r+lXd+ist9P02WKeH0bNyM44JDab/QdkgXODRsbQc+v3OO39Rt2/1/wBL/hEBOIs2NP2IawMkTMeI14Vms1+mC4uBGhM6HWeFYyfq91KhtNlVbsivIbjGo1wXb8upt9NTqGufeze9z6KbHs9PJfVZ6Sj+xOsF4pbU0g1m11jLajT6bHil9jstlrsXZVc5rbd136/AAicMsN+Ifaustc2jcQ0mPzfFRa8udzp31Vt/QuoVUl1lThbTZksyqSINTcVmNbbddY53p7H/bPTr/ffs91X31ItXQM45DK8ln2Vr6737ztftfj0PzXY1zKrHPx8hzGNb6OR6d1XqfzScM0a+Yf7yjItVj2nvA7x4qJJkbTIn4BVw/QE8FO2wzpopLW8ResdbYQLMdra7CXRDACSP8ARu92zeuh6cXOoHqCCf8AWCuP/ar27W1xuJ9zv3e7Wsauo6W8/ZW2Ey9w1BR52Q4fqmFk6th+NjMJ2gyTMDgTzyq/o0N4boDoOB+CO9wcT2cOyHIDo017Hus7iZGbHuEADaO0K03IdEOM9pHaFnvv9wj6I7eKcXueJHbgoiQTZDcfewcfiq12Q6TJgcn/AHKG+NdTGs8aoRe/1W7CN4MgcmfihOVskZshlOsOurR46/8AmSyc+3HN2pLD28P87+UtiunT38Ey4jn5muvN25bAIALtCVY5IkT16hJzVs//9TzvAzjg9Q9d1YyKYsqyKdxYLabA6rIr9Rv83vrf+jt2/orPTtWjh/WixlmW7Oofd9qyW5h9F7anNsaLG+mx11OVtp9O3YzYxltPp1+jYsQuIc7tqfyqdGz1WmwONYINmw+7bPu2uPta5KWOMtwvF93XwOsV5HVMG7PIqoxqrqs0vdY431X25WRmU17WvtbkZFGfbj07rP539N9orVdmffV1azqnUKH2DMbebK2n0i5mVXdivOPY5lrGem213o/o7K/0aoudX6hNU7JOwOMmO0x+cii0PaJ5Gkf9SVJDDA34jh/ig6N/H662u82W4citzcFj6Hulrm4aanMfNbtzMv7P9D/B/8Mp9Q+sbMrDfh14r2NfQ/HD3vaSN+RjZ+/0qKMehjW/ZPS9KqtjP0n+flgky2eTzKm28b2ljQfa5kOAMyHN3t/qtO7+uiOWxkg9qr6I4js6l/wBaHZOLdhWYhOHkOe+6rfy404uNiWsd6fsswrcL7Qz/AEtd929BRy/rDXkMqd9lsbawWNN7rWvtDbKn432am9+P9odht9Xdszn5t/pfq9GTR+lyLctsF3MeXKU+cDgH4I/dcYo+aOIlANIkJGY0BHkjCduus8Jy4jj4J9fypVJ8ba7Jq9QlrC8BzgNxAP8n27l3fS2RjNJ0EcdlwuGx1t9YaNZGq7zEaa6GtPMKLmZaBfFlkhvB/2qo6sTGp8wrdxJEAAaQT5oG3gDSOVROpZBsquhsGZMcAjuiR+7AA7eKQmDt0j7lINkggDTgzA/BPCFgAXQZDv3jwfgiNYGt+PZMQHCHAk8xujVFZtiPzvGEQEWw2gjSI+C5jr1f6w0ngEflXU2WAaaSOIXM9cub6jZaDOgDvEg+8bf3PzFLgl+sASRoS//1fMfbuPjJn71axI3/opnvHP8lZySkx7ri3c3b6x+juj3bf3u++ENsx56z4yqySd+kfNDbHAU6/W9K7052bW+vEcbv0e787+c/dVFJSBa22cecolfynXnxVBJOjuFOgdsCPpd/iha6qokhJIen+rf2b1/0v0/NdoPTgfuryRJVOY3XxfU37tfwUR5fS/BeXJKqN2QvqY2+XzSd6W07vKOZn5fnbV5YknrX1Srd2+j+bPKKZ26ryZJHorq+n5G/Zp9uuY6x6u9m6I3j/YuXSR5b+d65fK//ZOEJJTQQhAAAAAABVAAAAAQEAAAAPAEEAZABvAGIAZQAgAFAAaABvAHQAbwBzAGgAbwBwAAAAEwBBAGQAbwBiAGUAIABQAGgAbwB0AG8AcwBoAG8AcAAgAEMAUwA1AAAAAQA4QklNBAYAAAAAAAcAAQEBAAEBAP/hDiNodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3nczLm9yZy8xOTk5zAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6y9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxNS0wNy0wNlQxODowNzoxNy0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvanBlZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE0QUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkEzQUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6QTNBQUM0QkQyRDI0RTUxMThDRDRFNjVBODRCQUU4QzUiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkEzQUFDNEJEMkQyNEU1MTE4Q0Q0RTY1QTg0QkFFOEM1IiBzdEV2dDp3aGVuPSIyMDE1TA3TA2VDE4OjA3OjE3TA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9wbmcgdG8gaW1hZ2UvanBlZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6QTRBQUM0QkQyRDI0RTUxMThDRDRFNjVBODRCQUU4QzUiIHN0RXZ0OndoZW49IjIwMTUtMDctMDZUMTg6MjQ6MTgtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzUgV2luZG93cyIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA83JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPD94cGFja2V0IGVuZD0idyI/Pv/iDFhJQ0NfUFJPRklMRQABAQAADEhMaW5vAhAAAG1udHJSR0IgWFlaIAfOAAIACQAGADEAAGFjc3BNU0ZUAAAAAElFQyBzUkdCAAAAAAAAAAAAAAABAAD21gABAAAAANMtSFAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNwcnQAAAFQAAAAM2Rlc2MAAAGEAAAAbHd0cHQAAAHwAAAAFGJrcHQAAAIEAAAAFHJYWVoAAAIYAAAAFGdYWVoAAAIsAAAAFGJYWVoAAAJAAAAAFGRtbmQAAAJUAAAAcGRtZGQAAALEAAAAiHZ1ZWQAAANMAAAAhnZpZXcAAAPUAAAAJGx1bWkAAAP4AAAAFG1lYXMAAAQMAAAAJHRlY2gAAAQwAAAADHJUUkMAAAQ8AAAIDGdUUkMAAAQ8AAAIDGJUUkMAAAQ8AAAIDHRleHQAAAAAQ29weXJpZ2h0IChjKSAxOTk4IEhld2xldHQtUGFja2FyZCBDb21wYW55AABkZXNjAAAAAAAAABJzUkdCIElFQzYxOTY2TIuMQAAAAAAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAA81EAAQAAAAEWzFhZWiAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeFAAAY2lhZWiAAAAAAAAAkoAAAD4QAALbPZGVzYwAAAAAAAAAWSUVDIGh0dHA6y93d3cuaWVjLmNoAAAAAAAAAAAAAAAWSUVDIGh0dHA6y93d3cuaWVjLmNoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRlc2MAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAACxSZWZlcmVuY2UgVmlld2luZyBDb25kaXRpb24gaW4gSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2TIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdmlldwAAAAAAE6T+ABRfLgAQzxQAA+3MAAQTCwADXJ4AAAABWFlaIAAAAAAATAlWAFAAAABXH+dtZWFzAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAACjwAAAAJzaWcgAAAAAENSVCBjdXJ2AAAAAAAABAAAAAAFAAoADwAUABkAHgAjACgALQAyADcAOwBAAEUASgBPAFQAWQBeAGMAaABtAHIAdwB8AIEAhgCLAJAAlQCaAJ8ApACpAK4AsgC3ALwAwQDGAMsA0ADVANsA4ADlAOsA8AD2APsBAQEHAQ0BEwEZAR8BJQErATIBOAE+AUUBTAFSAVkBYAFnAW4BdQF8AYMBiwGSAZoBoQGpAbEBuQHBAckB0QHZAeEB6QHyAfoCAwIMAhQCHQImAi8COAJBAksCVAJdAmcCcQJ6AoQCjgKYAqICrAK2AsECywLVAuAC6wL1AwADCwMWAyEDLQM4A0MDTwNaA2YDcgN+A4oDlgOiA64DugPHA9MD4APsA/kEBgQTBCAELQQ7BEgEVQRjBHEEfgSMBJoEqAS2BMQE0wThBPAE/gUNBRwFKwU6BUkFWAVnBXcFhgWWBaYFtQXFBdUF5QX2BgYGFgYnBjcGSAZZBmoGewaMBp0GrwbABtEG4wb1BwcHGQcrBz0HTwdhB3QHhgeZB6wHvwfSB+UH+AgLCB8IMghGCFoIbgiCCJYIqgi+CNII5wj7CRAJJQk6CU8JZAl5CY8JpAm6Cc8J5Qn7ChEKJwo9ClQKagqBCpgKrgrFCtwK8wsLCyILOQtRC2kLgAuYC7ALyAvhC/kMEgwqDEMMXAx1DI4MpwzADNkM8w0NDSYNQA1aDXQNjg2pDcMN3g34DhMOLg5JDmQOfw6bDrYO0g7uDwkPJQ9BD14Peg+WD7MPzw/sEAkQJhBDEGEQfhCbELkQ1xD1ERMRMRFPEW0RjBGqEckR6BIHEiYSRRJkEoQSoxLDEuMTAxMjE0MTYxODE6QTxRPlFAYUJxRJFGoUixStFM4U8BUSFTQVVhV4FZsVvRXgFgMWJhZJFmwWjxayFtYW+hcdF0EXZReJF64X0hf3GBsYQBhlGIoYrxjVGPoZIBlFGWsZkRm3Gd0aBBoqGlEadxqeGsUa7BsUGzsbYxuKG7Ib2hwCHCocUhx7HKMczBz1HR4dRx1wHZkdwx3sHhYeQB5qHpQevh7pHxMfPh9pH5Qfvx/qIBUgQSBsIJggxCDwIRwhSCF1IaEhziH7IiciVSKCIq8i3SMKIzgjZiOUI8Ij8CQfJE0kfCSrJNolCSU4JWgllyXHJfcmJyZXJocmtyboJxgnSSd6J6sn3CgNKD8ocSiiKNQpBik4KWspnSnQKgIqNSpoKpsqzysCKzYraSudK9EsBSw5G4soizXLQwtQS12ast4S4WLkwugi63u4vJC9aL5Evxy/+MDUwbDCkMNsxEjFKMYIxujHyMioyYzKbMtQzDTNGM38zuDPxNCs0ZTSeNNg1EzVNNYc1wjX9Njc2cjauNuk3JDdgN5w31zgUOFA4jDjIOQU5Qjl/Obw5+To2OnQ6sjrvOy07azuqO+g8JzxlPKQ84z0iPWE9oT3gPiA+YD6gPuA/IT9hP6I/4kAjQGRApkDnQSlBakGsQe5CMEJyQrVC90M6Q31DwEQDREdEikTORRJFVUWaRd5GIkZnRqtG8Ec1R3tHwEgFSEtIkUjXSR1JY0mpSfBKN0p9SsRLDEtTS5pL4kwqTHJMuk0CTUpNk03cTiVObk63TwBPSU+TT91QJ1BxULtRBlFQUZtR5lIxUnxSx1MTU19TqlP2VEJUj1TbVShVdVXCVg9WXFapVvdXRFeSV+BYL1h9WMtZGllpWbhaB1pWWqZa9VtFW5Vb5Vw1XIZc1l0nXXhdyV4aXmxevV8PX2Ffs2AFYFdgqmD8YU9homH1YklinGLwY0Njl2PrZEBklGTpZT1lkmXnZj1mkmboZz1nk2fpaD9olmjsaUNpmmnxakhqn2r3a09rp2v/bFdsr20IbWBtuW4SbmtuxG8eb3hv0XArcIZw4HE6cZVx8HJLcqZzAXNdc7h0FHRwdMx1KHWFdeF2Pnabdvh3VnezeBF4bnjMeSp5iXnnekZ6pXsEe2N7wnwhfIF84X1BfaF+AX5ifsJ/I3+Ef+WAR4CogQqBa4HNgjCCkoL0g1eDuoQdhICE44VHhauGDoZyhteHO4efiASIaYjOiTOJmYn+imSKyoswi5aL/IxjjMqNMY2Yjf+OZo7OjzaPnpAGkG6Q1pE/kaiSEZJ6kuOTTZO2lCCUipT0lV+VyZY0lp+XCpd1l+CYTJi4mSSZkJn8mmia1ZtCm6+cHJyJnPedZJ3SnkCerp8dn4uf+qBpoNihR6G2oiailqMGo3aj5qRWpMelOKWpphqmi6b9p26n4KhSqMSpN6mpqhyqj6sCq3Wr6axcrNCtRK24ri2uoa8Wr4uwALB1sOqxYLHWskuywrM4s660JbSctRO1irYBtnm28dot+C4WbjRuUq5wro7urW7runvCG8m70VvY++Cr6Evv+/er/1wHDA7MFnwePCX8bw1jD1MRRxM7FS8XIxkbGw8dBx7/IPci8yTrJuco4yrfLNsu2zDXMtc01zbXONs62zzfPuNA50rRPNG+0j/SwdNE08bUSdTL1U7V0dZV1tjXXNfg2GTY6Nls2fHadtr724DcBdyK3RDdlt4c3qLfKd+v4DbgveFE4cziU+Lb42Pj6+Rz5PzlhOYN5pbnH+ep6DLovOlG6dDqW+rl63Dr++yG7RHtnO4o7rTvQO/M8Fjw5fFy8f/yjPMZ86f0NPTC9VD13vZt9vv3ivgZ+Kj5OPnH+lf65/t3/Af8mP0p/br+S/7c/23////uACFBZG9iZQBkgAAAAAEDABADAgMGAAAAAAAAAAAAAAAA/9sAhAAMCAgICQgMCQkMEQsKCxEVDwwMDxUYExMVExMYEQwMDAwMDBEMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAQ0Cw0ODRAODhAUDg4OFBQODg4OFBEMDAwMDBERDAwMDAwMEQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wgARCAEGAaMDASIAAhEBAxEB/8QA7QAAAQUBAQAAAAAAAAAAAAAAAgABAwQFBgcBAAMBAQEAAAAAAAAAAAAAAAABAgMEBRAAAgEEAgIBAwIEBAcBAAAAAQIDABEEBSESEwYQMSIUIEEjFRYHM0MmFzAyQiQ0JTYnEQABAwIDBQQGBgYGCQIHAAABAAIDEQQhMRJBUSITBWFxMkIQgZFSYhShsXKCIzPBorLCQwYg8NGSU2Ph0uJzg6OzJBVFdTDxkzRkdGUSAAEDAgIGBwUGBAcAAAAAAAEAEQIhEjEiEEFRgTJSIDBhcUIDE0BicoKSkaGiwuIjsbLSQ2DwwdHyM6P/2gAMAwEBAhEDEQAAAOLRR9Ohp4nMjAzUgM1ImFqkihQyOJwcozAXaNMxZIYXFCTuwAsQMQkoBSJNxdgMhJMXR3IOQ0OTbGNYrdFFm8JtitrOenC0ZRuNJ3TZkk5UkF1pCThGSOpFOzliT3MSNADuA2ZlLNhSFIAgyYkxdmaRiyqxUJgF3SGZ2Eiew1XSlHZqdhy+VRxC3Rn0Whk63l7YxNidE9RPyN2Teyr1qDkV1+J0zlEBahOKTlRILsYqbJktMyd7GucL602y56PQqQVgljysElFJnBOQWcSTON3FxpjcIURMBGmABpIU6E08VtPrcbYqeX08mtXK9XlPoOcmzOowNW1yVxrbuJ35NuQ6+FtT0qHHvDidVU6Muedj65nUaTmry2caov11PNYM8UfVl0l7AidNUmEmGARzZtbqTSUkg67CwjViqnIrEidRlMyJpFRM5F1ONpU5jCxHKi0aO/jWk1s/I6s/H6ODWOSh6mt24Y2q8suW5De8/WnFsVk8iOxDuhnxdS4zszqeX68yRrZKlepY30j1VzFvU5Haa1DywknuZEtFbOOa1vzYd/nuptcbu6keTZz7WzfrPi6W9mu3K+cVF1qdwMo5F61QNLGRGEl/OH6mC15WxQ2q+RUjaXOwc3uQYiTrZ+zAqQ1MSp6m9hXcxos+v2Z3cKePtlKVaJV9W5hty029QyzyLGrpyuRtaWlU8pHvV6WMukry8O3BrU8tunyisySXqEci3Y5CeUPRHb55WFq6xTgjTjmi7NaymAzboA0+BJ+Vk5Z6itJFhdayFpCA20moZhndqzFYFlZHT1VebWt0tHivdpexzImJuROk9FreLGlwc+PlnValJKtqhMLez84ZLSy1Sp9Jz9mzQlx3RX6fm9qmOvh21WpJlaGZhFYbeacFuGq0AvN6HZmzFtZZ3wu1fLx5GboZc5iUw41BG+C1cz58rx6XY4zs8NbE5lk2rTVZqnjblF6U8fbxPUxRRn0qZCkSV49HBZjdPYwrkX6MGYL9XWRgB0d2VxgdjyupB0WD1WZRpalXNZFjpptHzFrV00c6W/TiceHsMgOfhmbsrobG5odOvBbd2XOpaI8hw8/Vhy1uHvCSydSveaXjLYLSC0K9lKeOas0FW3WLq1b1fPTLw+jxO5U3Gx2DIkFK9Qpc2e+WLDmuh0eOUnXV+Y25NipQxkdDSzT2djZw5rYa1Fha02QMPqJebmk3ZcNROtn04bqvPBX6H60fC6HVp1Ofkzcs4PObmPnhmWb1lLptWnfyderfix1gsJXLESEYAKDqTVJsYDrRceVrZ+5iSGvUJFKk8aaDX4sdbmb78yjwN7F0nUsu8FGxKTd/lNrA0e5uZimxmtiwGDVRka9MGSRaNBGXGMXS7A1Wpbg1oOvbd0uf2eaM6vdyObm0dXnrrXXT5cuOltqjTd8QBuQY5UCKdOOK1EOnBcrZVHTvwaVhQX6XrBJJrJmrVOPl6XJoNkuh59mFffPQtK9gGPUoC2j1/ADkhepaxHbv3MRU9gsQUdDXx5EtGkLWGAu51DtydZW6HL1OWZMXpK/GcuO8bOek1il5epLZVWZKk60sHE1Ej12dTvWiijhjPKwhlGnk5mxm+qMnVrna1mtx8KSUymSQkmERATZOL0zkiJu60ddkjROUSFEynEqmyVdNEKIe3Zq3uua2zT0OWtI4T4aMRihZkDOMwDLFI3KUDWWI4GVSQyQ52oiiinljanWqvk+stFZy2MqvY6HzeTlSbp1PLLospFJ+gyWVCt2mZi7ajD5cp9rQ58NDSRgLpMsKg6JWs0Oq5RonEdFI8Jj3beQuqdLZ5np+XTUIB8/RRupYs4BMwQiOSuI7YRSsdCzCiIIoHKVNOaucXn+j5r0YJTLacuWvBwrt8Y8DE6w6lOW2vznUWsenQm1XUYOrg5vsc+B4fQ8bpYei7qrlUUXbefMyLGu0d5dM9ykhHcYC1d/pMXd560ncuWoa1qDOoQkaajcyaCSZqkUkx2ck41KbQo0xgkClkc30uB1EKmW6xwIeWUJpDKSaqq6WfLU3aViLaYCkUEaKdlR5rTM4pGajKUU4lIKAU4jjUroY2enodTy/T4PSQrluOGzXhgDqWRxyWjZnadCQMpBAijmpA8hBEMsaeXz3R4nQUUS6oxmceVO4kyW2A3VZC6k5q0mkkDsBnENIimhY0kL0pATy3Ekmk7IYXZMzjthp9Jl7XNZs7c1hFIKAScGd2pEnTSdhHKUZtKQU1IwiqeFocrqYWvg9cOgXVGWoFzFiSmrNWXFW03IYVkTnVTLJVFattVTVwKyHZkpIVyTPTNNs1aLQjpqHaeooq9scypPTr3ka5q9cj8nWN+ot5eor1B/LlU+ol5YmvVH8qTPVh8rTPT5vKkj1gvJVS9Xj8sWd+n0/PFF9piYy78thY63n/9oACAECAAEFAAPgUP0E1er1er1cWPPxY/CijUkqpQyY6WWNv1CrVagKI+L1er/JPxb4FftBP2NSA944InRsRhSySRmPIRqPyKWkWhHTLajR+T82q1datR/5Q5SSJw65EHeo3aNo5FcZMiEA1DPY1zTsVpcg9UkNdyS0psWau9671c12vXfjtyG5C8WoqKyGCR2N4ZmjKZYNTSxuJJnWkmJIKmpI+q40nZbUw5KnwSRmul1ljAchhB0apIgrKreEopVlvTRcdbSgcWpyFE8pdj9XIBFG9A0uMrU8TXTHm6wwiMVlN4x5QQ04BM4B8yEiZCe1ikyOXl6ukysvmQfK/SsmQmjFYMaQcngE3q1KzKEYmkcMvxloWp42eOQV45BQhYERt1dCSsbCnRixjazxvXaloDiU9VlezPLcWpASyotTIAa5pDY4h+34yZDYztRmIVcjsDkWETiQZBsQ7Cvyl7PkEOsxZosgORXnUCeQENH2ow2orQFj5WFXLG1WphziN8zL2oILNECShURxtZEYUygl07ARcnHrwHskJU08YdXj6/BpwKA56irfF6c1jmxHNWrIZgCXVlYhi8ly7gQ37OXZRLIT3cEF2eOSRvm9hkGlNGmN6ANE1evrRFPUJsYz9t6kAahEgCoq11U0Y0JVFBMUbHxRljGhHijAEUYZQFFxV+Mig9q8tGQUZCav8AJa1Go/rDcrY03wfgVegavXar3ofJ+mR9Gq/yKBotTH4U2OM569hUj9QXswkRqV1ai4C+dLmRFppUFdwG8ido37Ver12Fp2vTHkmr1eg1quTV6NAE0q8454phcKjEBHpwVTx2jRT26SAJGbeFrlX7xi1cUavUtEUfmw+QKt8QGr0efi1KiEsq10ApIwxEQoIL9AKKqK6rVhQqU0TyfgfoHwTWM1z89TYGlajyb2ANBhTG56mrUR8StRPwP0D4JovesUVf4Wlo/VaFCm+g+i/U/V6H0f6NTfAofI+Gr98f6V//2gAIAQMAAQUAJ/4dqI+b/BNCgCa6miD8X+L1ejV6Jq9D5t+gUf0ulhX7FyD3FEA0QRQ+TRomrE0DQofIq1Wq3wfgUFBV1IKtamFEEUimgoIZbfHFH6laIq9W5H6ea5rn4Pwgub2p1DUYqVGFCKutvi9yy2NMK/6gavyDwLdqFzRAvze3xbgrwRVqUAC9XsCaFXpnoWolbnmrVInPWuldDXU11NAURarV1q3zbgrQAFF+QKY0BegK5rg11orYgfEhuaIq3yBRofF6vQoILMlh1vQj5NNwCTSNcUKFOOQKtRJuPkVarURVuLcGupr6UJeJHFg5rvV6P06CiAAKBpTTUBVqb63rtXa9FufqaNXomrcURcGM2ZftPFA83NweDerUBQFKKNAfDfXijXFcVf4PxarVarUz9aeTsGNA0oq4q1WoCgKUVarfDHkk0STV6BNA1egavXau1qLUWNGQEdiaIvXWgtAWoH4FWNCrVarU36r1er1er/F6vSNeh+i9q7UGoNQNdq8xFeaiObcWIogigOepoAmrH4saIt82vSi36foBotRaiavRPNwKuKHJvyTxcUTXYWuLH4HwKvQ+b/F6Jq/wat8WoLweKHwTYX/AE2+B8D4P6gKfgfIejRH6RV6vV/gf8ECgtP8D4P6z8D4FCh8H9B+BQqT4//aAAgBAQABBQB2YODwK7g0vSyngkWZrnyGxJct07s8YJNRzSQ0Hr6hmJK3NNcUSwokWver1zci9EC7BBRJNAihcnvH4GydWZkKUCKAvR+l7FZJFWJIilxSGxsQBVxb93t2ZiATxyBbi9dV8cjMKNeK0JtXezG4oM1ywFFr0wA+CbsDR5orwxiKTNCT+7DmQMjsGBok2C9qljZCbXuLWWiCKZVFSRSxi5JiDtIylZAOL3BIoqQsMUssmNpIFU6rWqW0+uam0Z7ZWvz1cqy1f4N67noE+z9+L3HjkuHsKNrFj1Ymg4AvUigO1qDHsbXlV4n7tYNQN6vxa5eMLGWr9mt2JYUb3ileFs/Pyc7IHS4UmiDXNwxFXYhUJJ4Kr2MutyY4gBfHyXxpWdyNdBFDipa2TtRDkw7fFao5o5AkljkYuLlLkaCRS8ckT/9J4qxB6v1ACjjxTFTJjxCZ5Y/G5C9SAaCklUNzYVc2YCnkaWSR3kY2q16BJocUewosbGmF6vyRauOoAKnrXU11FupNX+LEHBz8jBdjzhrfMycdTBnwmKRuD+2ryA+PFIAm7wCxPNAupxdxlRnF2GNkgMakwsfMGw0mTgi/NwFEj9OLWXxnxmXty1xQFyQVAjJJiow06WDABiQA1r354NXtRdlYFrBgWJUlbhmSRGaR2brdWT7DagpoCiDRRLcWsALXoC1YX/lse0OwwvOjoVYp1OPkNjS4+QjoCrjaakwHmwsTYhtVk5YEk+TIIpnx59jpo5gFcyMjI1/u6x+OQ/xLg12ULY0oFQxFqxteWOVrGSpoujyDllF2+tqYWq60Sa5FAG9gDY19aA4HcJ5V8QuatXUrTckrRWipr6UBzrUV8sD+CyhhtMA3+gYWOLlNjSY2QkiXDjYaQOXR0bWatiYYEFSBesqBDC94dprly05BBUi/wDDmYqfyZa/KlpcuYKuXNUOdOG1W7y4n2m/y5EydhkMXzJzU2fkyj8iSvPID53oyyV5XrzSV5nrzSV5WoTvYSyXaWRSZ3t5ZABNJSksvUGipuF5KOo63r9tHD3zBItHFdzLiOy5mmU1JgTx00UtYcsmPNHsIZ5I5gaj0uPlVk4M8bO3Wml5cdlgmXqshU7rXrG5I6/5eSSK1W11WHj52T6ziaTRjTbr2SPV7RsWM8tgbTGhLTTVmYmZjoNTtmx+CDxS6TdmGKGaeSTX50WNj6ja5UJ4Nqh0+3ngsSZ9PtseDSNAMpMbJePK1ezwkxcHMzJMnCy8OSEWjsRXWnUAvPM0duxtZvXcW4TFRTYAMakCtUuKjF8BSBrhdMMK0GSY3GaAIZQUyoceYz4GSGaCeNM13SaGVXTJh8mKEIa38PJt8bv/AOQ/t8wX2fVe0bub2Ta7HT3DDO+h2OiTDwfc9JlZ/sW+zf6kn2XukOEu40ck8W4lxfcE2ixRxf3Zfa7f7n2CHdzbX3SPHkbQYUefvPYPaN0+90exgz9vrva97Fttdr4NZ7165scjW+metbLP2OF63lQS6De4/s+HpIktGYwB14I5Nq6m+s0vnrGhSNCtOAKkYUCWrqKKCwVb9eZ8Ysqd/LHlFRNnRGseYsS6lc6PHYp4UTMy48ePqC3VfHlqaANbPY4eT676lscTWbrWTx42xX2HGx/aMTE9MxsjSbfX4+51uxi1rzYXpmXlb312XsfVttBpt5+H6ni5D7/VH+4EeS+PnZ6eqbvM32Rppp8PKmwc3i9Q2ucvtGAm/wAPD9MwcnVewwv7Jg52F6t63nYuvbXHQ5WsmytTrfX4o/4LamAFEUBc6/GMjY8QRIgTVwKm4m7i1uhNdRYAgDmrVlYncZkyY0JMksuujnWpMp1qfbjzNtXsoeagvP+XmxWXE1+VPC5vj6/MycbmotfmS4d+YsHMkwixsxvRq1qAscnXZeLAOtMSWsRRwcoZWVh5GHk4+PJPNk4c+JkLGWoRV1FuldbCJB4HWmFPGVrHx/K+BiLGi9BTSAV2PWeU3DC8MZNdAA6WDMRUdzUcIajjRePY40OS0euSKTxEBYJ2qdf4qiKwsAixE9Yemwg6x+n4QzMHH9e0OyGswHytVrtFgfyoYWBD6ZgaHXLqWwcLH9JwtFr11my0mIuvj9Z1ceo2uiwYNW7B22Ot/Hwtj6369pcvf6Y6fM1y4r5ntsWuHuPsur9di9hy9A+v3iaD8j2CPT6LjULQj46AVJYVGbY7qTTqe1r1r9eDUsZgi2EMjvqp58dpH4lhYUsVJYAn7mYU8asIwqskpARwFMLO2XigVIvWizhs/D6EChe9WHjz4j4NCOun9IFvZdAP/QbxTN6trIMgem+wAy+v4OPOvpObk4UfrTZ80vre+v/AEvAP9AdSBvOdX70f9V+2n/tY/8AE9lFve/a1J9n3Ck7if8AmcXtWv8A57DkiEgrFUiAFxUMZ8DpcN2NYGMZcjFh8a7Et+PshFJmaLVSiRUAogsZbKGyVQZGznnlzH32ufV7qPNKFWEK2JSlfpU7hxPGGqWFo5ZVLRMOrgpX1H2+PYf+HBl5WNBhZ2VrsvHz8rFg1u52OsGd7Juc6DWbrZaxc32cZ8Gt3Oz1ibbe7TaR5GdlZOIudlpruhrI2GZkQ7DNytnl5WxzMxUjJrL3u0zoMiSbOzJs3JyHizdg2fJvds0PXgi1TKLvDIEgj7YjY1wUUHXYyBPHZH7OP5Zj97UFo2AyVuu1bJEelmTF18pnLY2HkSyYeLKFSNwLEUwIqRuHFZEALyrYS8Si1+Sv8Al5eXMseDk4HgP3UYypKBSsasTGAREWJhZUMPd5IB2KU1+v4HrGHo8HW+o7vI1mox5sGJe7vCBUCsCmKWqOIktGLeMmjxT3NSObYuDKcKXBsr4x/JwILmXDARoVjLOGLOoKi4awWVSVbDiyEGmET43r0Rkx8DFx1hjsOp6uqirAnIjCu6kmdRU6WrMULkCRrAG3PjynLD1k/+o12ybX+lw7yfI9aTaZm69a0eXu/5Vs4NxL6rLnzevaNtxJsfUIcTe4Wi2GLtZ/XzIjllvU+BgZfq2ri9W0OVpJnydZo8PY4nrr4W4zdZop9kMDIi26fWtlS6rbvmmPPx93iV7BiTfg3BUAF9fiwLhHVxyJla6COXFxwr+xb0a0T73ySfzhCMLdKzw/ejIxDJysYu8Xx1YuqhHR+QQRMrtRBVZSSTxUy3EqFq2UFnHUGR0kPHjyzXr2Vjw62TLgHp2mYyeo6nNxotEuTDtPXe2nwvXEyNbutXNj6zE9EuBv8AVbHD0mt1TY2KmqWQ1tszFn9eKcaTKxodTiTYW00hwdRrddBPFm6HGGtw9YkGBl42ymji0+amJuptvHqseF3tUEsZGvMcWu12fjzRZ4jKRSCOva4PyZ54qcurwSAtpY74aYlxkYiBQhFKppI1VTG1KhuJAldqlJNS2BY1K4s5Ns4F1VSaAU11Tx5V7KbGOLMzp+1d63HY2xt5q59dtN9hza696UGl+IcaeZMZIneSOMN+FK0dgrRuDS9QiT9gzg00vLXp43p2dK1W2f8afYwRVi7cuJMhid4qvIjKzjHVqw9QFfXBogjzMJvLYRlqC9QGJI5ojk9ezNYvJYzHksalNywsMpL1IPHIt+viXx5NxWj0eTusj1DSY0O90eiytzK/q8WRB240vrWXucST1WCTD0ehyNuJ/Wo3w/Xtfgz+oH7X02hk2OPqdYmJqdPqJc7HytUkWFK5/ouHRR/gZerfBr2HGxItXFp44cXMwJ8V3c3MwtGQTkEMIpRHBJmSyHByUVfIemV2ZhiBikXiOvYPUfdY0NOx7JR61dLu/WhMzAk0WoqTTpzJYDpdnQqs8YNZcfU2rv/AA8k1qiT6R6AJj7riT6D6EJz7dmmL83Tuy+k+iH/vgWP9uf7ehz7JqCP6MBrLJPonrHl/lkU2rj9J1uy1SY8jW9G9kytHFl5mdjS+u7+Tph+0Zejh2uxzIX9f8AKDTzJSyuGM1iMhpIbZBGOxUYavINzCYW8eStLm5CLg7OMvjy/YHLUcuICPMjdw/ZXa1D7mVQKN2YJRQ00fEsdl63oamhdazI7ggV1HjywynU7ubUjH94yMJ9Ru83Tzv7hPHikADG2+RjarUbjI1M2n3udqGyfbchsDRexZOmEjrJLqd9laxG9szJMbVb31keX7PPNgNtZ21OH7HPFibf2HJ2aS+xyz6jH9lkXF2vsGXtGztrLmwixpr0wvWM1oS1nwoJMh8ZfHHNirlLm4Xjf8eYk4r9Y8nNxneXZSmHBnZdfiCGo2cEAuVRFBIoeJa7JX2kyKsbSxcmFwSgBmF6ygbEV1/h5JAb4vXJo/X5QrTGISXAoGouxfrIrKrmu1q7UWNi9Brki9dmIa5rubK3Y40GPJiGHDUQ5katjuGHUrWXhGRVxHNfjAV+HGH/HZqTGACKqgOahnK0rCmc1ZqPFFkUNMRRmuVlZaaZGop2GXGRTqVPZuk5s16B+OavxV/gVer0nUNG6o6zFgZuXe7XIBau1RlwoYCl+pZSGFgO1Y0ojhnSJkMMsORgqaQ2VrGiFBeRCWKhu1FjQZhSlqW5q5WhICPKLM1iXJEjV24kkpJDXfqs+RXlWZ/IOmS1yKI+frQv8AF6B4F7AjqvQhKiu5Z+e1XPZjdlJFK5AoNajJwGoXrEj7RyJ3qDHhtjtElI4NOxpzZi16djexYAcgBhbqAbjsRXe9FzRcgFQEJNBHlaaCWF0DMJO1swkCWbrX5DeOe9yrBb0wkYVxbiib0OSDSdmKqzN9KR7U7Ve9IGIAJodQDQUlbi4egaubrJWLkOIHyIYETN8lYQMoisis6mmB+LilJFF1qaUig5BMiivJcFyaXsKIDFwtPJag9mJMrKFC/jsybBbCdh37Hxz2ert/NNIitI3ukgw1Ho22EZ1Gwj2uR6PucXE2usy9TnZupzMHE9W1y7Hdx619d/cnK9J20+wOs2H8wHo20E2o9jl7aH0XczV6HHNB7fqNJsNtJqtHnbZ9p65sMLEikH+2YFzdQC1wKTiopSqTSeYYrFhqmKAsCDQkK05BFdgCSBTPcd6aSlBrqAxeh9bgliq0irIywgBIioJIXYLU4tNfC6T/dJo9pJqdvjaLFwvd9DkHa+570eoz7rYbDAz9/7nPLP7Tn4UnsmF7jnw5e+9cH+oMIf/qOynnm9g3GLs8v+5H4np+Nmpb/d3FyZpd9hhf8AdjdSYeZ6rodrg4+ul0+G+oTNiHpv0q16619K7cK48d6wuRgXAjuQRUkZpmdD5XuXa5dqW5ro1hCaCBaAUkkX5FMAQsKMfGAAhrqacGtgx65I/i2/h5Cskp5E/t80/rcU0kMsvs+i2E2w9oythvNrnjY7X0/NztHoR2rDnkw8rI9owH3884mzJPb8gezjfaDEk/q0f1bBP4cuL2oR+2aLdzabP1/sONhJN7HrYNaufhfyW/Hau4q96NIVsL9NTjFsXBU2jWw5tJwHtRjJANKoNeJRQhZVBIDAtViqqVFWDV0FAEk/bXWupNPGRWetxkK3foPHkt3nWJmco7N1NwleNgPG6jYbzdbeKLWwPhywsKSJifG1eG5/HcjxNYwuB4jXgehCxPj+zwtcRmjGbrE5IiYV4XIj4AFxqzzgAUgNr3pyae4JNWBKoLqlqK0bChIoAN6ki7kKygN2HCi1wCTRPWpCGGaAVy1Ha/8ADl/xe9MyGuppVvWTizREiwjKio3UqOafgxdw5qAXpiA2a2I7IQqi1EL2P1b7avVgy9auoon7UKirCtcecIfaAbAipugEh4VKcFaSzUBwXFKLkqxCgigrMZIpJQsRjKqCCAKUqAeKkas1rKUxpJ+PHLbyK7K4BoWBhcqdhts3OamY3hfo7SC7P8AYFNJYkTvDLe5Br9x1CykVzawA/c3BXspN65pAxCfc2tg7Njp1UV9Ke7M60brRXsAFA7G5CsAtqXuWERoXsGNgCKVgK7KQQKN1qRjbMlYrmPH5OfHKwEoFfSgpukMLifCKhvqCOy3Zl7UXJoUGtRDVgYn5cjupHZiAetNalDEBCaPYUzG5Bt2NfuLXxYy7a7GK1Gn2kGiTRtR+v1Cg3K012euRXZivnNkcvVqH0CpcsRTycMxFSy2rKckZn2yfd45P8AF4pelk8dRjg9gMoyGVrXUgBb2riw+i0O3U0OtGv3XuFPfrHYl7Xe1+bniordtYIe+IIrALX7z9K57NXNuLAm5+v0of8ANezyeIuQO6djQ7Vc0aPa8lrS96nMt8rv3ufH/9oACAECAgY/APY6ncFrCpIezEoxOOiT4ugQ4OuutPEv2GhTV+GSY5ZeyHuTjahIK6PEPxJx80SnjvGtWsJf6JmorZ4apaN6oDLsH6kZGMhGL1y+CnMqSw2FCQmabCnvx7ViVSTt2p7uzFYqhdk49xTP96a6ux0NMjuTqhVQsGlzBNEW+8Fmr2hUKjPVL+ZMcY/wW9BTixc3011nJTEIsDADKMWlw/QvMEQSDERYeX6UeLZ7qe1oW2xA8v1BjK/LHhuTMZSs4ZcRphK1TYFvSlHLD0o3eGI8SiQGgIsGh6mbXljzJg4laWuyyHKrYeWQ0WlSyjxu8v37lL04ERtbhsuldlaPurzJW5rwQWzMLOFUiS83IMP/SPnR/Mh3aHVTTUOjXBEg2qjSQFp+1HWTiVvQl8P2SlaiRQgxBuEo8Z5UBGucQdjbjmzICNc4hhK33mkmD42uxtu5b+FMCcbXY23Dw3KIpV/uCAiTUPFwYiXwurGPBKbsWyp8DbfWMraY28yAL4AkiMrRdg8vDpHdoYJyUw6atAI0b0ANsT9M7lIhqny/8AzndJCIEbRO+5623+o1vMowAjbGd1z1tuv4eZAM4ErrjOeD3f9fDcoilJme66UlEjw3fijavKw/bjbL6bUCGa2UD87N/KoCmWEoHvlGP9KFrCTRAmJSg1vPH+5pHdpYa9DYJk46BGjegS+MRSmM048t43ny+Kplw4NwIvECUZWSeTeWKXXX/oQtiJSMjCksmUXGV/L8qrERlcYZpWwyi669EhqG02m69kl5YJlGJkQbLn4JciNpnZd5bSmDE3SnnAuzW2ojLaJWcf7jvY/p8tytIiM1vF+58Vn6kQwDEjiz5fFKCiMufhaV0ubPHw6A+xUT6XGiul023RvQHcfplcmfCfqfiuTvW68UurZ6eCcGUpXX3C26xt4eG1OSRO4zBlaZZsubwoPMmtxfX7vuqMiWsL/ULPzJjSsZfTK5ZZkRuuMQ23GN/LcmEiI3XsAOK6/NJAmRIiSQG/MhnNseGP9R8WgAnuKZ36oJ1vQtLEkRfluOKmBJ5H04iRHDddijAm5gJPrzf8AFTldSEgBFseF7vqU/MupAkWNqjtPNJea5Jz/AJYoyMmiPMjGxtUPNEceZGQBtE7WhZbGVnHd6lyEIvmn5pJiIylkn7+XxLyjJwQZhsua36lCUgW8zaIRhFxdGzNfpAxp0X6QQW9MQ4ZENxY9qNoxxRDcVSnIq77+5GQxlirjFy7/MPE3MrjGr3dl3Nbw3JiNZlsN0sS6iBFhA3R7CrhGow7sbY+FMMBoHd0MOmNG/rh3dbvT9odRjzOe6MUWkCyyyB7kZPQP8Acg5ABiJAvtQukA9dyrIDepA0ERE3H31bcLtilRrZGP06Qj1m9EHWGU7qSI9Md3N8yZpUiRmMba6o2qBjxRaIHxZVYOW1OYtkEa7RcgGPBGOSzi13yl+VFx/bhD5o3XBCbVhGDR8MpRuu+blWWJrIE1ifKbmldmjL4FKjPInRTr66QSASMDsQAGiqNcPY9/RbRRP7q6B06lr3dfq0asV/9oACAEDAgY/APa39hcaBoqnHUP1zJimOGl1VU07Ezvpw6waK6X+7SR0Ae5AmtUO/bcu16ubVsqh37bl2vtW9OSqody/z/DqmxWxEvpA7NG51ufrW6sd2l0f9lu0Ht6Q7tBTnoV6Y7ujUdQHwVNnSp093WMsHTbOs3rcvtToBsQgNqHd0aaR3dGnUb+ur1WrTv8Aa9+h1UKoTLBU0utz9dToBu9asUXwxT9qx1recVvJTbSVU6t63exvoOnD/BX/2gAIAQEBBj8Afu1HD1rE1O7aartrTTtWONBQV2I6qk0wA37Puo0wpnjmsdntW4ZYdiplvPYia4nH9KAaSW0Fa0BrTiRLCSCTQOpl7zvjRxwTnMNNTSwnA4EcWa3okA7q96nHi7AKUpREUNWjE7h7zkct9SqOb2HDEVxWNa51RIGWJ9FVuR3IUOrDHClCqk1JONdqx+j0FumkmoHUKnAYODv2lqBFN21EudpNKtoK4jwt+FNdqFXA1AzH2gstxWAOY25IDaFhuKc2MlrXYuAzoPeKdK94qwt/DxDnA56HU08CApTYUeHVUUAOw70cabCFWmCzrVUJoK47aIhldOzVSvrog0kuDRgDsqamiNKUrXtRb7UMe8fpRJBJP8AWqzw5df107GlXOoKbDwu4lT6VzdY8QaG14q01E6V9aww3Ib1nQjI12DD6UdgzwQ4g6orhs7FUnBVOJ371j6Mwabk3QHa/OTSldmlN5TS3hAdU1q7a773urHBADGuXenMceJpo41rWnagHYVxpt9nopkDjQZVVEQWmrPEDXD7QQptwof2kMsDTtRoK4d3r9GDtVRupim6hQOGpvaDtWOPZ3INZWsh0gbyUWy1BbUOoQcRhp9FNhx9a0+xAkHE4HZghHECXuBGG456ihznF7jmBgEQ5mPeSUdLpGH2oOhma6mx4pitckDS2taxDD+61Ygiu//AEoVx7F3rHA12otIFTTHaAEXVyIFNtCNy+tZ1GwrL+H9OtO3aj9aA3/Wvi2jYiM8RTeFQoilQdpr6BXFpAIP/wAlu3IOwJFMCMDTeuGoFck+N4IIOLXAg/3T4VWuOXq9GQNNiI+lYJj8fxAcdmBpuVED9CJA0jaK1Wk7qDGtPMqYbsE17HaXNNQdxBUlzcyGWaZ1XvOBPqCOupwNKGlDsWzLCvYq0o3JEDAbd2C7DhRUPhGXZ3DNUzxz2IAYk4AJr3GraZbQM1TErmxgawCBqAcOIaTwu70GlxLW1WnIVUbm/mSDVIe/JVUkZjcS00JrRUcTGdtcvauB7XDsKwwWmeMEjJ7cCFrtnc2P3Dg76eFyLJGlrgaEEbVuIOK3neFTAFaqHTXTqphXOlUHYE1yP9fMvuV/5idTea+1Bge1jjlrOkV2N1fEnRuI1NJadJqMDThch720qtcTsx9q079pyVBQ4VKqM9ipWuOVFw5Ci1vdxEYuPYKN8Pci95nHEkmv1o0WxaczXh25ok4FuzLFCtQHDAnCo7EBsA2r+tVQUNNozNf8AVR0mgy7wqZHtQwxWPiB9VFWueaqMRnhsQ37Ue6uKpsGQXYi04OGY7U+SAhrnsdGSQCaOz06gdKrnXPCihGzWPrVAMUSBgVnXt9DWk1dHwkdnlRaQDrGe1fNRipAAeP3/AEBzCWkYimdEGykSsG/P+8uB9H+47AruX/cRg7nDxBOljHPhNaupUt+JzVuRbStcnblyy86AdWnZXKqxzNKUX3Kfr5p5ccnE6fex8OoeFdmxY+vvVAVpyO0Kgz7Flj7MQq0yX6FwigpkccVSncVgscVuXb+lBzTiMQe1BwxIxIIqBuVXZHaNn2QqkUOOW9ClQ4Yhw2IxvaWuaaFpzBTnPJc93iccTgiaE73big6oFSRpBxw2obwty9S9WCbQ8VOKuQPw+9wojOv9cF21x7ljWg7ENvYoa1we360BgRTYnAEMI4gT2eVFhwI2HtRBI4cO9CRo7HDeE1zDgVQjDcnTQgmImrm+7/srDJCvCK4uVW7MiMMN6HzAMjNlfEiAeVFsAzP2nLmMcTXB7Tk5p8QRnshR+bodjhvatGTyaUOBruRY7MGjh2hVHDuAXiw5NcvNr8Cca46j31qt25Y11bNy/Sq5V2BYDbQH6kGganVxOxEvb60NQwaMQMKhEnGu1YYd6Kx9SrmDtVaGtMKHaqFU2FaSKbSdqxrT6VTdiq1qTn2Zh7VtDHH1Ej95GMtAqQ4OpxfZ1e4qLSDh34VVfVXeqCtMSFvVfX6OxbtyjqKaRXDaRtVNtEQjNGKkDiG8Km/FUIoRgQqtqYicWlCRjqitKbVpdmjLbUa45sOR+ytLgWuBxacwVz5hRvlBwzWAoBsRFKmmB3I4V2lRvBxoR3UKNxCKXDBxN97/aVCEAaA5l2JoKeFbPy/31IRmCae30Uw9iIBFDmN9MlmPYhQj2IEOYO9gP6UW643DDHQFUkVHwoYjDAYBNa9wIjbpYKZCuqiph7FWuK2Y9izC3+jGhqtixRxx2YKgI7PWi0kGh2Yj1ICgBBONMcUMRitnsQr3+1AfQsdmGCruQfSmqoBpgfeXd9KoMkXbGtr7VozO4UMOwqhIKLouE7dxKxAJ2UKLS2u3BB+guaCC9laagNic6NhhBJIjJyFcg5UONdiEs7OLy0wPrQawa4h4iNio3A/SqFEhCA4PqXNG8YIEbF85GPwpcSBscf9ZNAGLa1O+q+5++pewnD1p0d90mLqMjnamyyPewgU8H4ZXTOpj+X4HP6jzdUZkkAZyi1uB1cWrUo4x02O2tDbS6rUOc5utjHv5weTrXzjbOc21NXPEbtFPe16fChT15ma0nhhwPMfG5rcfiITtDXSaG636QXUaM3u0+FrVHLcW8sEcorG+Rha1wz4C4cSN2yyuHW4FRKInltPe1afCq17u30fMDp1yYvEJBC8in91cuFjpZDWkbGlzjTPgamXkltKy1l/LncwiNx+GSmlfMW1lcTwjOSONzm4Z0c0cSoRQjAjb6/R8zBY3EtvSvNZE5zaDaHAKgFXZU21XzFxY3EMGfOkje1tO11NLVL8xYu6jGYZAImAkscRwXHB/guQkZE97NQj1taS3WfDHqb/Ed7ia+9tJrZj/A6WNzAT9pwXKtLeW4fSpZE0uNN50rlXkElvJSoZKwsNOzWm7MAf7Ee3P0YeuuCZCXF0cYOhpxDdXE7QgAMsxRUIxGY7lJcAFofwtb2Batu9fpXeqURWGZWAosRkuW5tabaYoEHFVdmcyqltD7wwPrX4R1jZXAomRhB3UUT2cBBOezJCQYtcMKLkSDEg1G7cqZnJfcp+upa1rU09vo/lzvuv2o1A4iobFMSN4DHHSrS5fdyUmnYx0ANIhG92nkNh8HL0rT42xNHTPmJbVsp0xNfq0xOk92OLUm30/XbKcOcPmIn3Opj2E/ixOhLOXoc3yLqbbItmsore4fC0HUx0egTNi+Jn8NWFt1ed1xbc4zcp3gBDdWljPKzg06U6+Z1+ygex5MMTLrSxjQeCJsbWaNLWoT2b4Xtu4I5pxbkGMTmrLkM0+HVIzmK0ktrUX07JAYrY4h7hkF/5DqXWYOnS8wPMT7qump/JFtBr+xoWiIBjXTB5DcBWSEOlcPtuUfTLqdw6fcXjGi0bQRMY15ZGyNg9yNSNtetWdha2juXaWrLrlctjOFuuNjfzf8RdPvufbz39xCWdRdbODmOmiIa2Z2nzzRO41YWcuMc87GyDeK8QU7ra6ktYbOZ0VpBE4sYxkTuWzgbw+TiXVP5mfaRsuLCyNw2JuMbrgARfM6PLrf+I9R3c13cc2QC4hkdqjkY46XxOhP4ejSfdXWLO1GiBlpdGJg8rXxc0R/c1rq91bUE7Z7dsLyAdDngs5zNX8VrNWhy630/qE8l3busJZw2Zxfplj445Ga/C7UrjpEPUW9I6hLOJee+rWyx6dPIdPHxxaXplp1QMvrATCS36iyTn6HUpymTg6mMm9yVM3gBZ1OwDd6MUQBnlXYht7Ag+eob7nZ2oRxgNaMhlkuz0HYhhiFjmu9GiIGRwK1R+MfSquJDhnsVHYt3jNUBArkDmhVUKaHRtdTeAc1pA0tHha0I6jV7gdDNvegQaVxJ3PyfTrUpOOJ+v0dGsInk3FkZ/mGkEAcwsdGdXmyTLq8eWQCKVjnAF22OYzAfErS4lJEcMzHvOZ0tcHOXUb7QbrpnUHzRzMHCXwTYVbq80qXqcl3axnW2yNuRK6nhilfq5f21e3kkbbO2uYLiOGGMEtYZGlsMStb2BpN3bSB5qeEtAo5n3mp14OpSWVvI4yPsnQF0jCTqfFFMw6HM9xSS9MtW2dkA1kUYFHENFObL/AJkqgv52OfC0OY/R4g140cyP4mI30vVZOpBr+ZHbMhcyWQ11BtxPI4sZ/mOUPXhIRYOMb3u0mrDy+U9jmebQ9C7gdR8UvNjd2h2tid1N98/pU1weZd2roTKOYfzH20rHeCTxcaii6Pb8m1toxHznDTJM4eO4mb+yoLyDCW3e2Rne01UnU39Rk6c25cZbmxMJe4PdxStt5mHRoe7wamqe4js9PR7i3+Rlt2gMe6Cmjnv0cPzLvzU2+l6nLewwuEkVk2AslcRxMjmkLuX9rSr/AKx1E8kXsNwwAAuDXSMMcEeHlbwsXUOmveW3VzPBJG2hoWx15vEuo/MuLBdWM1vEaE1keOBpoj0/qR+RumScyDqDI+ZqaRR1vdMBa5zP8NzVedJ6fdv6jN1B0ZlfoMcMTYzr4GvLvxXqMj3R6DtGVR6N3emkjAbggKLHALDJYblQe1ADCgW3tKwHdVU+r0VyqtTBjk4Kubsmt3lF7yS4lAucQBjiVSle3JFrmkDsNRhvXAylcicfoUkr5BqbQkOOLuxi719399SntP1q4uoY9cVk0SXDqjhaTpa4td4m6kXYcRrQYDFXF1BHrgs2h9y6oGhrjoa7STqdxe76J7+OPVa2pa24kqOEvNI+Hxcaqpb9keq0t3tjllqOFz/y2lvj4lT04etVVtPcRlkV4wyW76gh7QdOoaTw/eX9c0Sdqoa9yZaPiMdxIWhsTxpdV9OX4/Dr1KW1uWGKeBxZKw0NHDNtW8KjgibqllcGRtrSrnGjRqKltrlnLngcWSsNMHDxNwQAFScqIVw3rJURGwqMj3R9SoPRpc2hIBHcRhkjrrlgRv2IErjcGjYCc0KHA7QfRnhtVciViMPRUD1o0qScyqHDuQJFKb0S0UcmO5TWljaCgp94ol2NVgctiMlw4VJ4WDIKTDznFODtWXCcBxfFnwrCtf0JgcS1ubjSvsovNl2eHX3eNTHM4/Wuu2pkZAJbRodNJ4GNbIHve+nutaprfo3UJ5b+KN0scdxEGRzCManthc062O0+DmLq12iSE2cDHmJnhla54j5c2XhX/mOtXb7W1keYrWKFofNK5vjLA/haxi61cdOuvmbaZ9s0B7dEzHNfxNuI+Jmri4Xx+NN6v1u7ktbedxZaQQND5pS3xv4+FsbV1Saxuvm7ae5ttOpuiVhaeKO4jxbr4vImdW61dvtLedxZaQQMD5pdPjeA/hZG1f+W6Tcuu7FrxFO2VoZNC935fOY3Ux8UvklYrLrXUuoPt7W6a4GJjA6Yytdp5Vu3w6NHG+WRQ9Z6TdPu7CSXkStmYGSxSU1Na8N4HMeidIbXcMqBdGldcyTR38TniN2UPHy3shx83jTrXq3U5i9x1Qx20Yc4REcEtzq4WOd/hsTImzC6triJtxa3AGnXG/LUzyvbp4lE28kfFBXifE0PcPd4XafMopIZ5H3jri3+YhcyjGtDYuW6OWv4mpXruq9QmbcXMxkEVrGHiJr/D8w6T+J5tDFD0583MjmdE6G6jFNUUtOVM1p8mq/sJ7twiszK+6vXjU4xxeORzfM9ylb0q+mbcxsc9kd0xrGyhnE9kUjHcEunwNkVS2opwhZLFUGSj+wKI03VPcm1Zy6gUrWhHv8XvKgG1AkIu01oMgpXXFyW3ApWMVoK4iIfYZ43KKGSVsrZxVjAauZjT8T3VQLGpJ2diB+hCiFFgaqoGKocCfYqAfpRBzKwFKqlKHejsRxqSjJGcHYvHbvVMVStFXftVaHw/RrU4OAxJw7V/MOw/JtH/Marb/AHc3/Tev5iH/AOLH/wBVq6DcxY29u2a3mIyZMXiSj/d5jF1y5cDyJX2zWOOTnNk4tP2dS6BdRY20UElu9wybMH63Md7rnsXVZ3NIgluLZsTjk4tc7WW/3l0e6lsLe9hjt3RcyYvBbK1/HbjlOa1ur83jXUn2XR7a06fNy4rm4je4HWHB8PLZM53N4v8ADX8uD4k/wDMYrv/ANxh/Ycgd+K/lgnM27/+sF1CpyMYHdy2oBp/wCnNwGH8SRMPxD6wnHImW29mmJdVJx/7h/1BdDds+Vs/wBpdWu+mBpltnzPlY6h1RZTN5Tvzm++xNspenssrucO0XVmSGNcAXVmt3cGhEEjDCuxU9HcoieEFoNfUjt7lxEnAAVTTThbt7UK4FAtzDgTTPA1U5xrI4uBxxqjcyNIaMI9WBO9y7d6+EZqiJOQzXyvThzJnZv8rR2psz3smjeSA5ha8EjxAtbxNXLkHLmAwBODt6DtuRRpgDkaYIOGYzXCA402qpGKr9CqPDXAFFopWhxWIx7cliTQYYfuqoFdp7Fnjy9+3Wrk1qDUfSrmKE6YrtnJnBANW15lK+XiCbeWjgyaOoa4jUKOGh3CfhKubaBwbDesEc7SK1aDrbj5eJPbaSDlTfmwSNEkT6Za4pNTFNbXErflpwxroGMDGNEZ1s5TGfl8SfHayDky4yQStEkTiMnOikBbqU1tcyh1vPorC1oaxvLOqPksb+WpIrWQcmTGSCRokicRtdFJqZqUcN3I3kRGscETRHGD73j8ytbOZwdDZh4gbQAgSEOeNXm8Kf00OHyksrZnspjzGYNdqWOAKtIJXB0dgCy2AFCGuPM0k+biUl7dEPuJaGRwAaDpAjB0j4Wq1bcPDhZR8mCjQCIwS8NPv8AE5fpVtHdStlNm4SQyFgEjS0aWB8nnUt1cEPmncZJXtFKk5nSPCoJZX1ltWMZC4ACjY+KL+6ndSEpjvHvMhlZwmp8XD4eJPjD2RiUFsjoo2RucD4qvja3xKgy2rt9AfSjTgCouyMZ/oRoW4Z1VHDi2JlMzmO1E59qoTXYaoSOFaZA5INaKNGQC4u5YbESCuw4GmWKmlaK3BrqG3DJAuBJca4duxNfECw1o07z2fZTdWJoNR7VlQLcidiocNwVSq5ohO1DGpx39pWOHdvRplgKHNZDwfvqZtd49VVdC9EhmMf/AGbo/CJK/wAYf4ehdpVHAtIzBwPsKo4FtcQCCP2lRoLjuGJ+haaEHcRQ+woNYC47gCT9CFcGu2d29VoSTsaK/qtR0ggbnZgrJAVJ05Dcum3/AFG2uZp75smrky6WgxnT4XDzakOn2Au+n30oPyz5ntlic8CojkFNTdS60+6a5tz0yIOjo6ga8ScmRsjfOsG6idgGPsCArQ5uaQQR2OqhorqpkP8AQgMQ6hJBFPrVKOdQYUFV3IgAnfQE0WrxAZqoHqWnEf2q3cG1a+NqBY0g4Ak5VHiqgxxJANSCKUom6cMVwmp2hFzjQbisMkQqkHTtoqEY1zRAxRikFQckX27s82OxBohzBjWuJJp3JrWAFwFAf7F+hYhYqlaAquZ3rDPfsCKwTu2hWmgIrWmxZr/h/vqXZ4vrX8w12WII7+Y1Q3UTGG8+dkjtppAHcqrNUskerz6W6WK46pfMjvOodPuGR2VxK0EsMwzfp/N5dODWurjqjhcSWAintpnNAewufy5GBzQOBzUbX+X7GT5kyk3XUGtBJbT8OFkj/wAvT51eydf5cl3aSwutZdTHTND3aJY5XQ+R3xrp8PTyIbvqUZurm6ABk06uXFFG4+Hwrqcly1jruGa3D7gNDXSNLuAy6fFIynjVj/4GFonvozPd3mqNrxU/hW8XOc3S3TxK4u+txsbf2DmOhuA6MvlhedEsU3JLtfKdpcx7luJ9HQzedRZ07lifRrY5+urxXTyyNPLomdUk6oepXFvV9vbQxOYC+nBre8uX8z3ElA+a3Ej91XTB5+tRXvSYWvvr979dy4sDo42cLGR89zfzXK8b1trHTWsZns7ovjdIHMP4tu4xO1SRSR++nW/SrR/PdJqnvWAE6KcETXv/AC1eHqhbK+3dG+2eXMdMzU7RIx5i4uW9vvqODpc7Ibtr3m6j1COV2P4Jic/xx6FHH1GAx3kdRz3DS6Vh8HM08Ejo/wDFTLLpQEFvCxtZGvja+R5Gp8j9btfiVrf3UbIr573w3XLLSH6RrhuHNiJjbI9n5i9a0nA7yrOLU1x5XOcDlUcLT7qBkFHHOn6FpcQ4ippWpx3oOaMRSg2FMijFZHCrnVpQdiLnhxByqaqrHua73UGzY184/eQe11WHdkUTTuWXorSg3hUoQ3aVtzzQAWOxAg4blUtoQty7VgtLRUnBF3hLcHAoitaZHemaGNio0NNK4n3zVfc/fUu6pp7V12GWRrJbmzEcDDm9+trtDPi0q2suY0Xcd/JJJAcHhhj0h5b7upX9qZGi5ku4JGRV4ixocHvb9ldcglkaya4hiELHHF5bIHODPstVhYWXUYeny2hf81bTvdEJC46mTtlaHcz7Dl1bp0V/HddQl5MrntqInct/wCTbvk4pnsbxPVnaXV6zp/UOmtdFG+YOMUsLjzGtL46ujlicuqRWVz87KLi2+YuGtLYySeCODVxO0Kxt52Ow6n05hgAuCWxTQ11xubKwO5c0aMAu2dQ6vM8EPt3OMUMY8TXVo2Zz1Dex3bX3Mkpjls6UcxoBLZtWriY/7KrVdFgika+a3+YE0deJmpzHN1/aWoDhy9a65DLI1klxbNbAx2b3CRri1vxaVB0m6um2N5YyPktJpa8p7JfzIJXs/Lfq/Lepufdx3/AFGUAW8ds9xZH78ssnDq4fIrWwhvWWU1s95nilJjbLqNY5Wyta7Vpb5F1C0bdtuLydkb9TaiM8t+rkxPf45MdSiBljtLyOokE2rRIK/hyxSAP0P8r41F08XIvJRK6QSNq5sbS3Tyo3v4vFxJt5HdRWt29rW3ME+po1tGjmwSNa9r45KeFQ29lJ8xcRguurkFwjcT4I42O9331qBxOYXHQHaVC9rs42VO6o4sE2N0g1gUFTmiQRqGDtIxICdqOPlw/aRmhc0yNAD2k0qN7QUAKEgUNFjUUWkGurIJjCKaRQYrjzKJGY+lVyot6AGBOartRrhXagfF35ejD2HEqtQCv0okYHenA0rSnfRZVoq5diz8tP1/EpT2uH0oEYEGoKIhjfczuBcQwFziBi51B7voxxVKDfVdig6f1qyfcMtNQtrm3eI5Q12oZNTXNlj9xM6R0m0NlYNkE0pe/mSyyAaWOlf7rPd9BIHhxNNg9MkkUbnthbqlc0EhrffkPlagJDpaBiQiG4tBwdTFMuHsc23cdDZSDpJGbWu8nt91cIrQqh/tWqpqTgCMKDbVAErDAhY1rsR21TXRnFqo6uA4ez/ZVvEW1Y1rRw51Hwprohr2hwNMSiNRc4mrgc/uqjiAdhzFDjsQlacW4Edi3BUDA+uFEDpAO2mYUYLScPq7UKgNNPChUiozVcMM8FkEMVTasVmsPaqZneFh6MFTaiiWVaXZEGmB8QWnyk1XjFeXTZ4uZ4c/D/mKXDafrT44nsggt2GW5uZTSONg8zk276b1KHqMMEUwn0B0UjKxua1/Kl/Mic7zxqRsL2QW9uzmXN1MaRxt3uU0nRepw9VktmmSa2Yx8UuhvjkhZJ+e1nwrsKubm2miYLR7GyiUloaxwJdcOk8PLi08aubvpXVIOqOsW8y5t2NfG8RjxyRa/zWNU84ljtLG1Gq5vJ/AwHJoA8cjlNedH6hD1SO0Gu5jja6OVjP8AG5Mv5kTfM5i6rzOoQwfMOt+a97Xfg6X8ZS0cfN/y05ocHAEgOGRANNQ+0p76e4jsen2tBLdSgkaj4Y442eN667dWt3FfWj7IxiWOrHB+truXNbycbOH7imu5Z4rLp9uQJbqWp4j/Cja3ie/4U++sLqPqNtCQLgsDmPj1cMbpYH8XK92Vitj/wD0JP8ApqK96lex9PjuP/t2Oa6SR7R/EEbPCxQy85k9nc/k3kQJYQMJNTMJGSxfxInLpkjb2N7obUBkYa4GVpkdWaOvhz86hu+p3sdi24GqGJzXSSOb77mR00MTDrZPb3DTJb3MZ4HtHjpqo5kkfnjcqqhGG9cOIOCOGA3ZgKMx0aC0Gp7Bi37SrrDC41IAo3H9n7C1OFSRRp7fiVMAKV0oineAmimda96BFdOdclqYC7ENzAr8X3U5kLQ2n5Zrn7xRLnkCmA7Vic0ar9CyRIQH0FYhFd6qqICtKmg3IgjAbdiKxFCMDXYq7V9yn66l31I+ldcEP5omtjMG58nVjX4Naj5VdIhn5pHuct3i+8urCHxi7tzcac+V5dXwc1dO5NcHkyUy5ek8zV8KuOVTlc2TlgZadTtFPur+YS001SWrT3F+IXUf/bbqv9xDk5N6kPm6bjGeRr+HUmn+A2Cc3J8vK0O1a1/MFPDzLWndrNPR07lfltvphc0y1lv4Gv7urQv5gIryRYEPOzVrbo/eXT3X1tLdRfNzB4hk5QbLTg5vC/Vqj/LXUB0zpN04PtZI7lxmEjWMeOGWRmhvge3UrY1/9Qk/6atfm7KecmzgMMsc3YY9P8ADZpd4XeP41yrSwnt7V90JGXMj+YzmBpZJG1+lviYuhHZ8jWn/Eeg26sp5nmCExysn0MdHoHL5ceh3CoI7SxmtrQXLpIZ5XiQFxaWzRsdRvuqh8QzRoM9n6VRgNNyJIqmMa3EtAbTOtEAcKGlMM9/xIDPTgXdpxW8HPFBjAWhwq5w3oHmONDWlcexUlaXVpSuGCo4mOtQ05UBTSxxoBQY1+8hU005FULw2mOaDY5Qa5DescxmsFiaKtcVTMlZ0VKo4HHKirWgRrlsOSoHVCo4acK47jtR9qzGGa215f62vJSB2GZAzzKM9pT5hxMc0cgD4pYXDihmjPiQPTOnWlgw6ueyJp/FqCzTI9xL2xt1atDE6W0SyVhjnglGuORhzjmjd4lNbdLsLXpRuGlk01u08xzT4mMkkLuXqQoa1HsV70pjGuhv3Rukca6mmI6maFPNAxkhuIJLZ4fWmmVuhxbTzNUrYRHNb3DQy5tZ264pGjw8xn7ylsOnWVt0uG5Gm5Ns08x7fcdLIXO5blPE23hu7W6DRPbXDdTHaDqYnyNYI2vcXBgyaCa6G/CxSwNZHdWlzQXFpO3VG+nhf8ADI332Kfp1nZ29pZ3URhdbQNI4nEO5+snW+Xh8ylt2sjubS4pz7S4brjcRk7T5JG++xP6dZ2tv021mpz227SHSU8skjy5+hR9JLG8iKc3DX46tTm8tzfd0KOxu7WDqNtCTyGXDSXR1zbFKwtfo+BQwlkdta24/BtYRpjaT4n/ABPTOl3FvBKIgGW9yW/ixt1czQx/uuUVpe2tv1GC3wg+ZadUYOPLZKwtfy/gcoWytZDb24YLaEaI2V8VB7zveVrHLFG35SIxB7BQuBODpfekaq5BYetYnv7Aow3E0wRfWuym1ahkMygAcVpf7UWt8O9EUJAy7QjVhBBp2JpjcXaf4Zyx95FxncA4VDRgFzZpTVpFCTnXeg4NAOxyqdqoga4dipTBVwI3qoK8So14uwrGpOwBYg02BY+goge1fc/fUjW44mp9f/AMGhB9WzeiYgXMBwDsz309IDAS8mgAxJKoQQduCwBKps3f0QQPUtJFdyFTh9CI2HNU1AYYVUL6lzw1tWjArW5lCMMcu9cmIUaR4gMygFjgdqqMDuQbTiBRY5uIzqq0rtIWAwXdsOSHZsWGQVdRasDVb67FjjVUWNV9W9YkrB2CyoVWtT2HBGi+7X9dSdrj9f9AkiuH9Hd6MUNYqAcQD+lB7Kgg1HYqlD6UTvKqcisckaDDYFTTUO8Jp9SBrWufYga4eg6FliogKklrdX+hAVLSTUhRtFKHHhNcxVDHEKpxJKONRvXCqUpvQNMNq3egciMcVXfuVVhluXFsyWBNdiqTh2I0dgcwq0H1qpwW3s9Fa+oLiGA25osj0hzstRoBhjxFfdr+untzo51BjhU+jOvpqV9Ho780PQRt2J2okOpwCmBPb6NIIbgTVxoMMfTvptRIFATUDP0d3owVBt2rHNVCixzaCqAgUwQqKBuJd2oaVgsVT2+jDLNasu1UIVMSqjAE4HuVciquGe1EBYDFUJwCLiQTXIZI0wCDRQE4AbyUWuBBacQqHZkFQ+xV+jYqNHFvqtvg3/Gn45udh60HaTpOAdQ09voDyDQ4A0wPd/QwGGYGawzPoo0Fx2ACq0gcRNKdqosFQbfQWhmoncCSO6noyR9q1Uo33iDQ9mrwrP0du9bqZ+r0MYMMEXPOpx2IECgOxA7BmF2rDNHetyxWGzMIbytLcgNiqD3hVGC7lh7VjSo3IV9aGOA2Kmz6VU1BG1HMnfvWmtD2Jz2tJ0irkdhRA2HJZeT99SbOI/Wurfy2/ikdH87YA5iWHjkYz/exprGCrnkNaN5OAXTf5ahOpvS4AZwNtzN+JL/cbpaojc3FnZzztDorW4nDJiD4eCmlmr/Mem9Jmj5F6ZGw6JTQBzvDV3FwO99Pubp9tbCJ2l0UsobJp18jn6NP5n+BS2F40Nnhpq0nU0hwD2OY/zMc1ys7u40CPqDDLA0Oq/Q06NcjPJqd4FawvMIjbIx8jJ3Boe0OGqJtfzHu/w1av1w8q5vZHRshe12hgcRypY2fku0/wANTF01pb3FxNI+GznmDJnBz3GPTHR2nmN8HMcj00wP+eEnJNvTi1g00IWxvLBt6MBZm4HN1f4fh5fM/wCIj0gMEd8C9phkOkh0YLnMdnu4E2PmWsN5I3UywkmDbg7QDFTS17vce9QQzNMcsQnjkjcKEFrHtex6mFoGtjga6SeaV3iY3/MldwtU3yzomwWorNdSv0QtbWjTzHDz+ThX/kOZBeWQcI3XFrIJGMcfCyUUY+PV9lTsOY6iwAHtGpdvo7vR2IHYGiiMlA0NoDQ/wBfEmgbMFjlRYexVGaxVcsKrt9GquOxV9qr7Fh7FiajbRYGi4Kk70XUI7AVUjYsTXeqNHqWJoiW4byUQK450VSnYbV4ZKZ5trp1ZeHx6lKRxAVJpsx7VadRZnbyBzhvb4ZG/eYrm5kFek2DHdVa7YYXN59swf8AEfylZ3V7Rzru8EsgOWpztbWfZV7fXnUTdc94l/CjIDmuLdDdTvy2U0MX8uutBOXwCGCWW5ZofIGSfgyYcL/AMN2ldUfK4uLbh8banJrDoY0fC1rV0DqEGN1M4dKvCM9ceMErvt2znf/AE1NFbn/ALSxa2ytqZBkI0ah9uTW9dN//Zi/aC7P/JSftPV1cSPLpvm3nWTjhJRtPsqWPpUwtrsiOT5g5MAhjdLK5B0nU7vqV1zQa28TY2ukLvFzpXOd407/AHlf+QFDdPeTO+7a90hPEXGTeroZAyzV9cXEU+P+WXPZ07p05HUbcj8SUOP4F/K4cUkOryfw1d9O6tazTdKvXsL5oDpeyWPwaXn8N3+7cr+4/ljqsk9tGwSX/T5m8uQxtOD+H8OblOU1lrHNd1COQR14tIifx6fd1eipWCx9DWnaBVbxvTO3FChwVfRUKlarNdqIrms/UqoOPqXeq7dq4d6xPct3csWVXCKbys1ms6Ionfke5Z/w/wB9SNcC0gnA9uPoHRPl2ibSyGS9rxvgjc6WO3cKeV7kyaJxZJG4OY4Zgg1aUL3rPRhcdQw5ssMzomSuH8SeEDxu8+hW3VpomtjsjGLa0YaMZHEdTIW/66uuoNi5ZupXS8onVQvNdPxLrN/PGWW7WNFpzGkE3btUUTotXuMdqeqnE7T2qG8jA1wSNkYDkS06lZ9etem/LXEMpmvGCQubM846m6vyfP4VLdadPMldLprlqcZNKP8AMMEDWOe1rJLZ51Nc0MbBIwu/zNK+a6X0blXtaxPuJjNFE73oYKN1afJzU3+ZfleLhMlvrwLtHJe5r6ebxplwG15cgk0nbR2vSpf5j+WrzXOd8tqy1s5R/EovmmME0UjXRXNs/wAEsT8HxSK8sH2fzXRrx4f8lK8h8Zb+XJFcM8Msfh1+dXNh0PpxsTetEdzcyymWQx11GFlQ1rGuTunusmG75wkb1AeMM80H2Fl/RGoEt07M60/1kO9OuQ6KkRDDG4jUdWriazz6UPRQ+1HaFnU7exEjIZlEEBVpVAgFB9CAcQTkUcKrGoHYqZgLEgHYFTLtVFgt6qVh9KJJRQIKy8lfXryUhpSrjgNmK0NIJOW5BhoKcNch61njvRFRvqsf9KDsq4t9RUMHUbt08UH5bHYAGmnVwjidp95STG4Y2VpaGQ0JLgfEdXwqmFN4WyvagKhEE4AEkj/SqimGawQOwrcswtiDaDVXxVNfRsWfrWY34rs9Awxbmqk47BRDvXFt+tUrsrmsVTYPRgtQ9fow2qmp2GyuCocQPUqVw2rAV3IO8JGRCxxHYhuG5Z07AsiqEetYn1rM07URT1rxaSMRtr61n5K/rp/2j9aBGBGAouFpaKDAmqqcMKgb9mCpsOKBla5ri0O4wQSDkfsrvzWr6EW1NTs2rTtO07O1UGzcmhh0udwgk08WHi9a7tqNcajhAxNdyO3HP9Cj5EfIYWMDuMyVePHIf9RVwIOXtVSMEXAaWk4CtVUZb14q9xXbsWZLsA0Uz7F3CqFK12nYsBjXEoh1S3DLDAKjca5bEAgq7FQoUdxbRuWJzyVTRAmlD2qjqU2UQLa0QFT2o0GxUbTvVXOruVa9gqtOrSBuWJr6NvrRrQ96wNVl7Udy/wC6c6KMNcdTGhxqBwjSdPmWfl+jWn/aP1rWwlrgM645UK78fRgCScqJj7mZ0ro42xNLtjGijWKowpT2o41Ode05rVXTTKi1tydgtI8RP9aIh2GnZvQpsGNcqpskJLHNrRwNDjgt1cV2rFDKpriDX2hAVxyKqBhlVVoOIbTt7PQD4Tnhgg4GlDgcwq57O/u9DnAYNxPcTRYCgdsXACQBXtCw9Fe1GhwWOJWnAUVD7EQcVQrHNcWz2KuTdyc4PpTIf2IYkdq3lYhZKhHrWBW9b+wLScWjIbqpoaSDTi3Vqs9n061JQeY9uRVKe1Zqm71qhqDhxDAhF8TtXZtRG1YjAihJxp8QQaNuArggHDA4iuXeq41rgVVxW6q1KUPlbEyGF8z3u3MGEbfjkdpYxAMFBQah20xVNmaxGKw7yjQVpiqnBFu/PtRLjqLqCpNckXAcBNAe3NHdtoqjYsq7kBT1IYUqFQf0M/aqn2qv0qpzVTjVAg0IFB3Kpx7Ea5oahiMgF+hVKxxWIWGR2csz2IiqoMSVXMkV3+pfcr+upO8/WstnaiTTZQHP6UcScDSmVVUkgbk7VU51qhrAa2nBSlKdmlYZbEQRUnadixrRYr693pNMvNT04k1xrVYLhxFcaLhrs1V7+FUdw7Q49nloPeWNK02DJdi3oVQxx9aFCFWvqx9FW4V8orgsvRuGyiwyWIwWGP9iwx+pdqBcKgHLeifCNgzRLTxUxAWOCwWIWHoNMEd6yx2FeHyUz+PNf/9k="
             traceback.print_exc()
             return
 
@@ -28017,53 +28103,53 @@ class PayToEmail(QtGui.QDialog):
     def Accept(self):
         self.accept()
         self.hide()
-class WMarket(QtGui.QWidget):
+class WMarket(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(600, 330)        
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
-        self.horizontalLayout3 = QtGui.QHBoxLayout()
+        self.horizontalLayout3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout3.setObjectName(_fromUtf8("horizontalLayout3"))
         self.horizontalLayout3.addWidget(self.textBrowser)
-        self.textBrowser2 = QtGui.QTextBrowser(Dialog)
+        self.textBrowser2 = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser2.setObjectName(_fromUtf8("textBrowser"))
         self.textBrowser2.setMaximumSize(QtCore.QSize(300, 16777215))
         self.horizontalLayout3.addWidget(self.textBrowser2)
         self.verticalLayout.addItem(self.horizontalLayout3)
-        spacerItem = QtGui.QSpacerItem(20, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
         self.verticalLayout.addItem(spacerItem)
 
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.pushButton_3 = QtGui.QPushButton(Dialog)
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout.addWidget(self.pushButton_3)
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.pushButton_2 = QtGui.QPushButton(Dialog)
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout.addWidget(self.pushButton_2)
-        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.pushButton = QtGui.QPushButton(Dialog)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
-        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         ApplyCSS(self)
@@ -28095,7 +28181,7 @@ class WMarket(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         Dialog.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def showorder(self, order):
         if order != []:
@@ -28121,7 +28207,7 @@ class WMarket(QtGui.QWidget):
             try:
                 b64img=order['Details']['image']
                 #b64img += "=" * ((4 - len(b64img) % 4) % 4) #This is for incorrect padding error
-                image_string = StringIO.StringIO(base64.b64decode(b64img))
+                image_string = BytesIO(base64.b64decode(b64img))
                 image = Image.open(image_string)
                 tup=image.size
                 width=tup[0]
@@ -28138,7 +28224,7 @@ class WMarket(QtGui.QWidget):
                 data+="<img src=\"data:image/png;base64,"+b64img+"\"/>"
                 image_string.close()
                 image_string=""
-            except Exception, e:
+            except Exception as e:
                 image_string.close()
                 image_string=""
                 traceback.print_exc()
@@ -28299,11 +28385,11 @@ class WMarket(QtGui.QWidget):
             i+=1
         DeleteOrder(self.order['ordernumber'])
         self.hide()
-class AdvancedSettings(QtGui.QWidget):
+class AdvancedSettings(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(762, 693)        
-        self.AmountLabel = QtGui.QLabel(Form)
+        self.AmountLabel = QtWidgets.QLabel(Form)
         self.AmountLabel.setGeometry(QtCore.QRect(20, 125, 66, 40))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
@@ -28314,7 +28400,7 @@ class AdvancedSettings(QtGui.QWidget):
         self.AmountLabel.setFont(font)
         self.AmountLabel.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
         self.AmountLabel.setObjectName(_fromUtf8("AmountLabel"))
-        self.PayToLabel = QtGui.QLabel(Form)
+        self.PayToLabel = QtWidgets.QLabel(Form)
         self.PayToLabel.setGeometry(QtCore.QRect(20, 70, 71, 40))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
@@ -28325,19 +28411,19 @@ class AdvancedSettings(QtGui.QWidget):
         self.PayToLabel.setFont(font)
         self.PayToLabel.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
         self.PayToLabel.setObjectName(_fromUtf8("PayToLabel"))
-        self.BitAmount = QtGui.QLineEdit(Form)
+        self.BitAmount = QtWidgets.QLineEdit(Form)
         self.BitAmount.setGeometry(QtCore.QRect(100, 120, 300, 40))
         self.BitAmount.setMinimumSize(QtCore.QSize(300, 40))
         self.BitAmount.setMaximumSize(QtCore.QSize(300, 40))
         self.BitAmount.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"""))
         self.BitAmount.setObjectName(_fromUtf8("BitAmount"))
-        self.BitPayTo = QtGui.QLineEdit(Form)
+        self.BitPayTo = QtWidgets.QLineEdit(Form)
         self.BitPayTo.setGeometry(QtCore.QRect(101, 65, 300, 40))
         self.BitPayTo.setMinimumSize(QtCore.QSize(300, 40))
         self.BitPayTo.setMaximumSize(QtCore.QSize(300, 40))
         self.BitPayTo.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.BitPayTo.setObjectName(_fromUtf8("BitPayTo"))
-        self.MultiPay = QtGui.QLabel(Form)
+        self.MultiPay = QtWidgets.QLabel(Form)
         self.MultiPay.setGeometry(QtCore.QRect(150, 20, 180, 19))
         self.MultiPay.setMinimumSize(QtCore.QSize(180, 0))
         font = QtGui.QFont()
@@ -28347,11 +28433,11 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.MultiPay.setFont(font)
-        self.MultiPay.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.MultiPay.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.MultiPay.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.MultiPay.setAlignment(QtCore.Qt.AlignCenter)
+        self.MultiPay.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.MultiPay.setObjectName(_fromUtf8("MultiPay"))
-        self.Email = QtGui.QLabel(Form)
+        self.Email = QtWidgets.QLabel(Form)
         self.Email.setGeometry(QtCore.QRect(140, 240, 180, 19))
         self.Email.setMinimumSize(QtCore.QSize(180, 0))
         font = QtGui.QFont()
@@ -28361,23 +28447,23 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.Email.setFont(font)
-        self.Email.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.Email.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.Email.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.Email.setAlignment(QtCore.Qt.AlignCenter)
+        self.Email.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.Email.setObjectName(_fromUtf8("Email"))
-        self.APPLY = QtGui.QPushButton(Form)
+        self.APPLY = QtWidgets.QPushButton(Form)
         self.APPLY.setGeometry(QtCore.QRect(460, 400, 81, 31))
         self.APPLY.setObjectName(_fromUtf8("APPLY"))
-        self.CANCEL = QtGui.QPushButton(Form)
+        self.CANCEL = QtWidgets.QPushButton(Form)
         self.CANCEL.setGeometry(QtCore.QRect(580, 400, 81, 31))
         self.CANCEL.setObjectName(_fromUtf8("CANCEL"))
-        self.BitPayTo_2 = QtGui.QLineEdit(Form)
+        self.BitPayTo_2 = QtWidgets.QLineEdit(Form)
         self.BitPayTo_2.setGeometry(QtCore.QRect(101, 285, 300, 40))
         self.BitPayTo_2.setMinimumSize(QtCore.QSize(300, 40))
         self.BitPayTo_2.setMaximumSize(QtCore.QSize(300, 40))
         self.BitPayTo_2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.BitPayTo_2.setObjectName(_fromUtf8("BitPayTo_2"))
-        self.PayToLabel_2 = QtGui.QLabel(Form)
+        self.PayToLabel_2 = QtWidgets.QLabel(Form)
         self.PayToLabel_2.setGeometry(QtCore.QRect(20, 290, 66, 40))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
@@ -28388,23 +28474,23 @@ class AdvancedSettings(QtGui.QWidget):
         self.PayToLabel_2.setFont(font)
         self.PayToLabel_2.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
         self.PayToLabel_2.setObjectName(_fromUtf8("PayToLabel_2"))
-        self.line = QtGui.QFrame(Form)
+        self.line = QtWidgets.QFrame(Form)
         self.line.setGeometry(QtCore.QRect(20, 220, 381, 16))
-        self.line.setFrameShape(QtGui.QFrame.HLine)
-        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
-        self.line_2 = QtGui.QFrame(Form)
+        self.line_2 = QtWidgets.QFrame(Form)
         self.line_2.setGeometry(QtCore.QRect(410, 10, 20, 431))
-        self.line_2.setFrameShape(QtGui.QFrame.VLine)
-        self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_2.setFrameShape(QtWidgets.QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName(_fromUtf8("line_2"))
-        self.APPLYEMAIL = QtGui.QPushButton(Form)
+        self.APPLYEMAIL = QtWidgets.QPushButton(Form)
         self.APPLYEMAIL.setGeometry(QtCore.QRect(320, 400, 81, 31))
         self.APPLYEMAIL.setObjectName(_fromUtf8("APPLYEMAIL"))
-        self.ADD = QtGui.QPushButton(Form)
+        self.ADD = QtWidgets.QPushButton(Form)
         self.ADD.setGeometry(QtCore.QRect(320, 180, 81, 31))
         self.ADD.setObjectName(_fromUtf8("ADD"))
-        self.Advanced = QtGui.QLabel(Form)
+        self.Advanced = QtWidgets.QLabel(Form)
         self.Advanced.setGeometry(QtCore.QRect(450, 20, 180, 19))
         self.Advanced.setMinimumSize(QtCore.QSize(180, 0))
         font = QtGui.QFont()
@@ -28414,14 +28500,14 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.Advanced.setFont(font)
-        self.Advanced.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.Advanced.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.Advanced.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.Advanced.setAlignment(QtCore.Qt.AlignCenter)
+        self.Advanced.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.Advanced.setObjectName(_fromUtf8("Advanced"))
-        self.Note = QtGui.QLabel(Form)
+        self.Note = QtWidgets.QLabel(Form)
         self.Note.setGeometry(QtCore.QRect(20, 190, 271, 16))
         self.Note.setObjectName(_fromUtf8("Note"))
-        self.AmountLabel_2 = QtGui.QLabel(Form)
+        self.AmountLabel_2 = QtWidgets.QLabel(Form)
         self.AmountLabel_2.setGeometry(QtCore.QRect(19, 340, 66, 40))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
@@ -28432,17 +28518,17 @@ class AdvancedSettings(QtGui.QWidget):
         self.AmountLabel_2.setFont(font)
         self.AmountLabel_2.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
         self.AmountLabel_2.setObjectName(_fromUtf8("AmountLabel_2"))
-        self.BitAmount_2 = QtGui.QLineEdit(Form)
+        self.BitAmount_2 = QtWidgets.QLineEdit(Form)
         self.BitAmount_2.setGeometry(QtCore.QRect(100, 340, 300, 40))
         self.BitAmount_2.setMinimumSize(QtCore.QSize(300, 40))
         self.BitAmount_2.setMaximumSize(QtCore.QSize(300, 40))
         self.BitAmount_2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.BitAmount_2.setObjectName(_fromUtf8("BitAmount_2"))
-        self.Autosign = QtGui.QCheckBox(Form)
+        self.Autosign = QtWidgets.QCheckBox(Form)
         self.Autosign.setGeometry(QtCore.QRect(460, 60, 231, 17))
         self.Autosign.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 13px \"Arial\";"))
         self.Autosign.setObjectName(_fromUtf8("Autosign"))
-        self.Forward = QtGui.QLabel(Form)
+        self.Forward = QtWidgets.QLabel(Form)
         self.Forward.setGeometry(QtCore.QRect(437, 230, 311, 19))
         self.Forward.setMinimumSize(QtCore.QSize(180, 0))
         font = QtGui.QFont()
@@ -28452,28 +28538,28 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.Forward.setFont(font)
-        self.Forward.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.Forward.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.Forward.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 13px \"Arial\";"))
-        self.Forward.setAlignment(QtCore.Qt.AlignCenter)
+        self.Forward.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.Forward.setObjectName(_fromUtf8("Forward"))
-        self.ForwardEmail = QtGui.QLineEdit(Form)
+        self.ForwardEmail = QtWidgets.QLineEdit(Form)
         self.ForwardEmail.setGeometry(QtCore.QRect(440, 250, 300, 40))
         self.ForwardEmail.setMinimumSize(QtCore.QSize(300, 40))
         self.ForwardEmail.setMaximumSize(QtCore.QSize(300, 40))
         self.ForwardEmail.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.ForwardEmail.setObjectName(_fromUtf8("ForwardEmail"))
-        self.AutoExplain = QtGui.QTextBrowser(Form)
+        self.AutoExplain = QtWidgets.QTextBrowser(Form)
         self.AutoExplain.setGeometry(QtCore.QRect(440, 90, 301, 111))
         self.AutoExplain.setObjectName(_fromUtf8("AutoExplain"))
-        self.ForwardExplain = QtGui.QTextBrowser(Form)
+        self.ForwardExplain = QtWidgets.QTextBrowser(Form)
         self.ForwardExplain.setGeometry(QtCore.QRect(440, 300, 301, 61))
         self.ForwardExplain.setObjectName(_fromUtf8("ForwardExplain"))
-        self.line_3 = QtGui.QFrame(Form)
+        self.line_3 = QtWidgets.QFrame(Form)
         self.line_3.setGeometry(QtCore.QRect(20, 440, 721, 16))
-        self.line_3.setFrameShape(QtGui.QFrame.HLine)
-        self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_3.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_3.setObjectName(_fromUtf8("line_3"))
-        self.ExoticLabel = QtGui.QLabel(Form)
+        self.ExoticLabel = QtWidgets.QLabel(Form)
         self.ExoticLabel.setGeometry(QtCore.QRect(20, 460, 721, 31))
         self.ExoticLabel.setMinimumSize(QtCore.QSize(180, 0))
         font = QtGui.QFont()
@@ -28483,32 +28569,32 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.ExoticLabel.setFont(font)
-        self.ExoticLabel.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.ExoticLabel.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.ExoticLabel.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.ExoticLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.ExoticLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.ExoticLabel.setObjectName(_fromUtf8("ExoticLabel"))
-        self.comboBox = QtGui.QComboBox(Form)
+        self.comboBox = QtWidgets.QComboBox(Form)
         self.comboBox.setGeometry(QtCore.QRect(20, 500, 271, 31))
         self.comboBox.setObjectName(_fromUtf8("comboBox"))
-        self.OwnerBefore = QtGui.QLineEdit(Form)
+        self.OwnerBefore = QtWidgets.QLineEdit(Form)
         self.OwnerBefore.setGeometry(QtCore.QRect(300, 540, 300, 40))
         self.OwnerBefore.setMinimumSize(QtCore.QSize(300, 40))
         self.OwnerBefore.setMaximumSize(QtCore.QSize(300, 40))
         self.OwnerBefore.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.OwnerBefore.setObjectName(_fromUtf8("OwnerBefore"))
-        self.AddBefore = QtGui.QPushButton(Form)
+        self.AddBefore = QtWidgets.QPushButton(Form)
         self.AddBefore.setGeometry(QtCore.QRect(610, 540, 71, 41))
         self.AddBefore.setObjectName(_fromUtf8("AddBefore"))
-        self.dateTimeEdit = QtGui.QDateTimeEdit(Form)
+        self.dateTimeEdit = QtWidgets.QDateTimeEdit(Form)
         self.dateTimeEdit.setGeometry(QtCore.QRect(400, 500, 201, 31))
         self.dateTimeEdit.setObjectName(_fromUtf8("dateTimeEdit"))
-        self.OwnerAfter = QtGui.QLineEdit(Form)
+        self.OwnerAfter = QtWidgets.QLineEdit(Form)
         self.OwnerAfter.setGeometry(QtCore.QRect(300, 590, 300, 40))
         self.OwnerAfter.setMinimumSize(QtCore.QSize(300, 40))
         self.OwnerAfter.setMaximumSize(QtCore.QSize(300, 40))
         self.OwnerAfter.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\ncolor: #24282C;\nbackground-color:rgba(251, 251, 251, 80%);\nborder-radius: 8px;\n     border-style: inset;\nborder-width: 2px;\nborder-color: lightgrey;\n"))
         self.OwnerAfter.setObjectName(_fromUtf8("OwnerAfter"))
-        self.DateTitle = QtGui.QLabel(Form)
+        self.DateTitle = QtWidgets.QLabel(Form)
         self.DateTitle.setGeometry(QtCore.QRect(290, 500, 100, 31))
         self.DateTitle.setMinimumSize(QtCore.QSize(100, 0))
         font = QtGui.QFont()
@@ -28518,11 +28604,11 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.DateTitle.setFont(font)
-        self.DateTitle.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.DateTitle.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.DateTitle.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.DateTitle.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.DateTitle.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.DateTitle.setObjectName(_fromUtf8("DateTitle"))
-        self.OwnAfterTitle = QtGui.QLabel(Form)
+        self.OwnAfterTitle = QtWidgets.QLabel(Form)
         self.OwnAfterTitle.setGeometry(QtCore.QRect(20, 590, 271, 41))
         self.OwnAfterTitle.setMinimumSize(QtCore.QSize(100, 0))
         font = QtGui.QFont()
@@ -28532,14 +28618,14 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.OwnAfterTitle.setFont(font)
-        self.OwnAfterTitle.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.OwnAfterTitle.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.OwnAfterTitle.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.OwnAfterTitle.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.OwnAfterTitle.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.OwnAfterTitle.setObjectName(_fromUtf8("OwnAfterTitle"))
-        self.AddAfter = QtGui.QPushButton(Form)
+        self.AddAfter = QtWidgets.QPushButton(Form)
         self.AddAfter.setGeometry(QtCore.QRect(610, 590, 71, 41))
         self.AddAfter.setObjectName(_fromUtf8("AddAfter"))
-        self.OwnBeforeTitle = QtGui.QLabel(Form)
+        self.OwnBeforeTitle = QtWidgets.QLabel(Form)
         self.OwnBeforeTitle.setGeometry(QtCore.QRect(20, 540, 271, 41))
         self.OwnBeforeTitle.setMinimumSize(QtCore.QSize(100, 0))
         font = QtGui.QFont()
@@ -28549,17 +28635,17 @@ class AdvancedSettings(QtGui.QWidget):
         font.setItalic(False)
         font.setWeight(75)
         self.OwnBeforeTitle.setFont(font)
-        self.OwnBeforeTitle.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.OwnBeforeTitle.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.OwnBeforeTitle.setStyleSheet(_fromUtf8("color:#24282C;\nfont: bold 16px \"Arial\";"))
-        self.OwnBeforeTitle.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.OwnBeforeTitle.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.OwnBeforeTitle.setObjectName(_fromUtf8("OwnBeforeTitle"))
-        self.APPLYCUSTOM = QtGui.QPushButton(Form)
+        self.APPLYCUSTOM = QtWidgets.QPushButton(Form)
         self.APPLYCUSTOM.setGeometry(QtCore.QRect(20, 650, 81, 31))
         self.APPLYCUSTOM.setObjectName(_fromUtf8("APPLYCUSTOM"))
-        self.CopyScript = QtGui.QPushButton(Form)
+        self.CopyScript = QtWidgets.QPushButton(Form)
         self.CopyScript.setGeometry(QtCore.QRect(140, 650, 171, 31))
         self.CopyScript.setObjectName(_fromUtf8("CopyScript"))
-        self.MakeCustom = QtGui.QPushButton(Form)
+        self.MakeCustom = QtWidgets.QPushButton(Form)
         self.MakeCustom.setGeometry(QtCore.QRect(350, 650, 261, 31))
         self.MakeCustom.setObjectName(_fromUtf8("MakeCustom"))
 
@@ -28569,7 +28655,7 @@ class AdvancedSettings(QtGui.QWidget):
         self.APPLYEMAIL.clicked.connect(self.Apply)
         self.CANCEL.clicked.connect(self.Cancel)
         self.ADD.clicked.connect(self.Add)
-        self.comboBox.connect(self.comboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.comboChange)
+        self.comboBox.currentIndexChanged.connect(self.comboChange)
         self.AddAfter.clicked.connect(self.AddThisAfter)
         self.AddBefore.clicked.connect(self.AddThisBefore)
         self.APPLYCUSTOM.clicked.connect(self.ApplyExotic)
@@ -28688,7 +28774,7 @@ class AdvancedSettings(QtGui.QWidget):
         Form.setWindowTitle(CoinSelect['HaloName'])        
 
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
     def Add(self):
@@ -28827,22 +28913,22 @@ class AdvancedSettings(QtGui.QWidget):
         if self.comboBox.currentIndex() == 2+offset:
             res=QuestionBox("Please choose what you want to add.", "Add an address", "Cancel")
             if res==0:
-                text, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the address of the recipient:'))
+                text, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the address of the recipient:'))
                 text=str(text)
                 self.OwnerBefore.setText(str(text))
         global thisMsgBox
         if self.comboBox.currentIndex() == 3+offset:            
-            thisMsgBox = QtGui.QDialog()
+            thisMsgBox = QtWidgets.QDialog()
             thisMsgBox.setWindowTitle(CoinSelect['HaloName'])
             thisMsgBox.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
             thisMsgBox.resize(300,150)
-            comboBox = QtGui.QComboBox(thisMsgBox)
+            comboBox = QtWidgets.QComboBox(thisMsgBox)
             comboBox.setGeometry(QtCore.QRect(15, 50, 270, 31))
             comboBox.setObjectName(_fromUtf8("comboBox"))
             for bridged in ThePeg.Pegdatabase['bridgedb']['bridges']:
                 comboBox.addItem(_fromUtf8(""))
                 comboBox.setItemText(0, bridged['n'])
-            mylabel = QtGui.QLabel(thisMsgBox)
+            mylabel = QtWidgets.QLabel(thisMsgBox)
             mylabel.setGeometry(QtCore.QRect(15, 10, 270, 31))
             font = QtGui.QFont()
             font.setFamily(_fromUtf8("Arial"))
@@ -28851,13 +28937,13 @@ class AdvancedSettings(QtGui.QWidget):
             mylabel.setFont(font)
             mylabel.setText(_translate("thisMsgBox", "Please select the network to send to", None))
 
-            OkayButton = QtGui.QPushButton(thisMsgBox)
+            OkayButton = QtWidgets.QPushButton(thisMsgBox)
             OkayButton.setGeometry(QtCore.QRect(15, 90, 80, 30))
             OkayButton.setFont(font)
             OkayButton.setObjectName(_fromUtf8("OkayButton"))
             OkayButton.setText(" OK ")
 
-            CancelButton = QtGui.QPushButton(thisMsgBox)
+            CancelButton = QtWidgets.QPushButton(thisMsgBox)
             CancelButton.setGeometry(QtCore.QRect(125, 90, 80, 30))
             CancelButton.setFont(font)
             CancelButton.setObjectName(_fromUtf8("CancelButton"))
@@ -28867,7 +28953,7 @@ class AdvancedSettings(QtGui.QWidget):
             CancelButton.clicked.connect(lambda: thisMsgBox.reject())
             OkayButton.clicked.connect(lambda: thisMsgBox.accept())
 
-            res=thisMsgBox.exec_()
+            res=thisMsgBox.exec()
             if res==1:
                 text=comboBox.currentText()
                 beforetext=str(self.OwnerBefore.text())
@@ -28877,17 +28963,17 @@ class AdvancedSettings(QtGui.QWidget):
                         beforetext+=" "
                 self.OwnerBefore.setText(beforetext+str(text))
         if self.comboBox.currentIndex() == 4+offset:
-            thisMsgBox = QtGui.QDialog()
+            thisMsgBox = QtWidgets.QDialog()
             thisMsgBox.setWindowTitle(CoinSelect['HaloName'])
             thisMsgBox.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
             thisMsgBox.resize(300,150)
-            comboBox = QtGui.QComboBox(thisMsgBox)
+            comboBox = QtWidgets.QComboBox(thisMsgBox)
             comboBox.setGeometry(QtCore.QRect(15, 50, 270, 31))
             comboBox.setObjectName(_fromUtf8("comboBox"))
             for bridged in ThePeg.Pegdatabase['bridgedb']['bridges']:
                 comboBox.addItem(_fromUtf8(""))
                 comboBox.setItemText(0, bridged['n'])
-            mylabel = QtGui.QLabel(thisMsgBox)
+            mylabel = QtWidgets.QLabel(thisMsgBox)
             mylabel.setGeometry(QtCore.QRect(15, 10, 270, 31))
             font = QtGui.QFont()
             font.setFamily(_fromUtf8("Arial"))
@@ -28896,13 +28982,13 @@ class AdvancedSettings(QtGui.QWidget):
             mylabel.setFont(font)
             mylabel.setText(_translate("thisMsgBox", "Please select the network the coins were sent from", None))
 
-            OkayButton = QtGui.QPushButton(thisMsgBox)
+            OkayButton = QtWidgets.QPushButton(thisMsgBox)
             OkayButton.setGeometry(QtCore.QRect(15, 90, 80, 30))
             OkayButton.setFont(font)
             OkayButton.setObjectName(_fromUtf8("OkayButton"))
             OkayButton.setText(" OK ")
 
-            CancelButton = QtGui.QPushButton(thisMsgBox)
+            CancelButton = QtWidgets.QPushButton(thisMsgBox)
             CancelButton.setGeometry(QtCore.QRect(125, 90, 80, 30))
             CancelButton.setFont(font)
             CancelButton.setObjectName(_fromUtf8("CancelButton"))
@@ -28912,10 +28998,10 @@ class AdvancedSettings(QtGui.QWidget):
             CancelButton.clicked.connect(lambda: thisMsgBox.reject())
             OkayButton.clicked.connect(lambda: thisMsgBox.accept())
 
-            res=thisMsgBox.exec_()
+            res=thisMsgBox.exec()
             if res==1:
                 text=comboBox.currentText()
-                text2, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the receipt with the merkle proof:'))
+                text2, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the receipt with the merkle proof:'))
                 try:
                     text2=ast.literal_eval(str(text2))
                     newdata={}
@@ -28944,7 +29030,7 @@ class AdvancedSettings(QtGui.QWidget):
                 self.OwnerBefore.setText("Mint:"+str(newdata))
                 window.BitAmount.setText(tot)        
     def AddMultisigScript(self):
-        text, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the redeem script of the recipient:'))
+        text, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the redeem script of the recipient:'))
         if len(str(text))<40:
             QuestionBox('Invalid redeem script! You must enter the script of their address. You may ask the recipient to supply this to you if you do not have it.', 'OK')
             return False
@@ -28955,8 +29041,8 @@ class AdvancedSettings(QtGui.QWidget):
                 return False
         return text
     def AddHashPuzzle(self):
-        text, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the password for the puzzle:'))
-        text2, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please confirm the password for the puzzle:'))
+        text, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the password for the puzzle:'))
+        text2, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please confirm the password for the puzzle:'))
         if len(str(text))>20:
             QuestionBox('Password is too long. It must be less than 20 characters.', 'OK')
             return False
@@ -29029,10 +29115,10 @@ class AdvancedSettings(QtGui.QWidget):
         if self.comboBox.currentIndex() == 2+offset:
             res=QuestionBox("What would you like to Notarize/Burn?", " Message/Text "," Hash of a file ")
             if res==0:
-                text, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the data you would like to burn/notarize:'))
+                text, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the data you would like to burn/notarize:'))
                 text=str(text)
             else:                    
-                path = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Please open the file you wish to use."),MacDir()+"","All Files (*.*)")
+                path = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Please open the file you wish to use."),MacDir()+"","All Files (*.*)")[0]
                 path = strOUT(strIN(path))
                 text=checksum_sha256(path)
                 if CoinSelect['6aLength'] < len(text):
@@ -29056,10 +29142,10 @@ class AdvancedSettings(QtGui.QWidget):
             else:
                 hexleng=""
             text=hexlify(text)
-            hexleng+=num_to_var_int((len(text)/2)).encode('hex')
+            hexleng+=num_to_var_int(safe_hexlify((len(text)/2)))
             self.OwnerAfter.setText(str("6a"+hexleng+text))
         if self.comboBox.currentIndex() == 3+offset:
-            mbox1=QtGui.QInputDialog()
+            mbox1=QtWidgets.QInputDialog()
             ApplyCSS(mbox1)
             text, ok = mbox1.getText(mbox1, "BitBay", Gtranslate("Please enter the recipient address."))
             self.OwnerAfter.setText(text)
@@ -29145,131 +29231,131 @@ class AdvancedSettings(QtGui.QWidget):
             beforetext=str(self.OwnerBefore.text())
             window.BitPayTo.setText(beforetext)
             self.hide()
-class Wizard(QtGui.QWidget):
+class Wizard(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(510, 360)
-        self.stackedWidget = QtGui.QStackedWidget(Form)
+        self.stackedWidget = QtWidgets.QStackedWidget(Form)
         self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 511, 361))
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
-        self.page = QtGui.QWidget()
+        self.page = QtWidgets.QWidget()
         self.page.setObjectName(_fromUtf8("page"))
-        self.HaloIcon = QtGui.QPushButton(self.page)
+        self.HaloIcon = QtWidgets.QPushButton(self.page)
         self.HaloIcon.setGeometry(QtCore.QRect(350, 20, 151, 161))
         self.HaloIcon.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + CoinSelect['HaloName'] + ".png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + CoinSelect['HaloName'] + ".png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.HaloIcon.setIcon(icon)
         self.HaloIcon.setIconSize(QtCore.QSize(100, 100))
         self.HaloIcon.setObjectName(_fromUtf8("HaloIcon"))
-        self.WelcomeText = QtGui.QTextBrowser(self.page)
+        self.WelcomeText = QtWidgets.QTextBrowser(self.page)
         self.WelcomeText.setGeometry(QtCore.QRect(10, 20, 341, 161))
         self.WelcomeText.setObjectName(_fromUtf8("WelcomeText"))
-        self.Next1 = QtGui.QPushButton(self.page)
+        self.Next1 = QtWidgets.QPushButton(self.page)
         self.Next1.setGeometry(QtCore.QRect(10, 190, 111, 41))
         self.Next1.setObjectName(_fromUtf8("Next1"))
-        self.SkipSetup = QtGui.QPushButton(self.page)
+        self.SkipSetup = QtWidgets.QPushButton(self.page)
         self.SkipSetup.setGeometry(QtCore.QRect(314, 312, 150, 31))
         self.SkipSetup.setObjectName(_fromUtf8("SkipSetup"))
 
         self.stackedWidget.addWidget(self.page)
-        self.page_3 = QtGui.QWidget()
+        self.page_3 = QtWidgets.QWidget()
         self.page_3.setObjectName(_fromUtf8("page_3"))
-        self.FirstWallet = QtGui.QPushButton(self.page_3)
+        self.FirstWallet = QtWidgets.QPushButton(self.page_3)
         self.FirstWallet.setGeometry(QtCore.QRect(10, 240, 210, 41))
         self.FirstWallet.setObjectName(_fromUtf8("FirstWallet"))
-        self.CreateText = QtGui.QTextBrowser(self.page_3)
+        self.CreateText = QtWidgets.QTextBrowser(self.page_3)
         self.CreateText.setGeometry(QtCore.QRect(10, 20, 491, 211))
         self.CreateText.setObjectName(_fromUtf8("CreateText"))
-        self.KeysIcon = QtGui.QPushButton(self.page_3)
+        self.KeysIcon = QtWidgets.QPushButton(self.page_3)
         self.KeysIcon.setGeometry(QtCore.QRect(410, 240, 91, 111))
         self.KeysIcon.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + "Keys.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + "Keys.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.KeysIcon.setIcon(icon1)
         self.KeysIcon.setIconSize(QtCore.QSize(100, 100))
         self.KeysIcon.setObjectName(_fromUtf8("KeysIcon"))
         self.stackedWidget.addWidget(self.page_3)
-        self.page_2 = QtGui.QWidget()
+        self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName(_fromUtf8("page_2"))
-        self.PasswordText = QtGui.QTextBrowser(self.page_2)
+        self.PasswordText = QtWidgets.QTextBrowser(self.page_2)
         self.PasswordText.setGeometry(QtCore.QRect(10, 20, 491, 181))
         self.PasswordText.setObjectName(_fromUtf8("PasswordText"))
-        self.Skip2 = QtGui.QPushButton(self.page_2)
+        self.Skip2 = QtWidgets.QPushButton(self.page_2)
         self.Skip2.setGeometry(QtCore.QRect(394, 322, 101, 31))
         self.Skip2.setObjectName(_fromUtf8("Skip2"))
-        self.PasswordKeys = QtGui.QPushButton(self.page_2)
+        self.PasswordKeys = QtWidgets.QPushButton(self.page_2)
         self.PasswordKeys.setGeometry(QtCore.QRect(10, 210, 210, 41))
         self.PasswordKeys.setObjectName(_fromUtf8("PasswordKeys"))
         self.stackedWidget.addWidget(self.page_2)
-        self.page_4 = QtGui.QWidget()
+        self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName(_fromUtf8("page_4"))
-        self.PhotoText = QtGui.QTextBrowser(self.page_4)
+        self.PhotoText = QtWidgets.QTextBrowser(self.page_4)
         self.PhotoText.setGeometry(QtCore.QRect(10, 20, 491, 191))
         self.PhotoText.setObjectName(_fromUtf8("PhotoText"))
-        self.KeysToPhotos = QtGui.QPushButton(self.page_4)
+        self.KeysToPhotos = QtWidgets.QPushButton(self.page_4)
         self.KeysToPhotos.setGeometry(QtCore.QRect(10, 220, 215, 41))
         self.KeysToPhotos.setObjectName(_fromUtf8("KeysToPhotos"))
-        self.DogeDream = QtGui.QPushButton(self.page_4)
+        self.DogeDream = QtWidgets.QPushButton(self.page_4)
         self.DogeDream.setGeometry(QtCore.QRect(270, 220, 231, 131))
         self.DogeDream.setText(_fromUtf8(""))
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + "Dreams.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + "Dreams.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.DogeDream.setIcon(icon2)
         self.DogeDream.setIconSize(QtCore.QSize(229, 150))
         self.DogeDream.setObjectName(_fromUtf8("DogeDream"))
-        self.Skip3 = QtGui.QPushButton(self.page_4)
+        self.Skip3 = QtWidgets.QPushButton(self.page_4)
         self.Skip3.setGeometry(QtCore.QRect(10, 322, 101, 31))
         self.Skip3.setObjectName(_fromUtf8("Skip3"))
         self.stackedWidget.addWidget(self.page_4)
-        self.page_5 = QtGui.QWidget()
+        self.page_5 = QtWidgets.QWidget()
         self.page_5.setObjectName(_fromUtf8("page_5"))
-        self.BackupText = QtGui.QTextBrowser(self.page_5)
+        self.BackupText = QtWidgets.QTextBrowser(self.page_5)
         self.BackupText.setGeometry(QtCore.QRect(10, 20, 491, 181))
         self.BackupText.setObjectName(_fromUtf8("BackupText"))
-        self.BackupKeys = QtGui.QPushButton(self.page_5)
+        self.BackupKeys = QtWidgets.QPushButton(self.page_5)
         self.BackupKeys.setGeometry(QtCore.QRect(10, 210, 181, 41))
         self.BackupKeys.setObjectName(_fromUtf8("BackupKeys"))
-        self.Skip4 = QtGui.QPushButton(self.page_5)
+        self.Skip4 = QtWidgets.QPushButton(self.page_5)
         self.Skip4.setGeometry(QtCore.QRect(10, 320,101, 31))
         self.Skip4.setObjectName(_fromUtf8("Skip4"))
         self.stackedWidget.addWidget(self.page_5)
-        self.page_6 = QtGui.QWidget()
+        self.page_6 = QtWidgets.QWidget()
         self.page_6.setObjectName(_fromUtf8("page_6"))
-        self.FirstCoinsText = QtGui.QTextBrowser(self.page_6)
+        self.FirstCoinsText = QtWidgets.QTextBrowser(self.page_6)
         self.FirstCoinsText.setGeometry(QtCore.QRect(10, 20, 491, 301))
         self.FirstCoinsText.setObjectName(_fromUtf8("FirstCoinsText"))
-        self.Next2 = QtGui.QPushButton(self.page_6)
+        self.Next2 = QtWidgets.QPushButton(self.page_6)
         self.Next2.setGeometry(QtCore.QRect(10, 320, 101, 31))
         self.Next2.setObjectName(_fromUtf8("Next2"))
         self.stackedWidget.addWidget(self.page_6)
-        self.page_7 = QtGui.QWidget()
+        self.page_7 = QtWidgets.QWidget()
         self.page_7.setObjectName(_fromUtf8("page_7"))
-        self.SetupEmailText = QtGui.QTextBrowser(self.page_7)
+        self.SetupEmailText = QtWidgets.QTextBrowser(self.page_7)
         self.SetupEmailText.setGeometry(QtCore.QRect(10, 20, 491, 241))
         self.SetupEmailText.setObjectName(_fromUtf8("SetupEmailText"))
-        self.Skip5 = QtGui.QPushButton(self.page_7)
+        self.Skip5 = QtWidgets.QPushButton(self.page_7)
         self.Skip5.setGeometry(QtCore.QRect(394, 322, 101, 31))
         self.Skip5.setObjectName(_fromUtf8("Skip5"))
-        self.SetupEmail = QtGui.QPushButton(self.page_7)
+        self.SetupEmail = QtWidgets.QPushButton(self.page_7)
         self.SetupEmail.setGeometry(QtCore.QRect(10, 270, 181, 41))
         self.SetupEmail.setObjectName(_fromUtf8("SetupEmail"))
         self.stackedWidget.addWidget(self.page_7)
-        self.page_8 = QtGui.QWidget()
+        self.page_8 = QtWidgets.QWidget()
         self.page_8.setObjectName(_fromUtf8("page_8"))
-        self.ContractsText = QtGui.QTextBrowser(self.page_8)
+        self.ContractsText = QtWidgets.QTextBrowser(self.page_8)
         self.ContractsText.setGeometry(QtCore.QRect(10, 20, 491, 131))
         self.ContractsText.setObjectName(_fromUtf8("ContractsText"))
-        self.BackupContracts = QtGui.QPushButton(self.page_8)
+        self.BackupContracts = QtWidgets.QPushButton(self.page_8)
         self.BackupContracts.setGeometry(QtCore.QRect(10, 160, 181, 41))
         self.BackupContracts.setObjectName(_fromUtf8("BackupContracts"))
         self.stackedWidget.addWidget(self.page_8)
-        self.page_9 = QtGui.QWidget()
+        self.page_9 = QtWidgets.QWidget()
         self.page_9.setObjectName(_fromUtf8("page_9"))
-        self.CongratsText = QtGui.QTextBrowser(self.page_9)
+        self.CongratsText = QtWidgets.QTextBrowser(self.page_9)
         self.CongratsText.setGeometry(QtCore.QRect(10, 20, 491, 121))
         self.CongratsText.setObjectName(_fromUtf8("CongratsText"))
-        self.ReturnHalo = QtGui.QPushButton(self.page_9)
+        self.ReturnHalo = QtWidgets.QPushButton(self.page_9)
         self.ReturnHalo.setGeometry(QtCore.QRect(10, 150, 181, 41))
         self.ReturnHalo.setObjectName(_fromUtf8("ReturnHalo"))
         self.stackedWidget.addWidget(self.page_9)
@@ -29438,16 +29524,16 @@ class Wizard(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         Form.setWindowTitle(_translate(CoinSelect['HaloName'], CoinSelect['HaloName'], None))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + CoinSelect['HaloName'] + ".png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(application_path+'/images/' + CoinSelect['HaloName'] + ".png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.HaloIcon.setIcon(icon)
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def MyFirstWallet(self):
         result=False
         while result==False:
             result=NewWallet("","",1)
-            print result
+            print(result)
             if result==False:
                 mbox = QuestionBox("You must create two keys to continue. Would you prefer to exit the wizard and setup manually?", " Yes ", " No ")
                 if mbox == 0:
@@ -29471,10 +29557,10 @@ class Wizard(QtGui.QWidget):
             data2=fi.readlines()
             fi.close()
         if mbox == 1:
-            path2 = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open the image you wish to use for hiding the first key. PNG is preferred, both JPEG and PNG supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))
+            path2 = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open the image you wish to use for hiding the first key. PNG is preferred, both JPEG and PNG supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))[0]
             if path2=="":
                 return
-            path4 = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Open the second image you wish to use for hiding the second key. PNG is preferred, both JPEG and PNG supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))
+            path4 = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Open the second image you wish to use for hiding the second key. PNG is preferred, both JPEG and PNG supported."),MacDir()+"","Image File (*.jpg *.jpeg *.png)")))[0]
             if path4=="":
                 return
             path5=os.path.join(self.filedir1,self.file1.replace(".private",".png"))
@@ -29519,7 +29605,7 @@ class Wizard(QtGui.QWidget):
         if self.file1==self.file2:
             QuestionBox("You chose the same name for both keys. In order to avoid overwriting a key, please backup manually in the file menu once setup is complete.", "OK")
             return
-        dir1 = strOUT(strIN(QtGui.QFileDialog.getExistingDirectory(self,Gtranslate("Open a folder for your backup"),MacDir()+"",QtGui.QFileDialog.ShowDirsOnly)))
+        dir1 = strOUT(strIN(QtWidgets.QFileDialog.getExistingDirectory(self,Gtranslate("Open a folder for your backup"),MacDir()+"",QtWidgets.QFileDialog.ShowDirsOnly)))
         if dir1=="":
             return
         file1 = os.path.join(self.filedir1,self.file1)
@@ -29569,7 +29655,7 @@ class Wizard(QtGui.QWidget):
         self.stackedWidget.setCurrentIndex(self.myindex)
     def Navigate(self, item):
         t=str(item)
-        t=t.lstrip("PyQt4.QtCore.QUrl(u'")
+        t=t.lstrip("PyQt6.QtCore.QUrl(u'")
         t=t.rstrip("')")
         webbrowser.open(t)
         self.WelcomeText.backward()
@@ -29593,24 +29679,24 @@ class Wizard(QtGui.QWidget):
         event.accept()
         window.show()
         self.hide()
-class WDetails(QtGui.QWidget):
+class WDetails(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(460, 330)        
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         self.verticalLayout.addWidget(self.textBrowser)
-        spacerItem = QtGui.QSpacerItem(20, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
         self.verticalLayout.addItem(spacerItem)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         ApplyCSS(self)
@@ -29628,17 +29714,17 @@ class WDetails(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         Dialog.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
-class WOutbox(QtGui.QWidget):
+class WOutbox(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(370, 300)        
-        self.CL = QtGui.QListWidget(Form)
+        self.CL = QtWidgets.QListWidget(Form)
         self.CL.setGeometry(QtCore.QRect(10, 10, 351, 281))
         self.CL.setObjectName(_fromUtf8("listView"))
-        QtCore.QObject.connect(self.CL, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.EmailClick)
-        #self.MarketBox.connect(self.MarketBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.MarketChange)
+        self.CL.itemClicked.connect( self.EmailClick)
+        #self.MarketBox.currentIndexChanged.connect(self.MarketChange)
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
         ApplyCSS(self)
@@ -29647,7 +29733,7 @@ class WOutbox(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def populate(self):
         global AdvanceArray
@@ -29677,9 +29763,9 @@ class WOutbox(QtGui.QWidget):
                         break
                     pos+=1
         self.hide()
-class Explanations(QtGui.QDialog):
+class Explanations(QtWidgets.QDialog):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         uic.loadUi(application_path+'/images/'+'Explanation.ui', self)
         ApplyCSS(self)
     def retranslateUi(self, Form):
@@ -29689,24 +29775,24 @@ class Explanations(QtGui.QDialog):
             uic.loadUi(application_path+'/images/'+'Explanation2.ui', self)
         else:
             uic.loadUi(application_path+'/images/'+'Explanation.ui', self)
-class ChangeList(QtGui.QWidget):
+class ChangeList(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(270, 300)        
-        self.CL = QtGui.QListWidget(Form)
+        self.CL = QtWidgets.QListWidget(Form)
         self.CL.setGeometry(QtCore.QRect(10, 10, 251, 281))
         self.CL.setObjectName(_fromUtf8("listView"))
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-        QtCore.QObject.connect(self.CL, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.clickedme)
+        self.CL.itemClicked.connect( self.clickedme)
         ApplyCSS(self)        
 
     def retranslateUi(self, Form):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def clickedme(self,item):
         t=str(item.text())
@@ -29716,23 +29802,23 @@ class ChangeList(QtGui.QWidget):
                 if 'liquidity' in i and i['output']==t:
                     res=QuestionBox("Liquidity Rating: " + "\n" + str(i['liquidity']['rating']) + "\n\n" + "Reserve Total: " + "\n" + str(Decimal(i['liquidity']['rtotal'])/Decimal(1e8)) + "\n\n" + str("Liquid Total: ") + "\n" + str(Decimal(i['liquidity']['ltotal'])/Decimal(1e8)), Gtranslate(" OK "), 1)
 
-class StakeList(QtGui.QWidget):
+class StakeList(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(270, 300)        
-        self.CL = QtGui.QListWidget(Form)
+        self.CL = QtWidgets.QListWidget(Form)
         self.CL.setGeometry(QtCore.QRect(10, 10, 251, 281))
         self.CL.setObjectName(_fromUtf8("listView"))
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        QtCore.QObject.connect(self.CL, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.ClearItem)
+        self.CL.itemClicked.connect( self.ClearItem)
         ApplyCSS(self)
 
     def retranslateUi(self, Form):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def populate(self):
         global stakelist
@@ -29760,32 +29846,32 @@ class StakeList(QtGui.QWidget):
         self.populate()
         DeleteOrder(str(ordernumber))
 
-class WContracts(QtGui.QWidget):
+class WContracts(QtWidgets.QWidget):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(560, 421)        
-        self.label = QtGui.QLabel(Form)
+        self.label = QtWidgets.QLabel(Form)
         self.label.setGeometry(QtCore.QRect(10, 10, 91, 16))
         self.label.setObjectName(_fromUtf8("label"))
-        self.Details = QtGui.QTextBrowser(Form)
+        self.Details = QtWidgets.QTextBrowser(Form)
         self.Details.setGeometry(QtCore.QRect(10, 30, 281, 201))
         self.Details.setObjectName(_fromUtf8("Details"))
-        self.Requests = QtGui.QListWidget(Form)
+        self.Requests = QtWidgets.QListWidget(Form)
         self.Requests.setGeometry(QtCore.QRect(300, 30, 256, 201))
         self.Requests.setObjectName(_fromUtf8("Requests"))
-        self.label_2 = QtGui.QLabel(Form)
+        self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(300, 10, 91, 16))
         self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.Complete = QtGui.QPushButton(Form)
+        self.Complete = QtWidgets.QPushButton(Form)
         self.Complete.setGeometry(QtCore.QRect(10, 250, 141, 41))
         self.Complete.setObjectName(_fromUtf8("Complete"))
-        self.Cancel = QtGui.QPushButton(Form)
+        self.Cancel = QtWidgets.QPushButton(Form)
         self.Cancel.setGeometry(QtCore.QRect(10, 310, 141, 41))
         self.Cancel.setObjectName(_fromUtf8("Cancel"))
-        self.Description = QtGui.QPushButton(Form)
+        self.Description = QtWidgets.QPushButton(Form)
         self.Description.setGeometry(QtCore.QRect(10, 370, 141, 41))
         self.Description.setObjectName(_fromUtf8("Description"))
-        self.comboBox = QtGui.QComboBox(Form)
+        self.comboBox = QtWidgets.QComboBox(Form)
         self.comboBox.setGeometry(QtCore.QRect(300, 250, 251, 31))
         self.comboBox.setObjectName(_fromUtf8("comboBox"))
         self.comboBox.addItem(_fromUtf8(""))
@@ -29795,10 +29881,10 @@ class WContracts(QtGui.QWidget):
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.addItem(_fromUtf8(""))        
-        self.textEdit = QtGui.QTextEdit(Form)
+        self.textEdit = QtWidgets.QTextEdit(Form)
         self.textEdit.setGeometry(QtCore.QRect(300, 300, 251, 31))
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
-        self.Send = QtGui.QPushButton(Form)
+        self.Send = QtWidgets.QPushButton(Form)
         self.Send.setGeometry(QtCore.QRect(300, 350, 61, 31))
         self.Send.setObjectName(_fromUtf8("Send"))
 
@@ -29806,8 +29892,8 @@ class WContracts(QtGui.QWidget):
         self.Cancel.clicked.connect(self.CancelContract)
         self.Send.clicked.connect(lambda: self.SendMessage())
         self.Description.clicked.connect(self.DescriptionW)
-        QtCore.QObject.connect(self.Requests, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.RequestClick)
-        self.comboBox.connect(self.comboBox,QtCore.SIGNAL('currentIndexChanged(int)'), self.ChangeIndex)
+        self.Requests.itemClicked.connect( self.RequestClick)
+        self.comboBox.currentIndexChanged.connect( self.ChangeIndex)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -29832,22 +29918,22 @@ class WContracts(QtGui.QWidget):
         self.Cancel.setText(_translate("Form", "Send Cancellation Request", None))
         self.Description.setText(_translate("Form", "Contract Details", None))
         self.comboBox.setItemText(0, _translate("Form", "Escrow Options & Filtered Messages", None))
-        self.comboBox.setItemData(0,QtCore.QVariant(0))
+        self.comboBox.setItemData(0,0)
         self.comboBox.setItemText(1, _translate("Form", "Unlock Chat", None))
-        self.comboBox.setItemData(1,QtCore.QVariant(999))
+        self.comboBox.setItemData(1,999)
         self.comboBox.setItemText(2, _translate("Form", "Send Western Union or Confirmation Number", None))
-        self.comboBox.setItemData(2,QtCore.QVariant(2))
+        self.comboBox.setItemData(2,2)
         self.comboBox.setItemText(3, _translate("Form", "Request More Time (In days)", None))
-        self.comboBox.setItemData(3,QtCore.QVariant(3))
+        self.comboBox.setItemData(3,3)
         self.comboBox.setItemText(4, Gtranslate("Leave review on markets"))
-        self.comboBox.setItemData(4,QtCore.QVariant(4))
+        self.comboBox.setItemData(4,4)
         self.comboBox.setItemText(5, Gtranslate("Import Message"))
-        self.comboBox.setItemData(5,QtCore.QVariant(997))
+        self.comboBox.setItemData(5,997)
         self.comboBox.setItemText(6, Gtranslate("Export Messages"))
-        self.comboBox.setItemData(6,QtCore.QVariant(998))                        
+        self.comboBox.setItemData(6,998)                        
         self.Send.setText(_translate("Form", "Send", None))
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
     def makeComboBox(self):
         self.comboBox.blockSignals(True)
@@ -29861,25 +29947,25 @@ class WContracts(QtGui.QWidget):
         self.comboBox.addItem(_fromUtf8(""))
         #May want to change the order of options listed by iterating
         self.comboBox.setItemText(0, Gtranslate("Escrow Options & Filtered Messages"))
-        self.comboBox.setItemData(0,QtCore.QVariant(0))
+        self.comboBox.setItemData(0,0)
         self.comboBox.setItemText(1, Gtranslate("Unlock Chat"))
-        self.comboBox.setItemData(1,QtCore.QVariant(999))
+        self.comboBox.setItemData(1,999)
         self.comboBox.setItemText(2, Gtranslate("Send Western Union or Confirmation Number"))
-        self.comboBox.setItemData(2,QtCore.QVariant(2))
+        self.comboBox.setItemData(2,2)
         self.comboBox.setItemText(3, Gtranslate("Request More Time (In days)"))
-        self.comboBox.setItemData(3,QtCore.QVariant(3))
+        self.comboBox.setItemData(3,3)
         self.comboBox.setItemText(4, Gtranslate("Leave review on markets"))
-        self.comboBox.setItemData(4,QtCore.QVariant(4))
+        self.comboBox.setItemData(4,4)
         self.comboBox.setItemText(5, Gtranslate("Import Message"))
-        self.comboBox.setItemData(5,QtCore.QVariant(997))
+        self.comboBox.setItemData(5,997)
         self.comboBox.setItemText(6, Gtranslate("Export Messages"))
-        self.comboBox.setItemData(6,QtCore.QVariant(998))                     
+        self.comboBox.setItemData(6,998)                     
         self.comboBox.blockSignals(False)
     def addComboItem(self, item, pos, variant):
         self.comboBox.blockSignals(True)
         self.comboBox.addItem(_fromUtf8(""))
         self.comboBox.setItemText(pos, Gtranslate(item))
-        self.comboBox.setItemData(pos,QtCore.QVariant(variant))        
+        self.comboBox.setItemData(pos,variant)        
         self.comboBox.blockSignals(False)        
     def checkMessages(self):
         global CoinMarketCap, ContractSelected, MyContracts
@@ -29943,7 +30029,7 @@ class WContracts(QtGui.QWidget):
         if 'Market Data' not in contract:
             self.checkMessages()
             self.comboBox.setItemText(1, Gtranslate("Send Message"))
-            self.comboBox.setItemData(1, QtCore.QVariant(1))
+            self.comboBox.setItemData(1, 1)
             self.show()
             return
         if "Something" in contract['Market Data']['Template']:
@@ -29954,7 +30040,7 @@ class WContracts(QtGui.QWidget):
         self.checkMessages()
         if 'Market Data' not in contract:
             self.comboBox.setItemText(1, Gtranslate("Send Message"))
-            self.comboBox.setItemData(1, QtCore.QVariant(1))
+            self.comboBox.setItemData(1, 1)
             self.show()
             return
         if 'Chat requested!(click to respond)' in ContractSelected['MyRequests']:
@@ -29970,7 +30056,7 @@ class WContracts(QtGui.QWidget):
         if setting==999:
             if contract['Market Data']['allowchat']==1:
                 self.comboBox.setItemText(1, Gtranslate("Send Message"))
-                self.comboBox.setItemData(1,QtCore.QVariant(1))
+                self.comboBox.setItemData(1,1)
         if "Python" in contract['Market Data']['Template']:
             try:
                 exec(validateCode(contract['Market Data']['code3']))
@@ -30109,7 +30195,7 @@ class WContracts(QtGui.QWidget):
                                 if res==0:
                                     res2=QuestionBox("Would you like to send a tracking number now?", " Yes ", " No ")
                                     if res2==0:
-                                        text, ok = QtGui.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Please enter the tracking number:'))
+                                        text, ok = QtWidgets.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Please enter the tracking number:'))
                                         if text!="" and ok:
                                             tracking= "Tracking number:\n\n"+str(text)
                                             self.SendMessage(tracking)
@@ -30165,7 +30251,7 @@ class WContracts(QtGui.QWidget):
                 try:
                     #b64img=GlobalImage
                     #b64img += "=" * ((4 - len(b64img) % 4) % 4) #This is for incorrect padding error
-                    image_string = StringIO.StringIO(base64.b64decode(b64img))
+                    image_string = BytesIO(base64.b64decode(b64img))
                     image = Image.open(image_string)
                     tup=image.size
                     width=tup[0]
@@ -30180,7 +30266,7 @@ class WContracts(QtGui.QWidget):
                     data+="<img src=\"data:image/png;base64,"+b64img+"\"/>"
                     image_string.close()
                     image_string=""
-                except Exception, e:
+                except Exception as e:
                     image_string.close()
                     image_string=""
                     traceback.print_exc()
@@ -30212,7 +30298,7 @@ class WContracts(QtGui.QWidget):
                 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11px; font-weight:400; font-style:normal;\">\n"
                 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11px;\">"+data+"</span></p></body></html>")
                 MyDetails.show()
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
             pass
     def CompleteContract(self):
@@ -30241,7 +30327,7 @@ class WContracts(QtGui.QWidget):
             if c['ordernumber']==contract['ordernumber']:
                 break
         multisig,multiscript=create_multisig_address(PrivKeyFilename1)
-        inp['output']=unicode(str(contract['tx3'])+":0")
+        inp['output']=str(str(contract['tx3'])+":0")
         inp['value']=theirtotal+mytotal
         inp['address']=contract['escrow']
         inputs.append(inp)
@@ -30330,9 +30416,9 @@ class WContracts(QtGui.QWidget):
                     theirs={'value':int(theirtotal),'script':address_to_script(contract['theiraddress'])}#two fees deducted so one can be added
                     mine={'value':int(mytotal),'script':address_to_script(multisig)}
                     if theirtotal>0 and mytotal>0:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1:2'))/2)).encode('hex')+hexlify('**F**1:2')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1:2'))/2)))+hexlify('**F**1:2')}]
                     else:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')}]
                     if "I pay this" in contract['whopays']:
                         if mytotal>0:
                             outs.append(mine)
@@ -30349,9 +30435,9 @@ class WContracts(QtGui.QWidget):
                     theirs2={'value':int(theirrtot),'script':address_to_script(contract['theiraddress'])}#two fees deducted so one can be added
                     mine2={'value':int(myrtot),'script':address_to_script(multisig)}
                     if theirtotal>0 and mytotal>0:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1:2'))/2)).encode('hex')+hexlify('**F**1:2')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1:2'))/2)))+hexlify('**F**1:2')}]
                     else:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')}]
                     if "I pay this" in contract['whopays']:
                         if mytotal>0:
                             outs.append(mine2)
@@ -30428,7 +30514,7 @@ class WContracts(QtGui.QWidget):
         Reply={}
         Reply['Process']='Received completion request'#Ok we will look for the message id
         Reply['Command']='Send'
-        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
         Reply['TheirBMAddress']=contract['TheirBMAddress']
         Reply['ordernumber']=contract['ordernumber']
@@ -30470,7 +30556,7 @@ class WContracts(QtGui.QWidget):
             if c['ordernumber']==contract['ordernumber']:
                 break
         multisig,multiscript=create_multisig_address(PrivKeyFilename1)
-        inp['output']=unicode(str(contract['tx3'])+":0")
+        inp['output']=str(str(contract['tx3'])+":0")
         inp['value']=theirtotal+mytotal
         inp['address']=contract['escrow']
         inputs.append(inp)
@@ -30558,9 +30644,9 @@ class WContracts(QtGui.QWidget):
                     theirs={'value':int(theirtotal),'script':address_to_script(contract['theiraddress'])}#two fees deducted so one can be added
                     mine={'value':int(mytotal),'script':address_to_script(multisig)}
                     if theirtotal>0 and mytotal>0:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1:2'))/2)).encode('hex')+hexlify('**F**1:2')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1:2'))/2)))+hexlify('**F**1:2')}]
                     else:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')}]
                     if "I pay this" in contract['whopays']:
                         if mytotal>0:
                             outs.append(mine)
@@ -30577,9 +30663,9 @@ class WContracts(QtGui.QWidget):
                     theirs2={'value':int(theirrtot),'script':address_to_script(contract['theiraddress'])}#two fees deducted so one can be added
                     mine2={'value':int(myrtot),'script':address_to_script(multisig)}
                     if theirtotal>0 and mytotal>0:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1:2'))/2)).encode('hex')+hexlify('**F**1:2')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1:2'))/2)))+hexlify('**F**1:2')}]
                     else:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')}]
                     if "I pay this" in contract['whopays']:
                         if mytotal>0:
                             outs.append(mine2)
@@ -30651,7 +30737,7 @@ class WContracts(QtGui.QWidget):
         Reply={}
         Reply['Process']='Received cancellation request'#Ok we will look for the message id
         Reply['Command']='Send'
-        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
         Reply['TheirBMAddress']=contract['TheirBMAddress']
         Reply['ordernumber']=contract['ordernumber']
@@ -30689,7 +30775,7 @@ class WContracts(QtGui.QWidget):
                     self.RequestFunds(rate)
                     QuestionBox("The funds have been requested. Please watch your account for when it funds. Once it funds, you may use the escrow messaging system to send the tracking number.", " OK ")            
         if combo==997:
-            text, ok = QtGui.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Paste the message you want to import here:'))
+            text, ok = QtWidgets.QInputDialog.getText(self, CoinSelect['HaloName'], Gtranslate('Paste the message you want to import here:'))
             try:
                 message={}
                 message['body']=json_deep_copy(text,1)
@@ -30721,7 +30807,7 @@ class WContracts(QtGui.QWidget):
                 ContractSelected['Process']='Sent chat request!'
                 Reply['Process']='Chat requested!'
                 Reply['Command']='Send'
-                Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+                Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
                 Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
                 Reply['TheirBMAddress']=contract['TheirBMAddress']
                 Reply['ordernumber']=contract['ordernumber']
@@ -30773,7 +30859,7 @@ class WContracts(QtGui.QWidget):
             Reply['Process']='Received message'
             Reply['Message']=data
             Reply['Command']='Send'
-            Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+            Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
             Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
             Reply['TheirBMAddress']=contract['TheirBMAddress']
             Reply['ordernumber']=contract['ordernumber']
@@ -30798,7 +30884,7 @@ class WContracts(QtGui.QWidget):
             Reply['Process']='Received confirmation number '
             Reply['Message']=data
             Reply['Command']='Send'
-            Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+            Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
             Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
             Reply['TheirBMAddress']=contract['TheirBMAddress']
             Reply['ordernumber']=contract['ordernumber']
@@ -30822,7 +30908,7 @@ class WContracts(QtGui.QWidget):
             Reply['Process']='Received extension request'
             Reply['Message']=data
             Reply['Command']='Send'
-            Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+            Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
             Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
             Reply['TheirBMAddress']=contract['TheirBMAddress']
             Reply['ordernumber']=contract['ordernumber']
@@ -30833,7 +30919,7 @@ class WContracts(QtGui.QWidget):
             self.hide()
         if combo==4:
             data = strOUT(strIN(self.textEdit.toPlainText()))
-            myst=QtCore.QString(data)
+            myst=str(data)
             if len(myst)>40:
                 QuestionBox("The review must be no more than 40 characters long.", "OK")
                 return
@@ -30935,7 +31021,7 @@ class WContracts(QtGui.QWidget):
             Reply['Process']='Accept extension request'
             Reply['Message']=str(t)
             Reply['Command']='Send'
-            Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+            Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
             Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
             Reply['TheirBMAddress']=contract['TheirBMAddress']
             Reply['ordernumber']=contract['ordernumber']
@@ -30953,9 +31039,9 @@ class WContracts(QtGui.QWidget):
         SaveQueue()
         #Even though messaging could possibly be down, we don't want to make it easy for someone to leave parties hanging in escrow.
         if 'allowexport' in ContractSelected and ContractSelected['allowexport']==1:
-            ewindow=QtGui.QDialog(window)
+            ewindow=QtWidgets.QDialog(window)
             ewindow.resize(500, 500)
-            Display = QtGui.QTextBrowser(ewindow)
+            Display = QtWidgets.QTextBrowser(ewindow)
             Display.setReadOnly(True)
             Display.setGeometry(QtCore.QRect(10, 10, 480, 480))
             Display.setPlainText(str(Reply))
@@ -30994,7 +31080,7 @@ class WContracts(QtGui.QWidget):
                         res=QuestionBox("The rate was not found. Would you like to enter the rate manually?", " Yes ", " No ")
                         if res==1:
                             return
-                        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
+                        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
                         try:
                             a=float(Decimal(str(text)))
                         except:
@@ -31007,7 +31093,7 @@ class WContracts(QtGui.QWidget):
                 QuestionBox("Payments must be made within 24 hours after the due date. Please try again later.", " OK ")
                 return
         else:
-            print "Invoice not found."
+            print("Invoice not found.")
             return #It might be a milestone contract
         burnmessage=("*E*"+txhash(str(contract['billing'])+str(contract['ordernumber'])))[:20]
         apicontract={'ui':1, 'address':contract['theiraddress'], 'fee':0, 'broadcast':1, 'notify': [contract['theiraddress'],multisig], 'burn': burnmessage}
@@ -31022,7 +31108,7 @@ class WContracts(QtGui.QWidget):
                 res=QuestionBox("This contract has price tracking and the exchange rate is not loaded yet. Would you like to enter the rate manually?", " Yes ", " No ")
                 if res==1:
                     return
-                text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
+                text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the exchange rate for ') + CoinSelect['name'] + Gtranslate(' in dollars. You can find this rate online. Please be as precise as possible.'))
                 try:
                     a=float(Decimal(str(text)))
                 except:
@@ -31045,9 +31131,9 @@ class WContracts(QtGui.QWidget):
             res=""
             if str(contract['billing']) not in contract['payments']:
                 try:
-                    print str(apicontract)
+                    print(str(apicontract))
                     rawtx, res = window.SendNormal(apicontract)
-                    print res
+                    print(res)
                 except:
                     traceback.print_exc()
                     rawtx=False
@@ -31078,7 +31164,7 @@ class WContracts(QtGui.QWidget):
                     contract['MyRequests'].append("Escrow Payment: " + txhash(rawtx))
                     if 'Milestone' in contract['Market Data']['Pay Frequency']:
                         contract.pop('billing')
-                        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('It is recommended that after every completed\nmilestone you request a time extension.\nPlease enter the number of days to extend escrow.'))
+                        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('It is recommended that after every completed\nmilestone you request a time extension.\nPlease enter the number of days to extend escrow.'))
                         data = str(text)
                         try:
                             data2=int(data)+1
@@ -31091,7 +31177,7 @@ class WContracts(QtGui.QWidget):
                         Reply['Process']='Received extension request'
                         Reply['Message']=data
                         Reply['Command']='Send'
-                        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+                        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
                         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
                         Reply['TheirBMAddress']=contract['TheirBMAddress']
                         Reply['ordernumber']=contract['ordernumber']
@@ -31121,7 +31207,7 @@ class WContracts(QtGui.QWidget):
         Reply['Process']='Received request for funds'
         Reply['Message']=amount
         Reply['Command']='Send'
-        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
         Reply['TheirBMAddress']=contract['TheirBMAddress']
         Reply['ordernumber']=contract['ordernumber']
@@ -31141,7 +31227,7 @@ class WContracts(QtGui.QWidget):
              if str(date) in MyContracts[pos]['MyReports']:
                 QuestionBox("Report has already been sent!", "OK")
                 return
-        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the link to your report or a brief summary of the work completed:'))
+        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the link to your report or a brief summary of the work completed:'))
         try:
             text=strOUT(strIN(text))
             if text=="":
@@ -31155,7 +31241,7 @@ class WContracts(QtGui.QWidget):
         Reply['Message']=text
         Reply['Command']='Send'
         Reply['date']=date
-        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
         Reply['TheirBMAddress']=contract['TheirBMAddress']
         Reply['ordernumber']=contract['ordernumber']
@@ -31182,7 +31268,7 @@ class WContracts(QtGui.QWidget):
             return
         text=""
         if 'requirereport' in contract['Market Data'] and contract['Market Data']['requirereport']==1:
-            text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the link to your report or a brief summary of the work completed:'))
+            text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the link to your report or a brief summary of the work completed:'))
             try:
                 text=strOUT(strIN(text))
                 if text=="":
@@ -31196,7 +31282,7 @@ class WContracts(QtGui.QWidget):
         Reply['Message']=text
         Reply['Command']='Send'
         Reply['date']=ContractSelected['billing']
-        Reply['MessageID']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['MessageID']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['MyBMAddress']=contract['MyBMAddress']#We always do this it can change from time to time
         Reply['TheirBMAddress']=contract['TheirBMAddress']
         Reply['ordernumber']=contract['ordernumber']
@@ -31206,23 +31292,23 @@ class WContracts(QtGui.QWidget):
         if 'MyReports' not in MyContracts[pos]:
             MyContracts[pos]['MyReports']={}
         MyContracts[pos]['MyReports'][str(ContractSelected['billing'])]=""
-class WContacts(QtGui.QWidget):
+class WContacts(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(391, 140)        
-        self.pushButton = QtGui.QPushButton(Dialog)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
         self.pushButton.setGeometry(QtCore.QRect(10, 110, 88, 23))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.pushButton_2 = QtGui.QPushButton(Dialog)
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(99, 110, 92, 23))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.pushButton_3 = QtGui.QPushButton(Dialog)
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
         self.pushButton_3.setGeometry(QtCore.QRect(196, 110, 88, 23))
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
-        self.pushButton_4 = QtGui.QPushButton(Dialog)
+        self.pushButton_4 = QtWidgets.QPushButton(Dialog)
         self.pushButton_4.setGeometry(QtCore.QRect(289, 110, 88, 23))
         self.pushButton_4.setObjectName(_fromUtf8("pushButton_3"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setGeometry(QtCore.QRect(10, 10, 371, 91))
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         ApplyCSS(self)
@@ -31247,7 +31333,7 @@ class WContacts(QtGui.QWidget):
     "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11px; font-weight:400; font-style:normal;\">\n"
     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11px;\">" + _translate("","This is a basic contact database. You can choose to copy the "+CoinSelect['name']+", Bitmessage or Email address. You may also delete the contact.")+"</span></p></body></html>")
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
     def CopyBitmessage(self):
@@ -31284,44 +31370,44 @@ class WContacts(QtGui.QWidget):
         PopulateContacts()
         self.hide()
 #Received offer window
-class WReceived(QtGui.QWidget):
+class WReceived(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(460, 330)        
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         self.verticalLayout.addWidget(self.textBrowser)
-        spacerItem = QtGui.QSpacerItem(20, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
         self.verticalLayout.addItem(spacerItem)
         self.verticalLayout_2.addLayout(self.verticalLayout)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.pushButton_3 = QtGui.QPushButton(Dialog)
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout.addWidget(self.pushButton_3)
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.pushButton_2 = QtGui.QPushButton(Dialog)
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout.addWidget(self.pushButton_2)
-        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.pushButton = QtGui.QPushButton(Dialog)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
-        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         ApplyCSS(self)
@@ -31345,7 +31431,7 @@ class WReceived(QtGui.QWidget):
         self.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
         self.setWindowTitle(CoinSelect['HaloName'])
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
     def Accept(self):
@@ -31396,44 +31482,44 @@ class WReceived(QtGui.QWidget):
         PendingSelected={}
         self.hide()
 #Sent offer window
-class WSend(QtGui.QWidget):
+class WSend(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(460, 330)        
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
         Dialog.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         self.verticalLayout.addWidget(self.textBrowser)
-        spacerItem = QtGui.QSpacerItem(20, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
         self.verticalLayout.addItem(spacerItem)
         self.verticalLayout_2.addLayout(self.verticalLayout)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.pushButton_3 = QtGui.QPushButton(Dialog)
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout.addWidget(self.pushButton_3)
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.pushButton_2 = QtGui.QPushButton(Dialog)
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout.addWidget(self.pushButton_2)
-        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.pushButton = QtGui.QPushButton(Dialog)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
-        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         ApplyCSS(self)
@@ -31456,7 +31542,7 @@ class WSend(QtGui.QWidget):
     "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11px; font-weight:400; font-style:normal;\">\n"
     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11px;\">" + _translate("","You have sent an offer! Give the counter-party time to review the offer. If they accept, your computer will attempt to automatically finalize all of the steps necessary for escrow. The moment they accept, the timer starts so check periodically to see how your offers are doing. You can always try sending it again as well. Canceling will free up the inputs set aside for the deal. If you cancel the offer, that action can not be reversed.")+"</span></p></body></html>")
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
     def SendAgain(self):
@@ -31516,20 +31602,20 @@ class WSend(QtGui.QWidget):
         PendingSelected={}
         self.hide()
 #Our handshake options window...
-class Handshake(QtGui.QWidget):
+class Handshake(QtWidgets.QWidget):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(391, 140)        
-        self.pushButton = QtGui.QPushButton(Dialog)
+        self.pushButton = QtWidgets.QPushButton(Dialog)
         self.pushButton.setGeometry(QtCore.QRect(10, 110, 111, 23))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.pushButton_2 = QtGui.QPushButton(Dialog)
+        self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(130, 110, 141, 21))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.pushButton_3 = QtGui.QPushButton(Dialog)
+        self.pushButton_3 = QtWidgets.QPushButton(Dialog)
         self.pushButton_3.setGeometry(QtCore.QRect(280, 110, 101, 23))
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
-        self.textBrowser = QtGui.QTextBrowser(Dialog)
+        self.textBrowser = QtWidgets.QTextBrowser(Dialog)
         self.textBrowser.setGeometry(QtCore.QRect(10, 10, 371, 91))
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         ApplyCSS(self)
@@ -31552,7 +31638,7 @@ class Handshake(QtGui.QWidget):
     "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11px; font-weight:400; font-style:normal;\">\n"
     "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11px;\">" + _translate("","Somebody is trying to contact you using "+CoinSelect['name']+"! Your client is asking for the contract details. If you do not get a response you can always try to send the handshake request again. Be patient, it may take them a moment to get the message. If you wish to cancel it, you will not be able to undo the action.")+"</span></p></body></html>")
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
     def SendAgain(self):
@@ -31581,11 +31667,11 @@ class Handshake(QtGui.QWidget):
         self.hide()
 
 #initialization
-class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its possible to change interfaces later
+class MyApp(QtWidgets.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its possible to change interfaces later
     def __init__(self):
         global OnOrders, MyContracts, Markets, translations
         global CoinSelect, YandexAPI        
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.ApplicationPath = application_path.replace("\\","/")
         self.language=mylang
@@ -31602,7 +31688,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         self.notifytext=""
         self.checkonce=0
         #GCQT = GarbageCollector(self)
-        self.OfferTable.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.OfferTable.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
 
         if CoinSelect['moderngui']==1:
             self.actionDynamic_Peg_Info.triggered.connect(self.DynamicPegInfo)
@@ -31678,7 +31764,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         global accounttype
         accounttype=GetfromCfg("#accounttype#")
         #System tray
-        self.icon=QtGui.QSystemTrayIcon()
+        self.icon=QtWidgets.QSystemTrayIcon()
         r=self.icon.isSystemTrayAvailable()
         self.icon.setIcon( QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png') )
         self.icon.activated.connect(self.activate)
@@ -31718,10 +31804,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         self.AddEmail.clicked.connect(self.NewEmail)
         self.AddEmail_2.clicked.connect(self.CopyEmail)
         self.AttachImage.clicked.connect(lambda: self.AddImage())
-        QtCore.QObject.connect(self.HistorylistWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.HistoryClick)
-        QtCore.QObject.connect(self.MyPendingOffers, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.PendingClick)
-        QtCore.QObject.connect(self.ContactTable, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.ContactsClick)
-        QtCore.QObject.connect(self.MyOpenContracts, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.MyContractsClick)
+        self.HistorylistWidget.itemClicked.connect( self.HistoryClick)
+        self.MyPendingOffers.itemClicked.connect( self.PendingClick)
+        self.ContactTable.itemClicked.connect( self.ContactsClick)
+        self.MyOpenContracts.itemClicked.connect( self.MyContractsClick)
         self.FullHistory.cellChanged.connect(self.MyCellChanged)
         self.FullHistory.cellClicked.connect(self.FullHistoryClick)
         if CoinSelect['moderngui']==0:
@@ -31747,27 +31833,27 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         self.ExportToCSV.clicked.connect(self.MakeCSV)
         self.ClearHistory.clicked.connect(self.ClearHistoryDetail)
         self.AdvancedSend.clicked.connect(self.AdvanceMe)
-        self.MarketBox.connect(self.MarketBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.MarketChange)
+        self.MarketBox.currentIndexChanged.connect(self.MarketChange)
         self.JoinChan.clicked.connect(self.NewMarket)
         self.LeaveChan.clicked.connect(self.LeaveMarket)
         self.PostToMarket.clicked.connect(lambda: self.PostOffer())
         self.SettingsMarket.clicked.connect(self.Settings)
         self.Conversion.clicked.connect(self.ConvertMe)
         self.Search.clicked.connect(self.SearchMe)
-        self.ShowWhat.connect(self.ShowWhat,QtCore.SIGNAL("currentIndexChanged(int)"),self.SearchMe)
+        self.ShowWhat.currentIndexChanged.connect(self.SearchMe)
         self.Custom.clicked.connect(lambda: self.PostOffer("  Custom Offer"))
         self.BuyCoins.clicked.connect(lambda: self.PostOffer("Cash"))
         self.BuyAnything.clicked.connect(lambda: self.PostOffer("Market"))
         self.HireSomeone.clicked.connect(lambda: self.PostOffer("  Employ Someone"))
         self.FindJob.clicked.connect(lambda: self.PostOffer("  Find A Job"))
         self.Barter.clicked.connect(lambda: self.PostOffer("  Barter Items/Services"))
-        self.OfferTable.connect(self.OfferTable, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.openMenu)
+        self.OfferTable.customContextMenuRequested.connect( self.openMenu)
         self.OutboxButton.clicked.connect(self.ShowOutbox)
         self.OfferTable.cellPressed.connect(self.MarketsClick)
-        self.OfferBox.connect(self.OfferBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.OfferBoxChange)
-        self.BitAmount.connect(self.BitAmount, QtCore.SIGNAL("textChanged(const QString&)"), self.AmountTip)
+        self.OfferBox.currentIndexChanged.connect(self.OfferBoxChange)
+        self.BitAmount.textChanged.connect( self.AmountTip)
         self.OfferTable.horizontalHeader().sectionResized.connect(self.fitToTable)
-        self.Tabs.connect(self.Tabs,QtCore.SIGNAL("currentChanged(int)"),self.TabChange)
+        self.Tabs.currentChanged.connect(self.TabChange)
         #self.textBrowser.anchorClicked.connect(self.Navigate)
     def ChangeMyLanguage(self):
         ChangeLanguage()
@@ -31833,7 +31919,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 AdvanceArray['tabnotify']=1
             if self.checkonce==0 and CoinMarketCap==" ":#If this turns out to be slow, we can choose not to do this later
                 splash_px = QtGui.QPixmap(application_path+'/images/Exchange.png')
-                xsplash = QtGui.QSplashScreen(splash_px)
+                xsplash = QtWidgets.QSplashScreen(splash_px)
                 xsplash.setMask(splash_px.mask())   
                 xsplash.show()
                 xsplash.repaint()
@@ -31846,25 +31932,25 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 PopulateMarkets()
                 self.checkonce=1                
     def Encrypt_Decrypt(self):
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(500, 500)
         
         font = QtGui.QFont()
         font.setPixelSize(15)
-        IntroLabel = QtGui.QLabel(ewindow)
+        IntroLabel = QtWidgets.QLabel(ewindow)
         IntroLabel.setGeometry(QtCore.QRect(10, 10, 450, 30))
         IntroLabel.setMaximumSize(QtCore.QSize(300, 16777215))
         IntroLabel.setFont(font)
         IntroLabel.setObjectName(_fromUtf8("IntroLabel"))
         IntroLabel.setText("Please enter text to encrypt/decrypt here:")
 
-        ewindow.InputWin = QtGui.QTextEdit(ewindow)
+        ewindow.InputWin = QtWidgets.QTextEdit(ewindow)
         ewindow.InputWin.setGeometry(QtCore.QRect(10, 45, 480, 150))
         ewindow.InputWin.setMaximumSize(QtCore.QSize(480, 16777215))
         ewindow.InputWin.setFont(font)
         ewindow.InputWin.setObjectName(_fromUtf8("ewindow.InputWin"))
 
-        ewindow.OutputWin = QtGui.QTextEdit(ewindow)
+        ewindow.OutputWin = QtWidgets.QTextEdit(ewindow)
         ewindow.OutputWin.setGeometry(QtCore.QRect(10, 245, 480, 150))
         ewindow.OutputWin.setMaximumSize(QtCore.QSize(480, 16777215))
         ewindow.OutputWin.setFont(font)
@@ -31872,7 +31958,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         ewindow.OutputWin.setText("The result of your encrypted/decrypted text will show here.")
         ewindow.OutputWin.setReadOnly(True)
 
-        EncryptME = QtGui.QPushButton(ewindow)
+        EncryptME = QtWidgets.QPushButton(ewindow)
         EncryptME.setGeometry(QtCore.QRect(10, 450, 150, 30))
         EncryptME.setMaximumSize(QtCore.QSize(300, 16777215))
         EncryptME.setFont(font)
@@ -31880,7 +31966,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         EncryptME.setText(" Encrypt ")        
         def EncryptTHIS():           
             QuestionBox("Please open the public key you want to use for encryption. The encrypted message can then be decrypted by the corresponding private key."," OK ")
-            path = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the public key for encryption."),MacDir()+"","Share Key (*.share)")))
+            path = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the public key for encryption."),MacDir()+"","Share Key (*.share)")))[0]
             with open(path,'r') as f:
                 public=f.readline().strip()
                 public=f.readline().strip()
@@ -31893,7 +31979,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 QuestionBox("Encryption Failed! Are you sure you loaded a public key file? Make sure you have a valid public key.", " OK ")
             return
 
-        DecryptME = QtGui.QPushButton(ewindow)
+        DecryptME = QtWidgets.QPushButton(ewindow)
         DecryptME.setGeometry(QtCore.QRect(170, 450, 150, 30))
         DecryptME.setMaximumSize(QtCore.QSize(300, 16777215))
         DecryptME.setFont(font)
@@ -31901,7 +31987,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         DecryptME.setText(" Decrypt ")        
         def DecryptTHIS():          
             QuestionBox("Please open the private key you want to use for decryption."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key for decryption."),MacDir()+"","Private Key (*.private)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key for decryption."),MacDir()+"","Private Key (*.private)")[0]
             path = strOUT(strIN(path))
             dir1=os.path.dirname(path)
             key=os.path.basename(path)
@@ -31923,33 +32009,33 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
 
         ewindow.setWindowTitle("Encrypt/Decrypt")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-        ewindow.exec_()
+        ewindow.exec()
     def Sign_Verify(self):
-        ewindow=QtGui.QDialog()
+        ewindow=QtWidgets.QDialog()
         ewindow.resize(500, 500)        
         font = QtGui.QFont()
         font.setPixelSize(15)
-        IntroLabel = QtGui.QLabel(ewindow)
+        IntroLabel = QtWidgets.QLabel(ewindow)
         IntroLabel.setGeometry(QtCore.QRect(10, 10, 450, 30))
         IntroLabel.setMaximumSize(QtCore.QSize(300, 16777215))
         IntroLabel.setFont(font)
         IntroLabel.setObjectName(_fromUtf8("IntroLabel"))
         IntroLabel.setText("Please enter text to sign/verify here:")
 
-        ewindow.InputWin = QtGui.QTextEdit(ewindow)
+        ewindow.InputWin = QtWidgets.QTextEdit(ewindow)
         ewindow.InputWin.setGeometry(QtCore.QRect(10, 45, 480, 150))
         ewindow.InputWin.setMaximumSize(QtCore.QSize(480, 16777215))
         ewindow.InputWin.setFont(font)
         ewindow.InputWin.setObjectName(_fromUtf8("ewindow.InputWin"))
 
-        ewindow.OutputWin = QtGui.QTextEdit(ewindow)
+        ewindow.OutputWin = QtWidgets.QTextEdit(ewindow)
         ewindow.OutputWin.setGeometry(QtCore.QRect(10, 245, 480, 150))
         ewindow.OutputWin.setMaximumSize(QtCore.QSize(480, 16777215))
         ewindow.OutputWin.setFont(font)
         ewindow.OutputWin.setObjectName(_fromUtf8("ewindow.OutputWin"))
         ewindow.OutputWin.setText("The result of your signed text will show here. If you wish to verify the text or file above, please enter the corresponding signature in this box.")
         #ewindow.OutputWin.setReadOnly(True)
-        AddFile = QtGui.QPushButton(ewindow)
+        AddFile = QtWidgets.QPushButton(ewindow)
         AddFile.setGeometry(QtCore.QRect(330, 450, 150, 30))
         AddFile.setMaximumSize(QtCore.QSize(300, 16777215))
         AddFile.setFont(font)
@@ -31957,12 +32043,12 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         AddFile.setText(" Upload File ")
         def AddTHIS():          
             QuestionBox("Please open the file you wish to sign/verify. The software will generate a hash of the file which will be used for signing and verification."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the file you wish to use."),MacDir()+"","All Files (*.*)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the file you wish to use."),MacDir()+"","All Files (*.*)")[0]
             path = strOUT(strIN(path))
             ewindow.InputWin.setText(checksum_sha256(path))
             return
 
-        SignME = QtGui.QPushButton(ewindow)
+        SignME = QtWidgets.QPushButton(ewindow)
         SignME.setGeometry(QtCore.QRect(10, 450, 150, 30))
         SignME.setMaximumSize(QtCore.QSize(300, 16777215))
         SignME.setFont(font)
@@ -31970,7 +32056,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         SignME.setText(" Sign ")
         def SignTHIS():          
             QuestionBox("Please open the private key you want to use for signing."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key for signing."),MacDir()+"","Private Key (*.private)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the private key for signing."),MacDir()+"","Private Key (*.private)")[0]
             path = strOUT(strIN(path))
             dir1=os.path.dirname(path)
             key=os.path.basename(path)
@@ -31987,7 +32073,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 QuestionBox("Signature Failed!"," OK ")
             return
 
-        VerifyME = QtGui.QPushButton(ewindow)
+        VerifyME = QtWidgets.QPushButton(ewindow)
         VerifyME.setGeometry(QtCore.QRect(170, 450, 150, 30))
         VerifyME.setMaximumSize(QtCore.QSize(300, 16777215))
         VerifyME.setFont(font)
@@ -31998,7 +32084,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 QuestionBox("Please enter the signature that you wish to verify in the second box. This signature will be verified by it's corresponding public key."," OK ")
                 return
             QuestionBox("Please open the public key you want to use for verifying the signature."," OK ")
-            path = QtGui.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the public key for verification."),MacDir()+"","Share Key (*.share)")
+            path = QtWidgets.QFileDialog.getOpenFileName(ewindow,Gtranslate("Please open the public key for verification."),MacDir()+"","Share Key (*.share)")[0]
             path = strOUT(strIN(path))
             with open(path,'r') as f:
                 public=f.readline().strip()
@@ -32022,7 +32108,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
 
         ewindow.setWindowTitle("Sign/Verify")
         ewindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-        ewindow.exec_()
+        ewindow.exec()
     def fitToTable(self):
         global CustomColumns
         CustomColumns=[]
@@ -32031,24 +32117,24 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
     def DebugConsole(self):
         if True:#debug != 1:
             global dwindow
-            dwindow=QtGui.QDialog()
+            dwindow=QtWidgets.QDialog()
             dwindow.resize(500, 500)            
             font = QtGui.QFont()
             font.setPixelSize(15)
-            IntroLabel = QtGui.QLabel(dwindow)
+            IntroLabel = QtWidgets.QLabel(dwindow)
             IntroLabel.setGeometry(QtCore.QRect(10, 10, 250, 30))
             IntroLabel.setMaximumSize(QtCore.QSize(300, 16777215))
             IntroLabel.setFont(font)
             IntroLabel.setObjectName(_fromUtf8("IntroLabel"))
             IntroLabel.setText("Please enter python command here:")
 
-            dwindow.InputWin = QtGui.QTextEdit(dwindow)
+            dwindow.InputWin = QtWidgets.QTextEdit(dwindow)
             dwindow.InputWin.setGeometry(QtCore.QRect(10, 45, 480, 150))
             dwindow.InputWin.setMaximumSize(QtCore.QSize(480, 16777215))
             dwindow.InputWin.setFont(font)
             dwindow.InputWin.setObjectName(_fromUtf8("dwindow.InputWin"))
 
-            dwindow.OutputWin = QtGui.QTextEdit(dwindow)
+            dwindow.OutputWin = QtWidgets.QTextEdit(dwindow)
             dwindow.OutputWin.setGeometry(QtCore.QRect(10, 245, 480, 150))
             dwindow.OutputWin.setMaximumSize(QtCore.QSize(480, 16777215))
             dwindow.OutputWin.setFont(font)
@@ -32056,7 +32142,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             dwindow.OutputWin.setText("Please store output to the variable 'text' if you want it seen here. Also proceed with caution, you can interact with live code and the python interpreter. Only use this if you are familiar with the Halo source code.")
             dwindow.OutputWin.setReadOnly(True)
 
-            RunCode = QtGui.QPushButton(dwindow)
+            RunCode = QtWidgets.QPushButton(dwindow)
             RunCode.setGeometry(QtCore.QRect(10, 450, 150, 30))
             RunCode.setMaximumSize(QtCore.QSize(300, 16777215))
             RunCode.setFont(font)
@@ -32068,7 +32154,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
 
             dwindow.setWindowTitle("Python Interpreter Debugger")
             dwindow.setWindowIcon(QtGui.QIcon(application_path+'/images/' + CoinSelect['HaloName'] + '.png'))
-            dwindow.exec_()
+            dwindow.exec()
     def UnlockWallet(self):
         global unlockpasswords, keysconnected, lockforspending
         if unlockpasswords!=["",""]:
@@ -32173,7 +32259,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             ordernumber=""
         if ordernumber == "":
             return
-        menu = QtGui.QMenu()
+        menu = QtWidgets.QMenu()
         if Markets['Sort'][0]<2:
             sortAction = menu.addAction("Sort Ascending")
         if Markets['Sort'][0]==2:
@@ -32227,7 +32313,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     return
                 Reply['MyBMAddress']=BitAddr
                 Reply['TheirBMAddress']=Markets['MyMarkets'][cur]
-                Reply['ordernumber']=os.urandom(16).encode('hex')
+                Reply['ordernumber']=safe_hexlify(os.urandom(16))
                 Reply['banlist']=[ordernumber]
                 data=ModerationCheck(multisig, priv, Reply)
                 if data==False:
@@ -32259,7 +32345,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 priv=ModeratorPrivateKey
                 Reply['MyBMAddress']=BitAddr
                 Reply['TheirBMAddress']=Markets['MyMarkets'][cur]
-                Reply['ordernumber']=os.urandom(16).encode('hex')
+                Reply['ordernumber']=safe_hexlify(os.urandom(16))
                 Reply['banlist']=[ordernumber]
                 data=ModerationCheck(multisig, priv, Reply)
                 if data==False:
@@ -32288,7 +32374,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 priv=ModeratorPrivateKey
                 Reply['MyBMAddress']=BitAddr
                 Reply['TheirBMAddress']=Markets['MyMarkets'][cur]
-                Reply['ordernumber']=os.urandom(16).encode('hex')
+                Reply['ordernumber']=safe_hexlify(os.urandom(16))
                 for ord1 in Markets['Orders']:
                     if ord1['ordernumber']==ordernumber:
                         break
@@ -32370,14 +32456,14 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
 
         priv,check=DecryptPrivateKey(PrivKeyFilename1,PrivKeyFiledir1,"0")
         priv2,check=DecryptPrivateKey(PrivKeyFilename2,PrivKeyFiledir2,"0")
-        sig = multisign(tmptx.decode('hex'),0,mscript.decode('hex'),priv)#Adding a 2 will make it SIGHASH_NONE
-        sig2 = multisign(tmptx.decode('hex'),0,mscript.decode('hex'),priv2)
+        sig = multisign(safe_unhexlify(tmptx),0,safe_unhexlify(mscript),priv)#Adding a 2 will make it SIGHASH_NONE
+        sig2 = multisign(safe_unhexlify(tmptx),0,safe_unhexlify(mscript),priv2)
         #With special SIGHASH, we should check the rules carefully about sequence numbers.
         sigs=[]
         sigs.append(sig2)
         sigs.append(sig)
         #The sigs will need to be reversed if the order was different
-        print "PRINT X TO ABORT"
+        print("PRINT X TO ABORT")
         c=m.getch()
         if c=="x":
             return
@@ -32386,8 +32472,8 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             rspns = BLK.sendrawtransaction(tx)
         except:
             rspns = "TX rejected"
-        print rspns
-        print txhash(tx)
+        print(rspns)
+        print(txhash(tx))
     def PostOffer(self, template=""):
         HideWindows()
         window.ClearPage()
@@ -32415,7 +32501,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             if template==7:template="  Barter Items/Services"
             if template==8:template="  Custom Offer"
         else:
-            index = window.OfferBox.findText(template, QtCore.Qt.MatchFixedString)
+            index = window.OfferBox.findText(template, QtCore.Qt.MatchFlag.MatchFixedString)
             if index >= 0:
                  window.OfferBox.setCurrentIndex(index)
         if template=="  Select Offer Type":
@@ -32491,7 +32577,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         UpdateMarketList()
         PopulateMarkets()
     def NewMarket(self):
-        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the market name you wish to create or join:'))
+        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the market name you wish to create or join:'))
         try:
             text=str(text)
         except:
@@ -32521,7 +32607,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         AdvancedWindow.BitAmount.setText("")
         AdvancedWindow.BitPayTo_2.setText("")
         AdvancedWindow.BitAmount_2.setText("")
-        AdvancedWindow.Autosign.setCheckState(0)
+        AdvancedWindow.Autosign.setCheckState(QtCore.Qt.CheckState(0))
         AdvancedWindow.Note.hide()
         if multisig in AdvanceArray:
             if 'AutoSign' not in AdvanceArray[multisig]:
@@ -32529,9 +32615,9 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             if 'ForwardEmail' not in AdvanceArray[multisig]:
                 AdvanceArray[multisig]['ForwardEmail']=""
             if AdvanceArray[multisig]['AutoSign']==1:
-                AdvancedWindow.Autosign.setCheckState(2)
+                AdvancedWindow.Autosign.setCheckState(QtCore.Qt.CheckState(2))
             else:
-                AdvancedWindow.Autosign.setCheckState(0)
+                AdvancedWindow.Autosign.setCheckState(QtCore.Qt.CheckState(0))
             AdvancedWindow.ForwardEmail.setText(str(AdvanceArray[multisig]['ForwardEmail']))
         AdvancedWindow.comboBox.setCurrentIndex(0)
         my_time = QtCore.QDateTime()
@@ -32551,10 +32637,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         AdvancedWindow.show()
     def MakeJointAccount(self):
         global MyEmail,BitHaloClient, CoinSelect, clientversion, currentblock
-        path = strIN(QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Create your joint account key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)"))
+        path = strIN(QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Create your joint account key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)"))[0]
         if path=="":
             return
-        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the counterparties email or Bitmessage address:'))
+        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the counterparties email or Bitmessage address:'))
         if text=="":
             NewWallet(strOUT(path))
             QuestionBox("You have created one private key. Since you have skipped sending the shared public key by email, you will need to combine your new key manually by opening the account with your key and your counterparties shared key. You can trade .share files with another party if you want a joint account.", "OK")
@@ -32587,7 +32673,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         Reply['currentblock']=CurrentBlock
 
         Reply['Command']='Send'
-        Reply['ordernumber']=os.urandom(16).encode('hex')#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
+        Reply['ordernumber']=safe_hexlify(os.urandom(16))#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
         Reply['public']=str(data1[2])
         Reply['TheirBMAddress']=text
         Reply['BitHaloClient']=BitHaloClient
@@ -32618,7 +32704,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         PopulateHistory()
     def MakeCSV(self):
         multisig,multiscript=create_multisig_address(PrivKeyFilename1)
-        path = strOUT(strIN(QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Please choose the name and location for the CSV file."),MacDir()+"","CSV (*.csv)")))#date label amount[0]['Details']
+        path = strOUT(strIN(QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Please choose the name and location for the CSV file."),MacDir()+"","CSV (*.csv)")))[0] #date label amount[0]['Details']
         fieldnames = ['version', 'timestamp', 'currentblock', 'Label', 'Amount', 'fee', 'address', 'Confirmation TXID', 'tx3', 'txid', 'inputs', 'output', 'outputs', 'date', 'total', 'FROM', 'ContractResult', 'theiraddress', 'amount', 'whopays', 'mydeposit','theirdeposit','instantamount', 'instantwhopays','timeout','ordernumber','description']
         test_file = open(path,'wb')
         csvwriter = csv.DictWriter(test_file, delimiter=',', fieldnames=fieldnames, extrasaction='ignore')
@@ -32638,7 +32724,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         except:
             pass
         #for d in HistoryDetail[multisig][x]['Details']:
-        #   print d
+        #   print(d)
         #   m.getch()
         if y > 0:
             if 'rating' in HistoryDetail[multisig][x]['Details']:
@@ -32996,7 +33082,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         NM=GetfromCfg("#Notify#")
         MM=GetfromCfg("#Market#")
         SM=GetfromCfg("#Spam#")
-        print NM, MM, SM
+        print(NM, MM, SM)
     def ConnectNotify(self):
         global AdvanceArray
         text=str(self.notifytext)
@@ -33033,11 +33119,11 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             Notification(0, "")
     def AddImage(self, mywin=""):
         global GlobalImage, interneton, GlobalID #The string usually exceeds the limit
-        output = StringIO.StringIO() #We only save the image in memory
+        output = BytesIO() #We only save the image in memory
         if mywin=="":
-            path = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Please choose the image you want to attach."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))
+            path = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Please choose the image you want to attach."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))[0]
         else:
-            path = strOUT(strIN(QtGui.QFileDialog.getOpenFileName(Templates,Gtranslate("Please choose the image you want to attach."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))
+            path = strOUT(strIN(QtWidgets.QFileDialog.getOpenFileName(Templates,Gtranslate("Please choose the image you want to attach."),MacDir()+"","Image File (*.jpg *.jpeg *.png *.bmp)")))[0]
         try:            
             output=ResizeImage(path, 20000,1)            
             mybytes= base64.b64encode(output.getvalue())
@@ -33056,7 +33142,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     if ID == False:
                         float("A")
                     GlobalID=str(ID)
-                    print GlobalID
+                    print(GlobalID)
                 else:
                     float("A")
             except:
@@ -33064,7 +33150,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 QuestionBox("Online Pastebin not used. If using Bitmessage, sending the message with the image might take up to 30 minutes.", "OK")
             output.close()
             output=""
-        except Exception, e:
+        except Exception as e:
             output.close()
             output=""
             traceback.print_exc()
@@ -33080,7 +33166,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         except:
             text=""
         if y==0:
-            self.FullHistory.setItem(x, y, QtGui.QTableWidgetItem(text))
+            self.FullHistory.setItem(x, y, QtWidgets.QTableWidgetItem(text))
             HistoryDetail[multisig][x]['Label']=text
             try:
                 SaveOtherdata()
@@ -33214,7 +33300,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             QuestionBox("Not connected to the internet!", "OK")
             return
         if self.EmailBox.text()=="":
-            text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the email address:'))
+            text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the email address:'))
         else:
             text=str(self.EmailBox.text())
         if str(text)=="":
@@ -33222,10 +33308,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         if AdvanceArray['MySettings']['AntiLogger']:
             AntiLogger.setWindowTitle("Please enter the email password:")
             AntiLogger.reset()
-            AntiLogger.exec_()                
+            AntiLogger.exec()                
             text1=str(AntiLogger.inputString)
         else:
-            text1, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the email password:'), QtGui.QLineEdit.Password)
+            text1, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the email password:'), QtWidgets.QLineEdit.Password)
         if str(text1)=="":
             return
         self.EmailStatus.setText(Gtranslate("Authenticating and sending test message..."))
@@ -33264,14 +33350,14 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             connection.login(username, EmailPassword)
             connection.sendmail(username, username, headers+"\r\n\r\n"+str("Test"))
             connection.close()
-        except Exception, e:
+        except Exception as e:
             try:
                 connection.close()
             except:
                 pass
             ret = False
         if ret==False:
-            print str(e)
+            print(str(e))
             QuestionBox(Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail.\n\nReply from server:\n")+str(e), Gtranslate("OK"),1)
             self.EmailStatus.setText("")
             return
@@ -33373,12 +33459,12 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             Contact={}
         if Contact=={}:
             #This is primitive it will be improved upon
-            text, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Enter a nickname for this contact:'))
+            text, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Enter a nickname for this contact:'))
             if str(text)=="":
                 return
-            text1, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the BitMessage address:'))
-            text2, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the '+CoinSelect['name']+' address:'))
-            text3, ok = QtGui.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the Email address:'))
+            text1, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the BitMessage address:'))
+            text2, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the '+CoinSelect['name']+' address:'))
+            text3, ok = QtWidgets.QInputDialog.getText(window, CoinSelect['HaloName'], Gtranslate('Please enter the Email address:'))
             if str(text1)=="":
                 if str(text2)=="":
                     if str(text3)=="":
@@ -33417,7 +33503,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         SaveContracts()
     def BackContacts(self):
         global OnOrders
-        privpath1 = strOUT(strIN(QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location for your backup."),MacDir()+"MyContacts.dat","Contacts File (*.dat)")))
+        privpath1 = strOUT(strIN(QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location for your backup."),MacDir()+"MyContacts.dat","Contacts File (*.dat)")))[0]
         if privpath1=="":
             return
         for o in OnOrders:
@@ -33467,7 +33553,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         WinContacts.show()
     def Navigate(self, item):
         t=str(item)
-        t=t.lstrip("PyQt4.QtCore.QUrl(u'")
+        t=t.lstrip("PyQt6.QtCore.QUrl(u'")
         t=t.rstrip("')")
         webbrowser.open(t)
     def RefreshDownload(self):
@@ -33629,11 +33715,11 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 ltot-=ftot                                                                         
                 rtot+=ftot
                 if ltot==0:
-                    outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(PendingSelected['inputs'][0]['value'])-int(PendingSelected['fee'])),'script':address_to_script(multisig)}]
+                    outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(PendingSelected['inputs'][0]['value'])-int(PendingSelected['fee'])),'script':address_to_script(multisig)}]
                 else:
                     outs=[]
                     if rtot!=0:
-                        outs=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                        outs=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                     outs.append({'value':(int(PendingSelected['inputs'][0]['value'])-int(PendingSelected['fee'])-int(rtot)),'script':address_to_script(multisig)})
                 ins=[PendingSelected['inputs'][0]]
             else:
@@ -33725,7 +33811,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 try:
                     #b64img=GlobalImage
                     #b64img += "=" * ((4 - len(b64img) % 4) % 4) #This is for incorrect padding error
-                    image_string = StringIO.StringIO(base64.b64decode(b64img))
+                    image_string = BytesIO(base64.b64decode(b64img))
                     image = Image.open(image_string)
                     tup=image.size
                     width=tup[0]
@@ -33740,7 +33826,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     data+="<img src=\"data:image/png;base64,"+b64img+"\"/>"
                     image_string.close()
                     image_string=""
-                except Exception, e:
+                except Exception as e:
                     image_string.close()
                     image_string=""
                     traceback.print_exc()
@@ -33789,7 +33875,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 try:
                     #b64img=GlobalImage
                     #b64img += "=" * ((4 - len(b64img) % 4) % 4) #This is for incorrect padding error
-                    image_string = StringIO.StringIO(base64.b64decode(b64img))
+                    image_string = BytesIO(base64.b64decode(b64img))
                     image = Image.open(image_string)
                     tup=image.size
                     width=tup[0]
@@ -33804,7 +33890,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     data+="<img src=\"data:image/png;base64,"+b64img+"\"/>"
                     image_string.close()
                     image_string=""
-                except Exception, e:
+                except Exception as e:
                     image_string.close()
                     image_string=""
                     traceback.print_exc()
@@ -33936,10 +34022,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     SaveContracts()
                     return
                 try:
-                    privpath1 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Create your joint account key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)")
+                    privpath1 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Create your joint account key and store it somewhere you will remember."),MacDir()+"key1.private","Private Key File (*.private)")[0]
                     file1=QtCore.QDir(privpath1)
-                    filedir1=strOUT(strIN(QtCore.QString(file1.path().replace(file1.dirName(),""))))
-                    file1=strOUT(strIN(QtCore.QString(file1.dirName())))
+                    filedir1=strOUT(strIN(str(file1.path().replace(file1.dirName(),""))))
+                    file1=strOUT(strIN(str(file1.dirName())))
                     tmp,pub,priv=create_tmp_address_and_store_keypair(file1,filedir1,current['public'])
                     if pub=="":
                         return
@@ -33956,7 +34042,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 Reply['currentblock']=CurrentBlock
 
                 Reply['oldordernumber']=current['ordernumber']#We send this to make sure they dont keep re-reading the same messages. Its not turn based anymore.
-                Reply['ordernumber']=os.urandom(16).encode('hex')
+                Reply['ordernumber']=safe_hexlify(os.urandom(16))
                 Reply['public']=pub
                 Reply['TheirBMAddress']=current['TheirBMAddress']
                 Reply['MyBMAddress']=current['MyBMAddress']
@@ -33982,7 +34068,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             current=(str(t).split(' Order number: ')[1].split('  Their Address: ')[0]).strip()
             PendingSelected = GetCurrentOrder(current)
             current=PendingSelected
-            text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this payment:'), QtGui.QLineEdit.Password)
+            text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this payment:'), QtWidgets.QLineEdit.Password)
             priv = password.DecryptWithAES(str("Halo Master"), current['priv'])
             priv = priv.replace("PASSWORDPROTECTED:","")
             try:
@@ -34031,11 +34117,11 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     ltot-=ftot                                                                         
                     rtot+=ftot
                     if ltot==0:
-                        p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(current['amount'])-int(current['fee'])),'script':address_to_script(multisig)}]
+                        p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(current['amount'])-int(current['fee'])),'script':address_to_script(multisig)}]
                     else:
                         p2mouts=[]
                         if rtot!=0:
-                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                         p2mouts.append({'value':(int(current['amount'])-int(current['fee'])-int(rtot)),'script':address_to_script(multisig)})
                     tmptx = mktx_script(timestamp,[{'output':str(current['Confirmation TXID'])+":0",'value':int(current['amount']),'address':str(current['Temporary Address'])}],p2mouts)
                 else:
@@ -34066,7 +34152,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 except:
                     NetSplash(0)
                     rspns = "TX rejected"
-                    print tx
+                    print(tx)
             if "TX rejected" in str(rspns):
                 if current['currentblock']==0 and CurrentBlock > 11:
                     current['currentblock']=CurrentBlock-10
@@ -34097,7 +34183,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
     def BrowseBackup(self):     
         privpath1="contracts.dat"
         while "contracts.dat" in privpath1.lower():
-            privpath1 = strOUT(strIN(QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location for your backup."),MacDir()+"ContractsBackup.dat","Contract File (*.dat)")))
+            privpath1 = strOUT(strIN(QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location for your backup."),MacDir()+"ContractsBackup.dat","Contract File (*.dat)")))[0]
             if "contracts.dat" in privpath1.lower():
                 QuestionBox("Please choose a different name for your backup path.", "OK")
             elif "pegdatabase" in privpath1.lower():
@@ -34159,7 +34245,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                         else:
                             liq[str(l)]+=i['liquidity'][a][str(l)]
         rating=ThePeg.rateliquidity(liq)
-        print "Liquidity: " + str(rating)
+        print("Liquidity: " + str(rating))
         return rating[0]
     def SendMyContract(self, apicontract=None, mode=1):
         global Spendable, OnOrders, MyContracts, updatesomething, MyEmail, BitHaloClient, GlobalImage, Markets, GlobalID, SALT, SilenceUI, globperc, exoticnotify, btcfeekb, myblockcount
@@ -34920,7 +35006,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         Order['timestamp']=timest
         if Counter == 0 and Accept == 0:
             Order['theiraddress']=multisig#We will change this later for ourselves when we receive their address upon confirmation
-            Order['ordernumber']=os.urandom(16).encode('hex')#If its a counter we already have this number
+            Order['ordernumber']=safe_hexlify(os.urandom(16))#If its a counter we already have this number
             Order['status']="offer"
             Order['version']=CoinSelect['HaloName'] + " " + clientversion
             Order['lock']="0" #This will start a lock so that your contracts are tightly controlled from manipulation. Its turn based. First digit states you are number one and the second digit says its their turn
@@ -34995,7 +35081,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                             break
                         i+=1
             except:
-                print "Exception removing private market order"
+                print("Exception removing private market order")
         if Accept == 0:
             Order['tx1']=txhash(tx)
             Order['tx1raw']=tx
@@ -35068,10 +35154,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                         f+=1
                     if theirtotal!=0:
                         theirtotal+=int(co['fee']*f)#They spent one funding temporary
-                    theirs['output']=unicode(str(co['tx1'])+":0")#Using insert above it should always be vout 0
+                    theirs['output']=str(str(co['tx1'])+":0")#Using insert above it should always be vout 0
                     theirs['value']=theirtotal
                     theirs['address']=co['theirtemp']
-                    mine['output']=unicode(str(txhash(tx))+":0")
+                    mine['output']=str(str(txhash(tx))+":0")
                     mine['value']=mytotal
                     mine['address']=tempaccount
                     if mytotal!=0:
@@ -35095,14 +35181,14 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     try:
                         if mytotal!=0:
                             if BitHaloClient == True:
-                                sigg=pybit.transaction.multisign(tmptx.decode('hex'),0,tempsig.decode('hex'),priv)
+                                sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),0,safe_unhexlify(tempsig),priv)
                                 sigs7.append(sigg)
-                                sigg=pybit.transaction.multisign(tmptx.decode('hex'),0,tempsig.decode('hex'),priv2)
+                                sigg=pybit.transaction.multisign(safe_unhexlify(tmptx),0,safe_unhexlify(tempsig),priv2)
                                 sigs7.append(sigg)
                             else:
-                                sigg=multisign(tmptx.decode('hex'),0,tempsig.decode('hex'),priv)
+                                sigg=multisign(safe_unhexlify(tmptx),0,safe_unhexlify(tempsig),priv)
                                 sigs7.append(sigg)
-                                sigg=multisign(tmptx.decode('hex'),0,tempsig.decode('hex'),priv2)
+                                sigg=multisign(safe_unhexlify(tmptx),0,safe_unhexlify(tempsig),priv2)
                                 sigs7.append(sigg)
                     except:
                         QuestionBox("The escrow signature was rejected!", "OK")
@@ -35149,7 +35235,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                             orig=1
                             MyContracts[pos3]['oldordernumber']=MyContracts[pos3]['ordernumber']
                         AccOrder['oldordernumber']=MyContracts[pos3]['ordernumber']
-                        MyContracts[pos3]['ordernumber']=os.urandom(16).encode('hex')
+                        MyContracts[pos3]['ordernumber']=safe_hexlify(os.urandom(16))
                         AccOrder['ordernumber']=MyContracts[pos3]['ordernumber']
                         Order['ordernumber']=AccOrder['ordernumber']
                         AccOrder['Process']="Market Accept"
@@ -35280,12 +35366,12 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                         MyContracts[pos]['currentblock']=CurrentBlock
                     if 'MCount' in c['Process']:
                         MyContracts[pos]['Process']="MCount"+str(int(c['Process'].replace('MCount',""))+1)
-                        MyOrd=os.urandom(16).encode('hex')+"##"+MyContracts[pos]['ordernumber']
+                        MyOrd=safe_hexlify(os.urandom(16))+"##"+MyContracts[pos]['ordernumber']
                         MyContracts[pos]['lock']='0'
                     if c['Process']=="Market Order":
                         MyContracts[pos]['Market Data']['oldordernumber']=MyContracts[pos]['ordernumber']
                         MyContracts[pos]['oldordernumber']=MyContracts[pos]['ordernumber']
-                        MyOrd=os.urandom(16).encode('hex')
+                        MyOrd=safe_hexlify(os.urandom(16))
                         MyContracts[pos]['ordernumber']=MyOrd
                         MyContracts[pos]['Process']="MCount0"
                         MyContracts[pos]['lock']='0'
@@ -35607,7 +35693,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         NewOrder['change']=str(Decimal(Total)/Decimal(1e8)-Decimal(satoshis)/Decimal(1e8)-Decimal(fee)/Decimal(1e8))
         NewOrder['currentblock']=CurrentBlock
         NewOrder['Confirmation TXID']=txhash(txE)
-        NewOrder['ordernumber']=os.urandom(16).encode('hex')
+        NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
         NewOrder['inputs']=inputs
         NewOrder['output']=txoutputs
         OnOrders.append(NewOrder)
@@ -35691,7 +35777,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             txid=str(t.split("Transaction ID: ")[1].split("\tSpendable: ")[0])
             meaning=translate_script(NEWTxidLookup[txid]['script'])                       
             if "(password protected)" in t:
-                text, ok = QtGui.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the password to unlock this payment:'))
+                text, ok = QtWidgets.QInputDialog.getText(self, "Halo", Gtranslate('Please enter the password to unlock this payment:'))
                 text=str(text)
                 pw=1                                                        
                 if meaning['before']==multisig and meaning['hashbefore']!="":
@@ -35766,7 +35852,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     if order['currentblock']+144<CurrentBlock:#It must be at least one day to get a refund
                         priv = password.DecryptWithAES("Halo Master", order['priv'])
                         if "PASSWORDPROTECTED:" in priv:
-                            text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this private key:'), QtGui.QLineEdit.Password)
+                            text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this private key:'), QtWidgets.QLineEdit.Password)
                             try:
                                 priv=priv.replace("PASSWORDPROTECTED:","")
                                 priv = password.DecryptWithAES(str(text), priv)
@@ -35808,11 +35894,11 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                                     ltot-=ftot                                                                         
                                     rtot+=ftot
                                     if ltot==0:
-                                        p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':(int(order['amount'])-int(order['fee'])),'script':address_to_script(multisig)}]
+                                        p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':(int(order['amount'])-int(order['fee'])),'script':address_to_script(multisig)}]
                                     else:
                                         p2mouts=[]
                                         if rtot!=0:
-                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**F**1'))/2)).encode('hex')+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
+                                            p2mouts=[{'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**F**1'))/2)))+hexlify('**F**1')},{'value':int(rtot),'script':address_to_script(multisig)}]
                                         p2mouts.append({'value':(int(order['amount'])-int(order['fee'])-int(rtot)),'script':address_to_script(multisig)})
                                     tmptx = mktx_script(timestamp,[{'output':str(order['Confirmation TXID'])+":0",'value':int(order['amount']),'address':str(multisig)}],p2mouts)
                                 else:
@@ -35831,7 +35917,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                                     rspns = "TX rejected"
                             if "TX rejected" in str(rspns):
                                 QuestionBox(str(rspns), "OK")
-                                print float("A")
+                                print(float("A"))
                                 return
                             QuestionBox(str(txhash(tx))+Gtranslate("\nSuccess! It may take a moment to reflect in your balance."), Gtranslate("OK"),1)
                             AdvanceArray['clearnotxid']=1
@@ -36208,7 +36294,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     vpos+=1
                 thetxid = txhash(str([mintthis['w'],int(mintthis['n']),mintthis['f'],mintthis['a'],int(mintthis['s']),mintthis['r']]))+":0"
                 inputs=[{'output':thetxid,'value':balance2,'address':address}]
-                #print str(inputs) + "\n\n" + str(outputs) + "\n"
+                #print(str(inputs) + "\n\n" + str(outputs) + "\n")
         except:
             traceback.print_exc()
             QuestionBox("Minting receipt was not valid", "OK")
@@ -36289,7 +36375,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                                     addthese.append({'value':5579,'address':meaning2['destination']})
                                     nfee+=5579
                 except:
-                    print "Could not find exotic input"
+                    print("Could not find exotic input")
         if addthese != []:
             amount+=nfee
             feenotify=1
@@ -36328,7 +36414,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 if len(apicontract['burn'])>20:#Maximum is 40 bytes
                     return False, "Burn length is more than 20 characters"
                 burntext=hexlify(apicontract['burn'])
-                hexleng=num_to_var_int((len(burntext)/2)).encode('hex')
+                hexleng=num_to_var_int(safe_hexlify((len(burntext)/2)))
                 for addy in apicontract['notify']:
                     outputs.append({'value':5599,'script':str("6a"+hexleng+burntext)})
                     outputs.append({'value':5560,'address':addy})
@@ -36399,13 +36485,13 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                             theamt=0
                             break
                 if batch > 0 or theamt > 0:
-                    print str(SpendThis)
+                    print(str(SpendThis))
                     QuestionBox("Not enough funds!","OK")
                     return False, "Not enough funds!"
                 inx=len(outs1)
                 for i in outs1:
                     sfee+=5590
-                    outs2.append({'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)).encode('hex')+hexlify('**'+str(ftype)+'**'+str(inx))})
+                    outs2.append({'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)))+hexlify('**'+str(ftype)+'**'+str(inx))})
                     inx+=1
                 inx=0
                 for i in outs2:
@@ -36451,7 +36537,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             mybytes=mybytes*2
         if BitHaloClient ==  False:
             if mybytes>(int(fee)):
-                print str(fee)
+                print(str(fee))
                 QuestionBox(Gtranslate("The fee is not high enough to cover the inputs.\n\nRecommended Fee:\n") + str(Decimal(mybytes)/Decimal(1e8)), Gtranslate("OK"),1)
                 return False, "The fee is not high enough to cover the inputs.\n\nRecommended Fee:\n" + str(Decimal(mybytes)/Decimal(1e8))
         else:
@@ -36466,9 +36552,9 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         if SCRIPT==1 and bridgetx==0:
             if meaning['type']!="Notary/Burn":
                 if BitHaloClient==False:
-                    condaddr = scriptaddr(address.decode('hex'))
+                    condaddr = scriptaddr(safe_unhexlify(address))
                 else:
-                    condaddr = pybit.transaction.scriptaddr(address.decode('hex'))
+                    condaddr = pybit.transaction.scriptaddr(safe_unhexlify(address))
             else:
                 if Decimal(orgamount)==Decimal("0.0001"):
                     res=QuestionBox("Notary/Burn will cost you 0.0001 coins, would you like to proceed?", "Yes", "No")
@@ -36503,14 +36589,14 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 out={'value':amount-apifee-nfee,'address':tmpaddr}
                 outputs.insert(0,out)
                 P2MWindow.initwindow()
-                res=P2MWindow.exec_()
+                res=P2MWindow.exec()
                 if res==0:
                     return False, "Pay to email canceled"
                 #We get a password for the pay to email. I tried hiding it in a jpeg. However most email providers don't allow inline images. I would have to do it as a mime. So for now, its just encrypted data
                 if Password=="":
                     if P2MWindow.checkBox.checkState() == 2:
-                        text, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this payment:'), QtGui.QLineEdit.Password)
-                        text1, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Confirm the password for this payment:'), QtGui.QLineEdit.Password)
+                        text, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Enter the password for this payment:'), QtWidgets.QLineEdit.Password)
+                        text1, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Confirm the password for this payment:'), QtWidgets.QLineEdit.Password)
                         if str(text) == "":
                             return False, ""
                         if text != text1:
@@ -36535,9 +36621,9 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 nm=CoinSelect['name']
                 if CoinSelect['name'] != "BitBay":
                     nm+="s"
-                content= message+"You have received a payment of "+str(dropzeros((Decimal(amount)/Decimal(1e8))-(Decimal(fee)/Decimal(1e8)),1))+" "+nm+"! Please do not delete this email.<br \>If you are new to Cryptocurrency, somebody may have sent you these coins as a 'Tip'. If you were expecting a payment then please open " + CoinSelect['HaloName'] + ".<br \>Make sure you have this specific email account loaded into Halo to redeem the coins. If the coins are password protected, please ask the counter-party<br \>for the password. If you have not yet downloaded "+CoinSelect['HaloName'] + " then please do so here...<br \><br \>"
-                content+="<a href='"+CoinSelect['website']+"'>"+CoinSelect['website']+"</a ><br \><br \>"
-                ordernumber=os.urandom(16).encode('hex')
+                content= message+"You have received a payment of "+str(dropzeros((Decimal(amount)/Decimal(1e8))-(Decimal(fee)/Decimal(1e8)),1))+" "+nm+"! Please do not delete this email.<br />If you are new to Cryptocurrency, somebody may have sent you these coins as a 'Tip'. If you were expecting a payment then please open " + CoinSelect['HaloName'] + ".<br />Make sure you have this specific email account loaded into Halo to redeem the coins. If the coins are password protected, please ask the counter-party<br />for the password. If you have not yet downloaded "+CoinSelect['HaloName'] + " then please do so here...<br /><br />"
+                content+="<a href='"+CoinSelect['website']+"'>"+CoinSelect['website']+"</a><br /><br />"
+                ordernumber=safe_hexlify(os.urandom(16))
             else:
                 if SCRIPT==1 and bridgetx==0:
                     if meaning['type']!="Notary/Burn":
@@ -36573,10 +36659,10 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             except:
                 QuestionBox("One of the addresses or amounts you entered was invalid.", "OK")
                 return False, "One of the addresses or amounts you entered was invalid."
-        pass #print "Making the tx was a success!\n",inputs,"\n",outputs
-        feeperbyte=QtCore.QString("")
+        pass #print("Making the tx was a success!\n",inputs,"\n",outputs)
+        feeperbyte=str("")
         if BitHaloClient==True:#To deal with backlog, we should let users know their fee per byte
-            feeperbyte=QtCore.QString("\n"+Gtranslate("Fee per byte: ") + str(int(fee/mybytes2)) + Gtranslate(" (estimated)"))           
+            feeperbyte=str("\n"+Gtranslate("Fee per byte: ") + str(int(fee/mybytes2)) + Gtranslate(" (estimated)"))           
         if amtarray==[]:
             mbox = QuestionBox(Gtranslate('Instant Send') + "\n"+Gtranslate("Address: ") + condaddr + "\n"+Gtranslate("Amount: ") + str(Decimal(amount)/Decimal(1e8)) + "\n"+Gtranslate("Fee: ") + str(Decimal(fee)/Decimal(1e8)) + feeperbyte + rating + "\n"+Gtranslate("Total: ") + str(Decimal(amount)/Decimal(1e8)+Decimal(fee)/Decimal(1e8)) + "\n\n"+Gtranslate("Change Address: ") + str(multisig) + "\n"+Gtranslate("Change: ") + str(Decimal(Total)/Decimal(1e8)-Decimal(amount)/Decimal(1e8)-Decimal(fee)/Decimal(1e8)) + "\n\n"+Gtranslate("Please confirm the details.\n\nNote:\nCoins works just like cash. For more information\non how Halo manages change please read the\ndocumentation from the help menu."), Gtranslate(" OK "), Gtranslate(" Cancel "),1)
         else:
@@ -36629,7 +36715,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             else:
                 tx,result=broadcast_to_network(sigs2,sigs,inputs,outputs,PrivKeyFilename1, timest, skipbroadcast=skipmybroadcast, tx=mtmp, splashme=splashy)
         else:
-            print "Network busy, try again later"
+            print("Network busy, try again later")
             result="TX rejected: Network busy, try again later."
         if bridgetx==1:
             bridgedata['txid']=txhash(tx)+":"+str(outindex)
@@ -36667,7 +36753,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             #            AdvanceArray['bridgetx'][bridgedata['txid']]={'pool':[0]*1200}
             #        except:
             #            traceback.print_exc()
-            #        print "Pool data not saved"
+            #        print("Pool data not saved")
 
         #if splashy==1:
         #    NetSplash(0)
@@ -36675,11 +36761,11 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             QuestionBox(str(result), Gtranslate("OK"),1)
             return False, str(result)
         else:
-            print str(result)
+            print(str(result))
             NewOrder={}
             #Both regular expenses and pay to email still wait on the same change.
             NewOrder['type']="SPENT"
-            NewOrder['ordernumber']=os.urandom(16).encode('hex')
+            NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
             NewOrder['total']=Total
             NewOrder['change']=str(Decimal(Total)/Decimal(1e8)-Decimal(amount)/Decimal(1e8)-Decimal(fee)/Decimal(1e8))
             NewOrder['currentblock']=CurrentBlock
@@ -36732,14 +36818,14 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                     NewOrder2['TheirBMAddress']=address
                     t=password.EncryptWithAES("Halo Master", str(NewOrder2))
                     content2=""
-                    content2+="<br \><br \>DATA:"+str(t)
-                    content2+="***"+ordernumber+"###<br \>"
+                    content2+="<br /><br />DATA:"+str(t)
+                    content2+="***"+ordernumber+"###<br \\>"
                     content2+="This is a Halo Pay to Email, please do not delete, there is coins hidden inside this email."
                     #Encode into the chose image
                     try:
-                        rawimg=StringIO.StringIO(base64.b64decode(P2MWindow.b64img))
+                        rawimg=BytesIO(base64.b64decode(P2MWindow.b64img))
                         im=Image.open(rawimg)
-                        rawout=StringIO.StringIO()
+                        rawout=BytesIO()
                         im2=stepic.encode(im, content2)
                         im2.save(rawout,"BMP")#It must be lossless PNG or BMP. BMP works well with the pyzmail library
                         b64= base64.b64encode(rawout.getvalue())
@@ -36895,12 +36981,12 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         try:
             float(amount)
         except ValueError:
-            pass #print "Not a number!"
+            pass #print("Not a number!")
             return False
         try:
             float(fee)
         except ValueError:
-            pass #print "Not a number!"
+            pass #print("Not a number!")
             return False
         fee = int(abs(Decimal(fee)*Decimal(1e8)))
         #Checking available balance after unconfirmed contracts/orders
@@ -36989,9 +37075,9 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                                 addthese.append({'value':5579,'address':meaning2['destination']})
                                 nfee+=5579
                 except:
-                    print "Not enough information on input"
+                    print("Not enough information on input")
         if addthese != []:
-            print "FEE ADJUSTMENT:", nfee
+            print("FEE ADJUSTMENT:", nfee)
             amount+=nfee
             feenotify=1
             SpendThis=list(FilterSpendable(OnOrders,Spendable))
@@ -37074,13 +37160,13 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                         theamt=0
                         break
                 if batch > 0 or theamt > 0:
-                    print str(SpendThis)
+                    print(str(SpendThis))
                     QuestionBox("Not enough funds!","OK")
                     return False
                 inx=len(outs1)
                 for i in outs1:
                     sfee+=5590
-                    outs2.append({'value':5590,'script':"6a"+num_to_var_int((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)).encode('hex')+hexlify('**'+str(ftype)+'**'+str(inx))})
+                    outs2.append({'value':5590,'script':"6a"+num_to_var_int(safe_hexlify((len(hexlify('**'+str(ftype)+'**'+str(inx)))/2)))+hexlify('**'+str(ftype)+'**'+str(inx))})
                     inx+=1
                 inx=0
                 for i in outs2:
@@ -37134,7 +37220,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         Order['fee']=fee
         Order['address']=address
         Order['type']="2STEP"
-        Order['ordernumber']=os.urandom(16).encode('hex')
+        Order['ordernumber']=safe_hexlify(os.urandom(16))
         Order['version']=CoinSelect['HaloName'] + " " + clientversion
         Order['timestamp']=timest
         if special!=0:
@@ -37179,7 +37265,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 ForwardEmail=AdvanceArray[multisig]['ForwardEmail']
                     #Want to make sure forward email isnt self, prompt for saving sig file manually or sending to email
         if ForwardEmail=="":
-            ForwardEmail, ok = QtGui.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the Email or Bitmessage address. Or click cancel to save the file and send manually.'))
+            ForwardEmail, ok = QtWidgets.QInputDialog.getText(window, "Halo", Gtranslate('Please enter the Email or Bitmessage address. Or click cancel to save the file and send manually.'))
             ForwardEmail=str(ForwardEmail)
             if str(ForwardEmail)=="":
                 manual=1
@@ -37188,7 +37274,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             if mbox == 1:
                 manual=1
         if manual==1:
-            privpath1 = QtGui.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location to save your signature file."),MacDir()+"signature1.sig","Signature File (*.sig)")
+            privpath1 = QtWidgets.QFileDialog.getSaveFileName(window,Gtranslate("Choose a location to save your signature file."),MacDir()+"signature1.sig","Signature File (*.sig)")[0]
             if str(privpath1)=="":
                 return False
             with open(str(privpath1),'a+') as f:
@@ -37271,7 +37357,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         if MyOrder==False:
             MyOrder={}
         if MyOrder=={}:
-            privpath1 = QtGui.QFileDialog.getOpenFileName(window,Gtranslate("Please locate and open your signature file."),MacDir()+"signature1.sig","Signature File (*.sig)")
+            privpath1 = QtWidgets.QFileDialog.getOpenFileName(window,Gtranslate("Please locate and open your signature file."),MacDir()+"signature1.sig","Signature File (*.sig)")[0]
             if str(privpath1)=="":
                 return False
             data=[]
@@ -37291,7 +37377,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
                 return False
             Order=MyOrder['Order']
             sigs2=MyOrder['sigs']
-            print MyOrder['ordernumber']
+            print(MyOrder['ordernumber'])
             if 'auto' in MyOrder:
                 auto=MyOrder['auto']
                 if MyOrder['auto']==1:
@@ -37334,12 +37420,12 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         try:
             float(amount)
         except ValueError:
-            pass #print "Not a number!"
+            pass #print("Not a number!")
             return False
         try:
             float(fee)
         except ValueError:
-            pass #print "Not a number!"
+            pass #print("Not a number!")
             return False
         multisig,multiscript=create_multisig_address(PrivKeyFilename1)
         inputs=Order['inputs']
@@ -37437,7 +37523,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             if auto==0:
                 QuestionBox("Incorrect password.", "OK")
             return False
-        pass #print "Signing was a success:", sigs,sigs2,inputs,outputs
+        pass #print("Signing was a success:", sigs,sigs2,inputs,outputs)
         #Ok this is getting exciting... lets broadcast!
         busy=0
         #if MyOrder=={}:
@@ -37462,7 +37548,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             NewOrder['change']=Order['change']
             NewOrder['currentblock']=CurrentBlock
             NewOrder['Confirmation TXID']=txhash(tx)
-            NewOrder['ordernumber']=os.urandom(16).encode('hex')
+            NewOrder['ordernumber']=safe_hexlify(os.urandom(16))
             NewOrder['inputs']=inputs
             NewOrder['output']=outputs
             NewOrder['amount']=amount
@@ -37505,7 +37591,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         if reason==2:
             self.show()
     def __icon_activated(self, reason):
-        if reason == QtGui.QSystemTrayIcon.Trigger:
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
             self.show()
     def closeEvent(self, event):
         global MacWine
@@ -37602,16 +37688,16 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
         RunPython.stop()
         TheBridgeThread.stop()
         if ThePeg.exchangerunning:
-            print "Shutting down exchange..."
+            print("Shutting down exchange...")
             ThePeg.stopexchange=1
             tick=0
             while ThePeg.amrunning:
                 time.sleep(1)
                 tick+=1
                 if tick==120:
-                    print "The Peg Thread is taking too long to quit, will force exit."
+                    print("The Peg Thread is taking too long to quit, will force exit.")
                     break
-            print "Success!"
+            print("Success!")
         ThePeg.stop()
         downloadThread.exit()
         bitmessThread.exit()
@@ -37636,30 +37722,30 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             if BridgeDriver != "":
                 BridgeDriver.quit()
         except:
-            print "Exception closing bridge subprocess"
+            print("Exception closing bridge subprocess")
         try:
             BitMRPC = xmlrpclib.ServerProxy('http://localhost:8878')
             try:
                 socket.setdefaulttimeout(10)
             except:
-                print "Socket timeout not set"
+                print("Socket timeout not set")
             BitMRPC.ExitBitmessage("password")
             try:
                 socket.setdefaulttimeout(None) 
             except:
                 pass
-            print "Success!"
+            print("Success!")
         except:
-            print "Could not connect to Bitmessage for clean exit. "        
+            print("Could not connect to Bitmessage for clean exit. "        )
         try:
             tick=0
             while BitMHalo.poll() == None:
                 time.sleep(1)
                 tick+=1
                 if tick==30:
-                    print "Bitmessage is taking too long to quit, will force exit."
+                    print("Bitmessage is taking too long to quit, will force exit.")
                     break
-            print "Bitmessage has closed successfully!"
+            print("Bitmessage has closed successfully!")
         except:
             traceback.print_exc()        
         self.icon.hide()
@@ -37710,7 +37796,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
             pass
         exit()
         try:
-            sys.exit(app.exec_())
+            sys.exit(app.exec())
         except:
             pass
     def DynamicPegInfo(self):
@@ -37820,7 +37906,7 @@ class MyApp(QtGui.QMainWindow, SKIN):#Ui_MainWindow is the one in this file. Its
 ##execs and dialogs can hang the gui... although they are forced to respond, its possible to put a timeout on execs and default to cancel which is usually 1
 ##For muting the GUI it's probably good to be more consistent with default options so API can use the same silencing value for all the functions.
 ##non hex digit found during extension change (maybe Linux) causing keys to not be loadable
-##QWebView can be converted to textBrowser if we decide to not allow html in descriptions. Still java and other things are disabled
+##QWebEngineView can be converted to textBrowser if we decide to not allow html in descriptions. Still java and other things are disabled
 ##should normal send auto adjust fees?
 ##QuestionBox detects for integers, could just explicitly define the variable
 ##Can load font as resource for cross-platform? https://forum.qt.io/topic/3962/cross-platform-and-font-sizes/11
@@ -37944,7 +38030,7 @@ Also we would like to take the moment to give credit to the pybitcointools devs 
 #Coins: Buyer(rate(if tracking), universaltimestamp(timestamp), payment method(selected)), (reply with Payment Profile), service change on buy
 #Sell/Buy: StartingBid, duration, countries, shipping, keepratio(on quantity), higherquantity, BestBid
 
-#print str(hash_to_address(("55").decode('hex'),"Blackcoineateradios1")) #This is the way to generate the burn address for BitBay and BlackHalo
+#printsafe_unhexlify(str(hash_to_address(("55"),"Blackcoineateradios1")) #This is the way to generate the burn address for BitBay and BlackHalo)
 
 #It is possible to in some cases use chainz to notify in blocks of transactions that can be read to update balance
 #Also to verify the unspent list against the chainz balance use an api call (with api key)
@@ -38005,9 +38091,9 @@ if __name__ == "__main__":
     P2MWindow=PayToEmail()
     MySettings=Settings()
     AntiLogger=VirtualKeyboard()
-    calcbrowser = QWebView()
-    calcpage = QWebPage()
-    calcmain_frame = QtGui.QDialog()
+    calcbrowser = QWebEngineView()
+    calcpage = QWebEnginePage()
+    calcmain_frame = QtWidgets.QDialog()
     Console=MyConsole()
     app.setActiveWindow(window)
     window.show()

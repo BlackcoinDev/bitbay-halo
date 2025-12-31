@@ -1,7 +1,7 @@
 import unittest
 import time
 import tempfile
-import class_api
+from . import class_api
 
 class API_TEST(unittest.TestCase):
     

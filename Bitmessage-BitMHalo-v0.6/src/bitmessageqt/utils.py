@@ -1,4 +1,4 @@
-from PyQt4 import QtGui
+from PyQt6 import QtGui
 import hashlib
 import os
 from addresses import addBMIfNotPresent
@@ -45,7 +45,7 @@ def identiconize(address):
         # filename = './images/identicons/'+hash+'.png'
         # image.save(filename)
         idcon = QtGui.QIcon()
-        idcon.addPixmap(image, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        idcon.addPixmap(image, QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         return idcon
     elif identicon_lib == 'pydenticon':
         # print identicon_lib
@@ -61,7 +61,7 @@ def identiconize(address):
         qim = QtGui.QImage(data, size, size, QtGui.QImage.Format_ARGB32)
         pix = QtGui.QPixmap.fromImage(qim)
         idcon = QtGui.QIcon()
-        idcon.addPixmap(pix, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        idcon.addPixmap(pix, QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         return idcon
 
 def avatarize(address):

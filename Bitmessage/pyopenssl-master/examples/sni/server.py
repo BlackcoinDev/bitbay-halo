@@ -32,10 +32,10 @@ def main():
     port.bind(('', 8443))
     port.listen(3)
 
-    print 'Accepting...',
+    print('Accepting.', end=' ')
     stdout.flush()
     server, addr = port.accept()
-    print 'accepted', addr
+    print('accepted', addr)
 
     server_context = Context(TLSv1_METHOD)
     server_context.set_tlsext_servername_callback(pick_certificate)

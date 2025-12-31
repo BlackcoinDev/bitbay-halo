@@ -29,14 +29,15 @@ BLOCK_SIZE = 32
 # create a padding function as well
 # Similarly, create a function to strip off the padding after decryption
 def AddPadding(data, interrupt, pad, block_size):
-    new_data = ''.join([data, interrupt])
+    if isinstance(data, str): data = data.encode()
+    new_data = b''.join([data, interrupt])
     new_data_len = len(new_data)
     remaining_len = block_size - new_data_len
     to_pad_len = remaining_len % block_size
     pad_string = pad * to_pad_len
-    return ''.join([new_data, pad_string])
+    return b''.join([new_data, pad_string])
 def StripPadding(data, interrupt, pad):
-    return data.rstrip(pad).rstrip(interrupt)
+    return data.rstrip(pad).rstrip(interrupt).decode('utf-8')
 
 # AES requires a shared key, which is used to encrypt and decrypt data
 # It MUST be of length 16, 24, or 32
@@ -86,20 +87,20 @@ def StripPadding(data, interrupt, pad):
 # so that it's easier to encrypt and decrypt data
 def EncryptWithAES(SECRET_KEY, plaintext_data):
 	#Need to hash the "password" to be 32 bit.
-	SECRET_KEY = hashlib.sha256(SECRET_KEY).digest()
-	INTERRUPT = u'\u0001' #Moved here
-	PAD = u'\u0000' #Moved here
-	IV = u'12345678abcdefgh' #Moved here
+	SECRET_KEY = hashlib.sha256(SECRET_KEY.encode()).digest()
+	INTERRUPT = b'\x01' #Moved here
+	PAD = b'\x00' #Moved here
+	IV = b'12345678abcdefgh' #Moved here
 	encrypt_cipher = AES.new(SECRET_KEY, AES.MODE_CBC, IV) #Moved here
 	plaintext_padded = AddPadding(plaintext_data, INTERRUPT, PAD, BLOCK_SIZE)
 	encrypted = encrypt_cipher.encrypt(plaintext_padded)
 	return b64encode(encrypted)
 def DecryptWithAES(SECRET_KEY, encrypted_data):
 	#Need to hash the "password" to be 32 bit.
-	SECRET_KEY = hashlib.sha256(SECRET_KEY).digest()
-	INTERRUPT = u'\u0001' #Moved here
-	PAD = u'\u0000' #Moved here
-	IV = u'12345678abcdefgh' #Moved here
+	SECRET_KEY = hashlib.sha256(SECRET_KEY.encode()).digest()
+	INTERRUPT = b'\x01' #Moved here
+	PAD = b'\x00' #Moved here
+	IV = b'12345678abcdefgh' #Moved here
 	decrypt_cipher = AES.new(SECRET_KEY, AES.MODE_CBC, IV) #Moved here
 	decoded_encrypted_data = b64decode(encrypted_data)
 	decrypted_data = decrypt_cipher.decrypt(decoded_encrypted_data)

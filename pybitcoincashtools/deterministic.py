@@ -1,4 +1,4 @@
-from main import *
+from .main import *
 import hmac
 import hashlib
 # Electrum wallets
@@ -173,7 +173,7 @@ def crack_bip32_privkey(parent_pub, priv):
 def coinvault_pub_to_bip32(*args):
     if len(args) == 1:
         args = args[0].split(' ')
-    vals = map(int, args[34:])
+    vals = list(map(int, args[34:]))
     I1 = ''.join(map(chr, vals[:33]))
     I2 = ''.join(map(chr, vals[35:67]))
     return bip32_serialize((MAINNET_PUBLIC, 0, b'\x00'*4, 0, I2, I1))
@@ -182,7 +182,7 @@ def coinvault_pub_to_bip32(*args):
 def coinvault_priv_to_bip32(*args):
     if len(args) == 1:
         args = args[0].split(' ')
-    vals = map(int, args[34:])
+    vals = list(map(int, args[34:]))
     I2 = ''.join(map(chr, vals[35:67]))
     I3 = ''.join(map(chr, vals[72:104]))
     return bip32_serialize((MAINNET_PRIVATE, 0, b'\x00'*4, 0, I2, I3+b'\x01'))
@@ -192,7 +192,7 @@ def bip32_descend(*args):
     if len(args) == 2 and isinstance(args[1], list):
         key, path = args
     else:
-        key, path = args[0], map(int, args[1:])
+        key, path = args[0], list(map(int, args[1:]))
     for p in path:
         key = bip32_ckd(key, p)
     return bip32_extract_key(key)

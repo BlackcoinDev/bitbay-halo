@@ -1,13 +1,13 @@
 import threading
-import shared
+from . import shared
 import time
 import sys
 import os
 import pickle
 
-import tr#anslate
-from helper_sql import *
-from debug import logger
+from . import tr#anslate
+from .helper_sql import *
+from .debug import logger
 
 """
 The singleCleaner class is a timer-driven thread that cleans data structures
@@ -22,8 +22,8 @@ inventory (clears expired objects)
 pubkeys (clears pubkeys older than 4 weeks old which we have not used personally)
 
 It resends messages when there has been no response:
-resends getpubkey messages in 5 days (then 10 days, then 20 days, etc...)
-resends msg messages in 5 days (then 10 days, then 20 days, etc...)
+resends getpubkey messages in 5 days (then 10 days, then 20 days, etc.)
+resends msg messages in 5 days (then 10 days, then 20 days, etc.)
 
 """
 
@@ -43,10 +43,10 @@ class singleCleaner(threading.Thread):
 
         while True:
             shared.UISignalQueue.put((
-                'updateStatusBar', 'Doing housekeeping (Flushing inventory in memory to disk...)'))
+                'updateStatusBar', 'Doing housekeeping (Flushing inventory in memory to disk.)'))
             with shared.inventoryLock: # If you use both the inventoryLock and the sqlLock, always use the inventoryLock OUTSIDE of the sqlLock.
                 with SqlBulkExecute() as sql:
-                    for hash, storedValue in shared.inventory.items():
+                    for hash, storedValue in list(shared.inventory.items()):
                         objectType, streamNumber, payload, expiresTime, tag = storedValue
                         sql.execute(
                             '''INSERT INTO inventory VALUES (?,?,?,?,?,?)''',
@@ -104,7 +104,7 @@ class singleCleaner(threading.Thread):
                     for row in queryData:
                         shared.inventorySets[streamNumber].add(row[0])
                 with shared.inventoryLock:
-                    for hash, storedValue in shared.inventory.items():
+                    for hash, storedValue in list(shared.inventory.items()):
                         objectType, streamNumber, payload, expiresTime, tag = storedValue
                         if not streamNumber in shared.inventorySets:
                             shared.inventorySets[streamNumber] = set()
@@ -129,7 +129,7 @@ class singleCleaner(threading.Thread):
 
 
 def resendPubkey(pubkeyretrynumber,toripe):
-    print 'It has been a long time and we haven\'t heard a response to our getpubkey request. Sending again.'
+    print('It has been a long time and we haven\'t heard a response to our getpubkey request. Sending again.')
     try:
         del shared.neededPubkeys[
             toripe] # We need to take this entry out of the shared.neededPubkeys structure because the shared.workerQueue checks to see whether the entry is already present and will not do the POW and send the message because it assumes that it has already done it recently.
@@ -137,7 +137,7 @@ def resendPubkey(pubkeyretrynumber,toripe):
         pass
 
     shared.UISignalQueue.put((
-         'updateStatusBar', 'Doing work necessary to again attempt to request a public key...'))
+         'updateStatusBar', 'Doing work necessary to again attempt to request a public key.'))
     t = ()
     sqlExecute(
         '''UPDATE sent SET lastactiontime=?, pubkeyretrynumber=?, status='msgqueued' WHERE toripe=?''',
@@ -147,7 +147,7 @@ def resendPubkey(pubkeyretrynumber,toripe):
     shared.workerQueue.put(('sendmessage', ''))
 
 def resendMsg(msgretrynumber,ackdata):
-    print 'It has been a long time and we haven\'t heard an acknowledgement to our msg. Sending again.'
+    print('It has been a long time and we haven\'t heard an acknowledgement to our msg. Sending again.')
     sqlExecute(
     '''UPDATE sent SET lastactiontime=?, msgretrynumber=?, status=? WHERE ackdata=?''',
     int(time.time()),
@@ -156,4 +156,4 @@ def resendMsg(msgretrynumber,ackdata):
     ackdata)
     shared.workerQueue.put(('sendmessage', ''))
     shared.UISignalQueue.put((
-    'updateStatusBar', 'Doing work necessary to again attempt to deliver a message...'))
+    'updateStatusBar', 'Doing work necessary to again attempt to deliver a message.'))

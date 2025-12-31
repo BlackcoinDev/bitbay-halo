@@ -58,7 +58,7 @@ class ECC:
             if privkey is not None:
                 curve2, raw_privkey, i = ECC._decode_privkey(privkey)
                 if curve != curve2:
-                    raise Exception("Bad ECC keys ...")
+                    raise Exception("Bad ECC keys .")
             self.curve = curve
             self._set_keys(pubkey_x, pubkey_y, raw_privkey)
         else:
@@ -69,7 +69,7 @@ class ECC:
             self.pubkey_x = None
             self.pubkey_y = None
             self.privkey = None
-            raise Exception("Bad ECC keys ...")
+            raise Exception("Bad ECC keys .")
         else:
             self.pubkey_x = pubkey_x
             self.pubkey_y = pubkey_y
@@ -143,11 +143,11 @@ class ECC:
 
             key = OpenSSL.EC_KEY_new_by_curve_name(self.curve)
             if key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
             if (OpenSSL.EC_KEY_generate_key(key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_generate_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_generate_key FAIL .")
             if (OpenSSL.EC_KEY_check_key(key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_check_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_check_key FAIL .")
             priv_key = OpenSSL.EC_KEY_get0_private_key(key)
 
             group = OpenSSL.EC_KEY_get0_group(key)
@@ -158,7 +158,7 @@ class ECC:
                                                             pub_key_y, 0
                                                             )) == 0:
                 raise Exception(
-                    "[OpenSSL] EC_POINT_get_affine_coordinates_GFp FAIL ...")
+                    "[OpenSSL] EC_POINT_get_affine_coordinates_GFp FAIL .")
 
             privkey = OpenSSL.malloc(0, OpenSSL.BN_num_bytes(priv_key))
             pubkeyx = OpenSSL.malloc(0, OpenSSL.BN_num_bytes(pub_key_x))
@@ -194,7 +194,7 @@ class ECC:
 
             other_key = OpenSSL.EC_KEY_new_by_curve_name(self.curve)
             if other_key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
 
             other_pub_key_x = OpenSSL.BN_bin2bn(pubkey_x, len(pubkey_x), 0)
             other_pub_key_y = OpenSSL.BN_bin2bn(pubkey_y, len(pubkey_y), 0)
@@ -208,20 +208,20 @@ class ECC:
                                                             other_pub_key_y,
                                                             0)) == 0:
                 raise Exception(
-                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL ...")
+                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL .")
             if (OpenSSL.EC_KEY_set_public_key(other_key, other_pub_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL .")
             if (OpenSSL.EC_KEY_check_key(other_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_check_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_check_key FAIL .")
 
             own_key = OpenSSL.EC_KEY_new_by_curve_name(self.curve)
             if own_key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
             own_priv_key = OpenSSL.BN_bin2bn(
                 self.privkey, len(self.privkey), 0)
 
             if (OpenSSL.EC_KEY_set_private_key(own_key, own_priv_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_private_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_private_key FAIL .")
 
             if OpenSSL._hexversion > 0x10100000 and not OpenSSL._libreSSL:
                 OpenSSL.EC_KEY_set_method(own_key, OpenSSL.EC_KEY_OpenSSL())
@@ -231,7 +231,7 @@ class ECC:
                 ecdh_keybuffer, 32, other_pub_key, own_key, 0)
 
             if ecdh_keylen != 32:
-                raise Exception("[OpenSSL] ECDH keylen FAIL ...")
+                raise Exception("[OpenSSL] ECDH keylen FAIL .")
 
             return ecdh_keybuffer.raw
 
@@ -268,7 +268,7 @@ class ECC:
         try:
             key = OpenSSL.EC_KEY_new_by_curve_name(curve)
             if key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
             if privkey is not None:
                 priv_key = OpenSSL.BN_bin2bn(privkey, len(privkey), 0)
             pub_key_x = OpenSSL.BN_bin2bn(pubkey_x, len(pubkey_x), 0)
@@ -277,7 +277,7 @@ class ECC:
             if privkey is not None:
                 if (OpenSSL.EC_KEY_set_private_key(key, priv_key)) == 0:
                     raise Exception(
-                        "[OpenSSL] EC_KEY_set_private_key FAIL ...")
+                        "[OpenSSL] EC_KEY_set_private_key FAIL .")
 
             group = OpenSSL.EC_KEY_get0_group(key)
             pub_key = OpenSSL.EC_POINT_new(group)
@@ -287,11 +287,11 @@ class ECC:
                                                             pub_key_y,
                                                             0)) == 0:
                 raise Exception(
-                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL ...")
+                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL .")
             if (OpenSSL.EC_KEY_set_public_key(key, pub_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL .")
             if (OpenSSL.EC_KEY_check_key(key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_check_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_check_key FAIL .")
             return 0
 
         finally:
@@ -320,14 +320,14 @@ class ECC:
 
             key = OpenSSL.EC_KEY_new_by_curve_name(self.curve)
             if key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
 
             priv_key = OpenSSL.BN_bin2bn(self.privkey, len(self.privkey), 0)
             pub_key_x = OpenSSL.BN_bin2bn(self.pubkey_x, len(self.pubkey_x), 0)
             pub_key_y = OpenSSL.BN_bin2bn(self.pubkey_y, len(self.pubkey_y), 0)
 
             if (OpenSSL.EC_KEY_set_private_key(key, priv_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_private_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_private_key FAIL .")
 
             group = OpenSSL.EC_KEY_get0_group(key)
             pub_key = OpenSSL.EC_POINT_new(group)
@@ -337,11 +337,11 @@ class ECC:
                                                             pub_key_y,
                                                             0)) == 0:
                 raise Exception(
-                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL ...")
+                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL .")
             if (OpenSSL.EC_KEY_set_public_key(key, pub_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL .")
             if (OpenSSL.EC_KEY_check_key(key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_check_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_check_key FAIL .")
 
             if OpenSSL._hexversion > 0x10100000 and not OpenSSL._libreSSL:
                 OpenSSL.EVP_MD_CTX_new(md_ctx)
@@ -350,12 +350,12 @@ class ECC:
             OpenSSL.EVP_DigestInit_ex(md_ctx, digest_alg(), None)
 
             if (OpenSSL.EVP_DigestUpdate(md_ctx, buff, size)) == 0:
-                raise Exception("[OpenSSL] EVP_DigestUpdate FAIL ...")
+                raise Exception("[OpenSSL] EVP_DigestUpdate FAIL .")
             OpenSSL.EVP_DigestFinal_ex(md_ctx, digest, dgst_len)
             OpenSSL.ECDSA_sign(0, digest, dgst_len.contents, sig, siglen, key)
             if (OpenSSL.ECDSA_verify(0, digest, dgst_len.contents, sig,
                                      siglen.contents, key)) != 1:
-                raise Exception("[OpenSSL] ECDSA_verify FAIL ...")
+                raise Exception("[OpenSSL] ECDSA_verify FAIL .")
 
             return sig.raw[:siglen.contents.value]
 
@@ -388,7 +388,7 @@ class ECC:
             key = OpenSSL.EC_KEY_new_by_curve_name(self.curve)
 
             if key == 0:
-                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_new_by_curve_name FAIL .")
 
             pub_key_x = OpenSSL.BN_bin2bn(self.pubkey_x, len(self.pubkey_x), 0)
             pub_key_y = OpenSSL.BN_bin2bn(self.pubkey_y, len(self.pubkey_y), 0)
@@ -400,18 +400,18 @@ class ECC:
                                                             pub_key_y,
                                                             0)) == 0:
                 raise Exception(
-                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL ...")
+                    "[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL .")
             if (OpenSSL.EC_KEY_set_public_key(key, pub_key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL .")
             if (OpenSSL.EC_KEY_check_key(key)) == 0:
-                raise Exception("[OpenSSL] EC_KEY_check_key FAIL ...")
+                raise Exception("[OpenSSL] EC_KEY_check_key FAIL .")
             if OpenSSL._hexversion > 0x10100000 and not OpenSSL._libreSSL:
                 OpenSSL.EVP_MD_CTX_new(md_ctx)
             else:
                 OpenSSL.EVP_MD_CTX_init(md_ctx)
             OpenSSL.EVP_DigestInit_ex(md_ctx, digest_alg(), None)
             if (OpenSSL.EVP_DigestUpdate(md_ctx, binputb, len(inputb))) == 0:
-                raise Exception("[OpenSSL] EVP_DigestUpdate FAIL ...")
+                raise Exception("[OpenSSL] EVP_DigestUpdate FAIL .")
 
             OpenSSL.EVP_DigestFinal_ex(md_ctx, digest, dgst_len)
             ret = OpenSSL.ECDSA_verify(

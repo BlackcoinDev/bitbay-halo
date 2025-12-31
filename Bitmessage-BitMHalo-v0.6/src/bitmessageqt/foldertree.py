@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 from string import find, rfind, rstrip, lstrip
 
 from tr import _translate
@@ -30,13 +30,13 @@ class AccountMixin(object):
         elif self.type in [self.MAILINGLIST, self.SUBSCRIPTION]:
             return QtGui.QColor(137, 04, 177)
         else:
-            return QtGui.QApplication.palette().text().color()
+            return QtWidgets.QApplication.palette().text().color()
             
     def folderColor (self):
         if not self.parent().isEnabled:
             return QtGui.QColor(128, 128, 128)
         else:
-            return QtGui.QApplication.palette().text().color()
+            return QtWidgets.QApplication.palette().text().color()
             
     def accountBrush(self):
         brush = QtGui.QBrush(self.accountColor())
@@ -73,10 +73,10 @@ class AccountMixin(object):
             self.emitDataChanged()
 
     def setType(self):
-        self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
+        self.setFlags(self.flags() | QtCore.Qt.ItemFlag.ItemIsEditable)
         if self.address is None:
             self.type = self.ALL
-            self.setFlags(self.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.setFlags(self.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         elif BMConfigParser().safeGetBoolean(self.address, 'chan'):
             self.type = self.CHAN
         elif BMConfigParser().safeGetBoolean(self.address, 'mailinglist'):
@@ -303,7 +303,7 @@ class MessageList_AddressWidget(QtGui.QTableWidgetItem, AccountMixin, SettingsMi
         self.setAddress(address)
         self.setLabel(label)
         self.setUnread(unread)
-        self.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+        self.setFlags(QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
         self.setType()
         parent.append(self)
 
@@ -377,7 +377,7 @@ class MessageList_SubjectWidget(QtGui.QTableWidgetItem, SettingsMixin):
         self.setSubject(subject)
         self.setLabel(label)
         self.setUnread(unread)
-        self.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+        self.setFlags(QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
         parent.append(self)
 
     def setLabel(self, label):
@@ -490,7 +490,7 @@ class Ui_AddressBookWidgetItemAddress(Ui_AddressBookWidgetItem):
     def __init__ (self, address, label, type):
         Ui_AddressBookWidgetItem.__init__(self, address, type)
         self.address = address
-        self.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+        self.setFlags(QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
         
 class AddressBookCompleter(QtGui.QCompleter):
     def __init__(self):

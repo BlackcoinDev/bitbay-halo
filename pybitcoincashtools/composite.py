@@ -1,8 +1,8 @@
-from main import *
-from transaction import *
-from bci import *
-from deterministic import *
-from blocks import *
+from .main import *
+from .transaction import *
+from .bci import *
+from .deterministic import *
+from .blocks import *
 
 
 # Takes privkey, address, value (satoshis), fee (satoshis)
@@ -33,7 +33,7 @@ def preparetx(frm, to, value, fee=10000, **kwargs):
     return preparemultitx(frm, tovalues, fee, **kwargs)
 
 
-# Takes address, address:value, address:value ... (satoshis), fee(satoshis)
+# Takes address, address:value, address:value . (satoshis), fee(satoshis)
 def preparemultitx(frm, *args, **kwargs):
     tv, fee = args[:-1], int(args[-1])
     outs = []
@@ -58,8 +58,8 @@ def bip32_hdm_script(*args):
             keys.append(args[i])
             i += 1
         req = int(args[i])
-        path = map(int, args[i+1:])
-    pubs = sorted(map(lambda x: bip32_descend(x, path), keys))
+        path = list(map(int, args[i+1:]))
+    pubs = sorted([bip32_descend(x, path) for x in keys])
     return mk_multisig_script(pubs, req)
 
 
@@ -89,8 +89,8 @@ def sign_coinvault_tx(tx, priv):
         for i, p in enumerate(pubs):
             if p == pub:
                 scr[i+1] = multisign(tx, j, subscript[-1], priv)
-        if len(filter(lambda x: x, scr[1:-1])) >= k:
-            scr = [None] + filter(lambda x: x, scr[1:-1])[:k] + [scr[-1]]
+        if len([x for x in scr[1:-1] if x]) >= k:
+            scr = [None] + [x for x in scr[1:-1] if x][:k] + [scr[-1]]
         txobj['ins'][j]['script'] = serialize_script(scr)
     return serialize(txobj)
 

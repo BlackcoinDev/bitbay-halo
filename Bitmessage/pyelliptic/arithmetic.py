@@ -10,7 +10,7 @@ def inv(a,n):
   lm, hm = 1,0
   low, high = a%n,n
   while low > 1:
-    r = high/low
+    r = high // low
     nm, new = hm-lm*r, high-low*r
     lm, low, hm, high = nm, new, lm, low
   return lm % n
@@ -20,17 +20,23 @@ def get_code_string(base):
    elif base == 10: return '0123456789'
    elif base == 16: return "0123456789abcdef"
    elif base == 58: return "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-   elif base == 256: return ''.join([chr(x) for x in range(256)])
+   elif base == 256: return bytes(list(range(256)))
    else: raise ValueError("Invalid base!")
 
 def encode(val,base,minlen=0):
    code_string = get_code_string(base)
-   result = ""   
+   result = b"" if base == 256 else ""   
    while val > 0:
-      result = code_string[val % base] + result
-      val /= base
+      if base == 256:
+          result = code_string[val % base:val % base + 1] + result
+      else:
+          result = code_string[val % base] + result
+      val //= base
    if len(result) < minlen:
-      result = code_string[0]*(minlen-len(result))+result
+      if base == 256:
+         result = code_string[0:1]*(minlen-len(result))+result
+      else:
+         result = code_string[0]*(minlen-len(result))+result
    return result
 
 def decode(string,base):
@@ -67,8 +73,8 @@ def base10_double(a):
 def base10_multiply(a,n):
   if n == 0: return G
   if n == 1: return a
-  if (n%2) == 0: return base10_double(base10_multiply(a,n/2))
-  if (n%2) == 1: return base10_add(base10_double(base10_multiply(a,n/2)),a)
+  if (n%2) == 0: return base10_double(base10_multiply(a,n//2))
+  if (n%2) == 1: return base10_add(base10_double(base10_multiply(a,n//2)),a)
 
 def hex_to_point(h): return (decode(h[2:66],16),decode(h[66:],16))
 
@@ -87,17 +93,20 @@ def add(p1,p2):
     return point_to_hex(base10_add(hex_to_point(p1),hex_to_point(p2)))
 
 def hash_160(string):
+   if isinstance(string, str): string = string.encode('latin1')
    intermed = hashlib.sha256(string).digest()
    ripemd160 = hashlib.new('ripemd160')
    ripemd160.update(intermed)
    return ripemd160.digest()
 
 def dbl_sha256(string):
+   if isinstance(string, str): string = string.encode('latin1')
    return hashlib.sha256(hashlib.sha256(string).digest()).digest()
   
 def bin_to_b58check(inp):
-   inp_fmtd = '\x00' + inp
-   leadingzbytes = len(re.match('^\x00*',inp_fmtd).group(0))
+   if isinstance(inp, str): inp = inp.encode('latin1')
+   inp_fmtd = b'\x00' + inp
+   leadingzbytes = len(re.match(b'^\x00*',inp_fmtd).group(0))
    checksum = dbl_sha256(inp_fmtd)[:4]
    return '1' * leadingzbytes + changebase(inp_fmtd+checksum,256,58)
 

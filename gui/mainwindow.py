@@ -7,17 +7,14 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui, QtWebKit, uic
+from PyQt6 import QtWebEngineCore, QtCore, QtGui, QtWidgets, uic, QtWebEngineWidgets
 import os
 import sys
-import styles
-import styles.base_rc
+from . import styles
+from .styles import base_rc
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
+def _fromUtf8(s):
+    return s
 #import goslate
 import traceback
 import ast
@@ -42,11 +39,11 @@ def compareFont(Label1, Label2):
         traceback.print_exc()
     return True
 
-class myQLineEdit(QtGui.QLineEdit):
+class myQLineEdit(QtWidgets.QLineEdit):
     def __init__(self, *args, **kargs):
         super(myQLineEdit, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding))  
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,QtWidgets.QSizePolicy.Policy.Expanding))  
         self.setReadOnly(True)
         self.setMinSize(12)
 
@@ -61,7 +58,7 @@ class myQLineEdit(QtGui.QLineEdit):
         self.setStyleSheet("""QLineEdit { background-color: white; color: black; font: bold }""")
 
     def setText(self, text):
-        QtGui.QLineEdit.setText(self, text)
+        QtWidgets.QLineEdit.setText(self, text)
         self.resizeText()
 
     def resizeEvent(self, event):
@@ -98,7 +95,7 @@ class myQLineEdit(QtGui.QLineEdit):
 class Ui_MainWindow(object):
     try:
         def _translate(self, context, text, disambig):
-            _encoding = QtGui.QApplication.UnicodeUTF8
+            _encoding = QtWidgets.QApplication.UnicodeUTF8
             if self.language!="DEFAULT" and self.language!="en":
                 if self.language not in self.translations:
                     self.translations[self.language]={}
@@ -111,11 +108,11 @@ class Ui_MainWindow(object):
                         translateThis=ast.literal_eval(self.translations[self.language][text])
                     except:
                         translateThis=""
-                    return QtCore.QString.fromUtf8(translateThis)
-            return QtGui.QApplication.translate(context, text, disambig, _encoding)
+                    return (translateThis)
+            return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
     except AttributeError:
         def _translate(self, context, text, disambig):
-            return QtGui.QApplication.translate(context, text, disambig)
+            return QtWidgets.QApplication.translate(context, text, disambig)
 
     def GTranslate(self):
         try:
@@ -125,7 +122,7 @@ class Ui_MainWindow(object):
                 self.translist=[]
                 return False
             if self.yandexAPI == "": #For now google translate is too slow without API access although this can be expanded upon
-                print "Yandex API key not available"
+                print("Yandex API key not available")
                 return False
             else:
                 ytrans = YandexTranslate(self.yandexAPI)
@@ -156,18 +153,18 @@ class Ui_MainWindow(object):
             #resp = resp['text']
             pos=0
             for trans in resp:
-                langtext = QtGui.QLabel()
+                langtext = QtWidgets.QLabel()
                 langtext.setText(trans)
                 x=langtext.text()
                 st=repr(x)
-                st=st.replace("PyQt4.QtCore.QString(","")[:-1]
+                st=st.replace("PyQt6.str(","")[:-1]
                 translateThis=ast.literal_eval(st)
                 self.translations[self.language][self.translist[pos]]=st
                 pos+=1
             self.translist=[]
             return True
         except:
-            print self.translist
+            print(self.translist)
             traceback.print_exc()
             return False
 
@@ -176,17 +173,17 @@ class Ui_MainWindow(object):
         self.leftPanel.setObjectName("leftPanel")
         self.gridLayout.addWidget(self.leftPanel, 0, 0, 1, 1)
 
-        left_panel_vbox = QtGui.QVBoxLayout(self.leftPanel)
-        left_panel_vbox.setMargin(0)
+        left_panel_vbox = QtWidgets.QVBoxLayout(self.leftPanel)
+        left_panel_vbox.setContentsMargins(0, 0, 0, 0)
         left_panel_vbox.setSpacing(0)
 
-        self.leftPanelLogoWidget = QtGui.QWidget()
+        self.leftPanelLogoWidget = QtWidgets.QWidget()
         self.leftPanelLogoWidget.setObjectName("leftPanelLogoWidget")
         left_panel_vbox.addWidget(self.leftPanelLogoWidget)
 
         tabsGroup = QtGui.QButtonGroup(self.leftPanel);
 
-        tb_dashboard = QtGui.QToolButton()
+        tb_dashboard = QtWidgets.QToolButton()
         self.tb_dashboard=tb_dashboard
         tb_dashboard.setObjectName("dashboardButton")
         tb_dashboard.setText(self._translate("MainWindow", "Dashboard", None))
@@ -198,18 +195,18 @@ class Ui_MainWindow(object):
         tb_dashboard.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.tab),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_dashboard)
         left_panel_vbox.addWidget(tb_dashboard)
 
-        l_wallet = QtGui.QLabel()
+        l_wallet = QtWidgets.QLabel()
         self.l_wallet=l_wallet
         l_wallet.setObjectName("walletLeftPanelLabel")
         l_wallet.setText(self._translate("MainWindow", "WALLET", None))
         left_panel_vbox.addWidget(l_wallet)
 
-        tb_send = QtGui.QToolButton()
+        tb_send = QtWidgets.QToolButton()
         self.tb_send=tb_send
         tb_send.setObjectName("sendButton")
         tb_send.setText(self._translate("MainWindow", "Send", None))
@@ -220,12 +217,12 @@ class Ui_MainWindow(object):
         tb_send.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.SendBitcoins),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_send)
         left_panel_vbox.addWidget(tb_send)
 
-        tb_receive = QtGui.QToolButton()
+        tb_receive = QtWidgets.QToolButton()
         self.tb_receive=tb_receive
         tb_receive.setObjectName("receiveButton")
         tb_receive.setText(self._translate("MainWindow", "Receive", None))
@@ -236,12 +233,12 @@ class Ui_MainWindow(object):
         tb_receive.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.ReceiveBitcoins),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_receive)
         left_panel_vbox.addWidget(tb_receive)
 
-        tb_history = QtGui.QToolButton()
+        tb_history = QtWidgets.QToolButton()
         self.tb_history=tb_history
         tb_history.setObjectName("historyButton")
         tb_history.setText(self._translate("MainWindow", "History", None))
@@ -252,18 +249,18 @@ class Ui_MainWindow(object):
         tb_history.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.History),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_history)
         left_panel_vbox.addWidget(tb_history)
 
-        l_smart_contracts = QtGui.QLabel()
+        l_smart_contracts = QtWidgets.QLabel()
         self.l_smart_contracts=l_smart_contracts
         l_smart_contracts.setObjectName("smartContractsLeftPanelLabel")
         l_smart_contracts.setText(self._translate("MainWindow", "SMART CONTRACTS", None))
         left_panel_vbox.addWidget(l_smart_contracts)
 
-        tb_market = QtGui.QToolButton()
+        tb_market = QtWidgets.QToolButton()
         self.tb_market=tb_market
         tb_market.setObjectName("marketButton")
         tb_market.setText(self._translate("MainWindow", "Marketplace", None))
@@ -279,7 +276,7 @@ class Ui_MainWindow(object):
         tabsGroup.addButton(tb_market)
         left_panel_vbox.addWidget(tb_market)
 
-        tb_makeanoffer = QtGui.QToolButton()
+        tb_makeanoffer = QtWidgets.QToolButton()
         self.tb_makeanoffer=tb_makeanoffer
         tb_makeanoffer.setObjectName("marketButton")
         tb_makeanoffer.setText(self._translate("MainWindow", "Make an offer", None))
@@ -290,12 +287,12 @@ class Ui_MainWindow(object):
         tb_makeanoffer.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.MakeAnOffer),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_makeanoffer)
         left_panel_vbox.addWidget(tb_makeanoffer)
 
-        tb_pending_offer = QtGui.QToolButton()
+        tb_pending_offer = QtWidgets.QToolButton()
         self.tb_pending_offer=tb_pending_offer
         tb_pending_offer.setObjectName("pendingOfferButton")
         tb_pending_offer.setText(self._translate("MainWindow", "Pending offers", None))
@@ -306,12 +303,12 @@ class Ui_MainWindow(object):
         tb_pending_offer.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.PendingOffers),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_pending_offer)
         left_panel_vbox.addWidget(tb_pending_offer)
 
-        tb_contracts = QtGui.QToolButton()
+        tb_contracts = QtWidgets.QToolButton()
         self.tb_contracts=tb_contracts
         tb_contracts.setObjectName("contractsButton")
         tb_contracts.setText(self._translate("MainWindow", "Contracts", None))
@@ -322,12 +319,12 @@ class Ui_MainWindow(object):
         tb_contracts.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.OpenContracts),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_contracts)
         left_panel_vbox.addWidget(tb_contracts)
 
-        tb_chat = QtGui.QToolButton()
+        tb_chat = QtWidgets.QToolButton()
         self.tb_chat=tb_chat
         tb_chat.setObjectName("chatButton")
         tb_chat.setText(self._translate("MainWindow", "Chat", None))
@@ -338,14 +335,14 @@ class Ui_MainWindow(object):
         tb_chat.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.Chat),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_chat)
         left_panel_vbox.addWidget(tb_chat)
 
-        left_panel_vbox.addItem(QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
+        left_panel_vbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
 
-        tb_contacts = QtGui.QToolButton()
+        tb_contacts = QtWidgets.QToolButton()
         self.tb_contacts=tb_contacts
         tb_contacts.setObjectName("contactsButton")
         tb_contacts.setText(self._translate("MainWindow", "Contacts", None))
@@ -356,15 +353,15 @@ class Ui_MainWindow(object):
         tb_contacts.clicked.connect(lambda: (
             self.Tabs.setCurrentWidget(self.Contacts),
             self.mainPanelWidget.setMaximumWidth(1100),
-            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter)
+            self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter)
         ))
         tabsGroup.addButton(tb_contacts)
         left_panel_vbox.addWidget(tb_contacts)
 
-        left_panel_vbox.addItem(QtGui.QSpacerItem(10, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
+        left_panel_vbox.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding))
 
     def setupMarketView(self, main_window):
-        self.Market = QtGui.QWidget()
+        self.Market = QtWidgets.QWidget()
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/MarketPanel.ui', self.Market)
 
         self.ShowWhat       = self.Market.ShowWhat
@@ -379,14 +376,14 @@ class Ui_MainWindow(object):
         self.LeaveChan      = self.Market.LeaveChan
         self.OfferTable     = self.Market.OfferTable
 
-        self.Market.tb_list.clicked.connect(lambda: self.Market.st_tables.setCurrentWidget(self.Market.page_table))
-        self.Market.tb_cards.clicked.connect(lambda: self.Market.st_tables.setCurrentWidget(self.Market.page_cards))
+        self.Market.tb_list.clicked.connect(lambda: self.Market.st_tables.setCurrentIndex(0))
+        self.Market.tb_cards.clicked.connect(lambda: self.Market.st_tables.setCurrentIndex(1))
 
-        page_cards_vbox = QtGui.QVBoxLayout(self.Market.page_cards)
-        page_cards_vbox.setMargin(0)
+        page_cards_vbox = QtWidgets.QVBoxLayout(self.Market.page_cards)
+        page_cards_vbox.setContentsMargins(0, 0, 0, 0)
         page_cards_vbox.setSpacing(0)
 
-        class CardsTableView(QtGui.QTableView):
+        class CardsTableView(QtWidgets.QTableView):
             def __init__(self, *args, **kargs):
                 super(CardsTableView, self).__init__(*args, **kargs)
                 self.clicked.connect(self.itemClicked)
@@ -476,10 +473,10 @@ class Ui_MainWindow(object):
                 self.cols = 1
             def setSourceModel(self, sm):
                 super(CardsTableModel, self).setSourceModel(sm)
-                self.connect(sm, QtCore.SIGNAL('dataChanged(QModelIndex,QModelIndex)'), self.reset)
-                self.connect(sm, QtCore.SIGNAL('rowsInserted(QModelIndex,int,int)'), self.reset)
-                self.connect(sm, QtCore.SIGNAL('rowsRemoved(QModelIndex,int,int)'), self.reset)
-                self.connect(sm, QtCore.SIGNAL('modelReset()'), self.reset)
+                sm.dataChanged.connect( self.reset)
+                sm.rowsInserted.connect( self.reset)
+                sm.rowsRemoved.connect( self.reset)
+                sm.modelReset.connect( self.reset)
             def rowCount(self, parent =QtCore.QModelIndex()):
                 if parent.isValid(): return 0
                 return self.rows
@@ -546,8 +543,8 @@ class Ui_MainWindow(object):
         icon26 = QtGui.QIcon()
         icon27 = QtGui.QIcon()
 
-        icon26.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_search_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        icon27.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_join_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon26.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_search_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon27.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_join_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.Tabs.addWidget(self.Market)
 
@@ -564,32 +561,32 @@ class Ui_MainWindow(object):
     def setWalletLocked(self, is_locked):
         ic = QtGui.QIcon()
         if is_locked:
-            ic.addPixmap(QtGui.QPixmap(":/icons/ind_locked"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else: ic.addPixmap(QtGui.QPixmap(self.ApplicationPath+"/gui"+"/icons/bitbay/ind_unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            ic.addPixmap(QtGui.QPixmap(":/icons/ind_locked"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        else: ic.addPixmap(QtGui.QPixmap(self.ApplicationPath+"/gui"+"/icons/bitbay/ind_unlocked.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tb_indicatorsLock.setIcon(ic)
 
     def setStakingActive(self, is_active):
         ic = QtGui.QIcon()
         if is_active:
-            ic.addPixmap(QtGui.QPixmap(":/icons/ind_stake_on"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else: ic.addPixmap(QtGui.QPixmap(":/icons/ind_stake_off"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            ic.addPixmap(QtGui.QPixmap(":/icons/ind_stake_on"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        else: ic.addPixmap(QtGui.QPixmap(":/icons/ind_stake_off"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tb_indicatorsStake.setIcon(ic)
 
     def setCoinPeersCount(self, peers_count):
         ic = QtGui.QIcon()
-        if peers_count <1:      ic.addPixmap(QtGui.QPixmap(":/icons/ind_net0"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        elif peers_count <5:    ic.addPixmap(QtGui.QPixmap(":/icons/ind_net1"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        elif peers_count <9:    ic.addPixmap(QtGui.QPixmap(":/icons/ind_net2"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        elif peers_count <15:   ic.addPixmap(QtGui.QPixmap(":/icons/ind_net3"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        if peers_count <1:      ic.addPixmap(QtGui.QPixmap(":/icons/ind_net0"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        elif peers_count <5:    ic.addPixmap(QtGui.QPixmap(":/icons/ind_net1"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        elif peers_count <9:    ic.addPixmap(QtGui.QPixmap(":/icons/ind_net2"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        elif peers_count <15:   ic.addPixmap(QtGui.QPixmap(":/icons/ind_net3"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         else:
-            ic.addPixmap(QtGui.QPixmap(":/icons/ind_net4"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            ic.addPixmap(QtGui.QPixmap(":/icons/ind_net4"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tb_indicatorsNet.setIcon(ic)
 
     def setBlockchainInSync(self, is_sync):
         ic = QtGui.QIcon()
         if is_sync:
-            ic.addPixmap(QtGui.QPixmap(":/icons/ind_sync"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else: ic.addPixmap(QtGui.QPixmap(":/icons/ind_unsync"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            ic.addPixmap(QtGui.QPixmap(":/icons/ind_sync"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        else: ic.addPixmap(QtGui.QPixmap(":/icons/ind_unsync"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tb_indicatorsSync.setIcon(ic)
 
     def setupUi(self, main_window):
@@ -605,21 +602,21 @@ class Ui_MainWindow(object):
 
         #db = QtGui.QFontDatabase()
         #for f in db.families():
-        #    print str(f.toUtf8())
-        #print map(str, QtGui.QStyleFactory.keys())
+        #    print(str(f.toUtf8()))
+        #print(list(map(str, QtWidgets.QStyleFactory.keys())))
 
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Windows"))
+        QtWidgets.QApplication.setStyle(QtWidgets.QStyleFactory.create("Windows"))
 
         main_window.setObjectName(_fromUtf8("MainWindow"))
         main_window.setMinimumSize(QtCore.QSize(990, 720))
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/BitHalo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/BitHalo.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         main_window.setWindowIcon(icon)
         main_window.setStatusBar(None)
 
-        self.centralwidget = QtGui.QWidget(main_window)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.centralwidget = QtWidgets.QWidget(main_window)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
@@ -627,35 +624,35 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         main_window.setCentralWidget(self.centralwidget)
 
-        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
-        self.gridLayout.setMargin(0)
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
 
-        self.setupLeftPanel(QtGui.QWidget())
+        self.setupLeftPanel(QtWidgets.QWidget())
 
-        self.bottomPanel = QtGui.QWidget()
+        self.bottomPanel = QtWidgets.QWidget()
         self.bottomPanel.setFixedHeight(42)
         self.bottomPanel.setObjectName(_fromUtf8("bottomPanel"))
         self.gridLayout.addWidget(self.bottomPanel, 1, 0, 1, 2)
 
-        bottom_panel_hbox = QtGui.QHBoxLayout(self.bottomPanel)
-        bottom_panel_hbox.setMargin(0)
+        bottom_panel_hbox = QtWidgets.QHBoxLayout(self.bottomPanel)
+        bottom_panel_hbox.setContentsMargins(0, 0, 0, 0)
         bottom_panel_hbox.setSpacing(0)
 
-        self.indicatorsBar = QtGui.QWidget()
+        self.indicatorsBar = QtWidgets.QWidget()
         self.indicatorsBar.setObjectName(_fromUtf8("indicatorsBar"))
         bottom_panel_hbox.addWidget(self.indicatorsBar)
 
-        indicators_bar_hbox = QtGui.QHBoxLayout(self.indicatorsBar)
-        indicators_bar_hbox.setMargin(0)
+        indicators_bar_hbox = QtWidgets.QHBoxLayout(self.indicatorsBar)
+        indicators_bar_hbox.setContentsMargins(0, 0, 0, 0)
         indicators_bar_hbox.setSpacing(12)
-        indicators_bar_hbox.addItem(QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed))
+        indicators_bar_hbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed))
 
         ic_locked = QtGui.QIcon()
-        ic_locked.addPixmap(QtGui.QPixmap(":/icons/ind_locked"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ic_locked.addPixmap(QtGui.QPixmap(":/icons/ind_locked"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
-        self.tb_indicatorsLock = QtGui.QToolButton()
+        self.tb_indicatorsLock = QtWidgets.QToolButton()
         self.tb_indicatorsLock.setStyleSheet("QToolButton{background: transparent; border: 0px;}")
         self.tb_indicatorsLock.setObjectName("tb_indicatorsLock")
         self.tb_indicatorsLock.setIconSize(QtCore.QSize(22,22))
@@ -667,9 +664,9 @@ class Ui_MainWindow(object):
         indicators_bar_hbox.addWidget(self.tb_indicatorsLock)
 
         ic_stake = QtGui.QIcon()
-        ic_stake.addPixmap(QtGui.QPixmap(":/icons/ind_stake_off"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ic_stake.addPixmap(QtGui.QPixmap(":/icons/ind_stake_off"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
-        self.tb_indicatorsStake = QtGui.QToolButton()
+        self.tb_indicatorsStake = QtWidgets.QToolButton()
         self.tb_indicatorsStake.setStyleSheet("QToolButton{background: transparent; border: 0px;}")
         self.tb_indicatorsStake.setObjectName("tb_indicatorsStake")
         self.tb_indicatorsStake.setIconSize(QtCore.QSize(22,22))
@@ -681,9 +678,9 @@ class Ui_MainWindow(object):
         indicators_bar_hbox.addWidget(self.tb_indicatorsStake)
 
         ic_net = QtGui.QIcon()
-        ic_net.addPixmap(QtGui.QPixmap(":/icons/ind_net0"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ic_net.addPixmap(QtGui.QPixmap(":/icons/ind_net0"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
-        self.tb_indicatorsNet = QtGui.QToolButton()
+        self.tb_indicatorsNet = QtWidgets.QToolButton()
         self.tb_indicatorsNet.setStyleSheet("QToolButton{background: transparent; border: 0px;}")
         self.tb_indicatorsNet.setObjectName("tb_indicatorsNet")
         self.tb_indicatorsNet.setIconSize(QtCore.QSize(22,22))
@@ -695,9 +692,9 @@ class Ui_MainWindow(object):
         indicators_bar_hbox.addWidget(self.tb_indicatorsNet)
 
         ic_sync = QtGui.QIcon()
-        ic_sync.addPixmap(QtGui.QPixmap(":/icons/ind_unsync"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ic_sync.addPixmap(QtGui.QPixmap(":/icons/ind_unsync"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
-        self.tb_indicatorsSync = QtGui.QToolButton()
+        self.tb_indicatorsSync = QtWidgets.QToolButton()
         self.tb_indicatorsSync.setStyleSheet("QToolButton{background: transparent; border: 0px;}")
         self.tb_indicatorsSync.setObjectName("tb_indicatorsSync")
         self.tb_indicatorsSync.setIconSize(QtCore.QSize(22,22))
@@ -705,52 +702,49 @@ class Ui_MainWindow(object):
         self.tb_indicatorsSync.setIcon(ic_sync)
         self.tb_indicatorsSync.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.tb_indicatorsSync.setCheckable(False)
-        #self.tb_indicatorsLock.clicked.connect(lambda: pass)
-        indicators_bar_hbox.addWidget(self.tb_indicatorsSync)
+        #self.tb_indicatorsLock.clicked.20.connect( QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed))
 
-        indicators_bar_hbox.addItem(QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed))
-
-        self.labelProgress = QtGui.QLabel()
+        self.labelProgress = QtWidgets.QLabel()
         self.labelProgress.setObjectName(_fromUtf8("labelProgress"))
-        self.labelProgress.setText("Synchronizing...")
+        self.labelProgress.setText("Synchronizing.")
         bottom_panel_hbox.addWidget(self.labelProgress)
 
-        self.progressBar = QtGui.QProgressBar()
+        self.progressBar = QtWidgets.QProgressBar()
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(10)
         bottom_panel_hbox.addWidget(self.progressBar)
 
-        self.Rescan = QtGui.QToolButton()
+        self.Rescan = QtWidgets.QToolButton()
         self.Rescan.setObjectName("rescanButton")
         self.Rescan.setText(self._translate("MainWindow", "Rescan", None))
         self.Rescan.setIconSize(QtCore.QSize(20,20))
         self.Rescan.setIcon(QtGui.QIcon(":/icons/rescan"))
         self.Rescan.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         bottom_panel_hbox.addWidget(self.Rescan)
-        bottom_panel_hbox.addItem(QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed))
+        bottom_panel_hbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
 
-        self.mainPanelWidget = QtGui.QWidget()
+        self.mainPanelWidget = QtWidgets.QWidget()
         self.mainPanelWidget.setObjectName("mainPanelWidget")
         self.mainPanelWidget.setMaximumWidth(1100)
 
-        main_panel_vbox = QtGui.QVBoxLayout(self.mainPanelWidget)
-        main_panel_vbox.setMargin(0)
+        main_panel_vbox = QtWidgets.QVBoxLayout(self.mainPanelWidget)
+        main_panel_vbox.setContentsMargins(0, 0, 0, 0)
         main_panel_vbox.setSpacing(0)
 
-        top_panel = QtGui.QWidget()
+        top_panel = QtWidgets.QWidget()
         top_panel.setObjectName("topPanelWidget")
         main_panel_vbox.addWidget(top_panel)
 
-        self.Tabs = QtGui.QStackedWidget()
+        self.Tabs = QtWidgets.QStackedWidget()
         self.Tabs.setObjectName(_fromUtf8("Tabs"))
         main_panel_vbox.addWidget(self.Tabs)
 
         self.gridLayout.addWidget(self.mainPanelWidget, 0, 1, 1, 1)
-        self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignHCenter);
+        self.gridLayout.setAlignment(self.mainPanelWidget, QtCore.Qt.AlignmentFlag.AlignHCenter);
 
-        self.tab = QtGui.QWidget()
+        self.tab = QtWidgets.QWidget()
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/HomePanel.ui', self.tab)
         self.tab.le_actualBalance=myQLineEdit(self.tab.le_actualBalance)
         self.tab.le_availableBalance=myQLineEdit(self.tab.le_availableBalance)
@@ -774,43 +768,43 @@ class Ui_MainWindow(object):
         self.Conversion = self.tab.Conversion
 
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_attention_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_attention_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_copypaste_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_copypaste_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_openaccount_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_openaccount_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_jointaccount_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_jointaccount_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_hire_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_hire_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_trade_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_trade_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_contract_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_contract_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_findjob_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_findjob_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_buysell_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_buysell_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_buycoins_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon10.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_buycoins_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon11 = QtGui.QIcon()
-        icon11.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_video_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon11.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_video_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon12 = QtGui.QIcon()
-        icon12.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_rescan_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon12.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_rescan_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.Tabs.addWidget(self.tab)
-        self.SendBitcoins = QtGui.QWidget()
+        self.SendBitcoins = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/SendPanel.ui', self.SendBitcoins)
         self.SendBitcoins.le_actualBalance=myQLineEdit(self.SendBitcoins.le_actualBalance)
@@ -837,19 +831,19 @@ class Ui_MainWindow(object):
         self.BitPayTo = self.SendBitcoins.BitPayTo
 
         icon14 = QtGui.QIcon()
-        icon14.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_gear_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon14.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_gear_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon15 = QtGui.QIcon()
-        icon15.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_makeoffer_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon15.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_makeoffer_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon16 = QtGui.QIcon()
-        icon16.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_add_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon16.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_add_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.Tabs.addWidget(self.SendBitcoins)
-        self.ReceiveBitcoins = QtGui.QWidget()
+        self.ReceiveBitcoins = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/ReceivePanel.ui', self.ReceiveBitcoins)
-        #self.ReceiveBitcoins.layout().setAlignment(self.ReceiveBitcoins.receiveCoinsGroupBox, QtCore.Qt.AlignLeft);
+        #self.ReceiveBitcoins.layout().setAlignment(self.ReceiveBitcoins.receiveCoinsGroupBox, QtCore.Qt.AlignmentFlag.AlignLeft);
 
         self.ExplainReceive = self.ReceiveBitcoins.ExplainReceive
         self.ExplainSpend = self.tb_sendPanelHelp
@@ -869,15 +863,15 @@ class Ui_MainWindow(object):
 
         self.Tabs.addWidget(self.ReceiveBitcoins)
 
-        self.History = QtGui.QWidget()
+        self.History = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/HistoryPanel.ui', self.History)
-        self.History.FullHistory.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.History.FullHistory.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
         self.History.le_myAddress.setReadOnly(True)
         self.History.le_balance.setReadOnly(True)
 
         icon19 = QtGui.QIcon()
-        icon19.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_export_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon19.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_export_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.CopyAddressToClipboard_5 = self.History.CopyAddressToClipboard_5
         self.HistoryBalance = self.History.HistoryBalance
@@ -894,14 +888,14 @@ class Ui_MainWindow(object):
         self.HistorylistWidget = self.History.HistorylistWidget
 
         icon20 = QtGui.QIcon()
-        icon20.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_trash_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon20.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_trash_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.Tabs.addWidget(self.History)
-        self.Chat = QtGui.QWidget()
+        self.Chat = QtWidgets.QWidget()
         self.Chat.setObjectName(_fromUtf8("Chat"))
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/ChatPanel.ui', self.Chat)
-        self.Chat.webView = QtWebKit.QWebView(self.Chat.gb_chat)
+        self.Chat.webView = QtWebEngineWidgets.QWebEngineView(self.Chat.gb_chat)
         self.Chat.gridLayout.addWidget(self.Chat.webView, 0, 0, 1, 1)
         self.Chat.webView.setEnabled(True)        
 
@@ -910,7 +904,7 @@ class Ui_MainWindow(object):
         self.webView.setObjectName(_fromUtf8("webView"))
 
         self.Tabs.addWidget(self.Chat)
-        self.MakeAnOffer = QtGui.QWidget()
+        self.MakeAnOffer = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/MakeOfferPanel.ui', self.MakeAnOffer)
 
@@ -948,7 +942,7 @@ class Ui_MainWindow(object):
 
         self.Tabs.addWidget(self.MakeAnOffer)
 
-        self.PendingOffers = QtGui.QWidget()
+        self.PendingOffers = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/PendingOffersPanel.ui', self.PendingOffers)
 
@@ -960,7 +954,7 @@ class Ui_MainWindow(object):
 
         self.Tabs.addWidget(self.PendingOffers)
 
-        self.OpenContracts = QtGui.QWidget()
+        self.OpenContracts = QtWidgets.QWidget()
 
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/OpenContractsPanel.ui', self.OpenContracts)
 
@@ -971,7 +965,7 @@ class Ui_MainWindow(object):
 
         self.setupMarketView(main_window)
 
-        self.Contacts = QtGui.QWidget()
+        self.Contacts = QtWidgets.QWidget()
         uic.loadUi(self.ApplicationPath+"/gui"+'/forms/ContactsPanel.ui', self.Contacts)
 
         self.NewContact = self.Contacts.NewContact
@@ -979,23 +973,23 @@ class Ui_MainWindow(object):
         self.ContactTable = self.Contacts.ContactTable
 
         icon29 = QtGui.QIcon()
-        icon29.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_addcontact_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon29.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_addcontact_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         icon30 = QtGui.QIcon()
-        icon30.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_backup_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon30.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/gui"+"/images/icon_backup_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
 
         self.Tabs.addWidget(self.Contacts)
 
-        self.menubar = QtGui.QMenuBar(main_window)
+        self.menubar = QtWidgets.QMenuBar(main_window)
         #self.menubar.setGeometry(QtCore.QRect(0, 0, 981, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
-        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
-        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings = QtWidgets.QMenu(self.menubar)
         self.menuSettings.setObjectName(_fromUtf8("menuSettings"))
-        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
-        self.menuDonate = QtGui.QMenu(self.menubar)
+        self.menuDonate = QtWidgets.QMenu(self.menubar)
         self.menuDonate.setObjectName(_fromUtf8("menuDonate"))
         main_window.setMenuBar(self.menubar)
         self.actionNew_Wallet = QtGui.QAction(main_window)
@@ -1073,11 +1067,11 @@ class Ui_MainWindow(object):
             if hasattr(self.style, 'apply'):
                 self.style.apply(self, main_window)
 
-        self.commandLinkButton = QtGui.QPushButton(self.centralwidget)
+        self.commandLinkButton = QtWidgets.QPushButton(self.centralwidget)
         self.commandLinkButton.setMinimumSize(QtCore.QSize(500, 40))
         self.commandLinkButton.setMaximumSize(QtCore.QSize(900, 40))
         self.commandLinkButton.move(450,25)
-        self.commandLinkButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.commandLinkButton.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.commandLinkButton.setStyleSheet(_fromUtf8("QPushButton#commandLinkButton {\n"
         "    font: bold 14px \"Roboto\";\n"
         "color: #f2f2f2;\n"
@@ -1095,7 +1089,7 @@ class Ui_MainWindow(object):
         "\n"
         " }"))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/images/icon_attention_inactive.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(self.ApplicationPath+"/images/icon_attention_inactive.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.commandLinkButton.setIcon(icon1)
         self.commandLinkButton.setIconSize(QtCore.QSize(20, 20))
         self.commandLinkButton.setDefault(False)
@@ -1104,44 +1098,44 @@ class Ui_MainWindow(object):
 
     def setIcons(self):
         icon13 = QtGui.QIcon()
-        icon13.addPixmap(QtGui.QPixmap(":/icons/tabs/home_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon13.addPixmap(QtGui.QPixmap(":/icons/tabs/home_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon13.addPixmap(QtGui.QPixmap(":/icons/tabs/home_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon13.addPixmap(QtGui.QPixmap(":/icons/tabs/home_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(0,icon13)
         icon17 = QtGui.QIcon()
-        icon17.addPixmap(QtGui.QPixmap(":/icons/tabs/send_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon17.addPixmap(QtGui.QPixmap(":/icons/tabs/send_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon17.addPixmap(QtGui.QPixmap(":/icons/tabs/send_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon17.addPixmap(QtGui.QPixmap(":/icons/tabs/send_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(1,icon17)
         icon18 = QtGui.QIcon()
-        icon18.addPixmap(QtGui.QPixmap(":/icons/tabs/receive_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon18.addPixmap(QtGui.QPixmap(":/icons/tabs/receive_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon18.addPixmap(QtGui.QPixmap(":/icons/tabs/receive_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon18.addPixmap(QtGui.QPixmap(":/icons/tabs/receive_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(2,icon18)
         icon21 = QtGui.QIcon()
-        icon21.addPixmap(QtGui.QPixmap(":/icons/tabs/history_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon21.addPixmap(QtGui.QPixmap(":/icons/tabs/history_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon21.addPixmap(QtGui.QPixmap(":/icons/tabs/history_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon21.addPixmap(QtGui.QPixmap(":/icons/tabs/history_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(3,icon21)
         icon22 = QtGui.QIcon()
-        icon22.addPixmap(QtGui.QPixmap(":/icons/tabs/chat_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon22.addPixmap(QtGui.QPixmap(":/icons/tabs/chat_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon22.addPixmap(QtGui.QPixmap(":/icons/tabs/chat_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon22.addPixmap(QtGui.QPixmap(":/icons/tabs/chat_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(4,icon22)
         icon23 = QtGui.QIcon()
-        icon23.addPixmap(QtGui.QPixmap(":/icons/tabs/makeoffer_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon23.addPixmap(QtGui.QPixmap(":/icons/tabs/makeoffer_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon23.addPixmap(QtGui.QPixmap(":/icons/tabs/makeoffer_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon23.addPixmap(QtGui.QPixmap(":/icons/tabs/makeoffer_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(5,icon23)
         icon24 = QtGui.QIcon()
-        icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(6,icon24)
         icon25 = QtGui.QIcon()
-        icon25.addPixmap(QtGui.QPixmap(":/icons/tabs/orders_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon25.addPixmap(QtGui.QPixmap(":/icons/tabs/orders_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon25.addPixmap(QtGui.QPixmap(":/icons/tabs/orders_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon25.addPixmap(QtGui.QPixmap(":/icons/tabs/orders_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(7,icon25)
         icon28 = QtGui.QIcon()
-        icon28.addPixmap(QtGui.QPixmap(":/icons/tabs/market_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon28.addPixmap(QtGui.QPixmap(":/icons/tabs/market_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon28.addPixmap(QtGui.QPixmap(":/icons/tabs/market_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon28.addPixmap(QtGui.QPixmap(":/icons/tabs/market_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(8,icon28)
         icon31 = QtGui.QIcon()
-        icon31.addPixmap(QtGui.QPixmap(":/icons/tabs/contacts_on"), QtGui.QIcon.Active, QtGui.QIcon.On)
-        icon31.addPixmap(QtGui.QPixmap(":/icons/tabs/contacts_off"), QtGui.QIcon.Active, QtGui.QIcon.Off)
+        icon31.addPixmap(QtGui.QPixmap(":/icons/tabs/contacts_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
+        icon31.addPixmap(QtGui.QPixmap(":/icons/tabs/contacts_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         #self.Tabs.setTabIcon(9,icon31)
         self.tab.OpenAccount.setIconSize(QtCore.QSize(80,80))
         self.tab.OpenAccount.setIcon(QtGui.QIcon(":/icons/openwallet"))
@@ -1232,7 +1226,7 @@ class Ui_MainWindow(object):
         self.BuyCoins.setText(self._translate("MainWindow", "Buy/Sell Coins", None))
         self.VideoLibrary.setToolTip(self._translate("MainWindow", "Video Library", None))
         self.VideoLibrary.setText(self._translate("MainWindow", "Video Library", None))
-        self.labelProgress.setText(self._translate("MainWindow", "Synchronizing...", None))
+        self.labelProgress.setText(self._translate("MainWindow", "Synchronizing.", None))
         self.Rescan.setToolTip(self._translate("MainWindow", "Rescan", None))
         self.Rescan.setText(self._translate("MainWindow", "Rescan", None))
         self.PayToLabel.setText(self._translate("MainWindow", "Pay To:", None))
@@ -1264,7 +1258,7 @@ class Ui_MainWindow(object):
         self.MyEmail.setText(self._translate("MainWindow", "Your Email Address: ", None))
         self.AddEmail_2.setToolTip(self._translate("MainWindow", "Copy Address to Clipboard", None))
         self.EmailStatus.setText(self._translate("MainWindow", "Status:", None))
-        self.EmailBox.setPlaceholderText(self._translate("MainWindow", "Enter your Email here and then click the\"Add/Change\" button...", None))
+        self.EmailBox.setPlaceholderText(self._translate("MainWindow", "Enter your Email here and then click the\"Add/Change\" button.", None))
         self.AddEmail.setToolTip(self._translate("MainWindow", "Add / Change Email", None))
         self.AddEmail.setText(self._translate("MainWindow", "Add/Change", None))
         self.EnableEmail.setText(self._translate("MainWindow", "Enable Email (Encrypted)", None))
@@ -1316,7 +1310,7 @@ class Ui_MainWindow(object):
         self.AutoBackupLabel_2.setText(self._translate("MainWindow", "Auto Backup", None))
         self.ExplainAutoBackupOffer.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainAutoBackupOffer.setText(self._translate("MainWindow", "?", None))
-        self.TxBackupPath.setPlaceholderText(self._translate("MainWindow", "Path to flash drive or backup folder..", None))
+        self.TxBackupPath.setPlaceholderText(self._translate("MainWindow", "Path to flash drive or backup folder.", None))
         self.BrowseTxBackup.setToolTip(self._translate("MainWindow", "Create path to Backup Folder", None))
         self.InstantRefundLabel.setText(self._translate("MainWindow", "Instant Refund", None))
         self.instantexplain.setToolTip(self._translate("MainWindow", "Help", None))
@@ -1435,13 +1429,13 @@ if __name__ == "__main__":
     import os
     import styles.bay_rc
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
-    main_window = QtGui.QMainWindow()
+    main_window = QtWidgets.QMainWindow()
 
     ui = Ui_MainWindow()
     ui.adjustSize = lambda :""
-    ui.ApplicationPath = os.path.abspath(os.path.dirname(__file__))+"/.."
+    ui.ApplicationPath = os.path.abspath(os.path.dirname(__file__))+"/."
     main_window.ApplicationPath = ui.ApplicationPath
     ui.language = "en"
     ui.translations = {}
@@ -1477,7 +1471,7 @@ if __name__ == "__main__":
     NewCoin1['Symbol']="BAY"
     NewCoin1['CommandLinkColor']="#fbfbfb"
     NewCoin1['ProgressBarColor']="#a5d1e4"#545d6d
-    NewCoin1['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgb(0, 50, 100, 250))"
+    NewCoin1['TabGradient']="qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
     NewCoin1['NavBarIcon']="/images/navbar_arrow_bay.png"
     NewCoin1['default market']="BitBay"
     NewCoin1['IRC']="https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#BitBay" #http://webchat.freenode.net?channels=BitHalo,#BitBay&amp;uio=OT10cnVlJjExPTIzNg6b"
@@ -1503,4 +1497,4 @@ if __name__ == "__main__":
     main_window.show()
 
     #ui.retranslateUi2(MainWindow)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

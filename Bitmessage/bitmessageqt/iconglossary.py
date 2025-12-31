@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets, QtWidgets, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,65 +16,65 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_iconGlossaryDialog(object):
     def setupUi(self, iconGlossaryDialog):
-        iconGlossaryDialog.setObjectName(_fromUtf8("iconGlossaryDialog"))
+        iconGlossaryDialog.setObjectName("iconGlossaryDialog")
         iconGlossaryDialog.resize(424, 282)
-        self.gridLayout = QtGui.QGridLayout(iconGlossaryDialog)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.groupBox = QtGui.QGroupBox(iconGlossaryDialog)
-        self.groupBox.setObjectName(_fromUtf8("groupBox"))
-        self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
-        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-        self.label = QtGui.QLabel(self.groupBox)
+        self.gridLayout = QtWidgets.QGridLayout(iconGlossaryDialog)
+        self.gridLayout.setObjectName("gridLayout")
+        self.groupBox = QtWidgets.QGroupBox(iconGlossaryDialog)
+        self.groupBox.setObjectName("groupBox")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setText(_fromUtf8(""))
-        self.label.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/redicon.png")))
-        self.label.setObjectName(_fromUtf8("label"))
+        self.label.setPixmap(QtGui.QPixmap(":/newPrefix/images/redicon.png"))
+        self.label.setObjectName("label")
         self.gridLayout_2.addWidget(self.label, 0, 0, 1, 1)
-        self.label_2 = QtGui.QLabel(self.groupBox)
-        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.label_2 = QtWidgets.QLabel(self.groupBox)
+        self.label_2.setObjectName("label_2")
         self.gridLayout_2.addWidget(self.label_2, 0, 1, 1, 1)
-        self.label_3 = QtGui.QLabel(self.groupBox)
+        self.label_3 = QtWidgets.QLabel(self.groupBox)
         self.label_3.setText(_fromUtf8(""))
-        self.label_3.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/yellowicon.png")))
-        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.label_3.setPixmap(QtGui.QPixmap(":/newPrefix/images/yellowicon.png"))
+        self.label_3.setObjectName("label_3")
         self.gridLayout_2.addWidget(self.label_3, 1, 0, 1, 1)
-        self.label_4 = QtGui.QLabel(self.groupBox)
-        self.label_4.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.label_4 = QtWidgets.QLabel(self.groupBox)
+        self.label_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.label_4.setWordWrap(True)
-        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 1, 1, 2, 1)
-        spacerItem = QtGui.QSpacerItem(20, 73, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(20, 73, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 2, 0, 2, 1)
-        self.labelPortNumber = QtGui.QLabel(self.groupBox)
-        self.labelPortNumber.setObjectName(_fromUtf8("labelPortNumber"))
+        self.labelPortNumber = QtWidgets.QLabel(self.groupBox)
+        self.labelPortNumber.setObjectName("labelPortNumber")
         self.gridLayout_2.addWidget(self.labelPortNumber, 3, 1, 1, 1)
-        self.label_5 = QtGui.QLabel(self.groupBox)
+        self.label_5 = QtWidgets.QLabel(self.groupBox)
         self.label_5.setText(_fromUtf8(""))
-        self.label_5.setPixmap(QtGui.QPixmap(_fromUtf8(":/newPrefix/images/greenicon.png")))
-        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.label_5.setPixmap(QtGui.QPixmap(":/newPrefix/images/greenicon.png"))
+        self.label_5.setObjectName("label_5")
         self.gridLayout_2.addWidget(self.label_5, 4, 0, 1, 1)
-        self.label_6 = QtGui.QLabel(self.groupBox)
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
         self.label_6.setWordWrap(True)
-        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.label_6.setObjectName("label_6")
         self.gridLayout_2.addWidget(self.label_6, 4, 1, 1, 1)
         self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(iconGlossaryDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.buttonBox = QtWidgets.QDialogButtonBox(iconGlossaryDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Ok)
+        self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(iconGlossaryDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), iconGlossaryDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), iconGlossaryDialog.reject)
+        self.buttonBox.accepted.connect(iconGlossaryDialog.accept)
+        self.buttonBox.rejected.connect(iconGlossaryDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(iconGlossaryDialog)
 
     def retranslateUi(self, iconGlossaryDialog):
@@ -85,14 +85,14 @@ class Ui_iconGlossaryDialog(object):
         self.labelPortNumber.setText(_translate("iconGlossaryDialog", "You are using TCP port ?. (This can be changed in the settings).", None))
         self.label_6.setText(_translate("iconGlossaryDialog", "You do have connections with other peers and your firewall is correctly configured.", None))
 
-import bitmessage_icons_rc
+from . import bitmessage_icons_rc
 
 if __name__ == "__main__":
     import sys
-    app = QtGui.QApplication(sys.argv)
-    iconGlossaryDialog = QtGui.QDialog()
+    app = QtWidgets.QApplication(sys.argv)
+    iconGlossaryDialog = QtWidgets.QDialog()
     ui = Ui_iconGlossaryDialog()
     ui.setupUi(iconGlossaryDialog)
     iconGlossaryDialog.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 

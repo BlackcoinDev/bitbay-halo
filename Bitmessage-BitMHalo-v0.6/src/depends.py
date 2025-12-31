@@ -98,7 +98,7 @@ def check_openssl():
         paths.extend([
             'libcrypto.dylib',
             '/usr/local/opt/openssl/lib/libcrypto.dylib',
-            './../Frameworks/libcrypto.dylib'
+            '././Frameworks/libcrypto.dylib'
         ])
     import re
     if re.match(r'linux|darwin|freebsd', sys.platform):
@@ -167,7 +167,7 @@ def check_curses():
 
 def check_pyqt():
     try:
-        import PyQt4.QtCore
+        import PyQt6.QtCore
     except ImportError:
         logger.error('The PyQt4 package is not available. PyBitmessage requires PyQt 4.8 or later and Qt 4.7 or later.')
         if sys.platform.startswith('openbsd'):
@@ -189,13 +189,13 @@ def check_pyqt():
                         else:
                             logger.error('If your package manager does not have this package, try running "pip install PyQt4".')
         return False
-    logger.info('PyQt Version: ' + PyQt4.QtCore.PYQT_VERSION_STR)
-    logger.info('Qt Version: ' + PyQt4.QtCore.QT_VERSION_STR)
+    logger.info('PyQt Version: ' + PyQt6.QtCore.PYQT_VERSION_STR)
+    logger.info('Qt Version: ' + PyQt6.QtCore.QT_VERSION_STR)
     passed = True
-    if PyQt4.QtCore.PYQT_VERSION < 0x40800:
+    if PyQt6.QtCore.PYQT_VERSION < 0x40800:
         logger.error('This version of PyQt is too old. PyBitmessage requries PyQt 4.8 or later.')
         passed = False
-    if PyQt4.QtCore.QT_VERSION < 0x40700:
+    if PyQt6.QtCore.QT_VERSION < 0x40700:
         logger.error('This version of Qt is too old. PyBitmessage requries Qt 4.7 or later.')
         passed = False
     return passed

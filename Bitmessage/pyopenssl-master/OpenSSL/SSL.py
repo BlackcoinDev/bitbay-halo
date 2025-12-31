@@ -253,7 +253,7 @@ class Context(object):
         }
     _methods = dict(
         (identifier, getattr(_lib, name))
-        for (identifier, name) in _methods.items()
+        for (identifier, name) in list(_methods.items())
         if getattr(_lib, name, None) is not None)
 
 
@@ -1450,7 +1450,7 @@ class Connection(object):
         # Section 7.1.4, paragraph 1 of the C standard suggests that
         # memcpy(NULL, source, 0) is not guaranteed to produce defined (let
         # alone desirable) behavior (though it probably does on just about
-        # every implementation...)
+        # every implementation.)
         #
         # Allocate a tiny buffer to pass in (instead of just passing NULL as
         # one might expect) for the initial call so as to be safe against this

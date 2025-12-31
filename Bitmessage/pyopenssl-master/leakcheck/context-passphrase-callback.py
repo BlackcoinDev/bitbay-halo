@@ -20,14 +20,14 @@ file('pkey.pem', 'w').write(dump_privatekey(FILETYPE_PEM, k, "blowfish", "foobar
 count = count()
 def go():
     def cb(a, b, c):
-        print count.next()
+        print(next(count))
         return "foobar"
     c = Context(TLSv1_METHOD)
     c.set_passwd_cb(cb)
     while 1:
         c.use_privatekey_file('pkey.pem')
 
-threads = [Thread(target=go, args=()) for i in xrange(2)]
+threads = [Thread(target=go, args=()) for i in range(2)]
 for th in threads:
     th.start()
 for th in threads:

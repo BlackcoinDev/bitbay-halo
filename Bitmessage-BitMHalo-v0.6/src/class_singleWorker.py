@@ -143,7 +143,7 @@ class singleWorker(threading.Thread, StoppableThread):
                 logger.error('Probable programming error: The command sent to the workerThread is weird. It is: %s\n' % command)
 
             queues.workerQueue.task_done()
-        logger.info("Quitting...")
+        logger.info("Quitting.")
 
     def doPOWForMyV2Pubkey(self, hash):  # This function also broadcasts out the pubkey message once it is done with the POW
         # Look up my stream number based on my address hash
@@ -189,7 +189,7 @@ class singleWorker(threading.Thread, StoppableThread):
 
         # Do the POW for this pubkey message
         target = 2 ** 64 / (defaults.networkDefaultProofOfWorkNonceTrialsPerByte*(len(payload) + 8 + defaults.networkDefaultPayloadLengthExtraBytes + ((TTL*(len(payload)+8+defaults.networkDefaultPayloadLengthExtraBytes))/(2 ** 16))))
-        logger.info('(For pubkey message) Doing proof of work...')
+        logger.info('(For pubkey message) Doing proof of work.')
         initialHash = hashlib.sha512(payload).digest()
         trialValue, nonce = proofofwork.run(target, initialHash)
         logger.info('(For pubkey message) Found proof of work ' + str(trialValue), ' Nonce: ', str(nonce))
@@ -279,7 +279,7 @@ class singleWorker(threading.Thread, StoppableThread):
 
         # Do the POW for this pubkey message
         target = 2 ** 64 / (defaults.networkDefaultProofOfWorkNonceTrialsPerByte*(len(payload) + 8 + defaults.networkDefaultPayloadLengthExtraBytes + ((TTL*(len(payload)+8+defaults.networkDefaultPayloadLengthExtraBytes))/(2 ** 16))))
-        logger.info('(For pubkey message) Doing proof of work...')
+        logger.info('(For pubkey message) Doing proof of work.')
         initialHash = hashlib.sha512(payload).digest()
         trialValue, nonce = proofofwork.run(target, initialHash)
         logger.info('(For pubkey message) Found proof of work. Nonce: ' + str(nonce))
@@ -369,7 +369,7 @@ class singleWorker(threading.Thread, StoppableThread):
 
         # Do the POW for this pubkey message
         target = 2 ** 64 / (defaults.networkDefaultProofOfWorkNonceTrialsPerByte*(len(payload) + 8 + defaults.networkDefaultPayloadLengthExtraBytes + ((TTL*(len(payload)+8+defaults.networkDefaultPayloadLengthExtraBytes))/(2 ** 16))))
-        logger.info('(For pubkey message) Doing proof of work...')
+        logger.info('(For pubkey message) Doing proof of work.')
         initialHash = hashlib.sha512(payload).digest()
         trialValue, nonce = proofofwork.run(target, initialHash)
         logger.info('(For pubkey message) Found proof of work ' + str(trialValue) + 'Nonce: ' + str(nonce))
@@ -490,9 +490,9 @@ class singleWorker(threading.Thread, StoppableThread):
                 dataToEncrypt, hexlify(pubEncryptionKey))
 
             target = 2 ** 64 / (defaults.networkDefaultProofOfWorkNonceTrialsPerByte*(len(payload) + 8 + defaults.networkDefaultPayloadLengthExtraBytes + ((TTL*(len(payload)+8+defaults.networkDefaultPayloadLengthExtraBytes))/(2 ** 16))))
-            logger.info('(For broadcast message) Doing proof of work...')
+            logger.info('(For broadcast message) Doing proof of work.')
             queues.UISignalQueue.put(('updateSentItemStatusByAckdata', (
-                ackdata, tr._translate("MainWindow", "Doing work necessary to send broadcast..."))))
+                ackdata, tr._translate("MainWindow", "Doing work necessary to send broadcast."))))
             initialHash = hashlib.sha512(payload).digest()
             trialValue, nonce = proofofwork.run(target, initialHash)
             logger.info('(For broadcast message) Found proof of work ' + str(trialValue) + ' Nonce: ' + str(nonce))
@@ -671,8 +671,8 @@ class singleWorker(threading.Thread, StoppableThread):
                 # Mobile users may ask us to include their address's RIPE hash on a message
                 # unencrypted. Before we actually do it the sending human must check a box
                 # in the settings menu to allow it.
-                if shared.isBitSetWithinBitfield(behaviorBitfield,30): # if receiver is a mobile device who expects that their address RIPE is included unencrypted on the front of the message..
-                    if not shared.BMConfigParser().safeGetBoolean('bitmessagesettings','willinglysendtomobile'): # if we are Not willing to include the receiver's RIPE hash on the message..
+                if shared.isBitSetWithinBitfield(behaviorBitfield,30): # if receiver is a mobile device who expects that their address RIPE is included unencrypted on the front of the message.
+                    if not shared.BMConfigParser().safeGetBoolean('bitmessagesettings','willinglysendtomobile'): # if we are Not willing to include the receiver's RIPE hash on the message.
                         logger.info('The receiver is a mobile user but the sender (you) has not selected that you are willing to send to mobiles. Aborting send.')
                         queues.UISignalQueue.put(('updateSentItemStatusByAckdata',(ackdata,tr._translate("MainWindow",'Problem: Destination is a mobile device who requests that the destination be included in the message but this is disallowed in your settings.  %1').arg(l10n.formatTimestamp()))))
                         # if the human changes their setting and then sends another message or restarts their client, this one will send at that time.
@@ -714,7 +714,7 @@ class singleWorker(threading.Thread, StoppableThread):
                             queues.UISignalQueue.put(('updateSentItemStatusByAckdata', (ackdata, tr._translate("MainWindow", "Problem: The work demanded by the recipient (%1 and %2) is more difficult than you are willing to do. %3").arg(str(float(requiredAverageProofOfWorkNonceTrialsPerByte) / defaults.networkDefaultProofOfWorkNonceTrialsPerByte)).arg(str(float(
                                 requiredPayloadLengthExtraBytes) / defaults.networkDefaultPayloadLengthExtraBytes)).arg(l10n.formatTimestamp()))))
                             continue
-            else: # if we are sending a message to ourselves or a chan..
+            else: # if we are sending a message to ourselves or a chan.
                 logger.info('Sending a message.')
                 logger.debug('First 150 characters of message: ' + repr(message[:150]))
                 behaviorBitfield = protocol.getBitfield(fromaddress)

@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 from addresses import decodeAddress, encodeVarint, addBMIfNotPresent
 from account import (
     GatewayAccount, MailchuckAccount, AccountMixin, accountClass,
@@ -70,7 +70,7 @@ class AddressCheckMixin(object):
             ))
 
 
-class AddressDataDialog(QtGui.QDialog, AddressCheckMixin):
+class AddressDataDialog(QtWidgets.QDialog, AddressCheckMixin):
     def __init__(self, parent):
         super(AddressDataDialog, self).__init__(parent)
         self.parent = parent
@@ -99,7 +99,7 @@ class AddAddressDialog(AddressDataDialog, RetranslateMixin):
             self.lineEditAddress.setText(address)
 
 
-class NewAddressDialog(QtGui.QDialog, RetranslateMixin):
+class NewAddressDialog(QtWidgets.QDialog, RetranslateMixin):
 
     def __init__(self, parent=None):
         super(NewAddressDialog, self).__init__(parent)
@@ -111,7 +111,7 @@ class NewAddressDialog(QtGui.QDialog, RetranslateMixin):
             self.radioButtonExisting.click()
             self.comboBoxExisting.addItem(address)
         self.groupBoxDeterministic.setHidden(True)
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
         self.show()
 
     def accept(self):
@@ -133,7 +133,7 @@ class NewAddressDialog(QtGui.QDialog, RetranslateMixin):
         else:
             if self.lineEditPassphrase.text() != \
                     self.lineEditPassphraseAgain.text():
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self, _translate("MainWindow", "Passphrase mismatch"),
                     _translate(
                         "MainWindow",
@@ -141,7 +141,7 @@ class NewAddressDialog(QtGui.QDialog, RetranslateMixin):
                         " match. Try again.")
                 )
             elif self.lineEditPassphrase.text() == "":
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self, _translate("MainWindow", "Choose a passphrase"),
                     _translate(
                         "MainWindow", "You really do need a passphrase.")
@@ -201,15 +201,15 @@ class NewSubscriptionDialog(AddressDataDialog, RetranslateMixin):
                     ))
 
 
-class RegenerateAddressesDialog(QtGui.QDialog, RetranslateMixin):
+class RegenerateAddressesDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent=None):
         super(RegenerateAddressesDialog, self).__init__(parent)
         widgets.load('regenerateaddresses.ui', self)
         self.groupBox.setTitle('')
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
 
-class SpecialAddressBehaviorDialog(QtGui.QDialog, RetranslateMixin):
+class SpecialAddressBehaviorDialog(QtWidgets.QDialog, RetranslateMixin):
 
     def __init__(self, parent=None, config=None):
         super(SpecialAddressBehaviorDialog, self).__init__(parent)
@@ -246,7 +246,7 @@ class SpecialAddressBehaviorDialog(QtGui.QDialog, RetranslateMixin):
                     unicode(mailingListName, 'utf-8')
                 )
 
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
         self.show()
 
     def accept(self):
@@ -258,7 +258,7 @@ class SpecialAddressBehaviorDialog(QtGui.QDialog, RetranslateMixin):
             # Set the color to either black or grey
             if self.config.getboolean(self.address, 'enabled'):
                 self.parent.setCurrentItemColor(
-                    QtGui.QApplication.palette().text().color()
+                    QtWidgets.QApplication.palette().text().color()
                 )
             else:
                 self.parent.setCurrentItemColor(QtGui.QColor(128, 128, 128))
@@ -274,7 +274,7 @@ class SpecialAddressBehaviorDialog(QtGui.QDialog, RetranslateMixin):
         self.parent.rerenderMessagelistToLabels()
 
 
-class EmailGatewayDialog(QtGui.QDialog, RetranslateMixin):
+class EmailGatewayDialog(QtWidgets.QDialog, RetranslateMixin):
     def __init__(self, parent, config=None, account=None):
         super(EmailGatewayDialog, self).__init__(parent)
         widgets.load('emailgateway.ui', self)
@@ -312,7 +312,7 @@ class EmailGatewayDialog(QtGui.QDialog, RetranslateMixin):
             else:
                 self.acct = MailchuckAccount(address)
         self.lineEditEmail.setFocus()
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
     def accept(self):
         self.hide()

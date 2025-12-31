@@ -1,5 +1,5 @@
 import ctypes
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 import ssl
 import sys
 import time
@@ -57,7 +57,7 @@ def checkAddressBook(myapp):
     sqlExecute('''DELETE from addressbook WHERE address=?''', OLD_SUPPORT_ADDRESS)
     queryreturn = sqlQuery('''SELECT * FROM addressbook WHERE address=?''', SUPPORT_ADDRESS)
     if queryreturn == []:
-        sqlExecute('''INSERT INTO addressbook VALUES (?,?)''', str(QtGui.QApplication.translate("Support", SUPPORT_LABEL)), SUPPORT_ADDRESS)
+        sqlExecute('''INSERT INTO addressbook VALUES (?,?)''', str(QtWidgets.QApplication.translate("Support", SUPPORT_LABEL)), SUPPORT_ADDRESS)
         myapp.rerenderAddressBook()
 
 def checkHasNormalAddress():
@@ -69,7 +69,7 @@ def checkHasNormalAddress():
 
 def createAddressIfNeeded(myapp):
     if not checkHasNormalAddress():
-        queues.addressGeneratorQueue.put(('createRandomAddress', 4, 1, str(QtGui.QApplication.translate("Support", SUPPORT_MY_LABEL)), 1, "", False, defaults.networkDefaultProofOfWorkNonceTrialsPerByte, defaults.networkDefaultPayloadLengthExtraBytes))
+        queues.addressGeneratorQueue.put(('createRandomAddress', 4, 1, str(QtWidgets.QApplication.translate("Support", SUPPORT_MY_LABEL)), 1, "", False, defaults.networkDefaultProofOfWorkNonceTrialsPerByte, defaults.networkDefaultPayloadLengthExtraBytes))
     while state.shutdown == 0 and not checkHasNormalAddress():
         time.sleep(.2)
     myapp.rerenderComboBoxSendFrom()
@@ -81,7 +81,7 @@ def createSupportMessage(myapp):
     if state.shutdown:
         return
 
-    myapp.ui.lineEditSubject.setText(str(QtGui.QApplication.translate("Support", SUPPORT_SUBJECT)))
+    myapp.ui.lineEditSubject.setText(str(QtWidgets.QApplication.translate("Support", SUPPORT_SUBJECT)))
     addrIndex = myapp.ui.comboBoxSendFrom.findData(address, QtCore.Qt.UserRole, QtCore.Qt.MatchFixedString | QtCore.Qt.MatchCaseSensitive)
     if addrIndex == -1: # something is very wrong
         return
@@ -114,9 +114,9 @@ def createSupportMessage(myapp):
         frozen = paths.frozen
     portablemode = "True" if state.appdata == paths.lookupExeFolder() else "False"
     cpow = "True" if proofofwork.bmpow else "False"
-    #cpow = QtGui.QApplication.translate("Support", cpow)
+    #cpow = QtWidgets.QApplication.translate("Support", cpow)
     openclpow = str(BMConfigParser().safeGet('bitmessagesettings', 'opencl')) if openclEnabled() else "None"
-    #openclpow = QtGui.QApplication.translate("Support", openclpow)
+    #openclpow = QtWidgets.QApplication.translate("Support", openclpow)
     locale = getTranslationLanguage()
     try:
         socks = BMConfigParser().get('bitmessagesettings', 'socksproxytype')
@@ -128,7 +128,7 @@ def createSupportMessage(myapp):
         upnp = "N/A"
     connectedhosts = len(network.stats.connectedHostsList())
 
-    myapp.ui.textEditMessage.setText(str(QtGui.QApplication.translate("Support", SUPPORT_MESSAGE)).format(version, os, architecture, pythonversion, opensslversion, frozen, portablemode, cpow, openclpow, locale, socks, upnp, connectedhosts))
+    myapp.ui.textEditMessage.setText(str(QtWidgets.QApplication.translate("Support", SUPPORT_MESSAGE)).format(version, os, architecture, pythonversion, opensslversion, frozen, portablemode, cpow, openclpow, locale, socks, upnp, connectedhosts))
 
     # single msg tab
     myapp.ui.tabWidgetSend.setCurrentIndex(

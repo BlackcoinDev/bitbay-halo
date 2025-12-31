@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 import time
 import shared
 
@@ -14,13 +14,13 @@ import widgets
 from network.connectionpool import BMConnectionPool
 
 
-class NetworkStatus(QtGui.QWidget, RetranslateMixin):
+class NetworkStatus(QtWidgets.QWidget, RetranslateMixin):
     def __init__(self, parent=None):
         super(NetworkStatus, self).__init__(parent)
         widgets.load('networkstatus.ui', self)
 
         header = self.tableWidgetConnectionCount.horizontalHeader()
-        header.setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(QtGui.QHeaderView.ResizeToContents)
 
         # Somehow this value was 5 when I tested
         if header.sortIndicatorSection() > 4:
@@ -42,8 +42,8 @@ class NetworkStatus(QtGui.QWidget, RetranslateMixin):
 
         self.timer = QtCore.QTimer()
 
-        QtCore.QObject.connect(
-            self.timer, QtCore.SIGNAL("timeout()"), self.runEveryTwoSeconds)
+        
+            self.timer.timeout.connect( self.runEveryTwoSeconds)
 
     def startUpdate(self):
         Inventory().numberOfInventoryLookupsPerformed = 0
@@ -143,9 +143,9 @@ class NetworkStatus(QtGui.QWidget, RetranslateMixin):
             self.tableWidgetConnectionCount.item(0, 1).setData(QtCore.Qt.UserRole, outbound)
         else:
             for i in range(self.tableWidgetConnectionCount.rowCount()):
-                if self.tableWidgetConnectionCount.item(i, 0).data(QtCore.Qt.UserRole).toPyObject() != destination:
+                if self.tableWidgetConnectionCount.item(i, 0).data(QtCore.Qt.UserRole) != destination:
                     continue
-                if self.tableWidgetConnectionCount.item(i, 1).data(QtCore.Qt.UserRole).toPyObject() == outbound:
+                if self.tableWidgetConnectionCount.item(i, 1).data(QtCore.Qt.UserRole) == outbound:
                     self.tableWidgetConnectionCount.removeRow(i)
                     break
         self.tableWidgetConnectionCount.setUpdatesEnabled(True)

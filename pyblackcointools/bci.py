@@ -1,13 +1,18 @@
 #!/usr/bin/python
-import urllib2, json, re, random, sys
+try:
+    from urllib.request import build_opener
+except:
+    from urllib.request import build_opener
+import json, re, random, sys
+from .main import safe_hexlify, safe_unhexlify
 
 # Makes a request to a given URL (first argument) and optional params (second argument)
 def make_request(*args):
-    opener = urllib2.build_opener()
+    opener = build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0'+str(random.randrange(1000000)))]
     try:
         return opener.open(*args).read().strip()
-    except Exception,e:
+    except Exception as e:
         try: p = e.read().strip()
         except: p = e
         raise Exception(p)
@@ -22,14 +27,14 @@ def unspent(*args):
     u = []
     for addr in addrs:
         try: data = make_request('https://blockchain.info/unspent?address='+addr)
-        except Exception,e: 
+        except Exception as e: 
             if str(e) == 'No free outputs to spend': continue
             else: raise Exception(e)
         try:
             jsonobj = json.loads(data)
             #print 'd',data
             for o in jsonobj["unspent_outputs"]:
-                h = o['tx_hash'].decode('hex')[::-1].encode('hex')
+                h = safe_hexlify(safe_unhexlify(o['tx_hash'])[::-1])
                 u.append({
                     "output": h+':'+str(o['tx_output_n']),
                     "value": o['value'] 
@@ -77,7 +82,7 @@ def history(*args):
             txs.extend(jsonobj["txs"])
             if len(jsonobj["txs"]) < 50: break
             offset += 50
-            sys.stderr.write("Fetching more transactions... "+str(offset)+'\n')
+            sys.stderr.write("Fetching more transactions. "+str(offset)+'\n')
     outs = {}
     for tx in txs:
         for o in tx["out"]:
@@ -98,11 +103,11 @@ def history(*args):
 
 # Pushes a transaction to the network using https://blockchain.info/pushtx
 def pushtx(tx):
-    if not re.match('^[0-9a-fA-F]*$',tx): tx = tx.encode('hex')
+    if not isinstance(tx, str) and re.match('^[0-9a-fA-F]*$',tx): tx = safe_hexlify(tx)
     return make_request('https://blockchain.info/pushtx','tx='+tx)
 
 def eligius_pushtx(tx):
-    if not re.match('^[0-9a-fA-F]*$',tx): tx = tx.encode('hex')
+    if not isinstance(tx, str) and re.match('^[0-9a-fA-F]*$',tx): tx = safe_hexlify(tx)
     s = make_request('http://eligius.st/~wizkid057/newstats/pushtxn.php','transaction='+tx+'&send=Push')
     strings = re.findall('string[^"]*"[^"]*"',s)
     for string in strings:
@@ -110,7 +115,7 @@ def eligius_pushtx(tx):
         if len(quote) >= 5: return quote[1:-1]
 
 def blockr_pushtx(tx):
-    if not re.match('^[0-9a-fA-F]*$', tx): tx = tx.encode('hex')
+    if not isinstance( tx, str) and re.match('^[0-9a-fA-F]*$', tx): tx = safe_hexlify(tx)
     return make_request('http://btc.blockr.io/api/v1/tx/push', '{"hex":"%s"}' % tx)
 
 def last_block_height():
@@ -120,12 +125,12 @@ def last_block_height():
 
 # Gets a specific transaction
 def bci_fetchtx(txhash):
-    if not re.match('^[0-9a-fA-F]*$',txhash): txhash = txhash.encode('hex')
+    if not isinstance(txhash, str) and re.match('^[0-9a-fA-F]*$',txhash): txhash = safe_hexlify(txhash)
     data = make_request('https://blockchain.info/rawtx/'+txhash+'?format=hex')
     return data
 
 def blockr_fetchtx(txhash):
-    if not re.match('^[0-9a-fA-F]*$',txhash): txhash = txhash.encode('hex')
+    if not isinstance(txhash, str) and re.match('^[0-9a-fA-F]*$',txhash): txhash = safe_hexlify(txhash)
     jsondata = json.loads(make_request('https://btc.blockr.io/api/v1/tx/raw/'+txhash))
     return jsondata['data']['tx']['hex']
 

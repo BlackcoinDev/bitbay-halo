@@ -7,29 +7,22 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtWebEngineCore
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
+def _fromUtf8(s):
+    return s
 
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+def _translate(context, text, disambig):
+    return QtCore.QCoreApplication.translate(context, text, disambig)
 
 #All automatically generated Labels are now redefined so fonts are cross platform and fit the boxes
-class myQLabel(QtGui.QLabel):
+class myQLabel(QtWidgets.QLabel):
     def __init__(self, *args, **kargs):
         super(myQLabel, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
-                                             QtGui.QSizePolicy.Ignored))  
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
+                                             QtWidgets.QSizePolicy.Policy.Ignored))  
 
         self.setMinSize(6)
 
@@ -43,7 +36,7 @@ class myQLabel(QtGui.QLabel):
         self.setMinimumSize(br.width(), br.height())
 
     def setText(self, text):
-        QtGui.QLabel.setText(self, text)
+        QtWidgets.QLabel.setText(self, text)
         self.resizeText()
 
     def resizeEvent(self, event):
@@ -78,12 +71,12 @@ class myQLabel(QtGui.QLabel):
         self.setFont(f)
 
 #All automatically generated check boxes are now redefined so fonts are cross platform and fit the boxes
-class myQCheckBox(QtGui.QCheckBox):
+class myQCheckBox(QtWidgets.QCheckBox):
     def __init__(self, *args, **kargs):
-        super(QtGui.QCheckBox, self).__init__(*args, **kargs)
+        super(QtWidgets.QCheckBox, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
-                                             QtGui.QSizePolicy.Ignored))  
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
+                                             QtWidgets.QSizePolicy.Policy.Ignored))  
 
         self.setMinSize(6)
 
@@ -97,7 +90,7 @@ class myQCheckBox(QtGui.QCheckBox):
         self.setMinimumSize(br.width(), br.height())
 
     def resizeEvent(self, event):
-        super(QtGui.QCheckBox, self).resizeEvent(event)
+        super(QtWidgets.QCheckBox, self).resizeEvent(event)
 
         if not self.text():
             return
@@ -127,20 +120,20 @@ class myQCheckBox(QtGui.QCheckBox):
         f.setPixelSize(fs)
         self.setFont(f)
 
-class MyForm(QtGui.QDialog):
+class MyForm(QtWidgets.QDialog):
     def setupUi(self, Form):
         appfont = QtGui.QFont()
         appfont.setPixelSize(11)
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(715, 705)
         Form.setFont(appfont)
-        self.verticalLayout = QtGui.QVBoxLayout(Form)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.Pages = QtGui.QStackedWidget(Form)
+        self.Pages = QtWidgets.QStackedWidget(Form)
         self.Pages.setObjectName(_fromUtf8("Pages"))
-        self.page1 = QtGui.QWidget()
+        self.page1 = QtWidgets.QWidget()
         self.page1.setObjectName(_fromUtf8("page1"))
-        self.RateBox = QtGui.QComboBox(self.page1)
+        self.RateBox = QtWidgets.QComboBox(self.page1)
         self.RateBox.setGeometry(QtCore.QRect(0, 50, 161, 31))
         self.RateBox.setStyleSheet(_fromUtf8("font: 16px"))
         self.RateBox.setObjectName(_fromUtf8("RateBox"))
@@ -155,7 +148,7 @@ class MyForm(QtGui.QDialog):
         self.Price.setGeometry(QtCore.QRect(0, 100, 61, 31))
         #self.Price.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Price.setObjectName(_fromUtf8("Price"))
-        self.PriceBox = QtGui.QLineEdit(self.page1)
+        self.PriceBox = QtWidgets.QLineEdit(self.page1)
         self.PriceBox.setGeometry(QtCore.QRect(90, 100, 211, 31))
         self.PriceBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -167,7 +160,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.PriceBox.setText(_fromUtf8(""))
         self.PriceBox.setObjectName(_fromUtf8("PriceBox"))
-        self.AmountBox = QtGui.QLineEdit(self.page1)
+        self.AmountBox = QtWidgets.QLineEdit(self.page1)
         self.AmountBox.setGeometry(QtCore.QRect(90, 140, 211, 31))
         self.AmountBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -183,7 +176,7 @@ class MyForm(QtGui.QDialog):
         self.Amount.setGeometry(QtCore.QRect(0, 140, 71, 31))
         #self.Amount.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Amount.setObjectName(_fromUtf8("Amount"))
-        self.AmountUSD = QtGui.QComboBox(self.page1)
+        self.AmountUSD = QtWidgets.QComboBox(self.page1)
         self.AmountUSD.setGeometry(QtCore.QRect(310, 140, 51, 31))
         self.AmountUSD.setObjectName(_fromUtf8("AmountUSD"))
         self.AmountUSD.addItem(_fromUtf8(""))
@@ -196,7 +189,7 @@ class MyForm(QtGui.QDialog):
         self.ServiceChargeText.setGeometry(QtCore.QRect(0, 190, 141, 31))
         #self.ServiceChargeText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.ServiceChargeText.setObjectName(_fromUtf8("ServiceChargeText"))
-        self.ServiceCharge = QtGui.QComboBox(self.page1)
+        self.ServiceCharge = QtWidgets.QComboBox(self.page1)
         self.ServiceCharge.setGeometry(QtCore.QRect(140, 190, 81, 31))
         self.ServiceCharge.setObjectName(_fromUtf8("ServiceCharge"))
         self.ServiceCharge.addItem(_fromUtf8(""))
@@ -205,20 +198,20 @@ class MyForm(QtGui.QDialog):
         self.ServiceCharge.addItem(_fromUtf8(""))
         self.ServiceCharge.addItem(_fromUtf8(""))
         self.ServiceCharge.addItem(_fromUtf8(""))
-        self.MaxIncreaseSell = QtGui.QComboBox(self.page1)
+        self.MaxIncreaseSell = QtWidgets.QComboBox(self.page1)
         self.MaxIncreaseSell.setGeometry(QtCore.QRect(400, 90, 161, 31))
         self.MaxIncreaseSell.setObjectName(_fromUtf8("MaxIncreaseSell"))
         self.MaxIncreaseSell.addItem(_fromUtf8(""))
         self.MaxIncreaseSell.addItem(_fromUtf8(""))
         self.MaxIncreaseSell.addItem(_fromUtf8(""))
-        self.MaxDecreaseSell = QtGui.QComboBox(self.page1)
+        self.MaxDecreaseSell = QtWidgets.QComboBox(self.page1)
         self.MaxDecreaseSell.setGeometry(QtCore.QRect(400, 130, 161, 31))
         self.MaxDecreaseSell.setObjectName(_fromUtf8("MaxDecreaseSell"))
         self.MaxDecreaseSell.addItem(_fromUtf8(""))
         self.MaxDecreaseSell.addItem(_fromUtf8(""))
         self.MaxDecreaseSell.addItem(_fromUtf8(""))
         self.MaxDecreaseSell.addItem(_fromUtf8(""))
-        self.ServiceChargeBox = QtGui.QLineEdit(self.page1)
+        self.ServiceChargeBox = QtWidgets.QLineEdit(self.page1)
         self.ServiceChargeBox.setGeometry(QtCore.QRect(230, 190, 71, 31))
         self.ServiceChargeBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -229,7 +222,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.ServiceChargeBox.setObjectName(_fromUtf8("ServiceChargeBox"))
-        self.MaxIncreaseSellBox = QtGui.QLineEdit(self.page1)
+        self.MaxIncreaseSellBox = QtWidgets.QLineEdit(self.page1)
         self.MaxIncreaseSellBox.setGeometry(QtCore.QRect(570, 90, 71, 31))
         self.MaxIncreaseSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -240,7 +233,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.MaxIncreaseSellBox.setObjectName(_fromUtf8("MaxIncreaseSellBox"))
-        self.MaxDecreaseSellBox = QtGui.QLineEdit(self.page1)
+        self.MaxDecreaseSellBox = QtWidgets.QLineEdit(self.page1)
         self.MaxDecreaseSellBox.setGeometry(QtCore.QRect(570, 130, 71, 31))
         self.MaxDecreaseSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -263,13 +256,13 @@ class MyForm(QtGui.QDialog):
         self.perc2.setGeometry(QtCore.QRect(650, 130, 21, 31))
         #self.perc2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.perc2.setObjectName(_fromUtf8("perc2"))
-        self.DepositSettings = QtGui.QComboBox(self.page1)
+        self.DepositSettings = QtWidgets.QComboBox(self.page1)
         self.DepositSettings.setGeometry(QtCore.QRect(0, 290, 211, 31))
         self.DepositSettings.setObjectName(_fromUtf8("DepositSettings"))
         self.DepositSettings.addItem(_fromUtf8(""))
         self.DepositSettings.addItem(_fromUtf8(""))
         self.DepositSettings.addItem(_fromUtf8(""))
-        self.TimeLimitBox = QtGui.QLineEdit(self.page1)
+        self.TimeLimitBox = QtWidgets.QLineEdit(self.page1)
         self.TimeLimitBox.setGeometry(QtCore.QRect(510, 340, 101, 31))
         self.TimeLimitBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -284,7 +277,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText.setGeometry(QtCore.QRect(400, 340, 101, 31))
         #self.TimeLimitText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText.setObjectName(_fromUtf8("TimeLimitText"))
-        self.TimeLimitDays = QtGui.QComboBox(self.page1)
+        self.TimeLimitDays = QtWidgets.QComboBox(self.page1)
         self.TimeLimitDays.setGeometry(QtCore.QRect(620, 340, 51, 31))
         self.TimeLimitDays.setObjectName(_fromUtf8("TimeLimitDays"))
         self.TimeLimitDays.addItem(_fromUtf8(""))
@@ -293,7 +286,7 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText.setGeometry(QtCore.QRect(0, 380, 131, 31))
         #self.TheirDepositText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText.setObjectName(_fromUtf8("TheirDepositText"))
-        self.MyDepositBox = QtGui.QLineEdit(self.page1)
+        self.MyDepositBox = QtWidgets.QLineEdit(self.page1)
         self.MyDepositBox.setGeometry(QtCore.QRect(140, 340, 161, 31))
         self.MyDepositBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -309,7 +302,7 @@ class MyForm(QtGui.QDialog):
         self.MyDepositText.setGeometry(QtCore.QRect(0, 340, 101, 31))
         #self.MyDepositText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText.setObjectName(_fromUtf8("MyDepositText"))
-        self.TheirDepositBox = QtGui.QLineEdit(self.page1)
+        self.TheirDepositBox = QtWidgets.QLineEdit(self.page1)
         self.TheirDepositBox.setGeometry(QtCore.QRect(140, 380, 161, 31))
         self.TheirDepositBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -321,10 +314,10 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox.setText(_fromUtf8(""))
         self.TheirDepositBox.setObjectName(_fromUtf8("TheirDepositBox"))
-        self.line = QtGui.QFrame(self.page1)
+        self.line = QtWidgets.QFrame(self.page1)
         self.line.setGeometry(QtCore.QRect(10, 420, 671, 16))
-        self.line.setFrameShape(QtGui.QFrame.HLine)
-        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
         self.PaymentOptions = myQLabel(self.page1)
         self.PaymentOptions.setGeometry(QtCore.QRect(0, 440, 151, 31))
@@ -337,9 +330,9 @@ class MyForm(QtGui.QDialog):
         self.NotesText1.setGeometry(QtCore.QRect(400, 440, 281, 31))
         #self.NotesText1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.NotesText1.setObjectName(_fromUtf8("NotesText1"))
-        self.NotesBox1 = QtGui.QTextEdit(self.page1)
+        self.NotesBox1 = QtWidgets.QTextEdit(self.page1)
         self.NotesBox1.setGeometry(QtCore.QRect(400, 470, 271, 125))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox1.sizePolicy().hasHeightForWidth())
@@ -372,7 +365,7 @@ class MyForm(QtGui.QDialog):
         self.OtherCheck = myQCheckBox(self.page1)
         self.OtherCheck.setGeometry(QtCore.QRect(160, 560, 131, 17))
         self.OtherCheck.setObjectName(_fromUtf8("OtherCheck"))
-        self.MinOrderSellBox = QtGui.QLineEdit(self.page1)
+        self.MinOrderSellBox = QtWidgets.QLineEdit(self.page1)
         self.MinOrderSellBox.setGeometry(QtCore.QRect(570, 240, 71, 31))
         self.MinOrderSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -387,14 +380,14 @@ class MyForm(QtGui.QDialog):
         self.perc3.setGeometry(QtCore.QRect(650, 240, 21, 31))
         #self.perc3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.perc3.setObjectName(_fromUtf8("perc3"))
-        self.MinOrderSell = QtGui.QComboBox(self.page1)
+        self.MinOrderSell = QtWidgets.QComboBox(self.page1)
         self.MinOrderSell.setGeometry(QtCore.QRect(400, 240, 161, 31))
         self.MinOrderSell.setObjectName(_fromUtf8("MinOrderSell"))
         self.MinOrderSell.addItem(_fromUtf8(""))
         self.MinOrderSell.addItem(_fromUtf8(""))
         self.MinOrderSell.addItem(_fromUtf8(""))
         self.MinOrderSell.addItem(_fromUtf8(""))
-        self.MaxOrderSellBox = QtGui.QLineEdit(self.page1)
+        self.MaxOrderSellBox = QtWidgets.QLineEdit(self.page1)
         self.MaxOrderSellBox.setGeometry(QtCore.QRect(570, 280, 71, 31))
         self.MaxOrderSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -405,7 +398,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.MaxOrderSellBox.setObjectName(_fromUtf8("MaxOrderSellBox"))
-        self.MaxOrderSell = QtGui.QComboBox(self.page1)
+        self.MaxOrderSell = QtWidgets.QComboBox(self.page1)
         self.MaxOrderSell.setGeometry(QtCore.QRect(400, 280, 161, 31))
         self.MaxOrderSell.setObjectName(_fromUtf8("MaxOrderSell"))
         self.MaxOrderSell.addItem(_fromUtf8(""))
@@ -416,12 +409,12 @@ class MyForm(QtGui.QDialog):
         self.perc4.setGeometry(QtCore.QRect(650, 280, 21, 31))
         #self.perc4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.perc4.setObjectName(_fromUtf8("perc4"))
-        self.line_2 = QtGui.QFrame(self.page1)
+        self.line_2 = QtWidgets.QFrame(self.page1)
         self.line_2.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_2.setFrameShape(QtGui.QFrame.HLine)
-        self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName(_fromUtf8("line_2"))
-        self.SaveContinue1 = QtGui.QPushButton(self.page1)
+        self.SaveContinue1 = QtWidgets.QPushButton(self.page1)
         self.SaveContinue1.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue1.setObjectName(_fromUtf8("SaveContinue1"))
         self.ShowAdvancedCash = myQCheckBox(self.page1)
@@ -436,11 +429,11 @@ class MyForm(QtGui.QDialog):
         self.ExchangeRate.setGeometry(QtCore.QRect(180, 50, 201, 31))
         #self.ExchangeRate.setStyleSheet(_fromUtf8("font: 15px \"Arial\";"))
         self.ExchangeRate.setObjectName(_fromUtf8("ExchangeRate"))
-        self.ExplainSellCash = QtGui.QPushButton(self.page1)
+        self.ExplainSellCash = QtWidgets.QPushButton(self.page1)
         self.ExplainSellCash.setGeometry(QtCore.QRect(330, 10, 40, 40))
         self.ExplainSellCash.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainSellCash.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainSellCash.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainSellCash.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainSellCash.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -449,13 +442,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainSellCash.setIconSize(QtCore.QSize(20, 20))
         self.ExplainSellCash.setObjectName(_fromUtf8("ExplainSellCash"))
@@ -465,39 +458,39 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture1 = myQCheckBox(self.page1)
         self.SaveFuture1.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture1.setObjectName(_fromUtf8("SaveFuture1"))
-        self.ClearForm1 = QtGui.QPushButton(self.page1)
+        self.ClearForm1 = QtWidgets.QPushButton(self.page1)
         self.ClearForm1.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm1.setObjectName(_fromUtf8("ClearForm1"))
-        self.PriceUSD = QtGui.QComboBox(self.page1)
+        self.PriceUSD = QtWidgets.QComboBox(self.page1)
         self.PriceUSD.setGeometry(QtCore.QRect(310, 100, 51, 31))
         self.PriceUSD.setObjectName(_fromUtf8("PriceUSD"))
         self.PriceUSD.addItem(_fromUtf8(""))
-        self.MyDepositUSD = QtGui.QComboBox(self.page1)
+        self.MyDepositUSD = QtWidgets.QComboBox(self.page1)
         self.MyDepositUSD.setGeometry(QtCore.QRect(310, 340, 51, 31))
         self.MyDepositUSD.setObjectName(_fromUtf8("MyDepositUSD"))
         self.MyDepositUSD.addItem(_fromUtf8(""))
         self.MyDepositUSD.addItem(_fromUtf8(""))
-        self.TheirDepositUSD = QtGui.QComboBox(self.page1)
+        self.TheirDepositUSD = QtWidgets.QComboBox(self.page1)
         self.TheirDepositUSD.setGeometry(QtCore.QRect(310, 380, 51, 31))
         self.TheirDepositUSD.setObjectName(_fromUtf8("TheirDepositUSD"))
         self.TheirDepositUSD.addItem(_fromUtf8(""))
         self.TheirDepositUSD.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page1)
-        self.page2 = QtGui.QWidget()
+        self.page2 = QtWidgets.QWidget()
         self.page2.setObjectName(_fromUtf8("page2"))
         self.WireText = myQLabel(self.page2)
         self.WireText.setGeometry(QtCore.QRect(0, 0, 651, 41))
         self.WireText.setMaximumSize(QtCore.QSize(16777215, 75))
         ##self.WireText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.WireText.setObjectName(_fromUtf8("WireText"))
-        self.WireBrowser = QtGui.QTextBrowser(self.page2)
+        self.WireBrowser = QtWidgets.QTextBrowser(self.page2)
         self.WireBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.WireBrowser.setObjectName(_fromUtf8("WireBrowser"))
-        self.WireSelect = QtGui.QComboBox(self.page2)
+        self.WireSelect = QtWidgets.QComboBox(self.page2)
         self.WireSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.WireSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.WireSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.WireSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.WireSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.WireSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -510,7 +503,7 @@ class MyForm(QtGui.QDialog):
         self.AccountName.setGeometry(QtCore.QRect(0, 230, 501, 31))
         #self.AccountName.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.AccountName.setObjectName(_fromUtf8("AccountName"))
-        self.BankBox = QtGui.QLineEdit(self.page2)
+        self.BankBox = QtWidgets.QLineEdit(self.page2)
         self.BankBox.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.BankBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -526,7 +519,7 @@ class MyForm(QtGui.QDialog):
         self.BankName.setGeometry(QtCore.QRect(0, 160, 501, 31))
         #self.BankName.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.BankName.setObjectName(_fromUtf8("BankName"))
-        self.NameBox = QtGui.QLineEdit(self.page2)
+        self.NameBox = QtWidgets.QLineEdit(self.page2)
         self.NameBox.setGeometry(QtCore.QRect(0, 400, 501, 31))
         self.NameBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -542,7 +535,7 @@ class MyForm(QtGui.QDialog):
         self.NameAct.setGeometry(QtCore.QRect(0, 370, 501, 31))
         #self.NameAct.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.NameAct.setObjectName(_fromUtf8("NameAct"))
-        self.AccountBox = QtGui.QLineEdit(self.page2)
+        self.AccountBox = QtWidgets.QLineEdit(self.page2)
         self.AccountBox.setGeometry(QtCore.QRect(0, 260, 501, 31))
         self.AccountBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -558,7 +551,7 @@ class MyForm(QtGui.QDialog):
         self.Routing.setGeometry(QtCore.QRect(0, 300, 501, 31))
         #self.Routing.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.Routing.setObjectName(_fromUtf8("Routing"))
-        self.RoutingBox = QtGui.QLineEdit(self.page2)
+        self.RoutingBox = QtWidgets.QLineEdit(self.page2)
         self.RoutingBox.setGeometry(QtCore.QRect(0, 330, 501, 31))
         self.RoutingBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -574,9 +567,9 @@ class MyForm(QtGui.QDialog):
         self.OtherInfo.setGeometry(QtCore.QRect(0, 440, 501, 31))
         #self.OtherInfo.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherInfo.setObjectName(_fromUtf8("OtherInfo"))
-        self.OtherBox = QtGui.QTextEdit(self.page2)
+        self.OtherBox = QtWidgets.QTextEdit(self.page2)
         self.OtherBox.setGeometry(QtCore.QRect(0, 470, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox.sizePolicy().hasHeightForWidth())
@@ -591,30 +584,30 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.OtherBox.setObjectName(_fromUtf8("OtherBox"))
-        self.line_5 = QtGui.QFrame(self.page2)
+        self.line_5 = QtWidgets.QFrame(self.page2)
         self.line_5.setGeometry(QtCore.QRect(0, 580, 501, 20))
-        self.line_5.setFrameShape(QtGui.QFrame.HLine)
-        self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_5.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_5.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_5.setObjectName(_fromUtf8("line_5"))
-        self.Save1 = QtGui.QPushButton(self.page2)
+        self.Save1 = QtWidgets.QPushButton(self.page2)
         self.Save1.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save1.setObjectName(_fromUtf8("Save1"))
-        self.Remove1 = QtGui.QPushButton(self.page2)
+        self.Remove1 = QtWidgets.QPushButton(self.page2)
         self.Remove1.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove1.setObjectName(_fromUtf8("Remove1"))
-        self.Create1 = QtGui.QPushButton(self.page2)
+        self.Create1 = QtWidgets.QPushButton(self.page2)
         self.Create1.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create1.setObjectName(_fromUtf8("Create1"))
-        self.Update1 = QtGui.QPushButton(self.page2)
+        self.Update1 = QtWidgets.QPushButton(self.page2)
         self.Update1.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update1.setObjectName(_fromUtf8("Update1"))
         self.Pages.addWidget(self.page2)
-        self.page3 = QtGui.QWidget()
+        self.page3 = QtWidgets.QWidget()
         self.page3.setObjectName(_fromUtf8("page3"))
-        self.line_9 = QtGui.QFrame(self.page3)
+        self.line_9 = QtWidgets.QFrame(self.page3)
         self.line_9.setGeometry(QtCore.QRect(0, 600, 501, 20))
-        self.line_9.setFrameShape(QtGui.QFrame.HLine)
-        self.line_9.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_9.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_9.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_9.setObjectName(_fromUtf8("line_9"))
         self.WUText = myQLabel(self.page3)
         self.WUText.setGeometry(QtCore.QRect(0, 0, 651, 41))
@@ -625,7 +618,7 @@ class MyForm(QtGui.QDialog):
         self.OtherInfo2.setGeometry(QtCore.QRect(0, 480, 501, 31))
         #self.OtherInfo2.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherInfo2.setObjectName(_fromUtf8("OtherInfo2"))
-        self.PhoneBox1 = QtGui.QLineEdit(self.page3)
+        self.PhoneBox1 = QtWidgets.QLineEdit(self.page3)
         self.PhoneBox1.setGeometry(QtCore.QRect(0, 260, 501, 31))
         self.PhoneBox1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -637,13 +630,13 @@ class MyForm(QtGui.QDialog):
 ""))
         self.PhoneBox1.setText(_fromUtf8(""))
         self.PhoneBox1.setObjectName(_fromUtf8("PhoneBox1"))
-        self.Save2 = QtGui.QPushButton(self.page3)
+        self.Save2 = QtWidgets.QPushButton(self.page3)
         self.Save2.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save2.setObjectName(_fromUtf8("Save2"))
-        self.Remove2 = QtGui.QPushButton(self.page3)
+        self.Remove2 = QtWidgets.QPushButton(self.page3)
         self.Remove2.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove2.setObjectName(_fromUtf8("Remove2"))
-        self.CountryBox1 = QtGui.QLineEdit(self.page3)
+        self.CountryBox1 = QtWidgets.QLineEdit(self.page3)
         self.CountryBox1.setGeometry(QtCore.QRect(0, 330, 501, 31))
         self.CountryBox1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -655,16 +648,16 @@ class MyForm(QtGui.QDialog):
 ""))
         self.CountryBox1.setText(_fromUtf8(""))
         self.CountryBox1.setObjectName(_fromUtf8("CountryBox1"))
-        self.Update2 = QtGui.QPushButton(self.page3)
+        self.Update2 = QtWidgets.QPushButton(self.page3)
         self.Update2.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update2.setObjectName(_fromUtf8("Update2"))
         self.PhoneText1 = myQLabel(self.page3)
         self.PhoneText1.setGeometry(QtCore.QRect(0, 230, 501, 31))
         #self.PhoneText1.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.PhoneText1.setObjectName(_fromUtf8("PhoneText1"))
-        self.OtherBox2 = QtGui.QTextEdit(self.page3)
+        self.OtherBox2 = QtWidgets.QTextEdit(self.page3)
         self.OtherBox2.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox2.sizePolicy().hasHeightForWidth())
@@ -683,7 +676,7 @@ class MyForm(QtGui.QDialog):
         self.CountryText1.setGeometry(QtCore.QRect(0, 300, 501, 31))
         #self.CountryText1.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.CountryText1.setObjectName(_fromUtf8("CountryText1"))
-        self.Pickup1 = QtGui.QLineEdit(self.page3)
+        self.Pickup1 = QtWidgets.QLineEdit(self.page3)
         self.Pickup1.setGeometry(QtCore.QRect(0, 400, 501, 31))
         self.Pickup1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -703,7 +696,7 @@ class MyForm(QtGui.QDialog):
         self.FullName1.setGeometry(QtCore.QRect(0, 160, 501, 31))
         #self.FullName1.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.FullName1.setObjectName(_fromUtf8("FullName1"))
-        self.NameBox1 = QtGui.QLineEdit(self.page3)
+        self.NameBox1 = QtWidgets.QLineEdit(self.page3)
         self.NameBox1.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.NameBox1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -715,14 +708,14 @@ class MyForm(QtGui.QDialog):
 ""))
         self.NameBox1.setText(_fromUtf8(""))
         self.NameBox1.setObjectName(_fromUtf8("NameBox1"))
-        self.Create2 = QtGui.QPushButton(self.page3)
+        self.Create2 = QtWidgets.QPushButton(self.page3)
         self.Create2.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create2.setObjectName(_fromUtf8("Create2"))
-        self.WUSelect = QtGui.QComboBox(self.page3)
+        self.WUSelect = QtWidgets.QComboBox(self.page3)
         self.WUSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.WUSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.WUSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.WUSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.WUSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.WUSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -731,7 +724,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.WUSelect.setObjectName(_fromUtf8("WUSelect"))
-        self.WUBrowser = QtGui.QTextBrowser(self.page3)
+        self.WUBrowser = QtWidgets.QTextBrowser(self.page3)
         self.WUBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.WUBrowser.setObjectName(_fromUtf8("WUBrowser"))
         self.Secret1 = myQCheckBox(self.page3)
@@ -739,7 +732,7 @@ class MyForm(QtGui.QDialog):
         #self.Secret1.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.Secret1.setObjectName(_fromUtf8("Secret1"))
         self.Pages.addWidget(self.page3)
-        self.page4 = QtGui.QWidget()
+        self.page4 = QtWidgets.QWidget()
         self.page4.setObjectName(_fromUtf8("page4"))
         self.FullNameText2 = myQLabel(self.page4)
         self.FullNameText2.setGeometry(QtCore.QRect(0, 160, 361, 31))
@@ -754,7 +747,7 @@ class MyForm(QtGui.QDialog):
         self.MGText.setMaximumSize(QtCore.QSize(16777215, 75))
         ##self.MGText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.MGText.setObjectName(_fromUtf8("MGText"))
-        self.NameBox2 = QtGui.QLineEdit(self.page4)
+        self.NameBox2 = QtWidgets.QLineEdit(self.page4)
         self.NameBox2.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.NameBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -766,11 +759,11 @@ class MyForm(QtGui.QDialog):
 ""))
         self.NameBox2.setText(_fromUtf8(""))
         self.NameBox2.setObjectName(_fromUtf8("NameBox2"))
-        self.MGSelect = QtGui.QComboBox(self.page4)
+        self.MGSelect = QtWidgets.QComboBox(self.page4)
         self.MGSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.MGSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.MGSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.MGSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.MGSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.MGSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -779,13 +772,13 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.MGSelect.setObjectName(_fromUtf8("MGSelect"))
-        self.Remove3 = QtGui.QPushButton(self.page4)
+        self.Remove3 = QtWidgets.QPushButton(self.page4)
         self.Remove3.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove3.setObjectName(_fromUtf8("Remove3"))
-        self.Save3 = QtGui.QPushButton(self.page4)
+        self.Save3 = QtWidgets.QPushButton(self.page4)
         self.Save3.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save3.setObjectName(_fromUtf8("Save3"))
-        self.CountryBox2 = QtGui.QLineEdit(self.page4)
+        self.CountryBox2 = QtWidgets.QLineEdit(self.page4)
         self.CountryBox2.setGeometry(QtCore.QRect(0, 330, 501, 31))
         self.CountryBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -801,7 +794,7 @@ class MyForm(QtGui.QDialog):
         self.OtherInfo3.setGeometry(QtCore.QRect(0, 480, 501, 31))
         #self.OtherInfo3.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherInfo3.setObjectName(_fromUtf8("OtherInfo3"))
-        self.FundsPickup2 = QtGui.QLineEdit(self.page4)
+        self.FundsPickup2 = QtWidgets.QLineEdit(self.page4)
         self.FundsPickup2.setGeometry(QtCore.QRect(0, 400, 501, 31))
         self.FundsPickup2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -813,13 +806,13 @@ class MyForm(QtGui.QDialog):
 ""))
         self.FundsPickup2.setText(_fromUtf8(""))
         self.FundsPickup2.setObjectName(_fromUtf8("FundsPickup2"))
-        self.Update3 = QtGui.QPushButton(self.page4)
+        self.Update3 = QtWidgets.QPushButton(self.page4)
         self.Update3.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update3.setObjectName(_fromUtf8("Update3"))
-        self.MGBrowser = QtGui.QTextBrowser(self.page4)
+        self.MGBrowser = QtWidgets.QTextBrowser(self.page4)
         self.MGBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.MGBrowser.setObjectName(_fromUtf8("MGBrowser"))
-        self.PhoneBox2 = QtGui.QLineEdit(self.page4)
+        self.PhoneBox2 = QtWidgets.QLineEdit(self.page4)
         self.PhoneBox2.setGeometry(QtCore.QRect(0, 260, 501, 31))
         self.PhoneBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -839,9 +832,9 @@ class MyForm(QtGui.QDialog):
         self.Secret2.setGeometry(QtCore.QRect(0, 440, 421, 31))
         #self.Secret2.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.Secret2.setObjectName(_fromUtf8("Secret2"))
-        self.OtherBox3 = QtGui.QTextEdit(self.page4)
+        self.OtherBox3 = QtWidgets.QTextEdit(self.page4)
         self.OtherBox3.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox3.sizePolicy().hasHeightForWidth())
@@ -860,31 +853,31 @@ class MyForm(QtGui.QDialog):
         self.CityFunds2.setGeometry(QtCore.QRect(0, 370, 501, 31))
         #self.CityFunds2.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.CityFunds2.setObjectName(_fromUtf8("CityFunds2"))
-        self.Create3 = QtGui.QPushButton(self.page4)
+        self.Create3 = QtWidgets.QPushButton(self.page4)
         self.Create3.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create3.setObjectName(_fromUtf8("Create3"))
-        self.line_10 = QtGui.QFrame(self.page4)
+        self.line_10 = QtWidgets.QFrame(self.page4)
         self.line_10.setGeometry(QtCore.QRect(0, 600, 501, 20))
-        self.line_10.setFrameShape(QtGui.QFrame.HLine)
-        self.line_10.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_10.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_10.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_10.setObjectName(_fromUtf8("line_10"))
         self.Pages.addWidget(self.page4)
-        self.page5 = QtGui.QWidget()
+        self.page5 = QtWidgets.QWidget()
         self.page5.setObjectName(_fromUtf8("page5"))
-        self.Remove4 = QtGui.QPushButton(self.page5)
+        self.Remove4 = QtWidgets.QPushButton(self.page5)
         self.Remove4.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove4.setObjectName(_fromUtf8("Remove4"))
-        self.line_11 = QtGui.QFrame(self.page5)
+        self.line_11 = QtWidgets.QFrame(self.page5)
         self.line_11.setGeometry(QtCore.QRect(0, 400, 501, 20))
-        self.line_11.setFrameShape(QtGui.QFrame.HLine)
-        self.line_11.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_11.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_11.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_11.setObjectName(_fromUtf8("line_11"))
-        self.Update4 = QtGui.QPushButton(self.page5)
+        self.Update4 = QtWidgets.QPushButton(self.page5)
         self.Update4.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update4.setObjectName(_fromUtf8("Update4"))
-        self.DebitBox = QtGui.QTextEdit(self.page5)
+        self.DebitBox = QtWidgets.QTextEdit(self.page5)
         self.DebitBox.setGeometry(QtCore.QRect(0, 190, 501, 200))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DebitBox.sizePolicy().hasHeightForWidth())
@@ -899,10 +892,10 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.DebitBox.setObjectName(_fromUtf8("DebitBox"))
-        self.Create4 = QtGui.QPushButton(self.page5)
+        self.Create4 = QtWidgets.QPushButton(self.page5)
         self.Create4.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create4.setObjectName(_fromUtf8("Create4"))
-        self.Save4 = QtGui.QPushButton(self.page5)
+        self.Save4 = QtWidgets.QPushButton(self.page5)
         self.Save4.setGeometry(QtCore.QRect(0, 420, 151, 41))
         self.Save4.setObjectName(_fromUtf8("Save4"))
         self.DebitText = myQLabel(self.page5)
@@ -910,11 +903,11 @@ class MyForm(QtGui.QDialog):
         self.DebitText.setMaximumSize(QtCore.QSize(16777215, 75))
         ##self.DebitText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.DebitText.setObjectName(_fromUtf8("DebitText"))
-        self.DebitSelect = QtGui.QComboBox(self.page5)
+        self.DebitSelect = QtWidgets.QComboBox(self.page5)
         self.DebitSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.DebitSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.DebitSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.DebitSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.DebitSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.DebitSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -927,13 +920,13 @@ class MyForm(QtGui.QDialog):
         self.DebitInfoText.setGeometry(QtCore.QRect(0, 160, 501, 31))
         #self.DebitInfoText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.DebitInfoText.setObjectName(_fromUtf8("DebitInfoText"))
-        self.DebitBrowser = QtGui.QTextBrowser(self.page5)
+        self.DebitBrowser = QtWidgets.QTextBrowser(self.page5)
         self.DebitBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.DebitBrowser.setObjectName(_fromUtf8("DebitBrowser"))
         self.Pages.addWidget(self.page5)
-        self.page6 = QtGui.QWidget()
+        self.page6 = QtWidgets.QWidget()
         self.page6.setObjectName(_fromUtf8("page6"))
-        self.Save5 = QtGui.QPushButton(self.page6)
+        self.Save5 = QtWidgets.QPushButton(self.page6)
         self.Save5.setGeometry(QtCore.QRect(0, 420, 151, 41))
         self.Save5.setObjectName(_fromUtf8("Save5"))
         self.OtherFundText = myQLabel(self.page6)
@@ -941,14 +934,14 @@ class MyForm(QtGui.QDialog):
         self.OtherFundText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.OtherFundText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.OtherFundText.setObjectName(_fromUtf8("OtherFundText"))
-        self.Create5 = QtGui.QPushButton(self.page6)
+        self.Create5 = QtWidgets.QPushButton(self.page6)
         self.Create5.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create5.setObjectName(_fromUtf8("Create5"))
-        self.OtherFundSelect = QtGui.QComboBox(self.page6)
+        self.OtherFundSelect = QtWidgets.QComboBox(self.page6)
         self.OtherFundSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.OtherFundSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.OtherFundSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.OtherFundSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.OtherFundSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.OtherFundSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -957,12 +950,12 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.OtherFundSelect.setObjectName(_fromUtf8("OtherFundSelect"))
-        self.OtherFundBrowser = QtGui.QTextBrowser(self.page6)
+        self.OtherFundBrowser = QtWidgets.QTextBrowser(self.page6)
         self.OtherFundBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.OtherFundBrowser.setObjectName(_fromUtf8("OtherFundBrowser"))
-        self.OtherFundBox = QtGui.QTextEdit(self.page6)
+        self.OtherFundBox = QtWidgets.QTextEdit(self.page6)
         self.OtherFundBox.setGeometry(QtCore.QRect(0, 190, 501, 200))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherFundBox.sizePolicy().hasHeightForWidth())
@@ -977,15 +970,15 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.OtherFundBox.setObjectName(_fromUtf8("OtherFundBox"))
-        self.Update5 = QtGui.QPushButton(self.page6)
+        self.Update5 = QtWidgets.QPushButton(self.page6)
         self.Update5.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update5.setObjectName(_fromUtf8("Update5"))
-        self.line_12 = QtGui.QFrame(self.page6)
+        self.line_12 = QtWidgets.QFrame(self.page6)
         self.line_12.setGeometry(QtCore.QRect(0, 400, 501, 20))
-        self.line_12.setFrameShape(QtGui.QFrame.HLine)
-        self.line_12.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_12.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_12.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_12.setObjectName(_fromUtf8("line_12"))
-        self.Remove5 = QtGui.QPushButton(self.page6)
+        self.Remove5 = QtWidgets.QPushButton(self.page6)
         self.Remove5.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove5.setObjectName(_fromUtf8("Remove5"))
         self.AltText = myQLabel(self.page6)
@@ -993,7 +986,7 @@ class MyForm(QtGui.QDialog):
         #self.AltText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.AltText.setObjectName(_fromUtf8("AltText"))
         self.Pages.addWidget(self.page6)
-        self.page7 = QtGui.QWidget()
+        self.page7 = QtWidgets.QWidget()
         self.page7.setObjectName(_fromUtf8("page7"))
         self.NameCashText = myQLabel(self.page7)
         self.NameCashText.setGeometry(QtCore.QRect(0, 160, 361, 31))
@@ -1008,7 +1001,7 @@ class MyForm(QtGui.QDialog):
         self.CashMailText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.CashMailText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.CashMailText.setObjectName(_fromUtf8("CashMailText"))
-        self.NameCashBox = QtGui.QLineEdit(self.page7)
+        self.NameCashBox = QtWidgets.QLineEdit(self.page7)
         self.NameCashBox.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.NameCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1020,11 +1013,11 @@ class MyForm(QtGui.QDialog):
 ""))
         self.NameCashBox.setText(_fromUtf8(""))
         self.NameCashBox.setObjectName(_fromUtf8("NameCashBox"))
-        self.CashMailSelect = QtGui.QComboBox(self.page7)
+        self.CashMailSelect = QtWidgets.QComboBox(self.page7)
         self.CashMailSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.CashMailSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.CashMailSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.CashMailSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.CashMailSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.CashMailSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -1033,13 +1026,13 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.CashMailSelect.setObjectName(_fromUtf8("CashMailSelect"))
-        self.Remove6 = QtGui.QPushButton(self.page7)
+        self.Remove6 = QtWidgets.QPushButton(self.page7)
         self.Remove6.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove6.setObjectName(_fromUtf8("Remove6"))
-        self.Save6 = QtGui.QPushButton(self.page7)
+        self.Save6 = QtWidgets.QPushButton(self.page7)
         self.Save6.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save6.setObjectName(_fromUtf8("Save6"))
-        self.CityCashBox = QtGui.QLineEdit(self.page7)
+        self.CityCashBox = QtWidgets.QLineEdit(self.page7)
         self.CityCashBox.setGeometry(QtCore.QRect(220, 270, 221, 31))
         self.CityCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1055,7 +1048,7 @@ class MyForm(QtGui.QDialog):
         self.OtherInfoCash.setGeometry(QtCore.QRect(0, 480, 501, 31))
         #self.OtherInfoCash.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherInfoCash.setObjectName(_fromUtf8("OtherInfoCash"))
-        self.StateCashBox = QtGui.QLineEdit(self.page7)
+        self.StateCashBox = QtWidgets.QLineEdit(self.page7)
         self.StateCashBox.setGeometry(QtCore.QRect(460, 270, 201, 31))
         self.StateCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1067,13 +1060,13 @@ class MyForm(QtGui.QDialog):
 ""))
         self.StateCashBox.setText(_fromUtf8(""))
         self.StateCashBox.setObjectName(_fromUtf8("StateCashBox"))
-        self.Update6 = QtGui.QPushButton(self.page7)
+        self.Update6 = QtWidgets.QPushButton(self.page7)
         self.Update6.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update6.setObjectName(_fromUtf8("Update6"))
-        self.CashMailBrowser = QtGui.QTextBrowser(self.page7)
+        self.CashMailBrowser = QtWidgets.QTextBrowser(self.page7)
         self.CashMailBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.CashMailBrowser.setObjectName(_fromUtf8("CashMailBrowser"))
-        self.CountryCashBox = QtGui.QLineEdit(self.page7)
+        self.CountryCashBox = QtWidgets.QLineEdit(self.page7)
         self.CountryCashBox.setGeometry(QtCore.QRect(0, 270, 201, 31))
         self.CountryCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1093,9 +1086,9 @@ class MyForm(QtGui.QDialog):
         self.InsuranceCheckCash.setGeometry(QtCore.QRect(470, 340, 191, 31))
         self.InsuranceCheckCash.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.InsuranceCheckCash.setObjectName(_fromUtf8("InsuranceCheckCash"))
-        self.OtherInfoCashBox = QtGui.QTextEdit(self.page7)
+        self.OtherInfoCashBox = QtWidgets.QTextEdit(self.page7)
         self.OtherInfoCashBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherInfoCashBox.sizePolicy().hasHeightForWidth())
@@ -1114,13 +1107,13 @@ class MyForm(QtGui.QDialog):
         self.CityCashText.setGeometry(QtCore.QRect(230, 240, 101, 31))
         #self.CityCashText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.CityCashText.setObjectName(_fromUtf8("CityCashText"))
-        self.Create6 = QtGui.QPushButton(self.page7)
+        self.Create6 = QtWidgets.QPushButton(self.page7)
         self.Create6.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create6.setObjectName(_fromUtf8("Create6"))
-        self.line_13 = QtGui.QFrame(self.page7)
+        self.line_13 = QtWidgets.QFrame(self.page7)
         self.line_13.setGeometry(QtCore.QRect(0, 600, 501, 20))
-        self.line_13.setFrameShape(QtGui.QFrame.HLine)
-        self.line_13.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_13.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_13.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_13.setObjectName(_fromUtf8("line_13"))
         self.StateCashText = myQLabel(self.page7)
         self.StateCashText.setGeometry(QtCore.QRect(460, 240, 41, 31))
@@ -1130,9 +1123,9 @@ class MyForm(QtGui.QDialog):
         self.AddressTextCash.setGeometry(QtCore.QRect(0, 380, 71, 31))
         #self.AddressTextCash.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.AddressTextCash.setObjectName(_fromUtf8("AddressTextCash"))
-        self.AddressCashBox = QtGui.QTextEdit(self.page7)
+        self.AddressCashBox = QtWidgets.QTextEdit(self.page7)
         self.AddressCashBox.setGeometry(QtCore.QRect(0, 410, 661, 41))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddressCashBox.sizePolicy().hasHeightForWidth())
@@ -1147,7 +1140,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.AddressCashBox.setObjectName(_fromUtf8("AddressCashBox"))
-        self.ZipCashBox = QtGui.QLineEdit(self.page7)
+        self.ZipCashBox = QtWidgets.QLineEdit(self.page7)
         self.ZipCashBox.setGeometry(QtCore.QRect(0, 340, 201, 31))
         self.ZipCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1159,7 +1152,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.ZipCashBox.setText(_fromUtf8(""))
         self.ZipCashBox.setObjectName(_fromUtf8("ZipCashBox"))
-        self.PhoneCashBox = QtGui.QLineEdit(self.page7)
+        self.PhoneCashBox = QtWidgets.QLineEdit(self.page7)
         self.PhoneCashBox.setGeometry(QtCore.QRect(220, 340, 221, 31))
         self.PhoneCashBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1176,14 +1169,14 @@ class MyForm(QtGui.QDialog):
         #self.ZipCashText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.ZipCashText.setObjectName(_fromUtf8("ZipCashText"))
         self.Pages.addWidget(self.page7)
-        self.page8 = QtGui.QWidget()
+        self.page8 = QtWidgets.QWidget()
         self.page8.setObjectName(_fromUtf8("page8"))
-        self.Remove7 = QtGui.QPushButton(self.page8)
+        self.Remove7 = QtWidgets.QPushButton(self.page8)
         self.Remove7.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove7.setObjectName(_fromUtf8("Remove7"))
-        self.OtherMailBox = QtGui.QTextEdit(self.page8)
+        self.OtherMailBox = QtWidgets.QTextEdit(self.page8)
         self.OtherMailBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherMailBox.sizePolicy().hasHeightForWidth())
@@ -1198,7 +1191,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.OtherMailBox.setObjectName(_fromUtf8("OtherMailBox"))
-        self.CountryMailBox = QtGui.QLineEdit(self.page8)
+        self.CountryMailBox = QtWidgets.QLineEdit(self.page8)
         self.CountryMailBox.setGeometry(QtCore.QRect(0, 270, 201, 31))
         self.CountryMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1210,7 +1203,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.CountryMailBox.setText(_fromUtf8(""))
         self.CountryMailBox.setObjectName(_fromUtf8("CountryMailBox"))
-        self.NameMailBox = QtGui.QLineEdit(self.page8)
+        self.NameMailBox = QtWidgets.QLineEdit(self.page8)
         self.NameMailBox.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.NameMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1226,9 +1219,9 @@ class MyForm(QtGui.QDialog):
         self.OtherMailText.setGeometry(QtCore.QRect(0, 480, 501, 31))
         #self.OtherMailText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherMailText.setObjectName(_fromUtf8("OtherMailText"))
-        self.AddressMailBox = QtGui.QTextEdit(self.page8)
+        self.AddressMailBox = QtWidgets.QTextEdit(self.page8)
         self.AddressMailBox.setGeometry(QtCore.QRect(0, 410, 661, 41))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddressMailBox.sizePolicy().hasHeightForWidth())
@@ -1243,17 +1236,17 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.AddressMailBox.setObjectName(_fromUtf8("AddressMailBox"))
-        self.Update7 = QtGui.QPushButton(self.page8)
+        self.Update7 = QtWidgets.QPushButton(self.page8)
         self.Update7.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update7.setObjectName(_fromUtf8("Update7"))
         self.InsuranceMailCheck = myQCheckBox(self.page8)
         self.InsuranceMailCheck.setGeometry(QtCore.QRect(470, 340, 191, 31))
         self.InsuranceMailCheck.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.InsuranceMailCheck.setObjectName(_fromUtf8("InsuranceMailCheck"))
-        self.Save7 = QtGui.QPushButton(self.page8)
+        self.Save7 = QtWidgets.QPushButton(self.page8)
         self.Save7.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save7.setObjectName(_fromUtf8("Save7"))
-        self.StateMailBox = QtGui.QLineEdit(self.page8)
+        self.StateMailBox = QtWidgets.QLineEdit(self.page8)
         self.StateMailBox.setGeometry(QtCore.QRect(460, 270, 201, 31))
         self.StateMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1269,7 +1262,7 @@ class MyForm(QtGui.QDialog):
         self.StateMailText.setGeometry(QtCore.QRect(460, 240, 41, 31))
         #self.StateMailText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.StateMailText.setObjectName(_fromUtf8("StateMailText"))
-        self.CityMailBox = QtGui.QLineEdit(self.page8)
+        self.CityMailBox = QtWidgets.QLineEdit(self.page8)
         self.CityMailBox.setGeometry(QtCore.QRect(220, 270, 221, 31))
         self.CityMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1286,10 +1279,10 @@ class MyForm(QtGui.QDialog):
         self.MailingText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.MailingText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.MailingText.setObjectName(_fromUtf8("MailingText"))
-        self.MailingBrowser = QtGui.QTextBrowser(self.page8)
+        self.MailingBrowser = QtWidgets.QTextBrowser(self.page8)
         self.MailingBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.MailingBrowser.setObjectName(_fromUtf8("MailingBrowser"))
-        self.ZipMailBox = QtGui.QLineEdit(self.page8)
+        self.ZipMailBox = QtWidgets.QLineEdit(self.page8)
         self.ZipMailBox.setGeometry(QtCore.QRect(0, 340, 201, 31))
         self.ZipMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1309,14 +1302,14 @@ class MyForm(QtGui.QDialog):
         self.NameTextMail.setGeometry(QtCore.QRect(0, 160, 361, 31))
         #self.NameTextMail.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.NameTextMail.setObjectName(_fromUtf8("NameTextMail"))
-        self.Create7 = QtGui.QPushButton(self.page8)
+        self.Create7 = QtWidgets.QPushButton(self.page8)
         self.Create7.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create7.setObjectName(_fromUtf8("Create7"))
         self.AddressMailText = myQLabel(self.page8)
         self.AddressMailText.setGeometry(QtCore.QRect(0, 380, 71, 31))
         #self.AddressMailText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.AddressMailText.setObjectName(_fromUtf8("AddressMailText"))
-        self.PhoneMailBox = QtGui.QLineEdit(self.page8)
+        self.PhoneMailBox = QtWidgets.QLineEdit(self.page8)
         self.PhoneMailBox.setGeometry(QtCore.QRect(220, 340, 221, 31))
         self.PhoneMailBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1336,16 +1329,16 @@ class MyForm(QtGui.QDialog):
         self.PhoneMailText.setGeometry(QtCore.QRect(230, 310, 261, 31))
         #self.PhoneMailText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.PhoneMailText.setObjectName(_fromUtf8("PhoneMailText"))
-        self.line_14 = QtGui.QFrame(self.page8)
+        self.line_14 = QtWidgets.QFrame(self.page8)
         self.line_14.setGeometry(QtCore.QRect(0, 600, 501, 20))
-        self.line_14.setFrameShape(QtGui.QFrame.HLine)
-        self.line_14.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_14.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_14.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_14.setObjectName(_fromUtf8("line_14"))
-        self.MailingSelect = QtGui.QComboBox(self.page8)
+        self.MailingSelect = QtWidgets.QComboBox(self.page8)
         self.MailingSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.MailingSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.MailingSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.MailingSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.MailingSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.MailingSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -1359,28 +1352,28 @@ class MyForm(QtGui.QDialog):
         #self.CountryMailText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.CountryMailText.setObjectName(_fromUtf8("CountryMailText"))
         self.Pages.addWidget(self.page8)
-        self.page9 = QtGui.QWidget()
+        self.page9 = QtWidgets.QWidget()
         self.page9.setObjectName(_fromUtf8("page9"))
-        self.ContactBrowser = QtGui.QTextBrowser(self.page9)
+        self.ContactBrowser = QtWidgets.QTextBrowser(self.page9)
         self.ContactBrowser.setGeometry(QtCore.QRect(0, 40, 501, 71))
         self.ContactBrowser.setObjectName(_fromUtf8("ContactBrowser"))
         self.PhoneContactText = myQLabel(self.page9)
         self.PhoneContactText.setGeometry(QtCore.QRect(0, 230, 261, 31))
         #self.PhoneContactText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.PhoneContactText.setObjectName(_fromUtf8("PhoneContactText"))
-        self.line_15 = QtGui.QFrame(self.page9)
+        self.line_15 = QtWidgets.QFrame(self.page9)
         self.line_15.setGeometry(QtCore.QRect(0, 600, 501, 20))
-        self.line_15.setFrameShape(QtGui.QFrame.HLine)
-        self.line_15.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_15.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_15.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_15.setObjectName(_fromUtf8("line_15"))
         self.IRCContactText = myQLabel(self.page9)
         self.IRCContactText.setGeometry(QtCore.QRect(0, 300, 261, 31))
         #self.IRCContactText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.IRCContactText.setObjectName(_fromUtf8("IRCContactText"))
-        self.Remove8 = QtGui.QPushButton(self.page9)
+        self.Remove8 = QtWidgets.QPushButton(self.page9)
         self.Remove8.setGeometry(QtCore.QRect(510, 190, 151, 41))
         self.Remove8.setObjectName(_fromUtf8("Remove8"))
-        self.PhoneContactBox = QtGui.QLineEdit(self.page9)
+        self.PhoneContactBox = QtWidgets.QLineEdit(self.page9)
         self.PhoneContactBox.setGeometry(QtCore.QRect(0, 260, 501, 31))
         self.PhoneContactBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1392,9 +1385,9 @@ class MyForm(QtGui.QDialog):
 ""))
         self.PhoneContactBox.setText(_fromUtf8(""))
         self.PhoneContactBox.setObjectName(_fromUtf8("PhoneContactBox"))
-        self.OtherContactBox = QtGui.QTextEdit(self.page9)
+        self.OtherContactBox = QtWidgets.QTextEdit(self.page9)
         self.OtherContactBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherContactBox.sizePolicy().hasHeightForWidth())
@@ -1409,7 +1402,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.OtherContactBox.setObjectName(_fromUtf8("OtherContactBox"))
-        self.Update8 = QtGui.QPushButton(self.page9)
+        self.Update8 = QtWidgets.QPushButton(self.page9)
         self.Update8.setGeometry(QtCore.QRect(510, 150, 151, 41))
         self.Update8.setObjectName(_fromUtf8("Update8"))
         self.ToxContactText = myQLabel(self.page9)
@@ -1421,7 +1414,7 @@ class MyForm(QtGui.QDialog):
         self.ContactText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.ContactText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.ContactText.setObjectName(_fromUtf8("ContactText"))
-        self.ToxContactBox = QtGui.QLineEdit(self.page9)
+        self.ToxContactBox = QtWidgets.QLineEdit(self.page9)
         self.ToxContactBox.setGeometry(QtCore.QRect(0, 400, 501, 31))
         self.ToxContactBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1437,7 +1430,7 @@ class MyForm(QtGui.QDialog):
         self.OtherContactText.setGeometry(QtCore.QRect(0, 480, 501, 31))
         #self.OtherContactText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherContactText.setObjectName(_fromUtf8("OtherContactText"))
-        self.EmailContactBox = QtGui.QLineEdit(self.page9)
+        self.EmailContactBox = QtWidgets.QLineEdit(self.page9)
         self.EmailContactBox.setGeometry(QtCore.QRect(0, 190, 501, 31))
         self.EmailContactBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1449,7 +1442,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.EmailContactBox.setText(_fromUtf8(""))
         self.EmailContactBox.setObjectName(_fromUtf8("EmailContactBox"))
-        self.IRCContactBox = QtGui.QLineEdit(self.page9)
+        self.IRCContactBox = QtWidgets.QLineEdit(self.page9)
         self.IRCContactBox.setGeometry(QtCore.QRect(0, 330, 501, 31))
         self.IRCContactBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1465,17 +1458,17 @@ class MyForm(QtGui.QDialog):
         self.EmailContactText.setGeometry(QtCore.QRect(0, 160, 361, 31))
         #self.EmailContactText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.EmailContactText.setObjectName(_fromUtf8("EmailContactText"))
-        self.Create8 = QtGui.QPushButton(self.page9)
+        self.Create8 = QtWidgets.QPushButton(self.page9)
         self.Create8.setGeometry(QtCore.QRect(510, 110, 151, 41))
         self.Create8.setObjectName(_fromUtf8("Create8"))
-        self.Save8 = QtGui.QPushButton(self.page9)
+        self.Save8 = QtWidgets.QPushButton(self.page9)
         self.Save8.setGeometry(QtCore.QRect(0, 620, 151, 41))
         self.Save8.setObjectName(_fromUtf8("Save8"))
-        self.ContactSelect = QtGui.QComboBox(self.page9)
+        self.ContactSelect = QtWidgets.QComboBox(self.page9)
         self.ContactSelect.setGeometry(QtCore.QRect(0, 110, 501, 40))
         self.ContactSelect.setMinimumSize(QtCore.QSize(0, 40))
         self.ContactSelect.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.ContactSelect.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ContactSelect.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ContactSelect.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -1485,17 +1478,17 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;"))
         self.ContactSelect.setObjectName(_fromUtf8("ContactSelect"))
         self.Pages.addWidget(self.page9)
-        self.page10 = QtGui.QWidget()
+        self.page10 = QtWidgets.QWidget()
         self.page10.setObjectName(_fromUtf8("page10"))
-        self.MaxIncreaseBuy = QtGui.QComboBox(self.page10)
+        self.MaxIncreaseBuy = QtWidgets.QComboBox(self.page10)
         self.MaxIncreaseBuy.setGeometry(QtCore.QRect(400, 90, 161, 31))
         self.MaxIncreaseBuy.setObjectName(_fromUtf8("MaxIncreaseBuy"))
         self.MaxIncreaseBuy.addItem(_fromUtf8(""))
         self.MaxIncreaseBuy.addItem(_fromUtf8(""))
-        self.line_16 = QtGui.QFrame(self.page10)
+        self.line_16 = QtWidgets.QFrame(self.page10)
         self.line_16.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_16.setFrameShape(QtGui.QFrame.HLine)
-        self.line_16.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_16.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_16.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_16.setObjectName(_fromUtf8("line_16"))
         self.perc6 = myQLabel(self.page10)
         self.perc6.setGeometry(QtCore.QRect(650, 90, 21, 31))
@@ -1505,7 +1498,7 @@ class MyForm(QtGui.QDialog):
         self.AmountText2.setGeometry(QtCore.QRect(0, 140, 71, 31))
         #self.AmountText2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.AmountText2.setObjectName(_fromUtf8("AmountText2"))
-        self.MaxDecreaseBuyBox = QtGui.QLineEdit(self.page10)
+        self.MaxDecreaseBuyBox = QtWidgets.QLineEdit(self.page10)
         self.MaxDecreaseBuyBox.setGeometry(QtCore.QRect(570, 130, 71, 31))
         self.MaxDecreaseBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1516,7 +1509,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.MaxDecreaseBuyBox.setObjectName(_fromUtf8("MaxDecreaseBuyBox"))
-        self.MyDepositBox2 = QtGui.QLineEdit(self.page10)
+        self.MyDepositBox2 = QtWidgets.QLineEdit(self.page10)
         self.MyDepositBox2.setGeometry(QtCore.QRect(140, 340, 161, 31))
         self.MyDepositBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1528,7 +1521,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.MyDepositBox2.setText(_fromUtf8(""))
         self.MyDepositBox2.setObjectName(_fromUtf8("MyDepositBox2"))
-        self.MaxDecreaseBuy = QtGui.QComboBox(self.page10)
+        self.MaxDecreaseBuy = QtWidgets.QComboBox(self.page10)
         self.MaxDecreaseBuy.setGeometry(QtCore.QRect(400, 130, 161, 31))
         self.MaxDecreaseBuy.setObjectName(_fromUtf8("MaxDecreaseBuy"))
         self.MaxDecreaseBuy.addItem(_fromUtf8(""))
@@ -1541,7 +1534,7 @@ class MyForm(QtGui.QDialog):
         self.perc9.setGeometry(QtCore.QRect(650, 280, 21, 31))
         #self.perc9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.perc9.setObjectName(_fromUtf8("perc9"))
-        self.TimeLimitDays2 = QtGui.QComboBox(self.page10)
+        self.TimeLimitDays2 = QtWidgets.QComboBox(self.page10)
         self.TimeLimitDays2.setGeometry(QtCore.QRect(620, 340, 51, 31))
         self.TimeLimitDays2.setObjectName(_fromUtf8("TimeLimitDays2"))
         self.TimeLimitDays2.addItem(_fromUtf8(""))
@@ -1550,7 +1543,7 @@ class MyForm(QtGui.QDialog):
         self.NotesText2.setGeometry(QtCore.QRect(400, 440, 281, 31))
         #self.NotesText2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.NotesText2.setObjectName(_fromUtf8("NotesText2"))
-        self.ServiceCharge2 = QtGui.QComboBox(self.page10)
+        self.ServiceCharge2 = QtWidgets.QComboBox(self.page10)
         self.ServiceCharge2.setGeometry(QtCore.QRect(230, 190, 71, 31))
         self.ServiceCharge2.setObjectName(_fromUtf8("ServiceCharge2"))
         self.ServiceCharge2.addItem(_fromUtf8(""))
@@ -1589,7 +1582,7 @@ class MyForm(QtGui.QDialog):
         self.CoinsForCashBuy.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.CoinsForCashBuy.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.CoinsForCashBuy.setObjectName(_fromUtf8("CoinsForCashBuy"))
-        self.AmountBox2 = QtGui.QLineEdit(self.page10)
+        self.AmountBox2 = QtWidgets.QLineEdit(self.page10)
         self.AmountBox2.setGeometry(QtCore.QRect(90, 140, 211, 31))
         self.AmountBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1605,7 +1598,7 @@ class MyForm(QtGui.QDialog):
         self.PriceTrackingTitle2.setGeometry(QtCore.QRect(400, 50, 211, 31))
         #self.PriceTrackingTitle2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.PriceTrackingTitle2.setObjectName(_fromUtf8("PriceTrackingTitle2"))
-        self.MaxOrderBuy = QtGui.QComboBox(self.page10)
+        self.MaxOrderBuy = QtWidgets.QComboBox(self.page10)
         self.MaxOrderBuy.setGeometry(QtCore.QRect(400, 280, 161, 31))
         self.MaxOrderBuy.setObjectName(_fromUtf8("MaxOrderBuy"))
         self.MaxOrderBuy.addItem(_fromUtf8(""))
@@ -1619,7 +1612,7 @@ class MyForm(QtGui.QDialog):
         self.OtherCheck2 = myQCheckBox(self.page10)
         self.OtherCheck2.setGeometry(QtCore.QRect(160, 560, 131, 17))
         self.OtherCheck2.setObjectName(_fromUtf8("OtherCheck2"))
-        self.TheirDepositBox2 = QtGui.QLineEdit(self.page10)
+        self.TheirDepositBox2 = QtWidgets.QLineEdit(self.page10)
         self.TheirDepositBox2.setGeometry(QtCore.QRect(140, 380, 161, 31))
         self.TheirDepositBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1631,13 +1624,13 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox2.setText(_fromUtf8(""))
         self.TheirDepositBox2.setObjectName(_fromUtf8("TheirDepositBox2"))
-        self.RateBox2 = QtGui.QComboBox(self.page10)
+        self.RateBox2 = QtWidgets.QComboBox(self.page10)
         self.RateBox2.setGeometry(QtCore.QRect(0, 50, 161, 31))
         self.RateBox2.setStyleSheet(_fromUtf8("font: 16px"))
         self.RateBox2.setObjectName(_fromUtf8("RateBox2"))
         self.RateBox2.addItem(_fromUtf8(""))
         self.RateBox2.addItem(_fromUtf8(""))
-        self.AmountUSD2 = QtGui.QComboBox(self.page10)
+        self.AmountUSD2 = QtWidgets.QComboBox(self.page10)
         self.AmountUSD2.setGeometry(QtCore.QRect(310, 140, 51, 31))
         self.AmountUSD2.setObjectName(_fromUtf8("AmountUSD2"))
         self.AmountUSD2.addItem(_fromUtf8(""))
@@ -1646,20 +1639,20 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText2.setGeometry(QtCore.QRect(400, 340, 101, 31))
         #self.TimeLimitText2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText2.setObjectName(_fromUtf8("TimeLimitText2"))
-        self.SaveContinue2 = QtGui.QPushButton(self.page10)
+        self.SaveContinue2 = QtWidgets.QPushButton(self.page10)
         self.SaveContinue2.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue2.setObjectName(_fromUtf8("SaveContinue2"))
         self.PriceText2 = myQLabel(self.page10)
         self.PriceText2.setGeometry(QtCore.QRect(0, 100, 61, 31))
         #self.PriceText2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.PriceText2.setObjectName(_fromUtf8("PriceText2"))
-        self.DepositSettings2 = QtGui.QComboBox(self.page10)
+        self.DepositSettings2 = QtWidgets.QComboBox(self.page10)
         self.DepositSettings2.setGeometry(QtCore.QRect(0, 290, 211, 31))
         self.DepositSettings2.setObjectName(_fromUtf8("DepositSettings2"))
         self.DepositSettings2.addItem(_fromUtf8(""))
         self.DepositSettings2.addItem(_fromUtf8(""))
         self.DepositSettings2.addItem(_fromUtf8(""))
-        self.TimeLimitBox2 = QtGui.QLineEdit(self.page10)
+        self.TimeLimitBox2 = QtWidgets.QLineEdit(self.page10)
         self.TimeLimitBox2.setGeometry(QtCore.QRect(510, 340, 101, 31))
         self.TimeLimitBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1670,14 +1663,14 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.TimeLimitBox2.setObjectName(_fromUtf8("TimeLimitBox2"))
-        self.MinOrderBuy = QtGui.QComboBox(self.page10)
+        self.MinOrderBuy = QtWidgets.QComboBox(self.page10)
         self.MinOrderBuy.setGeometry(QtCore.QRect(400, 240, 161, 31))
         self.MinOrderBuy.setObjectName(_fromUtf8("MinOrderBuy"))
         self.MinOrderBuy.addItem(_fromUtf8(""))
         self.MinOrderBuy.addItem(_fromUtf8(""))
         self.MinOrderBuy.addItem(_fromUtf8(""))
         self.MinOrderBuy.addItem(_fromUtf8(""))
-        self.MaxIncreaseBuyBox = QtGui.QLineEdit(self.page10)
+        self.MaxIncreaseBuyBox = QtWidgets.QLineEdit(self.page10)
         self.MaxIncreaseBuyBox.setGeometry(QtCore.QRect(570, 90, 71, 31))
         self.MaxIncreaseBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1709,7 +1702,7 @@ class MyForm(QtGui.QDialog):
         self.WUCheck2 = myQCheckBox(self.page10)
         self.WUCheck2.setGeometry(QtCore.QRect(160, 500, 141, 17))
         self.WUCheck2.setObjectName(_fromUtf8("WUCheck2"))
-        self.MaxOrderBuyBox = QtGui.QLineEdit(self.page10)
+        self.MaxOrderBuyBox = QtWidgets.QLineEdit(self.page10)
         self.MaxOrderBuyBox.setGeometry(QtCore.QRect(570, 280, 71, 31))
         self.MaxOrderBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1720,7 +1713,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.MaxOrderBuyBox.setObjectName(_fromUtf8("MaxOrderBuyBox"))
-        self.MinOrderBuyBox = QtGui.QLineEdit(self.page10)
+        self.MinOrderBuyBox = QtWidgets.QLineEdit(self.page10)
         self.MinOrderBuyBox.setGeometry(QtCore.QRect(570, 240, 71, 31))
         self.MinOrderBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1731,7 +1724,7 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.MinOrderBuyBox.setObjectName(_fromUtf8("MinOrderBuyBox"))
-        self.PriceBox2 = QtGui.QLineEdit(self.page10)
+        self.PriceBox2 = QtWidgets.QLineEdit(self.page10)
         self.PriceBox2.setGeometry(QtCore.QRect(90, 100, 211, 31))
         self.PriceBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1743,9 +1736,9 @@ class MyForm(QtGui.QDialog):
 ""))
         self.PriceBox2.setText(_fromUtf8(""))
         self.PriceBox2.setObjectName(_fromUtf8("PriceBox2"))
-        self.NotesBox2 = QtGui.QTextEdit(self.page10)
+        self.NotesBox2 = QtWidgets.QTextEdit(self.page10)
         self.NotesBox2.setGeometry(QtCore.QRect(400, 470, 271, 125))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox2.sizePolicy().hasHeightForWidth())
@@ -1760,16 +1753,16 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox2.setObjectName(_fromUtf8("NotesBox2"))
-        self.line_17 = QtGui.QFrame(self.page10)
+        self.line_17 = QtWidgets.QFrame(self.page10)
         self.line_17.setGeometry(QtCore.QRect(10, 420, 671, 16))
-        self.line_17.setFrameShape(QtGui.QFrame.HLine)
-        self.line_17.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_17.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_17.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_17.setObjectName(_fromUtf8("line_17"))
-        self.ExplainCashBuy = QtGui.QPushButton(self.page10)
+        self.ExplainCashBuy = QtWidgets.QPushButton(self.page10)
         self.ExplainCashBuy.setGeometry(QtCore.QRect(320, 10, 40, 40))
         self.ExplainCashBuy.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainCashBuy.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainCashBuy.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainCashBuy.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainCashBuy.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1778,13 +1771,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.ExplainCashBuy.setIconSize(QtCore.QSize(20, 20))
@@ -1795,33 +1788,33 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture2 = myQCheckBox(self.page10)
         self.SaveFuture2.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture2.setObjectName(_fromUtf8("SaveFuture2"))
-        self.ClearForm2 = QtGui.QPushButton(self.page10)
+        self.ClearForm2 = QtWidgets.QPushButton(self.page10)
         self.ClearForm2.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm2.setObjectName(_fromUtf8("ClearForm2"))
-        self.MyDepositUSD2 = QtGui.QComboBox(self.page10)
+        self.MyDepositUSD2 = QtWidgets.QComboBox(self.page10)
         self.MyDepositUSD2.setGeometry(QtCore.QRect(310, 340, 51, 31))
         self.MyDepositUSD2.setObjectName(_fromUtf8("MyDepositUSD2"))
         self.MyDepositUSD2.addItem(_fromUtf8(""))
         self.MyDepositUSD2.addItem(_fromUtf8(""))
-        self.TheirDepositUSD2 = QtGui.QComboBox(self.page10)
+        self.TheirDepositUSD2 = QtWidgets.QComboBox(self.page10)
         self.TheirDepositUSD2.setGeometry(QtCore.QRect(310, 380, 51, 31))
         self.TheirDepositUSD2.setObjectName(_fromUtf8("TheirDepositUSD2"))
         self.TheirDepositUSD2.addItem(_fromUtf8(""))
         self.TheirDepositUSD2.addItem(_fromUtf8(""))
-        self.PriceUSD2 = QtGui.QComboBox(self.page10)
+        self.PriceUSD2 = QtWidgets.QComboBox(self.page10)
         self.PriceUSD2.setGeometry(QtCore.QRect(310, 100, 51, 31))
         self.PriceUSD2.setObjectName(_fromUtf8("PriceUSD2"))
         self.PriceUSD2.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page10)
-        self.page11 = QtGui.QWidget()
+        self.page11 = QtWidgets.QWidget()
         self.page11.setObjectName(_fromUtf8("page11"))
         self.Description1 = myQLabel(self.page11)
         self.Description1.setGeometry(QtCore.QRect(0, 90, 101, 31))
         #self.Description1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Description1.setObjectName(_fromUtf8("Description1"))
-        self.NotesBox3 = QtGui.QTextEdit(self.page11)
+        self.NotesBox3 = QtWidgets.QTextEdit(self.page11)
         self.NotesBox3.setGeometry(QtCore.QRect(400, 519, 271, 81))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox3.sizePolicy().hasHeightForWidth())
@@ -1836,7 +1829,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox3.setObjectName(_fromUtf8("NotesBox3"))
-        self.JobTitleBox1 = QtGui.QLineEdit(self.page11)
+        self.JobTitleBox1 = QtWidgets.QLineEdit(self.page11)
         self.JobTitleBox1.setGeometry(QtCore.QRect(90, 50, 581, 31))
         self.JobTitleBox1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1857,27 +1850,27 @@ class MyForm(QtGui.QDialog):
         self.NotesText3.setGeometry(QtCore.QRect(400, 480, 281, 31))
         #self.NotesText3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.NotesText3.setObjectName(_fromUtf8("NotesText3"))
-        self.JobSelect1 = QtGui.QComboBox(self.page11)
+        self.JobSelect1 = QtWidgets.QComboBox(self.page11)
         self.JobSelect1.setGeometry(QtCore.QRect(0, 230, 201, 31))
         self.JobSelect1.setObjectName(_fromUtf8("JobSelect1"))
         self.JobSelect1.addItem(_fromUtf8(""))
         self.JobSelect1.addItem(_fromUtf8(""))
         self.JobSelect1.addItem(_fromUtf8(""))
-        self.line_4 = QtGui.QFrame(self.page11)
+        self.line_4 = QtWidgets.QFrame(self.page11)
         self.line_4.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_4.setFrameShape(QtGui.QFrame.HLine)
-        self.line_4.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_4.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_4.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_4.setObjectName(_fromUtf8("line_4"))
-        self.SaveContinue3 = QtGui.QPushButton(self.page11)
+        self.SaveContinue3 = QtWidgets.QPushButton(self.page11)
         self.SaveContinue3.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue3.setObjectName(_fromUtf8("SaveContinue3"))
         self.JobTitle1 = myQLabel(self.page11)
         self.JobTitle1.setGeometry(QtCore.QRect(0, 50, 81, 31))
         #self.JobTitle1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.JobTitle1.setObjectName(_fromUtf8("JobTitle1"))
-        self.DescriptionBox2 = QtGui.QTextEdit(self.page11)
+        self.DescriptionBox2 = QtWidgets.QTextEdit(self.page11)
         self.DescriptionBox2.setGeometry(QtCore.QRect(0, 120, 671, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBox2.sizePolicy().hasHeightForWidth())
@@ -1892,7 +1885,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.DescriptionBox2.setObjectName(_fromUtf8("DescriptionBox2"))
-        self.JobAmount1 = QtGui.QLineEdit(self.page11)
+        self.JobAmount1 = QtWidgets.QLineEdit(self.page11)
         self.JobAmount1.setGeometry(QtCore.QRect(0, 280, 201, 31))
         self.JobAmount1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1904,14 +1897,14 @@ class MyForm(QtGui.QDialog):
 ""))
         self.JobAmount1.setText(_fromUtf8(""))
         self.JobAmount1.setObjectName(_fromUtf8("JobAmount1"))
-        self.RateSelect1 = QtGui.QComboBox(self.page11)
+        self.RateSelect1 = QtWidgets.QComboBox(self.page11)
         self.RateSelect1.setGeometry(QtCore.QRect(210, 230, 151, 31))
         self.RateSelect1.setObjectName(_fromUtf8("RateSelect1"))
         self.RateSelect1.addItem(_fromUtf8(""))
         self.RateSelect1.addItem(_fromUtf8(""))
         self.RateSelect1.addItem(_fromUtf8(""))
         self.RateSelect1.addItem(_fromUtf8(""))
-        self.JobRate = QtGui.QComboBox(self.page11)
+        self.JobRate = QtWidgets.QComboBox(self.page11)
         self.JobRate.setGeometry(QtCore.QRect(270, 280, 91, 31))
         self.JobRate.setObjectName(_fromUtf8("JobRate"))
         self.JobRate.addItem(_fromUtf8(""))
@@ -1919,7 +1912,7 @@ class MyForm(QtGui.QDialog):
         self.JobRate.addItem(_fromUtf8(""))
         self.JobRate.addItem(_fromUtf8(""))
         self.JobRate.hide()
-        self.JobUSD = QtGui.QComboBox(self.page11)
+        self.JobUSD = QtWidgets.QComboBox(self.page11)
         self.JobUSD.setGeometry(QtCore.QRect(210, 280, 51, 31))
         self.JobUSD.setObjectName(_fromUtf8("JobUSD"))
         self.JobUSD.addItem(_fromUtf8(""))
@@ -1932,11 +1925,11 @@ class MyForm(QtGui.QDialog):
         self.RequireReportCheck.setGeometry(QtCore.QRect(400, 270, 261, 31))
         #self.RequireReportCheck.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.RequireReportCheck.setObjectName(_fromUtf8("RequireReportCheck"))
-        self.ExplainHire = QtGui.QPushButton(self.page11)
+        self.ExplainHire = QtWidgets.QPushButton(self.page11)
         self.ExplainHire.setGeometry(QtCore.QRect(630, 10, 40, 40))
         self.ExplainHire.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainHire.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainHire.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainHire.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainHire.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1945,13 +1938,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.ExplainHire.setIconSize(QtCore.QSize(20, 20))
@@ -1962,14 +1955,14 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture3 = myQCheckBox(self.page11)
         self.SaveFuture3.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture3.setObjectName(_fromUtf8("SaveFuture3"))
-        self.ClearForm3 = QtGui.QPushButton(self.page11)
+        self.ClearForm3 = QtWidgets.QPushButton(self.page11)
         self.ClearForm3.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm3.setObjectName(_fromUtf8("ClearForm3"))
         self.TheirDepositText3 = myQLabel(self.page11)
         self.TheirDepositText3.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText3.setObjectName(_fromUtf8("TheirDepositText3"))
-        self.TimeLimitBox3 = QtGui.QLineEdit(self.page11)
+        self.TimeLimitBox3 = QtWidgets.QLineEdit(self.page11)
         self.TimeLimitBox3.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -1980,28 +1973,28 @@ class MyForm(QtGui.QDialog):
 "border-color: lightgrey;\n"
 ""))
         self.TimeLimitBox3.setObjectName(_fromUtf8("TimeLimitBox3"))
-        self.MyDepositUSD3 = QtGui.QComboBox(self.page11)
+        self.MyDepositUSD3 = QtWidgets.QComboBox(self.page11)
         self.MyDepositUSD3.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD3.setObjectName(_fromUtf8("MyDepositUSD3"))
         self.MyDepositUSD3.addItem(_fromUtf8(""))
         self.MyDepositUSD3.addItem(_fromUtf8(""))
-        self.DepositSettings3 = QtGui.QComboBox(self.page11)
+        self.DepositSettings3 = QtWidgets.QComboBox(self.page11)
         self.DepositSettings3.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings3.setObjectName(_fromUtf8("DepositSettings3"))
         self.DepositSettings3.addItem(_fromUtf8(""))
         self.DepositSettings3.addItem(_fromUtf8(""))
         self.DepositSettings3.addItem(_fromUtf8(""))
-        self.TimeLimitDays3 = QtGui.QComboBox(self.page11)
+        self.TimeLimitDays3 = QtWidgets.QComboBox(self.page11)
         self.TimeLimitDays3.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays3.setObjectName(_fromUtf8("TimeLimitDays3"))
         self.TimeLimitDays3.addItem(_fromUtf8(""))
         self.TimeLimitDays3.addItem(_fromUtf8(""))
-        self.TheirDepositUSD3 = QtGui.QComboBox(self.page11)
+        self.TheirDepositUSD3 = QtWidgets.QComboBox(self.page11)
         self.TheirDepositUSD3.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD3.setObjectName(_fromUtf8("TheirDepositUSD3"))
         self.TheirDepositUSD3.addItem(_fromUtf8(""))
         self.TheirDepositUSD3.addItem(_fromUtf8(""))
-        self.TheirDepositBox3 = QtGui.QLineEdit(self.page11)
+        self.TheirDepositBox3 = QtWidgets.QLineEdit(self.page11)
         self.TheirDepositBox3.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2013,7 +2006,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox3.setText(_fromUtf8(""))
         self.TheirDepositBox3.setObjectName(_fromUtf8("TheirDepositBox3"))
-        self.MyDepositBox3 = QtGui.QLineEdit(self.page11)
+        self.MyDepositBox3 = QtWidgets.QLineEdit(self.page11)
         self.MyDepositBox3.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2042,7 +2035,7 @@ class MyForm(QtGui.QDialog):
         #self.RequireResumeCheck.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.RequireResumeCheck.setObjectName(_fromUtf8("RequireResumeCheck"))
         self.Pages.addWidget(self.page11)
-        self.page12 = QtGui.QWidget()
+        self.page12 = QtWidgets.QWidget()
         self.page12.setObjectName(_fromUtf8("page12"))
         self.AcceptOneCheck = myQCheckBox(self.page12)
         self.AcceptOneCheck.setGeometry(QtCore.QRect(400, 230, 280, 31))
@@ -2053,12 +2046,12 @@ class MyForm(QtGui.QDialog):
         self.FindJobText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.FindJobText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.FindJobText.setObjectName(_fromUtf8("FindJobText"))
-        self.line_6 = QtGui.QFrame(self.page12)
+        self.line_6 = QtWidgets.QFrame(self.page12)
         self.line_6.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_6.setFrameShape(QtGui.QFrame.HLine)
-        self.line_6.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_6.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_6.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_6.setObjectName(_fromUtf8("line_6"))
-        self.SaveContinue4 = QtGui.QPushButton(self.page12)
+        self.SaveContinue4 = QtWidgets.QPushButton(self.page12)
         self.SaveContinue4.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue4.setObjectName(_fromUtf8("SaveContinue4"))
         self.LinkResumeText = myQLabel(self.page12)
@@ -2073,9 +2066,9 @@ class MyForm(QtGui.QDialog):
         self.Notes4.setGeometry(QtCore.QRect(400, 480, 281, 31))
         #self.Notes4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Notes4.setObjectName(_fromUtf8("Notes4"))
-        self.DescriptionBox2_2 = QtGui.QTextEdit(self.page12)
+        self.DescriptionBox2_2 = QtWidgets.QTextEdit(self.page12)
         self.DescriptionBox2_2.setGeometry(QtCore.QRect(0, 120, 671, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBox2_2.sizePolicy().hasHeightForWidth())
@@ -2090,17 +2083,17 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.DescriptionBox2_2.setObjectName(_fromUtf8("DescriptionBox2_2"))
-        self.DepositSettings4 = QtGui.QComboBox(self.page12)
+        self.DepositSettings4 = QtWidgets.QComboBox(self.page12)
         self.DepositSettings4.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings4.setObjectName(_fromUtf8("DepositSettings4"))
         self.DepositSettings4.addItem(_fromUtf8(""))
         self.DepositSettings4.addItem(_fromUtf8(""))
         self.DepositSettings4.addItem(_fromUtf8(""))
-        self.ExplainFind = QtGui.QPushButton(self.page12)
+        self.ExplainFind = QtWidgets.QPushButton(self.page12)
         self.ExplainFind.setGeometry(QtCore.QRect(630, 10, 40, 40))
         self.ExplainFind.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainFind.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainFind.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainFind.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainFind.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2109,18 +2102,18 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.ExplainFind.setIconSize(QtCore.QSize(20, 20))
         self.ExplainFind.setObjectName(_fromUtf8("ExplainFind"))
-        self.LinkResumeBox = QtGui.QLineEdit(self.page12)
+        self.LinkResumeBox = QtWidgets.QLineEdit(self.page12)
         self.LinkResumeBox.setGeometry(QtCore.QRect(150, 290, 211, 31))
         self.LinkResumeBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2132,9 +2125,9 @@ class MyForm(QtGui.QDialog):
 ""))
         self.LinkResumeBox.setText(_fromUtf8(""))
         self.LinkResumeBox.setObjectName(_fromUtf8("LinkResumeBox"))
-        self.NotesBox4 = QtGui.QTextEdit(self.page12)
+        self.NotesBox4 = QtWidgets.QTextEdit(self.page12)
         self.NotesBox4.setGeometry(QtCore.QRect(400, 519, 271, 81))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox4.sizePolicy().hasHeightForWidth())
@@ -2149,7 +2142,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox4.setObjectName(_fromUtf8("NotesBox4"))
-        self.JobTitleBox2 = QtGui.QLineEdit(self.page12)
+        self.JobTitleBox2 = QtWidgets.QLineEdit(self.page12)
         self.JobTitleBox2.setGeometry(QtCore.QRect(90, 50, 581, 31))
         self.JobTitleBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2180,7 +2173,7 @@ class MyForm(QtGui.QDialog):
         self.uploadfree = myQLabel(self.page12)
         self.uploadfree.setGeometry(QtCore.QRect(0, 330, 131, 21))
         self.uploadfree.setObjectName(_fromUtf8("uploadfree"))
-        self.sendspacelink = QtGui.QPushButton(self.page12)
+        self.sendspacelink = QtWidgets.QPushButton(self.page12)
         self.sendspacelink.setGeometry(QtCore.QRect(130, 330, 111, 21))
         self.sendspacelink.setStyleSheet(_fromUtf8("color: rgb(0, 0, 255);"))
         self.sendspacelink.setObjectName(_fromUtf8("sendspacelink"))
@@ -2193,19 +2186,19 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture4 = myQCheckBox(self.page12)
         self.SaveFuture4.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture4.setObjectName(_fromUtf8("SaveFuture4"))
-        self.ClearForm4 = QtGui.QPushButton(self.page12)
+        self.ClearForm4 = QtWidgets.QPushButton(self.page12)
         self.ClearForm4.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm4.setObjectName(_fromUtf8("ClearForm4"))
         self.MyDepositText4 = myQLabel(self.page12)
         self.MyDepositText4.setGeometry(QtCore.QRect(0, 490, 101, 31))
         #self.MyDepositText4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText4.setObjectName(_fromUtf8("MyDepositText4"))
-        self.MyDepositUSD4 = QtGui.QComboBox(self.page12)
+        self.MyDepositUSD4 = QtWidgets.QComboBox(self.page12)
         self.MyDepositUSD4.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD4.setObjectName(_fromUtf8("MyDepositUSD4"))
         self.MyDepositUSD4.addItem(_fromUtf8(""))
         self.MyDepositUSD4.addItem(_fromUtf8(""))
-        self.TimeLimitBox4 = QtGui.QLineEdit(self.page12)
+        self.TimeLimitBox4 = QtWidgets.QLineEdit(self.page12)
         self.TimeLimitBox4.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2220,7 +2213,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText4.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText4.setObjectName(_fromUtf8("TimeLimitText4"))
-        self.MyDepositBox4 = QtGui.QLineEdit(self.page12)
+        self.MyDepositBox4 = QtWidgets.QLineEdit(self.page12)
         self.MyDepositBox4.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2232,12 +2225,12 @@ class MyForm(QtGui.QDialog):
 ""))
         self.MyDepositBox4.setText(_fromUtf8(""))
         self.MyDepositBox4.setObjectName(_fromUtf8("MyDepositBox4"))
-        self.TimeLimitDays4 = QtGui.QComboBox(self.page12)
+        self.TimeLimitDays4 = QtWidgets.QComboBox(self.page12)
         self.TimeLimitDays4.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays4.setObjectName(_fromUtf8("TimeLimitDays4"))
         self.TimeLimitDays4.addItem(_fromUtf8(""))
         self.TimeLimitDays4.addItem(_fromUtf8(""))
-        self.TheirDepositBox4 = QtGui.QLineEdit(self.page12)
+        self.TheirDepositBox4 = QtWidgets.QLineEdit(self.page12)
         self.TheirDepositBox4.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2253,19 +2246,19 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText4.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText4.setObjectName(_fromUtf8("TheirDepositText4"))
-        self.TheirDepositUSD4 = QtGui.QComboBox(self.page12)
+        self.TheirDepositUSD4 = QtWidgets.QComboBox(self.page12)
         self.TheirDepositUSD4.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD4.setObjectName(_fromUtf8("TheirDepositUSD4"))
         self.TheirDepositUSD4.addItem(_fromUtf8(""))
         self.TheirDepositUSD4.addItem(_fromUtf8(""))
-        self.FindRate = QtGui.QComboBox(self.page12)
+        self.FindRate = QtWidgets.QComboBox(self.page12)
         self.FindRate.setGeometry(QtCore.QRect(270, 240, 91, 31))
         self.FindRate.setObjectName(_fromUtf8("FindRate"))
         self.FindRate.addItem(_fromUtf8(""))
         self.FindRate.addItem(_fromUtf8(""))
         self.FindRate.addItem(_fromUtf8(""))
         self.FindRate.addItem(_fromUtf8(""))
-        self.FindAmount = QtGui.QLineEdit(self.page12)
+        self.FindAmount = QtWidgets.QLineEdit(self.page12)
         self.FindAmount.setGeometry(QtCore.QRect(0, 240, 201, 31))
         self.FindAmount.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2277,21 +2270,21 @@ class MyForm(QtGui.QDialog):
 ""))
         self.FindAmount.setText(_fromUtf8(""))
         self.FindAmount.setObjectName(_fromUtf8("FindAmount"))
-        self.FindUSD = QtGui.QComboBox(self.page12)
+        self.FindUSD = QtWidgets.QComboBox(self.page12)
         self.FindUSD.setGeometry(QtCore.QRect(210, 240, 51, 31))
         self.FindUSD.setObjectName(_fromUtf8("FindUSD"))
         self.FindUSD.addItem(_fromUtf8(""))
         self.FindUSD.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page12)
-        self.page13 = QtGui.QWidget()
+        self.page13 = QtWidgets.QWidget()
         self.page13.setObjectName(_fromUtf8("page13"))
         self.SellImageText = myQLabel(self.page13)
         self.SellImageText.setGeometry(QtCore.QRect(0, 180, 71, 31))
         #self.SellImageText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.SellImageText.setObjectName(_fromUtf8("SellImageText"))
-        self.NotesBox5 = QtGui.QTextEdit(self.page13)
+        self.NotesBox5 = QtWidgets.QTextEdit(self.page13)
         self.NotesBox5.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox5.sizePolicy().hasHeightForWidth())
@@ -2306,7 +2299,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox5.setObjectName(_fromUtf8("NotesBox5"))
-        self.CountrySellSelect = QtGui.QComboBox(self.page13)
+        self.CountrySellSelect = QtWidgets.QComboBox(self.page13)
         self.CountrySellSelect.setGeometry(QtCore.QRect(400, 220, 271, 31))
         self.CountrySellSelect.setObjectName(_fromUtf8("CountrySellSelect"))
         self.CountrySellSelect.addItem(_fromUtf8(""))
@@ -2320,11 +2313,11 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText5.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText5.setObjectName(_fromUtf8("TheirDepositText5"))
-        self.ExplainSell = QtGui.QPushButton(self.page13)
+        self.ExplainSell = QtWidgets.QPushButton(self.page13)
         self.ExplainSell.setGeometry(QtCore.QRect(330, 10, 40, 40))
         self.ExplainSell.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainSell.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainSell.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainSell.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainSell.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2333,17 +2326,17 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainSell.setIconSize(QtCore.QSize(20, 20))
         self.ExplainSell.setObjectName(_fromUtf8("ExplainSell"))
-        self.ShippingSellSelect = QtGui.QComboBox(self.page13)
+        self.ShippingSellSelect = QtWidgets.QComboBox(self.page13)
         self.ShippingSellSelect.setGeometry(QtCore.QRect(490, 50, 181, 31))
         self.ShippingSellSelect.setObjectName(_fromUtf8("ShippingSellSelect"))
         self.ShippingSellSelect.addItem(_fromUtf8(""))
@@ -2351,7 +2344,7 @@ class MyForm(QtGui.QDialog):
         self.ShippingSellSelect.addItem(_fromUtf8(""))
         self.ShippingSellSelect.addItem(_fromUtf8(""))
         self.ShippingSellSelect.addItem(_fromUtf8(""))
-        self.SellImageBox = QtGui.QLineEdit(self.page13)
+        self.SellImageBox = QtWidgets.QLineEdit(self.page13)
         self.SellImageBox.setGeometry(QtCore.QRect(80, 180, 141, 31))
         self.SellImageBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2367,7 +2360,7 @@ class MyForm(QtGui.QDialog):
         self.ShipToTextSell.setGeometry(QtCore.QRect(400, 260, 111, 31))
         #self.ShipToTextSell.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.ShipToTextSell.setObjectName(_fromUtf8("ShipToTextSell"))
-        self.TimeLimitBox5 = QtGui.QLineEdit(self.page13)
+        self.TimeLimitBox5 = QtWidgets.QLineEdit(self.page13)
         self.TimeLimitBox5.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2386,18 +2379,18 @@ class MyForm(QtGui.QDialog):
         self.MyDepositText5.setGeometry(QtCore.QRect(0, 490, 101, 31))
         #self.MyDepositText5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText5.setObjectName(_fromUtf8("MyDepositText5"))
-        self.DepositSettings5 = QtGui.QComboBox(self.page13)
+        self.DepositSettings5 = QtWidgets.QComboBox(self.page13)
         self.DepositSettings5.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings5.setObjectName(_fromUtf8("DepositSettings5"))
         self.DepositSettings5.addItem(_fromUtf8(""))
         self.DepositSettings5.addItem(_fromUtf8(""))
         self.DepositSettings5.addItem(_fromUtf8(""))
-        self.line_8 = QtGui.QFrame(self.page13)
+        self.line_8 = QtWidgets.QFrame(self.page13)
         self.line_8.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_8.setFrameShape(QtGui.QFrame.HLine)
-        self.line_8.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_8.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_8.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_8.setObjectName(_fromUtf8("line_8"))
-        self.TheirDepositBox5 = QtGui.QLineEdit(self.page13)
+        self.TheirDepositBox5 = QtWidgets.QLineEdit(self.page13)
         self.TheirDepositBox5.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2409,10 +2402,10 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox5.setText(_fromUtf8(""))
         self.TheirDepositBox5.setObjectName(_fromUtf8("TheirDepositBox5"))
-        self.SaveContinue5 = QtGui.QPushButton(self.page13)
+        self.SaveContinue5 = QtWidgets.QPushButton(self.page13)
         self.SaveContinue5.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue5.setObjectName(_fromUtf8("SaveContinue5"))
-        self.MyDepositBox5 = QtGui.QLineEdit(self.page13)
+        self.MyDepositBox5 = QtWidgets.QLineEdit(self.page13)
         self.MyDepositBox5.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2428,12 +2421,12 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText5.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText5.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText5.setObjectName(_fromUtf8("TimeLimitText5"))
-        self.TimeLimitDays5 = QtGui.QComboBox(self.page13)
+        self.TimeLimitDays5 = QtWidgets.QComboBox(self.page13)
         self.TimeLimitDays5.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays5.setObjectName(_fromUtf8("TimeLimitDays5"))
         self.TimeLimitDays5.addItem(_fromUtf8(""))
         self.TimeLimitDays5.addItem(_fromUtf8(""))
-        self.ShipToSellBox = QtGui.QLineEdit(self.page13)
+        self.ShipToSellBox = QtWidgets.QLineEdit(self.page13)
         self.ShipToSellBox.setGeometry(QtCore.QRect(510, 260, 161, 31))
         self.ShipToSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2448,11 +2441,11 @@ class MyForm(QtGui.QDialog):
         self.ShippingSellText.setGeometry(QtCore.QRect(400, 50, 91, 31))
         #self.ShippingSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.ShippingSellText.setObjectName(_fromUtf8("ShippingSellText"))
-        self.SellAttachImage = QtGui.QPushButton(self.page13)
+        self.SellAttachImage = QtWidgets.QPushButton(self.page13)
         self.SellAttachImage.setGeometry(QtCore.QRect(230, 180, 131, 31))
         self.SellAttachImage.setMinimumSize(QtCore.QSize(100, 20))
         self.SellAttachImage.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.SellAttachImage.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.SellAttachImage.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.SellAttachImage.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2461,17 +2454,17 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/images/icon_openaccount_active.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/Images/images/icon_openaccount_active.png")), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.SellAttachImage.setIcon(icon)
         self.SellAttachImage.setIconSize(QtCore.QSize(20, 20))
         self.SellAttachImage.setObjectName(_fromUtf8("SellAttachImage"))
@@ -2479,9 +2472,9 @@ class MyForm(QtGui.QDialog):
         self.DescriptionSellText.setGeometry(QtCore.QRect(0, 50, 101, 31))
         #self.DescriptionSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DescriptionSellText.setObjectName(_fromUtf8("DescriptionSellText"))
-        self.DescriptionSellBox = QtGui.QTextEdit(self.page13)
+        self.DescriptionSellBox = QtWidgets.QTextEdit(self.page13)
         self.DescriptionSellBox.setGeometry(QtCore.QRect(0, 80, 361, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionSellBox.sizePolicy().hasHeightForWidth())
@@ -2500,7 +2493,7 @@ class MyForm(QtGui.QDialog):
         self.SellQuantity.setGeometry(QtCore.QRect(150, 220, 71, 31))
         #self.SellQuantity.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.SellQuantity.setObjectName(_fromUtf8("SellQuantity"))
-        self.SellQuantityBox = QtGui.QLineEdit(self.page13)
+        self.SellQuantityBox = QtWidgets.QLineEdit(self.page13)
         self.SellQuantityBox.setGeometry(QtCore.QRect(230, 220, 131, 31))
         self.SellQuantityBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2512,12 +2505,12 @@ class MyForm(QtGui.QDialog):
 ""))
         self.SellQuantityBox.setText(_fromUtf8(""))
         self.SellQuantityBox.setObjectName(_fromUtf8("SellQuantityBox"))
-        self.SellSelect = QtGui.QComboBox(self.page13)
+        self.SellSelect = QtWidgets.QComboBox(self.page13)
         self.SellSelect.setGeometry(QtCore.QRect(0, 220, 131, 31))
         self.SellSelect.setObjectName(_fromUtf8("SellSelect"))
         self.SellSelect.addItem(_fromUtf8(""))
         self.SellSelect.addItem(_fromUtf8(""))
-        self.BuyoutSellBox = QtGui.QLineEdit(self.page13)
+        self.BuyoutSellBox = QtWidgets.QLineEdit(self.page13)
         self.BuyoutSellBox.setGeometry(QtCore.QRect(120, 260, 171, 31))
         self.BuyoutSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2533,12 +2526,12 @@ class MyForm(QtGui.QDialog):
         self.BuyoutSellText.setGeometry(QtCore.QRect(0, 260, 111, 31))
         #self.BuyoutSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.BuyoutSellText.setObjectName(_fromUtf8("BuyoutSellText"))
-        self.BuyoutSellUSD = QtGui.QComboBox(self.page13)
+        self.BuyoutSellUSD = QtWidgets.QComboBox(self.page13)
         self.BuyoutSellUSD.setGeometry(QtCore.QRect(310, 260, 51, 31))
         self.BuyoutSellUSD.setObjectName(_fromUtf8("BuyoutSellUSD"))
         self.BuyoutSellUSD.addItem(_fromUtf8(""))
         self.BuyoutSellUSD.addItem(_fromUtf8(""))
-        self.BidSellBox = QtGui.QLineEdit(self.page13)
+        self.BidSellBox = QtWidgets.QLineEdit(self.page13)
         self.BidSellBox.setGeometry(QtCore.QRect(120, 310, 171, 31))
         self.BidSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2550,7 +2543,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.BidSellBox.setText(_fromUtf8(""))
         self.BidSellBox.setObjectName(_fromUtf8("BidSellBox"))
-        self.BidSellUSD = QtGui.QComboBox(self.page13)
+        self.BidSellUSD = QtWidgets.QComboBox(self.page13)
         self.BidSellUSD.setGeometry(QtCore.QRect(310, 310, 51, 31))
         self.BidSellUSD.setObjectName(_fromUtf8("BidSellUSD"))
         self.BidSellUSD.addItem(_fromUtf8(""))
@@ -2559,11 +2552,11 @@ class MyForm(QtGui.QDialog):
         self.BidSellText.setGeometry(QtCore.QRect(0, 310, 101, 31))
         #self.BidSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.BidSellText.setObjectName(_fromUtf8("BidSellText"))
-        self.DurationSellDays = QtGui.QComboBox(self.page13)
+        self.DurationSellDays = QtWidgets.QComboBox(self.page13)
         self.DurationSellDays.setGeometry(QtCore.QRect(310, 360, 51, 31))
         self.DurationSellDays.setObjectName(_fromUtf8("DurationSellDays"))
         self.DurationSellDays.addItem(_fromUtf8(""))
-        self.DurationSellBox = QtGui.QLineEdit(self.page13)
+        self.DurationSellBox = QtWidgets.QLineEdit(self.page13)
         self.DurationSellBox.setGeometry(QtCore.QRect(120, 360, 171, 31))
         self.DurationSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2579,7 +2572,7 @@ class MyForm(QtGui.QDialog):
         self.DurationSellText.setGeometry(QtCore.QRect(0, 360, 101, 31))
         #self.DurationSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DurationSellText.setObjectName(_fromUtf8("DurationSellText"))
-        self.RateSellBox2 = QtGui.QLineEdit(self.page13)
+        self.RateSellBox2 = QtWidgets.QLineEdit(self.page13)
         self.RateSellBox2.setGeometry(QtCore.QRect(460, 100, 141, 31))
         self.RateSellBox2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2591,7 +2584,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.RateSellBox2.setText(_fromUtf8(""))
         self.RateSellBox2.setObjectName(_fromUtf8("RateSellBox2"))
-        self.RateSellUSD = QtGui.QComboBox(self.page13)
+        self.RateSellUSD = QtWidgets.QComboBox(self.page13)
         self.RateSellUSD.setGeometry(QtCore.QRect(620, 100, 51, 31))
         self.RateSellUSD.setObjectName(_fromUtf8("RateSellUSD"))
         self.RateSellUSD.addItem(_fromUtf8(""))
@@ -2600,7 +2593,7 @@ class MyForm(QtGui.QDialog):
         self.RateSellText.setGeometry(QtCore.QRect(400, 100, 51, 31))
         #self.RateSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.RateSellText.setObjectName(_fromUtf8("RateSellText"))
-        self.WeightSellBox = QtGui.QLineEdit(self.page13)
+        self.WeightSellBox = QtWidgets.QLineEdit(self.page13)
         self.WeightSellBox.setGeometry(QtCore.QRect(480, 150, 101, 31))
         self.WeightSellBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2616,7 +2609,7 @@ class MyForm(QtGui.QDialog):
         self.WeightSellText.setGeometry(QtCore.QRect(400, 150, 71, 31))
         #self.WeightSellText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.WeightSellText.setObjectName(_fromUtf8("WeightSellText"))
-        self.WeightSellSelect = QtGui.QComboBox(self.page13)
+        self.WeightSellSelect = QtWidgets.QComboBox(self.page13)
         self.WeightSellSelect.setGeometry(QtCore.QRect(600, 150, 71, 31))
         self.WeightSellSelect.setObjectName(_fromUtf8("WeightSellSelect"))
         self.WeightSellSelect.addItem(_fromUtf8(""))
@@ -2627,34 +2620,34 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture5 = myQCheckBox(self.page13)
         self.SaveFuture5.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture5.setObjectName(_fromUtf8("SaveFuture5"))
-        self.ClearForm5 = QtGui.QPushButton(self.page13)
+        self.ClearForm5 = QtWidgets.QPushButton(self.page13)
         self.ClearForm5.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm5.setObjectName(_fromUtf8("ClearForm5"))
-        self.MyDepositUSD5 = QtGui.QComboBox(self.page13)
+        self.MyDepositUSD5 = QtWidgets.QComboBox(self.page13)
         self.MyDepositUSD5.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD5.setObjectName(_fromUtf8("MyDepositUSD5"))
         self.MyDepositUSD5.addItem(_fromUtf8(""))
         self.MyDepositUSD5.addItem(_fromUtf8(""))
-        self.TheirDepositUSD5 = QtGui.QComboBox(self.page13)
+        self.TheirDepositUSD5 = QtWidgets.QComboBox(self.page13)
         self.TheirDepositUSD5.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD5.setObjectName(_fromUtf8("TheirDepositUSD5"))
         self.TheirDepositUSD5.addItem(_fromUtf8(""))
         self.TheirDepositUSD5.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page13)
-        self.page14 = QtGui.QWidget()
+        self.page14 = QtWidgets.QWidget()
         self.page14.setObjectName(_fromUtf8("page14"))
         self.ShippingBuyText = myQLabel(self.page14)
         self.ShippingBuyText.setGeometry(QtCore.QRect(400, 50, 91, 31))
         #self.ShippingBuyText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.ShippingBuyText.setObjectName(_fromUtf8("ShippingBuyText"))
-        self.SaveContinue6 = QtGui.QPushButton(self.page14)
+        self.SaveContinue6 = QtWidgets.QPushButton(self.page14)
         self.SaveContinue6.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue6.setObjectName(_fromUtf8("SaveContinue6"))
-        self.DurationBuyDays = QtGui.QComboBox(self.page14)
+        self.DurationBuyDays = QtWidgets.QComboBox(self.page14)
         self.DurationBuyDays.setGeometry(QtCore.QRect(310, 360, 51, 31))
         self.DurationBuyDays.setObjectName(_fromUtf8("DurationBuyDays"))
         self.DurationBuyDays.addItem(_fromUtf8(""))
-        self.TheirDepositBox6 = QtGui.QLineEdit(self.page14)
+        self.TheirDepositBox6 = QtWidgets.QLineEdit(self.page14)
         self.TheirDepositBox6.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2666,12 +2659,12 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox6.setText(_fromUtf8(""))
         self.TheirDepositBox6.setObjectName(_fromUtf8("TheirDepositBox6"))
-        self.BuySelect = QtGui.QComboBox(self.page14)
+        self.BuySelect = QtWidgets.QComboBox(self.page14)
         self.BuySelect.setGeometry(QtCore.QRect(0, 220, 131, 31))
         self.BuySelect.setObjectName(_fromUtf8("BuySelect"))
         self.BuySelect.addItem(_fromUtf8(""))
         self.BuySelect.addItem(_fromUtf8(""))
-        self.MyDepositBox6 = QtGui.QLineEdit(self.page14)
+        self.MyDepositBox6 = QtWidgets.QLineEdit(self.page14)
         self.MyDepositBox6.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2683,7 +2676,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.MyDepositBox6.setText(_fromUtf8(""))
         self.MyDepositBox6.setObjectName(_fromUtf8("MyDepositBox6"))
-        self.TimeLimitBox6 = QtGui.QLineEdit(self.page14)
+        self.TimeLimitBox6 = QtWidgets.QLineEdit(self.page14)
         self.TimeLimitBox6.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2698,9 +2691,9 @@ class MyForm(QtGui.QDialog):
         self.BidBuyText.setGeometry(QtCore.QRect(0, 310, 101, 31))
         #self.BidBuyText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.BidBuyText.setObjectName(_fromUtf8("BidBuyText"))
-        self.DescriptionBuyBox = QtGui.QTextEdit(self.page14)
+        self.DescriptionBuyBox = QtWidgets.QTextEdit(self.page14)
         self.DescriptionBuyBox.setGeometry(QtCore.QRect(0, 80, 361, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBuyBox.sizePolicy().hasHeightForWidth())
@@ -2715,7 +2708,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.DescriptionBuyBox.setObjectName(_fromUtf8("DescriptionBuyBox"))
-        self.BidBuyBox = QtGui.QLineEdit(self.page14)
+        self.BidBuyBox = QtWidgets.QLineEdit(self.page14)
         self.BidBuyBox.setGeometry(QtCore.QRect(120, 310, 171, 31))
         self.BidBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2736,7 +2729,7 @@ class MyForm(QtGui.QDialog):
         self.BuyText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.BuyText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.BuyText.setObjectName(_fromUtf8("BuyText"))
-        self.ShipToBuyBox = QtGui.QLineEdit(self.page14)
+        self.ShipToBuyBox = QtWidgets.QLineEdit(self.page14)
         self.ShipToBuyBox.setGeometry(QtCore.QRect(540, 260, 131, 31))
         self.ShipToBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2751,11 +2744,11 @@ class MyForm(QtGui.QDialog):
         self.DescriptionBuy.setGeometry(QtCore.QRect(0, 50, 101, 31))
         #self.DescriptionBuy.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DescriptionBuy.setObjectName(_fromUtf8("DescriptionBuy"))
-        self.BuyAttachImage = QtGui.QPushButton(self.page14)
+        self.BuyAttachImage = QtWidgets.QPushButton(self.page14)
         self.BuyAttachImage.setGeometry(QtCore.QRect(230, 180, 131, 31))
         self.BuyAttachImage.setMinimumSize(QtCore.QSize(100, 20))
         self.BuyAttachImage.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.BuyAttachImage.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.BuyAttachImage.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.BuyAttachImage.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2764,21 +2757,21 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.BuyAttachImage.setIcon(icon)
         self.BuyAttachImage.setIconSize(QtCore.QSize(20, 20))
         self.BuyAttachImage.setObjectName(_fromUtf8("BuyAttachImage"))
-        self.NotesBox6 = QtGui.QTextEdit(self.page14)
+        self.NotesBox6 = QtWidgets.QTextEdit(self.page14)
         self.NotesBox6.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox6.sizePolicy().hasHeightForWidth())
@@ -2793,7 +2786,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox6.setObjectName(_fromUtf8("NotesBox6"))
-        self.DurationBuyBox = QtGui.QLineEdit(self.page14)
+        self.DurationBuyBox = QtWidgets.QLineEdit(self.page14)
         self.DurationBuyBox.setGeometry(QtCore.QRect(120, 360, 171, 31))
         self.DurationBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2809,16 +2802,16 @@ class MyForm(QtGui.QDialog):
         self.MyDepositText6.setGeometry(QtCore.QRect(0, 490, 101, 31))
         #self.MyDepositText6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText6.setObjectName(_fromUtf8("MyDepositText6"))
-        self.line_19 = QtGui.QFrame(self.page14)
+        self.line_19 = QtWidgets.QFrame(self.page14)
         self.line_19.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_19.setFrameShape(QtGui.QFrame.HLine)
-        self.line_19.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_19.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_19.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_19.setObjectName(_fromUtf8("line_19"))
-        self.ExplainBuy = QtGui.QPushButton(self.page14)
+        self.ExplainBuy = QtWidgets.QPushButton(self.page14)
         self.ExplainBuy.setGeometry(QtCore.QRect(330, 10, 40, 40))
         self.ExplainBuy.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainBuy.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainBuy.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainBuy.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainBuy.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2827,13 +2820,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainBuy.setIconSize(QtCore.QSize(20, 20))
         self.ExplainBuy.setObjectName(_fromUtf8("ExplainBuy"))
@@ -2841,7 +2834,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText6.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText6.setObjectName(_fromUtf8("TimeLimitText6"))
-        self.BuyoutBuyBox = QtGui.QLineEdit(self.page14)
+        self.BuyoutBuyBox = QtWidgets.QLineEdit(self.page14)
         self.BuyoutBuyBox.setGeometry(QtCore.QRect(120, 260, 171, 31))
         self.BuyoutBuyBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2853,12 +2846,12 @@ class MyForm(QtGui.QDialog):
 ""))
         self.BuyoutBuyBox.setText(_fromUtf8(""))
         self.BuyoutBuyBox.setObjectName(_fromUtf8("BuyoutBuyBox"))
-        self.TimeLimitDays6 = QtGui.QComboBox(self.page14)
+        self.TimeLimitDays6 = QtWidgets.QComboBox(self.page14)
         self.TimeLimitDays6.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays6.setObjectName(_fromUtf8("TimeLimitDays6"))
         self.TimeLimitDays6.addItem(_fromUtf8(""))
         self.TimeLimitDays6.addItem(_fromUtf8(""))
-        self.ShipCountryBuy = QtGui.QComboBox(self.page14)
+        self.ShipCountryBuy = QtWidgets.QComboBox(self.page14)
         self.ShipCountryBuy.setGeometry(QtCore.QRect(400, 220, 271, 31))
         self.ShipCountryBuy.setObjectName(_fromUtf8("ShipCountryBuy"))
         self.ShipCountryBuy.addItem(_fromUtf8(""))
@@ -2867,7 +2860,7 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText6.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText6.setObjectName(_fromUtf8("TheirDepositText6"))
-        self.BuyoutBuyUSD = QtGui.QComboBox(self.page14)
+        self.BuyoutBuyUSD = QtWidgets.QComboBox(self.page14)
         self.BuyoutBuyUSD.setGeometry(QtCore.QRect(310, 260, 51, 31))
         self.BuyoutBuyUSD.setObjectName(_fromUtf8("BuyoutBuyUSD"))
         self.BuyoutBuyUSD.addItem(_fromUtf8(""))
@@ -2876,7 +2869,7 @@ class MyForm(QtGui.QDialog):
         self.DurationBuyText.setGeometry(QtCore.QRect(0, 360, 101, 31))
         #self.DurationBuyText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DurationBuyText.setObjectName(_fromUtf8("DurationBuyText"))
-        self.BidBuyUSD = QtGui.QComboBox(self.page14)
+        self.BidBuyUSD = QtWidgets.QComboBox(self.page14)
         self.BidBuyUSD.setGeometry(QtCore.QRect(310, 310, 51, 31))
         self.BidBuyUSD.setObjectName(_fromUtf8("BidBuyUSD"))
         self.BidBuyUSD.addItem(_fromUtf8(""))
@@ -2885,7 +2878,7 @@ class MyForm(QtGui.QDialog):
         self.BuyoutBuyText.setGeometry(QtCore.QRect(0, 260, 111, 31))
         #self.BuyoutBuyText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.BuyoutBuyText.setObjectName(_fromUtf8("BuyoutBuyText"))
-        self.BuyImageBox = QtGui.QLineEdit(self.page14)
+        self.BuyImageBox = QtWidgets.QLineEdit(self.page14)
         self.BuyImageBox.setGeometry(QtCore.QRect(80, 180, 141, 31))
         self.BuyImageBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2901,7 +2894,7 @@ class MyForm(QtGui.QDialog):
         self.Notes6.setGeometry(QtCore.QRect(400, 480, 281, 31))
         #self.Notes6.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Notes6.setObjectName(_fromUtf8("Notes6"))
-        self.DepositSettings6 = QtGui.QComboBox(self.page14)
+        self.DepositSettings6 = QtWidgets.QComboBox(self.page14)
         self.DepositSettings6.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings6.setObjectName(_fromUtf8("DepositSettings6"))
         self.DepositSettings6.addItem(_fromUtf8(""))
@@ -2925,28 +2918,28 @@ class MyForm(QtGui.QDialog):
         self.SaveFuture6 = myQCheckBox(self.page14)
         self.SaveFuture6.setGeometry(QtCore.QRect(280, 640, 151, 17))
         self.SaveFuture6.setObjectName(_fromUtf8("SaveFuture6"))
-        self.ClearForm6 = QtGui.QPushButton(self.page14)
+        self.ClearForm6 = QtWidgets.QPushButton(self.page14)
         self.ClearForm6.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm6.setObjectName(_fromUtf8("ClearForm6"))
-        self.MyDepositUSD6 = QtGui.QComboBox(self.page14)
+        self.MyDepositUSD6 = QtWidgets.QComboBox(self.page14)
         self.MyDepositUSD6.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD6.setObjectName(_fromUtf8("MyDepositUSD6"))
         self.MyDepositUSD6.addItem(_fromUtf8(""))
         self.MyDepositUSD6.addItem(_fromUtf8(""))
-        self.TheirDepositUSD6 = QtGui.QComboBox(self.page14)
+        self.TheirDepositUSD6 = QtWidgets.QComboBox(self.page14)
         self.TheirDepositUSD6.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD6.setObjectName(_fromUtf8("TheirDepositUSD6"))
         self.TheirDepositUSD6.addItem(_fromUtf8(""))
         self.TheirDepositUSD6.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page14)
-        self.page15 = QtGui.QWidget()
+        self.page15 = QtWidgets.QWidget()
         self.page15.setObjectName(_fromUtf8("page15"))
-        self.TimeLimitDays7 = QtGui.QComboBox(self.page15)
+        self.TimeLimitDays7 = QtWidgets.QComboBox(self.page15)
         self.TimeLimitDays7.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays7.setObjectName(_fromUtf8("TimeLimitDays7"))
         self.TimeLimitDays7.addItem(_fromUtf8(""))
         self.TimeLimitDays7.addItem(_fromUtf8(""))
-        self.MyDepositBox7 = QtGui.QLineEdit(self.page15)
+        self.MyDepositBox7 = QtWidgets.QLineEdit(self.page15)
         self.MyDepositBox7.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2962,7 +2955,7 @@ class MyForm(QtGui.QDialog):
         self.SupplyText.setGeometry(QtCore.QRect(0, 50, 331, 31))
         #self.SupplyText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.SupplyText.setObjectName(_fromUtf8("SupplyText"))
-        self.SaveContinue7 = QtGui.QPushButton(self.page15)
+        self.SaveContinue7 = QtWidgets.QPushButton(self.page15)
         self.SaveContinue7.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue7.setObjectName(_fromUtf8("SaveContinue7"))
         self.MyDepositText7 = myQLabel(self.page15)
@@ -2978,7 +2971,7 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText7.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText7.setObjectName(_fromUtf8("TheirDepositText7"))
-        self.TheirDepositBox7 = QtGui.QLineEdit(self.page15)
+        self.TheirDepositBox7 = QtWidgets.QLineEdit(self.page15)
         self.TheirDepositBox7.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -2990,11 +2983,11 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox7.setText(_fromUtf8(""))
         self.TheirDepositBox7.setObjectName(_fromUtf8("TheirDepositBox7"))
-        self.ExplainBarter = QtGui.QPushButton(self.page15)
+        self.ExplainBarter = QtWidgets.QPushButton(self.page15)
         self.ExplainBarter.setGeometry(QtCore.QRect(290, 10, 40, 40))
         self.ExplainBarter.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainBarter.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainBarter.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainBarter.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainBarter.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3003,13 +2996,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainBarter.setIconSize(QtCore.QSize(20, 20))
         self.ExplainBarter.setObjectName(_fromUtf8("ExplainBarter"))
@@ -3017,9 +3010,9 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText7.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText7.setObjectName(_fromUtf8("TimeLimitText7"))
-        self.NotesBox7 = QtGui.QTextEdit(self.page15)
+        self.NotesBox7 = QtWidgets.QTextEdit(self.page15)
         self.NotesBox7.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox7.sizePolicy().hasHeightForWidth())
@@ -3034,12 +3027,12 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox7.setObjectName(_fromUtf8("NotesBox7"))
-        self.line_20 = QtGui.QFrame(self.page15)
+        self.line_20 = QtWidgets.QFrame(self.page15)
         self.line_20.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_20.setFrameShape(QtGui.QFrame.HLine)
-        self.line_20.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_20.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_20.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_20.setObjectName(_fromUtf8("line_20"))
-        self.DepositSettings7 = QtGui.QComboBox(self.page15)
+        self.DepositSettings7 = QtWidgets.QComboBox(self.page15)
         self.DepositSettings7.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings7.setObjectName(_fromUtf8("DepositSettings7"))
         self.DepositSettings7.addItem(_fromUtf8(""))
@@ -3048,7 +3041,7 @@ class MyForm(QtGui.QDialog):
         self.Notes7.setGeometry(QtCore.QRect(400, 480, 281, 31))
         #self.Notes7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Notes7.setObjectName(_fromUtf8("Notes7"))
-        self.TimeLimitBox7 = QtGui.QLineEdit(self.page15)
+        self.TimeLimitBox7 = QtWidgets.QLineEdit(self.page15)
         self.TimeLimitBox7.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox7.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3063,22 +3056,22 @@ class MyForm(QtGui.QDialog):
         self.DemandText.setGeometry(QtCore.QRect(340, 50, 331, 31))
         #self.DemandText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DemandText.setObjectName(_fromUtf8("DemandText"))
-        self.SupplyBox = QtGui.QListWidget(self.page15)
+        self.SupplyBox = QtWidgets.QListWidget(self.page15)
         self.SupplyBox.setGeometry(QtCore.QRect(0, 80, 331, 231))
         self.SupplyBox.setObjectName(_fromUtf8("SupplyBox"))
-        self.DemandBox = QtGui.QListWidget(self.page15)
+        self.DemandBox = QtWidgets.QListWidget(self.page15)
         self.DemandBox.setGeometry(QtCore.QRect(340, 80, 331, 231))
         self.DemandBox.setObjectName(_fromUtf8("DemandBox"))
-        self.AddItemSupply = QtGui.QPushButton(self.page15)
+        self.AddItemSupply = QtWidgets.QPushButton(self.page15)
         self.AddItemSupply.setGeometry(QtCore.QRect(0, 310, 71, 31))
         self.AddItemSupply.setObjectName(_fromUtf8("AddItemSupply"))
-        self.AddItemDemand = QtGui.QPushButton(self.page15)
+        self.AddItemDemand = QtWidgets.QPushButton(self.page15)
         self.AddItemDemand.setGeometry(QtCore.QRect(340, 310, 71, 31))
         self.AddItemDemand.setObjectName(_fromUtf8("AddItemDemand"))
         self.SupplyAdditional7 = myQCheckBox(self.page15)
         self.SupplyAdditional7.setGeometry(QtCore.QRect(460, 640, 211, 17))
         self.SupplyAdditional7.setObjectName(_fromUtf8("SupplyAdditional7"))
-        self.ClearForm7 = QtGui.QPushButton(self.page15)
+        self.ClearForm7 = QtWidgets.QPushButton(self.page15)
         self.ClearForm7.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm7.setObjectName(_fromUtf8("ClearForm7"))
         self.SaveFuture7 = myQCheckBox(self.page15)
@@ -3090,12 +3083,12 @@ class MyForm(QtGui.QDialog):
         self.BuyMultiple = myQCheckBox(self.page15)
         self.BuyMultiple.setGeometry(QtCore.QRect(80, 320, 211, 17))
         self.BuyMultiple.setObjectName(_fromUtf8("BuyMultiple"))
-        self.RequestAll = QtGui.QComboBox(self.page15)
+        self.RequestAll = QtWidgets.QComboBox(self.page15)
         self.RequestAll.setGeometry(QtCore.QRect(0, 360, 211, 31))
         self.RequestAll.setObjectName(_fromUtf8("RequestAll"))
         self.RequestAll.addItem(_fromUtf8(""))
         self.RequestAll.addItem(_fromUtf8(""))
-        self.MaxItemsBox = QtGui.QLineEdit(self.page15)
+        self.MaxItemsBox = QtWidgets.QLineEdit(self.page15)
         self.MaxItemsBox.setGeometry(QtCore.QRect(460, 360, 71, 31))
         self.MaxItemsBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3111,21 +3104,21 @@ class MyForm(QtGui.QDialog):
         self.MaxItems.setGeometry(QtCore.QRect(220, 360, 241, 31))
         #self.MaxItems.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MaxItems.setObjectName(_fromUtf8("MaxItems"))
-        self.MaxItems.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        self.MyDepositUSD7 = QtGui.QComboBox(self.page15)
+        self.MaxItems.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyDepositUSD7 = QtWidgets.QComboBox(self.page15)
         self.MyDepositUSD7.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD7.setObjectName(_fromUtf8("MyDepositUSD7"))
         self.MyDepositUSD7.addItem(_fromUtf8(""))
         self.MyDepositUSD7.addItem(_fromUtf8(""))
-        self.TheirDepositUSD7 = QtGui.QComboBox(self.page15)
+        self.TheirDepositUSD7 = QtWidgets.QComboBox(self.page15)
         self.TheirDepositUSD7.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD7.setObjectName(_fromUtf8("TheirDepositUSD7"))
         self.TheirDepositUSD7.addItem(_fromUtf8(""))
         self.TheirDepositUSD7.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page15)
-        self.page16 = QtGui.QWidget()
+        self.page16 = QtWidgets.QWidget()
         self.page16.setObjectName(_fromUtf8("page16"))
-        self.AddLinkImagesBox = QtGui.QLineEdit(self.page16)
+        self.AddLinkImagesBox = QtWidgets.QLineEdit(self.page16)
         self.AddLinkImagesBox.setGeometry(QtCore.QRect(190, 320, 201, 31))
         self.AddLinkImagesBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3141,17 +3134,17 @@ class MyForm(QtGui.QDialog):
         self.EstValueText.setGeometry(QtCore.QRect(0, 380, 391, 31))
         #self.EstValueText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.EstValueText.setObjectName(_fromUtf8("EstValueText"))
-        self.AddBrowserText = QtGui.QTextBrowser(self.page16)
+        self.AddBrowserText = QtWidgets.QTextBrowser(self.page16)
         self.AddBrowserText.setGeometry(QtCore.QRect(0, 240, 391, 71))
         self.AddBrowserText.setObjectName(_fromUtf8("AddBrowserText"))
-        self.EstValueUSD = QtGui.QComboBox(self.page16)
+        self.EstValueUSD = QtWidgets.QComboBox(self.page16)
         self.EstValueUSD.setGeometry(QtCore.QRect(220, 410, 51, 31))
         self.EstValueUSD.setObjectName(_fromUtf8("EstValueUSD"))
         self.EstValueUSD.addItem(_fromUtf8(""))
         self.EstValueUSD.addItem(_fromUtf8(""))
-        self.AddDescriptionBox = QtGui.QTextEdit(self.page16)
+        self.AddDescriptionBox = QtWidgets.QTextEdit(self.page16)
         self.AddDescriptionBox.setGeometry(QtCore.QRect(0, 150, 391, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddDescriptionBox.sizePolicy().hasHeightForWidth())
@@ -3166,7 +3159,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.AddDescriptionBox.setObjectName(_fromUtf8("AddDescriptionBox"))
-        self.EstValueBox = QtGui.QLineEdit(self.page16)
+        self.EstValueBox = QtWidgets.QLineEdit(self.page16)
         self.EstValueBox.setGeometry(QtCore.QRect(0, 410, 211, 31))
         self.EstValueBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3178,10 +3171,10 @@ class MyForm(QtGui.QDialog):
 ""))
         self.EstValueBox.setText(_fromUtf8(""))
         self.EstValueBox.setObjectName(_fromUtf8("EstValueBox"))
-        self.AddItemToList = QtGui.QPushButton(self.page16)
+        self.AddItemToList = QtWidgets.QPushButton(self.page16)
         self.AddItemToList.setGeometry(QtCore.QRect(0, 640, 71, 31))
         self.AddItemToList.setObjectName(_fromUtf8("AddItemToList"))
-        self.AddTitleBox = QtGui.QLineEdit(self.page16)
+        self.AddTitleBox = QtWidgets.QLineEdit(self.page16)
         self.AddTitleBox.setGeometry(QtCore.QRect(0, 80, 391, 31))
         self.AddTitleBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3201,7 +3194,7 @@ class MyForm(QtGui.QDialog):
         self.AddTitleText.setGeometry(QtCore.QRect(0, 50, 51, 31))
         #self.AddTitleText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.AddTitleText.setObjectName(_fromUtf8("AddTitleText"))
-        self.imgurlink = QtGui.QPushButton(self.page16)
+        self.imgurlink = QtWidgets.QPushButton(self.page16)
         self.imgurlink.setGeometry(QtCore.QRect(170, 350, 111, 21))
         self.imgurlink.setStyleSheet(_fromUtf8("color: rgb(0, 0, 255);"))
         self.imgurlink.setObjectName(_fromUtf8("imgurlink"))
@@ -3212,7 +3205,7 @@ class MyForm(QtGui.QDialog):
         self.AddLinkimages.setGeometry(QtCore.QRect(0, 320, 181, 31))
         #self.AddLinkimages.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.AddLinkimages.setObjectName(_fromUtf8("AddLinkimages"))
-        self.RemoveItemFromList = QtGui.QPushButton(self.page16)
+        self.RemoveItemFromList = QtWidgets.QPushButton(self.page16)
         self.RemoveItemFromList.setGeometry(QtCore.QRect(90, 640, 91, 31))
         self.RemoveItemFromList.setObjectName(_fromUtf8("RemoveItemFromList"))
         self.uploadimages = myQLabel(self.page16)
@@ -3222,12 +3215,12 @@ class MyForm(QtGui.QDialog):
         self.AdditemText.setGeometry(QtCore.QRect(0, 10, 221, 31))
         #self.AdditemText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.AdditemText.setObjectName(_fromUtf8("AdditemText"))
-        self.AddShippingSelect = QtGui.QComboBox(self.page16)
+        self.AddShippingSelect = QtWidgets.QComboBox(self.page16)
         self.AddShippingSelect.setGeometry(QtCore.QRect(410, 150, 271, 31))
         self.AddShippingSelect.setObjectName(_fromUtf8("AddShippingSelect"))
         self.AddShippingSelect.addItem(_fromUtf8(""))
         self.AddShippingSelect.addItem(_fromUtf8(""))
-        self.AddShipToBox = QtGui.QLineEdit(self.page16)
+        self.AddShipToBox = QtWidgets.QLineEdit(self.page16)
         self.AddShipToBox.setGeometry(QtCore.QRect(410, 230, 271, 31))
         self.AddShipToBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3253,12 +3246,12 @@ class MyForm(QtGui.QDialog):
         self.AddMaximumShipText.setGeometry(QtCore.QRect(410, 310, 271, 31))
         #self.AddMaximumShipText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.AddMaximumShipText.setObjectName(_fromUtf8("AddMaximumShipText"))
-        self.AddMaxSizeSelect = QtGui.QComboBox(self.page16)
+        self.AddMaxSizeSelect = QtWidgets.QComboBox(self.page16)
         self.AddMaxSizeSelect.setGeometry(QtCore.QRect(410, 340, 271, 31))
         self.AddMaxSizeSelect.setObjectName(_fromUtf8("AddMaxSizeSelect"))
         self.AddMaxSizeSelect.addItem(_fromUtf8(""))
         self.AddMaxSizeSelect.addItem(_fromUtf8(""))
-        self.EstValueSelect = QtGui.QComboBox(self.page16)
+        self.EstValueSelect = QtWidgets.QComboBox(self.page16)
         self.EstValueSelect.setGeometry(QtCore.QRect(280, 410, 111, 31))
         self.EstValueSelect.setObjectName(_fromUtf8("EstValueSelect"))
         self.EstValueSelect.addItem(_fromUtf8(""))
@@ -3268,14 +3261,14 @@ class MyForm(QtGui.QDialog):
         self.EstValueSelect.addItem(_fromUtf8(""))
         self.EstValueSelect.addItem(_fromUtf8(""))
         self.EstValueSelect.addItem(_fromUtf8(""))
-        self.AddMaxSizeUSD = QtGui.QComboBox(self.page16)
+        self.AddMaxSizeUSD = QtWidgets.QComboBox(self.page16)
         self.AddMaxSizeUSD.setGeometry(QtCore.QRect(570, 380, 111, 31))
         self.AddMaxSizeUSD.setObjectName(_fromUtf8("AddMaxSizeUSD"))
         self.AddMaxSizeUSD.addItem(_fromUtf8(""))
         self.AddMaxSizeUSD.addItem(_fromUtf8(""))
         self.AddMaxSizeUSD.addItem(_fromUtf8(""))
         self.AddMaxSizeUSD.addItem(_fromUtf8(""))
-        self.AddMaxSizeBox = QtGui.QLineEdit(self.page16)
+        self.AddMaxSizeBox = QtWidgets.QLineEdit(self.page16)
         self.AddMaxSizeBox.setGeometry(QtCore.QRect(410, 380, 151, 31))
         self.AddMaxSizeBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3294,7 +3287,7 @@ class MyForm(QtGui.QDialog):
         self.AddQuantityText.setGeometry(QtCore.QRect(0, 550, 81, 31))
         #self.AddQuantityText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.AddQuantityText.setObjectName(_fromUtf8("AddQuantityText"))
-        self.SetMinBox = QtGui.QLineEdit(self.page16)
+        self.SetMinBox = QtWidgets.QLineEdit(self.page16)
         self.SetMinBox.setGeometry(QtCore.QRect(150, 470, 121, 31))
         self.SetMinBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3306,18 +3299,18 @@ class MyForm(QtGui.QDialog):
 ""))
         self.SetMinBox.setText(_fromUtf8(""))
         self.SetMinBox.setObjectName(_fromUtf8("SetMinBox"))
-        self.QuantitySelect = QtGui.QComboBox(self.page16)
+        self.QuantitySelect = QtWidgets.QComboBox(self.page16)
         self.QuantitySelect.setGeometry(QtCore.QRect(280, 550, 111, 31))
         self.QuantitySelect.setObjectName(_fromUtf8("QuantitySelect"))
         self.QuantitySelect.addItem(_fromUtf8(""))
         self.QuantitySelect.addItem(_fromUtf8(""))
         self.QuantitySelect.addItem(_fromUtf8(""))
-        self.DepositServiceSelect = QtGui.QComboBox(self.page16)
+        self.DepositServiceSelect = QtWidgets.QComboBox(self.page16)
         self.DepositServiceSelect.setGeometry(QtCore.QRect(0, 590, 271, 31))
         self.DepositServiceSelect.setObjectName(_fromUtf8("DepositServiceSelect"))
         self.DepositServiceSelect.addItem(_fromUtf8(""))
         self.DepositServiceSelect.addItem(_fromUtf8(""))
-        self.DepositServiceBox = QtGui.QLineEdit(self.page16)
+        self.DepositServiceBox = QtWidgets.QLineEdit(self.page16)
         self.DepositServiceBox.setGeometry(QtCore.QRect(290, 590, 81, 31))
         self.DepositServiceBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3333,7 +3326,7 @@ class MyForm(QtGui.QDialog):
         self.perc10.setGeometry(QtCore.QRect(380, 590, 21, 31))
         #self.perc10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.perc10.setObjectName(_fromUtf8("perc10"))
-        self.AddQuantityBox = QtGui.QLineEdit(self.page16)
+        self.AddQuantityBox = QtWidgets.QLineEdit(self.page16)
         self.AddQuantityBox.setGeometry(QtCore.QRect(80, 550, 191, 31))
         self.AddQuantityBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3345,7 +3338,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.AddQuantityBox.setText(_fromUtf8(""))
         self.AddQuantityBox.setObjectName(_fromUtf8("AddQuantityBox"))
-        self.SetMaxBox = QtGui.QLineEdit(self.page16)
+        self.SetMaxBox = QtWidgets.QLineEdit(self.page16)
         self.SetMaxBox.setGeometry(QtCore.QRect(150, 510, 121, 31))
         self.SetMaxBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3357,45 +3350,45 @@ class MyForm(QtGui.QDialog):
 ""))
         self.SetMaxBox.setText(_fromUtf8(""))
         self.SetMaxBox.setObjectName(_fromUtf8("SetMaxBox"))
-        self.SetMinUSD = QtGui.QComboBox(self.page16)
+        self.SetMinUSD = QtWidgets.QComboBox(self.page16)
         self.SetMinUSD.setGeometry(QtCore.QRect(280, 470, 111, 31))
         self.SetMinUSD.setObjectName(_fromUtf8("SetMinUSD"))
         self.SetMinUSD.addItem(_fromUtf8(""))
         self.SetMinUSD.addItem(_fromUtf8(""))
         self.SetMinUSD.addItem(_fromUtf8(""))
-        self.SetMaxUSD = QtGui.QComboBox(self.page16)
+        self.SetMaxUSD = QtWidgets.QComboBox(self.page16)
         self.SetMaxUSD.setGeometry(QtCore.QRect(280, 510, 111, 31))
         self.SetMaxUSD.setObjectName(_fromUtf8("SetMaxUSD"))
         self.SetMaxUSD.addItem(_fromUtf8(""))
         self.SetMaxUSD.addItem(_fromUtf8(""))
         self.SetMaxUSD.addItem(_fromUtf8(""))
-        self.SetMinSelect = QtGui.QComboBox(self.page16)
+        self.SetMinSelect = QtWidgets.QComboBox(self.page16)
         self.SetMinSelect.setGeometry(QtCore.QRect(0, 470, 141, 31))
         self.SetMinSelect.setObjectName(_fromUtf8("SetMinSelect"))
         self.SetMinSelect.addItem(_fromUtf8(""))
         self.SetMinSelect.addItem(_fromUtf8(""))
-        self.SetMaxSelect = QtGui.QComboBox(self.page16)
+        self.SetMaxSelect = QtWidgets.QComboBox(self.page16)
         self.SetMaxSelect.setGeometry(QtCore.QRect(0, 510, 141, 31))
         self.SetMaxSelect.setObjectName(_fromUtf8("SetMaxSelect"))
         self.SetMaxSelect.addItem(_fromUtf8(""))
         self.SetMaxSelect.addItem(_fromUtf8(""))
         self.Pages.addWidget(self.page16)
-        self.page17 = QtGui.QWidget()
+        self.page17 = QtWidgets.QWidget()
         self.page17.setObjectName(_fromUtf8("page17"))
         self.TheirSupply = myQLabel(self.page17)
         self.TheirSupply.setGeometry(QtCore.QRect(0, 50, 331, 31))
         #self.TheirSupply.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirSupply.setObjectName(_fromUtf8("TheirSupply"))
-        self.TheirDemandBox = QtGui.QListWidget(self.page17)
+        self.TheirDemandBox = QtWidgets.QListWidget(self.page17)
         self.TheirDemandBox.setGeometry(QtCore.QRect(340, 80, 331, 131))
         self.TheirDemandBox.setObjectName(_fromUtf8("TheirDemandBox"))
         self.Notes8 = myQLabel(self.page17)
         self.Notes8.setGeometry(QtCore.QRect(400, 480, 281, 31))
         #self.Notes8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Notes8.setObjectName(_fromUtf8("Notes8"))
-        self.NotesBox8 = QtGui.QTextEdit(self.page17)
+        self.NotesBox8 = QtWidgets.QTextEdit(self.page17)
         self.NotesBox8.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox8.sizePolicy().hasHeightForWidth())
@@ -3410,11 +3403,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox8.setObjectName(_fromUtf8("NotesBox8"))
-        self.ExplainBarterOffer = QtGui.QPushButton(self.page17)
+        self.ExplainBarterOffer = QtWidgets.QPushButton(self.page17)
         self.ExplainBarterOffer.setGeometry(QtCore.QRect(290, 10, 40, 40))
         self.ExplainBarterOffer.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainBarterOffer.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainBarterOffer.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainBarterOffer.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainBarterOffer.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3423,46 +3416,46 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainBarterOffer.setIconSize(QtCore.QSize(20, 20))
         self.ExplainBarterOffer.setObjectName(_fromUtf8("ExplainBarterOffer"))
-        self.MakeOfferBarter = QtGui.QPushButton(self.page17)
+        self.MakeOfferBarter = QtWidgets.QPushButton(self.page17)
         self.MakeOfferBarter.setGeometry(QtCore.QRect(10, 630, 101, 41))
         self.MakeOfferBarter.setObjectName(_fromUtf8("MakeOfferBarter"))
         self.TheirDemand = myQLabel(self.page17)
         self.TheirDemand.setGeometry(QtCore.QRect(340, 50, 331, 31))
         #self.TheirDemand.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDemand.setObjectName(_fromUtf8("TheirDemand"))
-        self.line_43 = QtGui.QFrame(self.page17)
+        self.line_43 = QtWidgets.QFrame(self.page17)
         self.line_43.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_43.setFrameShape(QtGui.QFrame.HLine)
-        self.line_43.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_43.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_43.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_43.setObjectName(_fromUtf8("line_43"))
         self.BarterOfferText = myQLabel(self.page17)
         self.BarterOfferText.setGeometry(QtCore.QRect(0, 0, 271, 51))
         self.BarterOfferText.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.BarterOfferText.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.BarterOfferText.setObjectName(_fromUtf8("BarterOfferText"))
-        self.CancelBarter = QtGui.QPushButton(self.page17)
+        self.CancelBarter = QtWidgets.QPushButton(self.page17)
         self.CancelBarter.setGeometry(QtCore.QRect(150, 630, 101, 41))
         self.CancelBarter.setObjectName(_fromUtf8("CancelBarter"))
-        self.TheirSupplyBox = QtGui.QListWidget(self.page17)
+        self.TheirSupplyBox = QtWidgets.QListWidget(self.page17)
         self.TheirSupplyBox.setGeometry(QtCore.QRect(0, 80, 331, 131))
         self.TheirSupplyBox.setObjectName(_fromUtf8("TheirSupplyBox"))
         self.SupplyAdditional8 = myQCheckBox(self.page17)
         self.SupplyAdditional8.setGeometry(QtCore.QRect(460, 640, 211, 17))
         self.SupplyAdditional8.setObjectName(_fromUtf8("SupplyAdditional8"))
-        self.MySupplyBox = QtGui.QListWidget(self.page17)
+        self.MySupplyBox = QtWidgets.QListWidget(self.page17)
         self.MySupplyBox.setGeometry(QtCore.QRect(340, 280, 331, 131))
         self.MySupplyBox.setObjectName(_fromUtf8("MySupplyBox"))
-        self.MyDemandBox = QtGui.QListWidget(self.page17)
+        self.MyDemandBox = QtWidgets.QListWidget(self.page17)
         self.MyDemandBox.setGeometry(QtCore.QRect(0, 280, 331, 131))
         self.MyDemandBox.setObjectName(_fromUtf8("MyDemandBox"))
         self.MySupply = myQLabel(self.page17)
@@ -3473,7 +3466,7 @@ class MyForm(QtGui.QDialog):
         self.MyDemand.setGeometry(QtCore.QRect(0, 250, 331, 31))
         #self.MyDemand.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDemand.setObjectName(_fromUtf8("MyDemand"))
-        self.TheirDepositUSD8 = QtGui.QComboBox(self.page17)
+        self.TheirDepositUSD8 = QtWidgets.QComboBox(self.page17)
         self.TheirDepositUSD8.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD8.setObjectName(_fromUtf8("TheirDepositUSD8"))
         self.TheirDepositUSD8.addItem(_fromUtf8(""))
@@ -3482,7 +3475,7 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText8.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText8.setObjectName(_fromUtf8("TheirDepositText8"))
-        self.MyDepositBox8 = QtGui.QLineEdit(self.page17)
+        self.MyDepositBox8 = QtWidgets.QLineEdit(self.page17)
         self.MyDepositBox8.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3494,17 +3487,17 @@ class MyForm(QtGui.QDialog):
 ""))
         self.MyDepositBox8.setText(_fromUtf8(""))
         self.MyDepositBox8.setObjectName(_fromUtf8("MyDepositBox8"))
-        self.TimeLimitDays8 = QtGui.QComboBox(self.page17)
+        self.TimeLimitDays8 = QtWidgets.QComboBox(self.page17)
         self.TimeLimitDays8.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays8.setObjectName(_fromUtf8("TimeLimitDays8"))
         self.TimeLimitDays8.addItem(_fromUtf8(""))
         self.TimeLimitDays8.addItem(_fromUtf8(""))
-        self.MyDepositUSD8 = QtGui.QComboBox(self.page17)
+        self.MyDepositUSD8 = QtWidgets.QComboBox(self.page17)
         self.MyDepositUSD8.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD8.setObjectName(_fromUtf8("MyDepositUSD8"))
         self.MyDepositUSD8.addItem(_fromUtf8(""))
         self.MyDepositUSD8.addItem(_fromUtf8(""))
-        self.DepositSettings8 = QtGui.QComboBox(self.page17)
+        self.DepositSettings8 = QtWidgets.QComboBox(self.page17)
         self.DepositSettings8.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings8.setObjectName(_fromUtf8("DepositSettings8"))
         self.DepositSettings8.addItem(_fromUtf8(""))
@@ -3513,7 +3506,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText8.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText8.setObjectName(_fromUtf8("TimeLimitText8"))
-        self.TimeLimitBox8 = QtGui.QLineEdit(self.page17)
+        self.TimeLimitBox8 = QtWidgets.QLineEdit(self.page17)
         self.TimeLimitBox8.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3528,7 +3521,7 @@ class MyForm(QtGui.QDialog):
         self.MyDepositText8.setGeometry(QtCore.QRect(0, 490, 101, 31))
         #self.MyDepositText8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText8.setObjectName(_fromUtf8("MyDepositText8"))
-        self.TheirDepositBox8 = QtGui.QLineEdit(self.page17)
+        self.TheirDepositBox8 = QtWidgets.QLineEdit(self.page17)
         self.TheirDepositBox8.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox8.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3540,7 +3533,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox8.setText(_fromUtf8(""))
         self.TheirDepositBox8.setObjectName(_fromUtf8("TheirDepositBox8"))
-        self.MyOfferNotInList = QtGui.QPushButton(self.page17)
+        self.MyOfferNotInList = QtWidgets.QPushButton(self.page17)
         self.MyOfferNotInList.setGeometry(QtCore.QRect(340, 410, 181, 31))
         self.MyOfferNotInList.setObjectName(_fromUtf8("MyOfferNotInList"))
         self.ClickItem = myQLabel(self.page17)
@@ -3548,14 +3541,14 @@ class MyForm(QtGui.QDialog):
         #self.ClickItem.setStyleSheet(_fromUtf8("font: 13px;"))
         self.ClickItem.setObjectName(_fromUtf8("ClickItem"))
         self.Pages.addWidget(self.page17)
-        self.page = QtGui.QWidget()
+        self.page = QtWidgets.QWidget()
         self.page.setObjectName(_fromUtf8("page"))
-        self.TheirDepositUSD9 = QtGui.QComboBox(self.page)
+        self.TheirDepositUSD9 = QtWidgets.QComboBox(self.page)
         self.TheirDepositUSD9.setGeometry(QtCore.QRect(310, 530, 51, 31))
         self.TheirDepositUSD9.setObjectName(_fromUtf8("TheirDepositUSD9"))
         self.TheirDepositUSD9.addItem(_fromUtf8(""))
         self.TheirDepositUSD9.addItem(_fromUtf8(""))
-        self.MyDepositBox9 = QtGui.QLineEdit(self.page)
+        self.MyDepositBox9 = QtWidgets.QLineEdit(self.page)
         self.MyDepositBox9.setGeometry(QtCore.QRect(140, 490, 161, 31))
         self.MyDepositBox9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3580,7 +3573,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText9.setGeometry(QtCore.QRect(0, 570, 101, 31))
         #self.TimeLimitText9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText9.setObjectName(_fromUtf8("TimeLimitText9"))
-        self.TimeLimitBox9 = QtGui.QLineEdit(self.page)
+        self.TimeLimitBox9 = QtWidgets.QLineEdit(self.page)
         self.TimeLimitBox9.setGeometry(QtCore.QRect(140, 570, 161, 31))
         self.TimeLimitBox9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3598,14 +3591,14 @@ class MyForm(QtGui.QDialog):
         self.DescriptionPython.setGeometry(QtCore.QRect(0, 90, 101, 31))
         #self.DescriptionPython.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.DescriptionPython.setObjectName(_fromUtf8("DescriptionPython"))
-        self.TimeLimitDays9 = QtGui.QComboBox(self.page)
+        self.TimeLimitDays9 = QtWidgets.QComboBox(self.page)
         self.TimeLimitDays9.setGeometry(QtCore.QRect(310, 570, 51, 31))
         self.TimeLimitDays9.setObjectName(_fromUtf8("TimeLimitDays9"))
         self.TimeLimitDays9.addItem(_fromUtf8(""))
         self.TimeLimitDays9.addItem(_fromUtf8(""))
-        self.NotesBox9 = QtGui.QTextEdit(self.page)
+        self.NotesBox9 = QtWidgets.QTextEdit(self.page)
         self.NotesBox9.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox9.sizePolicy().hasHeightForWidth())
@@ -3620,21 +3613,21 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.NotesBox9.setObjectName(_fromUtf8("NotesBox9"))
-        self.MyDepositUSD9 = QtGui.QComboBox(self.page)
+        self.MyDepositUSD9 = QtWidgets.QComboBox(self.page)
         self.MyDepositUSD9.setGeometry(QtCore.QRect(310, 490, 51, 31))
         self.MyDepositUSD9.setObjectName(_fromUtf8("MyDepositUSD9"))
         self.MyDepositUSD9.addItem(_fromUtf8(""))
         self.MyDepositUSD9.addItem(_fromUtf8(""))
-        self.PythonUSD = QtGui.QComboBox(self.page)
+        self.PythonUSD = QtWidgets.QComboBox(self.page)
         self.PythonUSD.setGeometry(QtCore.QRect(310, 390, 51, 31))
         self.PythonUSD.setObjectName(_fromUtf8("PythonUSD"))
         self.PythonUSD.addItem(_fromUtf8(""))
         self.PythonUSD.addItem(_fromUtf8(""))
-        self.ExplainPython = QtGui.QPushButton(self.page)
+        self.ExplainPython = QtWidgets.QPushButton(self.page)
         self.ExplainPython.setGeometry(QtCore.QRect(330, 10, 40, 40))
         self.ExplainPython.setMinimumSize(QtCore.QSize(40, 40))
         self.ExplainPython.setMaximumSize(QtCore.QSize(40, 40))
-        self.ExplainPython.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ExplainPython.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ExplainPython.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3643,13 +3636,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.ExplainPython.setIconSize(QtCore.QSize(20, 20))
         self.ExplainPython.setObjectName(_fromUtf8("ExplainPython"))
@@ -3657,7 +3650,7 @@ class MyForm(QtGui.QDialog):
         self.TheirDepositText9.setGeometry(QtCore.QRect(0, 530, 131, 31))
         #self.TheirDepositText9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText9.setObjectName(_fromUtf8("TheirDepositText9"))
-        self.TheirDepositBox9 = QtGui.QLineEdit(self.page)
+        self.TheirDepositBox9 = QtWidgets.QLineEdit(self.page)
         self.TheirDepositBox9.setGeometry(QtCore.QRect(140, 530, 161, 31))
         self.TheirDepositBox9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3669,26 +3662,26 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox9.setText(_fromUtf8(""))
         self.TheirDepositBox9.setObjectName(_fromUtf8("TheirDepositBox9"))
-        self.SaveContinue9 = QtGui.QPushButton(self.page)
+        self.SaveContinue9 = QtWidgets.QPushButton(self.page)
         self.SaveContinue9.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.SaveContinue9.setObjectName(_fromUtf8("SaveContinue9"))
         self.MyDepositText9 = myQLabel(self.page)
         self.MyDepositText9.setGeometry(QtCore.QRect(0, 490, 101, 31))
         #self.MyDepositText9.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText9.setObjectName(_fromUtf8("MyDepositText9"))
-        self.ClearForm9 = QtGui.QPushButton(self.page)
+        self.ClearForm9 = QtWidgets.QPushButton(self.page)
         self.ClearForm9.setGeometry(QtCore.QRect(190, 630, 81, 41))
         self.ClearForm9.setObjectName(_fromUtf8("ClearForm9"))
-        self.DepositSettings9 = QtGui.QComboBox(self.page)
+        self.DepositSettings9 = QtWidgets.QComboBox(self.page)
         self.DepositSettings9.setGeometry(QtCore.QRect(0, 440, 211, 31))
         self.DepositSettings9.setObjectName(_fromUtf8("DepositSettings9"))
         self.DepositSettings9.addItem(_fromUtf8(""))
         self.DepositSettings9.addItem(_fromUtf8(""))
         self.DepositSettings9.addItem(_fromUtf8(""))
         self.DepositSettings9.addItem(_fromUtf8(""))
-        self.DescriptionPythonBox = QtGui.QTextEdit(self.page)
+        self.DescriptionPythonBox = QtWidgets.QTextEdit(self.page)
         self.DescriptionPythonBox.setGeometry(QtCore.QRect(0, 131, 341, 89))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionPythonBox.sizePolicy().hasHeightForWidth())
@@ -3706,26 +3699,26 @@ class MyForm(QtGui.QDialog):
         self.SupplyAdditional9 = myQCheckBox(self.page)
         self.SupplyAdditional9.setGeometry(QtCore.QRect(460, 640, 211, 17))
         self.SupplyAdditional9.setObjectName(_fromUtf8("SupplyAdditional9"))
-        self.line_22 = QtGui.QFrame(self.page)
+        self.line_22 = QtWidgets.QFrame(self.page)
         self.line_22.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_22.setFrameShape(QtGui.QFrame.HLine)
-        self.line_22.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_22.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_22.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_22.setObjectName(_fromUtf8("line_22"))
-        self.PythonSelect = QtGui.QComboBox(self.page)
+        self.PythonSelect = QtWidgets.QComboBox(self.page)
         self.PythonSelect.setGeometry(QtCore.QRect(0, 50, 211, 31))
         self.PythonSelect.setObjectName(_fromUtf8("PythonSelect"))
         self.PythonSelect.addItem(_fromUtf8(""))
         self.PythonSelect.addItem(_fromUtf8(""))
-        self.PythonWhoPays = QtGui.QComboBox(self.page)
+        self.PythonWhoPays = QtWidgets.QComboBox(self.page)
         self.PythonWhoPays.setGeometry(QtCore.QRect(400, 390, 201, 31))
         self.PythonWhoPays.setObjectName(_fromUtf8("PythonWhoPays"))
         self.PythonWhoPays.addItem(_fromUtf8(""))
         self.PythonWhoPays.addItem(_fromUtf8(""))
-        self.AttachImagePython = QtGui.QPushButton(self.page)
+        self.AttachImagePython = QtWidgets.QPushButton(self.page)
         self.AttachImagePython.setGeometry(QtCore.QRect(540, 90, 131, 31))
         self.AttachImagePython.setMinimumSize(QtCore.QSize(100, 20))
         self.AttachImagePython.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.AttachImagePython.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.AttachImagePython.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.AttachImagePython.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3734,19 +3727,19 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.AttachImagePython.setIcon(icon)
         self.AttachImagePython.setIconSize(QtCore.QSize(20, 20))
         self.AttachImagePython.setObjectName(_fromUtf8("AttachImagePython"))
-        self.PythonImageBox = QtGui.QLineEdit(self.page)
+        self.PythonImageBox = QtWidgets.QLineEdit(self.page)
         self.PythonImageBox.setGeometry(QtCore.QRect(360, 90, 161, 31))
         self.PythonImageBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3762,7 +3755,7 @@ class MyForm(QtGui.QDialog):
         self.PythonImage.setGeometry(QtCore.QRect(280, 90, 71, 31))
         #self.PythonImage.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.PythonImage.setObjectName(_fromUtf8("PythonImage"))
-        self.PythonAmountBox = QtGui.QLineEdit(self.page)
+        self.PythonAmountBox = QtWidgets.QLineEdit(self.page)
         self.PythonAmountBox.setGeometry(QtCore.QRect(140, 390, 161, 31))
         self.PythonAmountBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3778,11 +3771,11 @@ class MyForm(QtGui.QDialog):
         self.PythonAmount.setGeometry(QtCore.QRect(0, 390, 131, 31))
         #self.PythonAmount.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.PythonAmount.setObjectName(_fromUtf8("PythonAmount"))
-        self.LoadFormPython = QtGui.QPushButton(self.page)
+        self.LoadFormPython = QtWidgets.QPushButton(self.page)
         self.LoadFormPython.setGeometry(QtCore.QRect(540, 240, 131, 31))
         self.LoadFormPython.setMinimumSize(QtCore.QSize(100, 20))
         self.LoadFormPython.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.LoadFormPython.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.LoadFormPython.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.LoadFormPython.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3791,19 +3784,19 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.LoadFormPython.setIcon(icon)
         self.LoadFormPython.setIconSize(QtCore.QSize(20, 20))
         self.LoadFormPython.setObjectName(_fromUtf8("LoadFormPython"))
-        self.CodeOfferFormBox = QtGui.QLineEdit(self.page)
+        self.CodeOfferFormBox = QtWidgets.QLineEdit(self.page)
         self.CodeOfferFormBox.setGeometry(QtCore.QRect(280, 240, 241, 31))
         self.CodeOfferFormBox.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3819,11 +3812,11 @@ class MyForm(QtGui.QDialog):
         self.CodeFormText.setGeometry(QtCore.QRect(0, 240, 271, 31))
         #self.CodeFormText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.CodeFormText.setObjectName(_fromUtf8("CodeFormText"))
-        self.LoadMyPython = QtGui.QPushButton(self.page)
+        self.LoadMyPython = QtWidgets.QPushButton(self.page)
         self.LoadMyPython.setGeometry(QtCore.QRect(540, 290, 131, 31))
         self.LoadMyPython.setMinimumSize(QtCore.QSize(100, 20))
         self.LoadMyPython.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.LoadMyPython.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.LoadMyPython.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.LoadMyPython.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3832,19 +3825,19 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.LoadMyPython.setIcon(icon)
         self.LoadMyPython.setIconSize(QtCore.QSize(20, 20))
         self.LoadMyPython.setObjectName(_fromUtf8("LoadMyPython"))
-        self.CodeDuringEscrow = QtGui.QLineEdit(self.page)
+        self.CodeDuringEscrow = QtWidgets.QLineEdit(self.page)
         self.CodeDuringEscrow.setGeometry(QtCore.QRect(280, 290, 241, 31))
         self.CodeDuringEscrow.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3860,11 +3853,11 @@ class MyForm(QtGui.QDialog):
         self.CodeEscrowText.setGeometry(QtCore.QRect(0, 290, 271, 31))
         #self.CodeEscrowText.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.CodeEscrowText.setObjectName(_fromUtf8("CodeEscrowText"))
-        self.LoadTheirPython = QtGui.QPushButton(self.page)
+        self.LoadTheirPython = QtWidgets.QPushButton(self.page)
         self.LoadTheirPython.setGeometry(QtCore.QRect(540, 340, 131, 31))
         self.LoadTheirPython.setMinimumSize(QtCore.QSize(100, 20))
         self.LoadTheirPython.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.LoadTheirPython.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.LoadTheirPython.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.LoadTheirPython.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3873,19 +3866,19 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.LoadTheirPython.setIcon(icon)
         self.LoadTheirPython.setIconSize(QtCore.QSize(20, 20))
         self.LoadTheirPython.setObjectName(_fromUtf8("LoadTheirPython"))
-        self.CodeEscrowWindow = QtGui.QLineEdit(self.page)
+        self.CodeEscrowWindow = QtWidgets.QLineEdit(self.page)
         self.CodeEscrowWindow.setGeometry(QtCore.QRect(280, 340, 241, 31))
         self.CodeEscrowWindow.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -3901,18 +3894,18 @@ class MyForm(QtGui.QDialog):
         self.CodeEscrowText2.setGeometry(QtCore.QRect(0, 340, 271, 31))
         #self.CodeEscrowText2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.CodeEscrowText2.setObjectName(_fromUtf8("CodeEscrowText2"))
-        self.PythonWarning = QtGui.QTextBrowser(self.page)
+        self.PythonWarning = QtWidgets.QTextBrowser(self.page)
         self.PythonWarning.setGeometry(QtCore.QRect(360, 130, 311, 91))
         self.PythonWarning.setObjectName(_fromUtf8("PythonWarning"))
         self.Pages.addWidget(self.page)
-        self.page18 = QtGui.QWidget()
+        self.page18 = QtWidgets.QWidget()
         self.page18.setObjectName(_fromUtf8("page18"))
-        self.line_21 = QtGui.QFrame(self.page18)
+        self.line_21 = QtWidgets.QFrame(self.page18)
         self.line_21.setGeometry(QtCore.QRect(10, 610, 671, 16))
-        self.line_21.setFrameShape(QtGui.QFrame.HLine)
-        self.line_21.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_21.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line_21.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_21.setObjectName(_fromUtf8("line_21"))
-        self.ConfirmOrder = QtGui.QPushButton(self.page18)
+        self.ConfirmOrder = QtWidgets.QPushButton(self.page18)
         self.ConfirmOrder.setGeometry(QtCore.QRect(10, 630, 121, 41))
         self.ConfirmOrder.setObjectName(_fromUtf8("ConfirmOrder"))
         self.CoinsForCash_16 = myQLabel(self.page18)
@@ -3920,11 +3913,11 @@ class MyForm(QtGui.QDialog):
         self.CoinsForCash_16.setMaximumSize(QtCore.QSize(16777215, 75))
         #self.CoinsForCash_16.setStyleSheet(_fromUtf8("font: 29px \"Arial\";"))
         self.CoinsForCash_16.setObjectName(_fromUtf8("CoinsForCash_16"))
-        self.ContactSelectConfirm = QtGui.QComboBox(self.page18)
+        self.ContactSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.ContactSelectConfirm.setGeometry(QtCore.QRect(420, 140, 211, 40))
         self.ContactSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.ContactSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.ContactSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ContactSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.ContactSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3933,11 +3926,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.ContactSelectConfirm.setObjectName(_fromUtf8("ContactSelectConfirm"))
-        self.MailingSelectConfirm = QtGui.QComboBox(self.page18)
+        self.MailingSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.MailingSelectConfirm.setGeometry(QtCore.QRect(420, 210, 211, 40))
         self.MailingSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.MailingSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.MailingSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.MailingSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.MailingSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3946,11 +3939,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.MailingSelectConfirm.setObjectName(_fromUtf8("MailingSelectConfirm"))
-        self.BankSelectConfirm = QtGui.QComboBox(self.page18)
+        self.BankSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.BankSelectConfirm.setGeometry(QtCore.QRect(420, 280, 211, 40))
         self.BankSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.BankSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.BankSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.BankSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.BankSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3959,11 +3952,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.BankSelectConfirm.setObjectName(_fromUtf8("BankSelectConfirm"))
-        self.WUSelectConfirm = QtGui.QComboBox(self.page18)
+        self.WUSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.WUSelectConfirm.setGeometry(QtCore.QRect(420, 350, 211, 40))
         self.WUSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.WUSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.WUSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.WUSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.WUSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3972,11 +3965,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.WUSelectConfirm.setObjectName(_fromUtf8("WUSelectConfirm"))
-        self.MGSelectConfirm = QtGui.QComboBox(self.page18)
+        self.MGSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.MGSelectConfirm.setGeometry(QtCore.QRect(420, 420, 211, 40))
         self.MGSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.MGSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.MGSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.MGSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.MGSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3985,11 +3978,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.MGSelectConfirm.setObjectName(_fromUtf8("MGSelectConfirm"))
-        self.DebitSelectConfirm = QtGui.QComboBox(self.page18)
+        self.DebitSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.DebitSelectConfirm.setGeometry(QtCore.QRect(420, 490, 211, 40))
         self.DebitSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.DebitSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.DebitSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.DebitSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.DebitSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -3998,11 +3991,11 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.DebitSelectConfirm.setObjectName(_fromUtf8("DebitSelectConfirm"))
-        self.OtherSelectConfirm = QtGui.QComboBox(self.page18)
+        self.OtherSelectConfirm = QtWidgets.QComboBox(self.page18)
         self.OtherSelectConfirm.setGeometry(QtCore.QRect(420, 560, 211, 40))
         self.OtherSelectConfirm.setMinimumSize(QtCore.QSize(0, 40))
         self.OtherSelectConfirm.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.OtherSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.OtherSelectConfirm.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.OtherSelectConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -4039,28 +4032,28 @@ class MyForm(QtGui.QDialog):
         self.OtherConfirm.setGeometry(QtCore.QRect(420, 530, 201, 31))
         #self.OtherConfirm.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.OtherConfirm.setObjectName(_fromUtf8("OtherConfirm"))
-        self.ContactEdit = QtGui.QPushButton(self.page18)
+        self.ContactEdit = QtWidgets.QPushButton(self.page18)
         self.ContactEdit.setGeometry(QtCore.QRect(630, 140, 51, 41))
         self.ContactEdit.setObjectName(_fromUtf8("ContactEdit"))
-        self.AddressEdit = QtGui.QPushButton(self.page18)
+        self.AddressEdit = QtWidgets.QPushButton(self.page18)
         self.AddressEdit.setGeometry(QtCore.QRect(630, 210, 51, 41))
         self.AddressEdit.setObjectName(_fromUtf8("AddressEdit"))
-        self.BankEdit = QtGui.QPushButton(self.page18)
+        self.BankEdit = QtWidgets.QPushButton(self.page18)
         self.BankEdit.setGeometry(QtCore.QRect(630, 280, 51, 41))
         self.BankEdit.setObjectName(_fromUtf8("BankEdit"))
-        self.WUEdit = QtGui.QPushButton(self.page18)
+        self.WUEdit = QtWidgets.QPushButton(self.page18)
         self.WUEdit.setGeometry(QtCore.QRect(630, 350, 51, 41))
         self.WUEdit.setObjectName(_fromUtf8("WUEdit"))
-        self.DebitEdit = QtGui.QPushButton(self.page18)
+        self.DebitEdit = QtWidgets.QPushButton(self.page18)
         self.DebitEdit.setGeometry(QtCore.QRect(630, 490, 51, 41))
         self.DebitEdit.setObjectName(_fromUtf8("DebitEdit"))
-        self.MGEdit = QtGui.QPushButton(self.page18)
+        self.MGEdit = QtWidgets.QPushButton(self.page18)
         self.MGEdit.setGeometry(QtCore.QRect(630, 420, 51, 41))
         self.MGEdit.setObjectName(_fromUtf8("MGEdit"))
-        self.OtherEdit = QtGui.QPushButton(self.page18)
+        self.OtherEdit = QtWidgets.QPushButton(self.page18)
         self.OtherEdit.setGeometry(QtCore.QRect(630, 560, 51, 41))
         self.OtherEdit.setObjectName(_fromUtf8("OtherEdit"))
-        self.ConfirmTextEdit = QtGui.QTextEdit(self.page18)
+        self.ConfirmTextEdit = QtWidgets.QTextEdit(self.page18)
         self.ConfirmTextEdit.setGeometry(QtCore.QRect(0, 40, 421, 71))
         self.ConfirmTextEdit.setObjectName(_fromUtf8("ConfirmTextEdit"))
         self.ContractSummary = myQLabel(self.page18)
@@ -4111,12 +4104,12 @@ class MyForm(QtGui.QDialog):
         self.SendToText.setGeometry(QtCore.QRect(10, 310, 91, 31))
         #self.SendToText.setStyleSheet(_fromUtf8("font: 16px \"Arial\";"))
         self.SendToText.setObjectName(_fromUtf8("SendToText"))
-        self.SentToSelect = QtGui.QComboBox(self.page18)
+        self.SentToSelect = QtWidgets.QComboBox(self.page18)
         self.SentToSelect.setGeometry(QtCore.QRect(120, 310, 221, 31))
         self.SentToSelect.setObjectName(_fromUtf8("SentToSelect"))
         self.SentToSelect.addItem(_fromUtf8(""))
-        self.SentToSelect.setItemData(0,QtCore.QVariant(9999999))
-        self.SendToAddress = QtGui.QLineEdit(self.page18)
+        self.SentToSelect.setItemData(0,9999999)
+        self.SendToAddress = QtWidgets.QLineEdit(self.page18)
         self.SendToAddress.setGeometry(QtCore.QRect(120, 350, 221, 31))
         self.SendToAddress.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4129,15 +4122,15 @@ class MyForm(QtGui.QDialog):
         self.SendToAddress.setText(_fromUtf8(""))
         self.SendToAddress.setObjectName(_fromUtf8("SendToAddress"))
         self.Pages.addWidget(self.page18)
-        self.page19 = QtGui.QWidget()
+        self.page19 = QtWidgets.QWidget()
         self.page19.setObjectName(_fromUtf8("page19"))
         self.TheirDepositText10 = myQLabel(self.page19)
         self.TheirDepositText10.setGeometry(QtCore.QRect(0, 540, 131, 31))
         #self.TheirDepositText10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TheirDepositText10.setObjectName(_fromUtf8("TheirDepositText10"))
-        self.TextBox1 = QtGui.QTextEdit(self.page19)
+        self.TextBox1 = QtWidgets.QTextEdit(self.page19)
         self.TextBox1.setGeometry(QtCore.QRect(400, 499, 281, 111))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.TextBox1.sizePolicy().hasHeightForWidth())
@@ -4155,7 +4148,7 @@ class MyForm(QtGui.QDialog):
         self.SupplyAdditional10 = myQCheckBox(self.page19)
         self.SupplyAdditional10.setGeometry(QtCore.QRect(430, 620, 211, 17))
         self.SupplyAdditional10.setObjectName(_fromUtf8("SupplyAdditional10"))
-        self.TimeLimitBox10 = QtGui.QLineEdit(self.page19)
+        self.TimeLimitBox10 = QtWidgets.QLineEdit(self.page19)
         self.TimeLimitBox10.setGeometry(QtCore.QRect(140, 580, 161, 31))
         self.TimeLimitBox10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4176,7 +4169,7 @@ class MyForm(QtGui.QDialog):
         #self.SupplyText_2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.SupplyText_2.setText(_fromUtf8(""))
         self.SupplyText_2.setObjectName(_fromUtf8("SupplyText_2"))
-        self.TimeLimitDays10 = QtGui.QComboBox(self.page19)
+        self.TimeLimitDays10 = QtWidgets.QComboBox(self.page19)
         self.TimeLimitDays10.setGeometry(QtCore.QRect(310, 580, 51, 31))
         self.TimeLimitDays10.setObjectName(_fromUtf8("TimeLimitDays10"))
         self.TimeLimitDays10.addItem(_fromUtf8(""))
@@ -4185,25 +4178,25 @@ class MyForm(QtGui.QDialog):
         self.MyDepositText10.setGeometry(QtCore.QRect(0, 500, 101, 31))
         #self.MyDepositText10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.MyDepositText10.setObjectName(_fromUtf8("MyDepositText10"))
-        self.DepositSettings10 = QtGui.QComboBox(self.page19)
+        self.DepositSettings10 = QtWidgets.QComboBox(self.page19)
         self.DepositSettings10.setGeometry(QtCore.QRect(0, 460, 211, 31))
         self.DepositSettings10.setObjectName(_fromUtf8("DepositSettings10"))
         self.DepositSettings10.addItem(_fromUtf8(""))
         self.DepositSettings10.addItem(_fromUtf8(""))
-        self.Counter = QtGui.QPushButton(self.page19)
+        self.Counter = QtWidgets.QPushButton(self.page19)
         self.Counter.setGeometry(QtCore.QRect(140, 630, 121, 41))
         self.Counter.setObjectName(_fromUtf8("Counter"))
-        self.Accept = QtGui.QPushButton(self.page19)
+        self.Accept = QtWidgets.QPushButton(self.page19)
         self.Accept.setGeometry(QtCore.QRect(0, 630, 121, 41))
         self.Accept.setObjectName(_fromUtf8("Accept"))
-        self.Delete = QtGui.QPushButton(self.page19)
+        self.Delete = QtWidgets.QPushButton(self.page19)
         self.Delete.setGeometry(QtCore.QRect(280, 630, 121, 41))
         self.Delete.setObjectName(_fromUtf8("Delete"))
-        self.SelectContact = QtGui.QComboBox(self.page19)
+        self.SelectContact = QtWidgets.QComboBox(self.page19)
         self.SelectContact.setGeometry(QtCore.QRect(430, 640, 251, 31))
         self.SelectContact.setMinimumSize(QtCore.QSize(0, 31))
         self.SelectContact.setMaximumSize(QtCore.QSize(16777215, 31))
-        self.SelectContact.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.SelectContact.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.SelectContact.setStyleSheet(_fromUtf8("font: 16px \"Arial\";\n"
 "color: #24282C;\n"
 "background-color:rgba(251, 251, 251, 80%);\n"
@@ -4212,7 +4205,7 @@ class MyForm(QtGui.QDialog):
 "border-width: 2px;\n"
 "border-color: lightgrey;"))
         self.SelectContact.setObjectName(_fromUtf8("SelectContact"))
-        self.TheirDepositBox10 = QtGui.QLineEdit(self.page19)
+        self.TheirDepositBox10 = QtWidgets.QLineEdit(self.page19)
         self.TheirDepositBox10.setGeometry(QtCore.QRect(140, 540, 161, 31))
         self.TheirDepositBox10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4224,11 +4217,11 @@ class MyForm(QtGui.QDialog):
 ""))
         self.TheirDepositBox10.setText(_fromUtf8(""))
         self.TheirDepositBox10.setObjectName(_fromUtf8("TheirDepositBox10"))
-        self.MarketExplanation = QtGui.QPushButton(self.page19)
+        self.MarketExplanation = QtWidgets.QPushButton(self.page19)
         self.MarketExplanation.setGeometry(QtCore.QRect(290, 0, 40, 40))
         self.MarketExplanation.setMinimumSize(QtCore.QSize(40, 40))
         self.MarketExplanation.setMaximumSize(QtCore.QSize(40, 40))
-        self.MarketExplanation.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.MarketExplanation.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.MarketExplanation.setStyleSheet(_fromUtf8("QPushButton {\n"
 "    font: bold 18px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4237,13 +4230,13 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }"))
         self.MarketExplanation.setIconSize(QtCore.QSize(20, 20))
         self.MarketExplanation.setObjectName(_fromUtf8("MarketExplanation"))
@@ -4251,7 +4244,7 @@ class MyForm(QtGui.QDialog):
         self.Text2.setGeometry(QtCore.QRect(400, 460, 281, 31))
         #self.Text2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Text2.setObjectName(_fromUtf8("Text2"))
-        self.MyDepositUSD10 = QtGui.QComboBox(self.page19)
+        self.MyDepositUSD10 = QtWidgets.QComboBox(self.page19)
         self.MyDepositUSD10.setGeometry(QtCore.QRect(310, 500, 51, 31))
         self.MyDepositUSD10.setObjectName(_fromUtf8("MyDepositUSD10"))
         self.MyDepositUSD10.addItem(_fromUtf8(""))
@@ -4260,7 +4253,7 @@ class MyForm(QtGui.QDialog):
         self.TimeLimitText10.setGeometry(QtCore.QRect(0, 580, 101, 31))
         #self.TimeLimitText10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.TimeLimitText10.setObjectName(_fromUtf8("TimeLimitText10"))
-        self.MyDepositBox10 = QtGui.QLineEdit(self.page19)
+        self.MyDepositBox10 = QtWidgets.QLineEdit(self.page19)
         self.MyDepositBox10.setGeometry(QtCore.QRect(140, 500, 161, 31))
         self.MyDepositBox10.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4272,23 +4265,23 @@ class MyForm(QtGui.QDialog):
 ""))
         self.MyDepositBox10.setText(_fromUtf8(""))
         self.MyDepositBox10.setObjectName(_fromUtf8("MyDepositBox10"))
-        self.Button1 = QtGui.QPushButton(self.page19)
+        self.Button1 = QtWidgets.QPushButton(self.page19)
         self.Button1.setGeometry(QtCore.QRect(210, 270, 121, 21))
         self.Button1.setObjectName(_fromUtf8("Button1"))
-        self.TheirDepositUSD10 = QtGui.QComboBox(self.page19)
+        self.TheirDepositUSD10 = QtWidgets.QComboBox(self.page19)
         self.TheirDepositUSD10.setGeometry(QtCore.QRect(310, 540, 51, 31))
         self.TheirDepositUSD10.setObjectName(_fromUtf8("TheirDepositUSD10"))
         self.TheirDepositUSD10.addItem(_fromUtf8(""))
         self.TheirDepositUSD10.addItem(_fromUtf8(""))
-        self.Button2 = QtGui.QPushButton(self.page19)
+        self.Button2 = QtWidgets.QPushButton(self.page19)
         self.Button2.setGeometry(QtCore.QRect(550, 270, 121, 21))
         self.Button2.setObjectName(_fromUtf8("Button2"))
-        self.USD1 = QtGui.QComboBox(self.page19)
+        self.USD1 = QtWidgets.QComboBox(self.page19)
         self.USD1.setGeometry(QtCore.QRect(220, 330, 51, 31))
         self.USD1.setObjectName(_fromUtf8("USD1"))
         self.USD1.addItem(_fromUtf8(""))
         self.USD1.addItem(_fromUtf8(""))
-        self.Box1 = QtGui.QLineEdit(self.page19)
+        self.Box1 = QtWidgets.QLineEdit(self.page19)
         self.Box1.setGeometry(QtCore.QRect(0, 330, 211, 31))
         self.Box1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4300,27 +4293,27 @@ class MyForm(QtGui.QDialog):
 ""))
         self.Box1.setText(_fromUtf8(""))
         self.Box1.setObjectName(_fromUtf8("Box1"))
-        self.Drop1 = QtGui.QComboBox(self.page19)
+        self.Drop1 = QtWidgets.QComboBox(self.page19)
         self.Drop1.setGeometry(QtCore.QRect(0, 290, 271, 31))
         self.Drop1.setObjectName(_fromUtf8("Drop1"))
         self.Drop1.addItem(_fromUtf8(""))
-        self.Drop1.setItemData(0,QtCore.QVariant(0))
+        self.Drop1.setItemData(0,0)
         self.Drop1.addItem(_fromUtf8(""))
-        self.Drop1.setItemData(1,QtCore.QVariant(1))
-        self.Drop3 = QtGui.QComboBox(self.page19)
+        self.Drop1.setItemData(1,1)
+        self.Drop3 = QtWidgets.QComboBox(self.page19)
         self.Drop3.setGeometry(QtCore.QRect(0, 370, 161, 31))
         self.Drop3.setObjectName(_fromUtf8("Drop3"))
         self.Drop3.addItem(_fromUtf8(""))
-        self.Drop2 = QtGui.QComboBox(self.page19)
+        self.Drop2 = QtWidgets.QComboBox(self.page19)
         self.Drop2.setGeometry(QtCore.QRect(340, 290, 161, 31))
         self.Drop2.setObjectName(_fromUtf8("Drop2"))
         self.Drop2.addItem(_fromUtf8(""))
-        self.USD3 = QtGui.QComboBox(self.page19)
+        self.USD3 = QtWidgets.QComboBox(self.page19)
         self.USD3.setGeometry(QtCore.QRect(220, 410, 51, 31))
         self.USD3.setObjectName(_fromUtf8("USD3"))
         self.USD3.addItem(_fromUtf8(""))
         self.USD3.addItem(_fromUtf8(""))
-        self.Box3 = QtGui.QLineEdit(self.page19)
+        self.Box3 = QtWidgets.QLineEdit(self.page19)
         self.Box3.setGeometry(QtCore.QRect(0, 410, 211, 31))
         self.Box3.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4332,7 +4325,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.Box3.setText(_fromUtf8(""))
         self.Box3.setObjectName(_fromUtf8("Box3"))
-        self.Box2 = QtGui.QLineEdit(self.page19)
+        self.Box2 = QtWidgets.QLineEdit(self.page19)
         self.Box2.setGeometry(QtCore.QRect(340, 330, 221, 31))
         self.Box2.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4344,7 +4337,7 @@ class MyForm(QtGui.QDialog):
 ""))
         self.Box2.setText(_fromUtf8(""))
         self.Box2.setObjectName(_fromUtf8("Box2"))
-        self.USD2 = QtGui.QComboBox(self.page19)
+        self.USD2 = QtWidgets.QComboBox(self.page19)
         self.USD2.setGeometry(QtCore.QRect(570, 330, 51, 31))
         self.USD2.setObjectName(_fromUtf8("USD2"))
         self.USD2.addItem(_fromUtf8(""))
@@ -4353,7 +4346,7 @@ class MyForm(QtGui.QDialog):
         self.Text1.setGeometry(QtCore.QRect(340, 370, 161, 31))
         #self.Text1.setStyleSheet(_fromUtf8("font: 19px \"Arial\";"))
         self.Text1.setObjectName(_fromUtf8("Text1"))
-        self.Box4 = QtGui.QLineEdit(self.page19)
+        self.Box4 = QtWidgets.QLineEdit(self.page19)
         self.Box4.setGeometry(QtCore.QRect(340, 400, 221, 31))
         self.Box4.setStyleSheet(_fromUtf8("font: 19px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4368,18 +4361,18 @@ class MyForm(QtGui.QDialog):
         self.Link1 = myQLabel(self.page19)
         self.Link1.setGeometry(QtCore.QRect(340, 430, 131, 21))
         self.Link1.setObjectName(_fromUtf8("Link1"))
-        self.Link2 = QtGui.QPushButton(self.page19)
+        self.Link2 = QtWidgets.QPushButton(self.page19)
         self.Link2.setGeometry(QtCore.QRect(470, 430, 111, 21))
         self.Link2.setStyleSheet(_fromUtf8("color: rgb(0, 0, 255);"))
         self.Link2.setObjectName(_fromUtf8("Link2"))
         sendspacefont = QtGui.QFont()
         sendspacefont.setPixelSize(11)
         self.Link2.setFont(sendspacefont)
-        self.Attach = QtGui.QPushButton(self.page19)
+        self.Attach = QtWidgets.QPushButton(self.page19)
         self.Attach.setGeometry(QtCore.QRect(570, 400, 111, 31))
         self.Attach.setMinimumSize(QtCore.QSize(100, 20))
         self.Attach.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.Attach.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.Attach.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.Attach.setStyleSheet(_fromUtf8("QPushButton#instantexplain_4 {\n"
 "    font: bold 14px \"Arial\";\n"
 "color: #24282C;\n"
@@ -4388,38 +4381,38 @@ class MyForm(QtGui.QDialog):
 "     border-radius: 5px;\n"
 "     border-color: lightgrey;\n"
 "background-color: #fbfbfb;\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgb(251, 251, 251, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #f5f5f5, stop: 0.4 rgba(251, 251, 251, 250), stop:1 rgba(251, 251, 251, 250));\n"
 "     \n"
 "}\n"
 " QPushButton#instantexplain_4:pressed {\n"
 "     border-style: inset;\n"
 "background-color: rgba(184, 184, 184, 50);\n"
-"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgb(224, 224, 224, 250));\n"
+"background: qlineargradient(x1:1, y1:1, x2:1, y2:1, stop:0 #eeeeee, stop: 0.4 rgba(224, 224, 224, 250), stop:1 rgba(224, 224, 224, 250));\n"
 " }\n"
 ""))
         self.Attach.setIcon(icon)
         self.Attach.setIconSize(QtCore.QSize(20, 20))
         self.Attach.setObjectName(_fromUtf8("Attach"))
-        self.Drop4 = QtGui.QComboBox(self.page19)
+        self.Drop4 = QtWidgets.QComboBox(self.page19)
         self.Drop4.setGeometry(QtCore.QRect(170, 370, 101, 31))
         self.Drop4.setObjectName(_fromUtf8("Drop4"))
         self.Drop4.addItem(_fromUtf8(""))
         self.CheckBox1 = myQCheckBox(self.page19)
         self.CheckBox1.setGeometry(QtCore.QRect(230, 460, 151, 21))
         self.CheckBox1.setObjectName(_fromUtf8("CheckBox1"))
-        self.Display1 = QtWebKit.QWebView(self.page19)
-        self.Display1.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, False)
-        self.Display1.settings().setAttribute(QtWebKit.QWebSettings.JavaEnabled, False)
-        self.Display1.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, False)
-        self.Display1.settings().setAttribute(QtWebKit.QWebSettings.LocalContentCanAccessFileUrls, False)
+        self.Display1 = QtWebEngineWidgets.QWebEngineView(self.page19)
+        self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.JavascriptEnabled, False)
+
+        self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.PluginsEnabled, False)
+        self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False)
         self.Display1.setGeometry(QtCore.QRect(0, 40, 331, 231))
         self.Display1.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.Display1.setObjectName(_fromUtf8("Display1"))
-        self.Display2 = QtWebKit.QWebView(self.page19)
-        self.Display2.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, False)
-        self.Display2.settings().setAttribute(QtWebKit.QWebSettings.JavaEnabled, False)
-        self.Display2.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, False)
-        self.Display2.settings().setAttribute(QtWebKit.QWebSettings.LocalContentCanAccessFileUrls, False)
+        self.Display2 = QtWebEngineWidgets.QWebEngineView(self.page19)
+        self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.JavascriptEnabled, False)
+
+        self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.PluginsEnabled, False)
+        self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False)
         self.Display2.setGeometry(QtCore.QRect(340, 40, 331, 231))
         self.Display2.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.Display2.setObjectName(_fromUtf8("Display2"))
@@ -5076,9 +5069,9 @@ class MyForm(QtGui.QDialog):
         self.Attach.setText(_translate("Form", "Attach Image", None))
         self.Drop4.setItemText(0, _translate("Form", "Per Milestone", None))
         self.CheckBox1.setText(_translate("Form", "Require Reports", None))
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
 
     def closeEvent(self, event):
@@ -5088,9 +5081,9 @@ class MyForm(QtGui.QDialog):
             self.order={}
         except:
             pass
-from PyQt4 import QtWebKit
+from PyQt6 import QtWebEngineWidgets
 
-class MyApplication(QtGui.QApplication):
+class MyApplication(QtWidgets.QApplication):
     def __init__(self, args):
         super(MyApplication, self).__init__(args)
 
@@ -5107,9 +5100,9 @@ class MyApplication(QtGui.QApplication):
 if __name__ == "__main__":
     import sys
     app = MyApplication(sys.argv)
-    Form = QtGui.QWidget()
+    Form = QtWidgets.QWidget()
     ui = MyForm()
     ui.setupUi(Form)
     Form.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 

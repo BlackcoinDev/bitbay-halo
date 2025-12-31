@@ -316,7 +316,7 @@ class X509Name(object):
         Find attribute. An X509Name object has the following attributes:
         countryName (alias C), stateOrProvince (alias ST), locality (alias L),
         organization (alias O), organizationalUnit (alias OU), commonName (alias
-        CN) and more...
+        CN) and more.
         """
         nid = _lib.OBJ_txt2nid(_byte_string(name))
         if nid == _lib.NID_undef:
@@ -2307,7 +2307,7 @@ def _initialize_openssl_threads(get_ident, Lock):
 
 
 try:
-    from thread import get_ident
+    from _thread import get_ident
     from threading import Lock
 except ImportError:
     pass

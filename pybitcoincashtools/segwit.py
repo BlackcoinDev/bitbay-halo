@@ -2,10 +2,10 @@ import binascii
 import hashlib
 import re
 import struct
-from main import changebase, is_python2, privkey_to_pubkey, pubkey_to_address, ecdsa_raw_sign, encode, \
+from .main import changebase, is_python2, privkey_to_pubkey, pubkey_to_address, ecdsa_raw_sign, encode, \
     SIGHASH_ALL, SIGHASH_ANYONECANPAY, SIGHASH_SINGLE, SIGHASH_NONE
 
-from transaction import deserialize, txhash, serialize, sign, mk_pubkey_script, der_encode_sig, serialize_script, \
+from .transaction import deserialize, txhash, serialize, sign, mk_pubkey_script, der_encode_sig, serialize_script, \
     deserialize_script, decode, ecdsa_raw_verify, der_decode_sig, SIGHASH_FORKID
 
 
@@ -164,7 +164,7 @@ def segwit_sign(tx, i, priv, amount, hashcode=SIGHASH_ALL, script=None, separato
 
 
 def apply_multisignatures(*args):
-    # tx,i,script,sigs OR tx,i,script,sig1,sig2...,sig[n]
+    # tx,i,script,sigs OR tx,i,script,sig1,sig2.,sig[n]
     tx, i, script = args[0], int(args[1]), args[2]
     sigs = args[3] if isinstance(args[3], list) else list(args[3:])
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui, QtCore
+from PyQt6 import QtGui, QtCore
 import qrcode
 
 from pybitmessage.tr import translateText
@@ -40,18 +40,18 @@ class Image(qrcode.image.base.BaseImage):
 class Ui_qrcodeDialog(object):
     def setupUi(self, qrcodeDialog):
         qrcodeDialog.setObjectName(_fromUtf8("qrcodeDialog"))
-        self.image = QtGui.QLabel(qrcodeDialog)
-        self.label = QtGui.QLabel(qrcodeDialog)
+        self.image = QtWidgets.QLabel(qrcodeDialog)
+        self.label = QtWidgets.QLabel(qrcodeDialog)
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
         self.label.setAlignment(
-            QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+            QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.buttonBox = QtGui.QDialogButtonBox(qrcodeDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-        layout = QtGui.QVBoxLayout(qrcodeDialog)
+        layout = QtWidgets.QVBoxLayout(qrcodeDialog)
         layout.addWidget(self.image)
         layout.addWidget(self.label)
         layout.addWidget(self.buttonBox)
@@ -64,9 +64,9 @@ class Ui_qrcodeDialog(object):
         QtCore.QMetaObject.connectSlotsByName(qrcodeDialog)
 
     def retranslateUi(self, qrcodeDialog):
-        qrcodeDialog.setWindowTitle(QtGui.QApplication.translate(
+        qrcodeDialog.setWindowTitle(QtWidgets.QApplication.translate(
             "qrcodeDialog", "QR-code",
-            None, QtGui.QApplication.UnicodeUTF8
+            None, QtWidgets.QApplication.UnicodeUTF8
         ))
 
     def render(self, text):
@@ -75,14 +75,14 @@ class Ui_qrcodeDialog(object):
             qrcode.make(text, image_factory=Image).pixmap())
 
 
-class qrcodeDialog(QtGui.QDialog):
+class qrcodeDialog(QtWidgets.QDialog):
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_qrcodeDialog()
         self.ui.setupUi(self)
         self.parent = parent
-        QtGui.QWidget.resize(self, QtGui.QWidget.sizeHint(self))
+        QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
 
 def connect_plugin(form):
@@ -91,7 +91,7 @@ def connect_plugin(form):
         form.qrcodeDialogInstance.ui.render(
             str(form.getCurrentAccount())
         )
-        form.qrcodeDialogInstance.exec_()
+        form.qrcodeDialogInstance.exec()
 
     form.actionShowQRCode = \
         form.ui.addressContextMenuToolbarYourIdentities.addAction(

@@ -162,7 +162,7 @@ class TLSDispatcher(AdvancedDispatcher):
             else:
                 self.tlsVersion = "TLSv1"
                 logger.debug("%s:%i: TLS handshake success", self.destination.host, self.destination.port)
-            # The handshake has completed, so remove this channel and...
+            # The handshake has completed, so remove this channel and.
             self.del_channel()
             self.set_socket(self.sslSocket)
             self.tlsDone = True

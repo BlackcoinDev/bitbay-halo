@@ -1,9 +1,9 @@
 import threading
-import shared
+from . import shared
 import socket
-from class_sendDataThread import *
-from class_receiveDataThread import *
-import helper_bootstrap
+from .class_sendDataThread import *
+from .class_receiveDataThread import *
+from . import helper_bootstrap
 import errno
 import re
 
@@ -55,14 +55,14 @@ class singleListener(threading.Thread):
             time.sleep(5)
 
         with shared.printLock:
-            print 'Listening for incoming connections.'
+            print('Listening for incoming connections.')
 
         # First try listening on an IPv6 socket. This should also be
         # able to accept connections on IPv4. If that's not available
         # we'll fall back to IPv4-only.
         try:
             sock = self._createListenSocket(socket.AF_INET6)
-        except socket.error, e:
+        except socket.error as e:
             if (isinstance(e.args, tuple) and
                 e.args[0] in (errno.EAFNOSUPPORT,
                               errno.EPFNOSUPPORT,
@@ -83,7 +83,7 @@ class singleListener(threading.Thread):
                 time.sleep(10)
             while len(shared.connectedHostsList) > 220:
                 with shared.printLock:
-                    print 'We are connected to too many people. Not accepting further incoming connections for ten seconds.'
+                    print('We are connected to too many people. Not accepting further incoming connections for ten seconds.')
 
                 time.sleep(10)
 
@@ -105,7 +105,7 @@ class singleListener(threading.Thread):
                 if HOST in shared.connectedHostsList:
                     socketObject.close()
                     with shared.printLock:
-                        print 'We are already connected to', HOST + '. Ignoring connection.'
+                        print(('We are already connected to', HOST + '. Ignoring connection.'))
                 else:
                     break
 
@@ -125,5 +125,5 @@ class singleListener(threading.Thread):
             rd.start()
 
             with shared.printLock:
-                print self, 'connected to', HOST, 'during INCOMING request.'
+                print((self, 'connected to', HOST, 'during INCOMING request.'))
 
