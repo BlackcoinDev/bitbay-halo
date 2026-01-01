@@ -187,16 +187,29 @@ encrypt(msg, hexPubkey) → works ✅
 decrypt(msg, hexPrivkey) → works ✅
 sign(msg, hexPrivkey) → works ✅
 verify(msg, sig, hexPubkey) → works ✅
-hash160(data) → MISSING ❌
-hash256(data) → MISSING ❌
+hash160(data) → works ✅ (added to highlevelcrypto.py:12-16)
+hash256(data) → works ✅ (added to highlevelcrypto.py:18-20)
+```
+
+**What highlevelcrypto.py now provides:**
+```
+hash160(data) → hex string ✅ (NEW - lines 12-16)
+hash256(data) → hex string ✅ (NEW - lines 18-20)
 ```
 
 **What pyblackcointools.main provides:**
 ```
-hash160(data) → bytes (not hex string) ⚠️
-hash256(data) → bytes (not hex string) ⚠️
+hash160(data) → hex string ✅ (returns str, not bytes)
+hash256(data) → hex string ✅ (returns str, not bytes)
 pubkey_to_address(pubkey) → works ✅
 privkey_to_address(privkey) → works ✅
+BLACKCOIN_ADDRESS_MAGICBYTE = 25 ✅ (NEW - line 17)
+```
+
+**BlackCoin address format fix:**
+```python
+# BEFORE: magicbyte=0 (Bitcoin, addresses start with '1')
+# AFTER: magicbyte=25 (BlackCoin, addresses start with 'B' or 'b')
 ```
 
 ### **Function Call Chain Analysis**
@@ -244,6 +257,77 @@ class_bitmessage.getAPI()  # ✅ Wrapper function only
    - Circular dependencies
    - Missing import statements
    - Namespace conflicts
+
+### **Transaction Signing Architecture (Correctly Implemented)**
+
+**Good news:** The transaction signing architecture is correctly implemented and secure.
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| Private key storage | `.private` files | Never sent to daemon |
+| `multisign()` | `pyblackcointools/transaction.py` | ECDSA signing locally |
+| `apply_multisignatures()` | `pyblackcointools/transaction.py` | Combine signatures |
+| `sendrawtransaction()` | RPC | Broadcast only, no signing |
+
+**Security flow:**
+1. Private keys read locally from `.private` files
+2. Signatures created with `multisign()` in Python
+3. Combined with `apply_multisignatures()` for 2-of-2
+4. Only final signed transaction sent via RPC
+
+**This is intentional and correct** - the daemon never has access to private keys.
+
+### **Shutdown Procedure (FIXED)**
+
+**Previous Problems:**
+- Threads didn't exit when `stop()` was called
+- Daemon (blackmored) kept running after exit
+- BitMessage shutdown RPC often failed
+- BrokenPipeError when daemon already shut down
+
+**Solution Implemented:**
+
+```python
+# BlackCoinThread now checks amrunning before exit (line ~15517)
+if not self.amrunning:
+    print("BlackCoinThread: Exiting cleanly (stop called)")
+    self.stop_daemon()
+    return
+
+# stop_daemon() method (lines ~11946-11973)
+def stop_daemon(self):
+    """Stop the blackmored daemon gracefully."""
+    global BlackHalo
+    try:
+        if BlackHalo is not None and BlackHalo.poll() is None:
+            # Try graceful shutdown via RPC first
+            BLK.stop()
+            # Wait 5 seconds for graceful shutdown
+            for i in range(5):
+                if BlackHalo.poll() is not None:
+                    return
+                time.sleep(1)
+            # Force kill if still running
+            BlackHalo.terminate()
+            if BlackHalo.poll() is None:
+                BlackHalo.kill()
+    except Exception as e:
+        print(f"Error stopping blackmored: {e}")
+
+# ExitHalo integration (line ~60638)
+blackcoindThread.stop()
+blackcoindThread.stop_daemon()  # <-- NEW: Stop the daemon
+```
+
+**Exit Flow (Now Working):**
+1. Set Exiting = 1
+2. Save all data
+3. Stop all threads
+4. blackcoindThread.stop() → sets amrunning = False
+5. blackcoindThread.stop_daemon() → stops blackmored ✅
+6. Exit threads
+7. Exit Bitmessage
+8. Clean exit
 
 ### **Development Process Issues**
 

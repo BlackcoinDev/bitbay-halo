@@ -15,6 +15,82 @@
 - **Cross-compilation setup** - Multi-platform distribution
 - **Dependency resolution** - Missing packages via UV
 
+---
+
+## CODE QUALITY STANDARD
+
+**CRITICAL: 100% Quality Code Requirement**
+
+This project maintains the highest code quality standards. The following rules apply without exception:
+
+### 1.1 No Ignore Directives Allowed
+
+```python
+# ❌ FORBIDDEN - Never use these:
+# type: ignore
+# noqa: ...
+# pylint: disable=...
+# pyright: ignoreNextLine
+```
+
+### 1.2 Rule: Fix the Root Cause
+
+When a linter, type checker, or compiler reports an issue:
+
+1. **First choice:** Fix the actual problem in the code
+2. **Second choice:** Refactor to avoid the issue
+3. **Third choice:** Document why the code is correct as-is
+
+### 1.3 Exception Process
+
+If there is **NO OTHER WAY** to resolve an issue:
+
+1. **Present the exception** clearly with:
+   - The exact error/warning
+   - Why the current code is correct
+   - Why there is no alternative solution
+
+2. **User must approve** the exception
+
+3. **Document the exception** in `agent/PHASES.md` with:
+   ```
+   ## EXCEPTION: [Brief Title]
+   
+   **Issue:** [Exact error/warning]
+   
+   **Why code is correct:** [Explanation]
+   
+   **No alternative because:** [Reason]
+   
+   **Approved by:** [User/Date]
+   
+   **Last review:** [Date]
+   ```
+
+### 1.4 Quality Gates
+
+| Tool | Purpose | Pass Criteria |
+|------|---------|---------------|
+| pytest | Runtime tests | 32/32 passing |
+| pyright | Type checking | Zero errors |
+| flake8 | Style | No violations |
+| black | Formatting | No changes needed |
+
+### 1.5 Why This Matters
+
+- **Technical debt** accumulates when ignores are used
+- **Future developers** can't trust the code
+- **Refactoring** becomes impossible
+- **Security** can be compromised
+
+### 1.6 Current Status
+
+**Tests:** ✅ 32/32 passing  
+**Pyright:** ⚠️ ~7000 warnings (mostly false positives from legacy code)  
+**Action:** Legacy warnings are acceptable during Phase 1. New code must be clean.
+
+---
+
 ## Build and Test Commands (UV-Based)
 
 ### Primary Build Scripts

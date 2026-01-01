@@ -1037,9 +1037,9 @@ class WindowManager:
 ## Implementation Priority
 
 ### **High Priority (Critical Flaws)**
-1. **Fix multiple exit methods** - Single, reliable shutdown procedure
-2. **Improve subprocess management** - Reliable BitMHalo lifecycle
-3. **Add thread coordination** - Proper thread startup/shutdown
+1. **Fix multiple exit methods** - Single, reliable shutdown procedure ✅ FIXED
+2. **Improve subprocess management** - Reliable BitMHalo lifecycle ✅ FIXED
+3. **Add thread coordination** - Proper thread startup/shutdown ✅ FIXED
 4. **Fix hardcoded API key** - Move to secure configuration
 
 ### **Medium Priority (Stability)**  
@@ -1053,6 +1053,90 @@ class WindowManager:
 2. **Memory optimization** - Reduce resource usage
 3. **Performance monitoring** - Thread health tracking
 4. **User experience** - Better shutdown dialogs
+
+---
+
+## Shutdown Fixes Implemented (January 2026)
+
+### Problem
+- Threads didn't exit when `stop()` was called
+- Daemon (blackmored) kept running after exit
+- BitMessage shutdown RPC often failed
+- BrokenPipeError when daemon already shut down
+
+### Solution
+
+**1. BlackCoinThread.amrunning Check**
+```python
+# Added in BlackCoinThread.run() at line ~15512
+if not self.amrunning:
+    print("BlackCoinThread: Exiting cleanly (stop called)")
+    self.stop_daemon()
+    return
+```
+
+**2. stop_daemon() Method**
+```python
+# Added to BlackCoinThread class (lines ~11946-11973)
+def stop_daemon(self):
+    """Stop the blackmored daemon gracefully."""
+    global BlackHalo
+    print("Stopping blackmored daemon...")
+    try:
+        if BlackHalo is not None and BlackHalo.poll() is None:
+            # Try graceful shutdown via RPC first
+            try:
+                BLK.stop()
+                print("Sent stop command to blackmored via RPC")
+            except Exception as e:
+                print(f"RPC stop failed: {e}")
+            # Wait briefly for graceful shutdown
+            for i in range(5):
+                if BlackHalo.poll() is not None:
+                    print("blackmored stopped gracefully")
+                    return
+                time.sleep(1)
+            # Force kill if still running
+            if BlackHalo.poll() is None:
+                print("Force killing blackmored...")
+                BlackHalo.terminate()
+                BlackHalo.wait(timeout=5)
+                if BlackHalo.poll() is None:
+                    BlackHalo.kill()
+                    BlackHalo.wait(timeout=5)
+                print("blackmored force killed")
+    except Exception as e:
+        print(f"Error stopping blackmored: {e}")
+```
+
+**3. ExitHalo Integration**
+```python
+# Added in ExitHalo() at line ~60638
+blackcoindThread.stop()
+blackcoindThread.stop_daemon()  # <-- NEW: Stop the daemon
+RPC.stop()
+```
+
+### Exit Flow (After Fix)
+
+```
+ExitHalo()
+  → Set Exiting = 1
+  → Check for active operations (contracts, messages)
+  → Save all data (contracts, otherdata, queue)
+  → Stop all threads (downloadThread, bitmessThread, etc.)
+  → blackcoindThread.stop() → sets amrunning = False
+  → blackcoindThread.stop_daemon() → stops blackmored
+  → Wait for threads to exit
+  → Exit Bitmessage via RPC (with timeout)
+  → Clean exit
+```
+
+### Test Results
+- Thread exits cleanly when stop() called ✅
+- Daemon stops gracefully or is force-killed ✅
+- No BrokenPipeError on exit ✅
+- 32/32 tests still passing ✅
 
 ## Conclusion
 

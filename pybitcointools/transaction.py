@@ -48,7 +48,9 @@ def json_changebase(obj, changer):
 def deserialize(tx):
     if is_hexilified(tx):
         # tx = bytes(bytearray.fromhex(tx))
-        return json_changebase(deserialize(binascii.unhexlify(tx)), lambda x: safe_hexlify(x))
+        return json_changebase(
+            deserialize(binascii.unhexlify(tx)), lambda x: safe_hexlify(x)
+        )
     # http://stackoverflow.com/questions/4851463/python-closure-write-to-variable-in-parent-scope
     # Python's scoping rules are demented, requiring me to make pos an object
     # so that it is call-by-reference
@@ -101,7 +103,9 @@ def deserialize(tx):
         for i in range(ins):
             howmany = read_var_int()
             if howmany:
-                obj["ins"][i]["txinwitness"] = [read_var_string() for x in range(0, howmany)]
+                obj["ins"][i]["txinwitness"] = [
+                    read_var_string() for x in range(0, howmany)
+                ]
 
     obj["locktime"] = read_as_int(4)
     return obj
@@ -252,7 +256,9 @@ def txhash(tx, hashcode=None):
     if isinstance(tx, str) and re.match("^[0-9a-fA-F]*$", tx):
         tx = changebase(tx, 16, 256)
     if hashcode is not None:
-        return dbl_sha256(from_string_to_bytes(tx) + encode(int(hashcode), 256, 4)[::-1])
+        return dbl_sha256(
+            from_string_to_bytes(tx) + encode(int(hashcode), 256, 4)[::-1]
+        )
     else:
         return safe_hexlify(bin_dbl_sha256(tx)[::-1])
 
@@ -306,7 +312,11 @@ def address_to_script(addr):
 def script_to_address(script, vbyte=0):
     if re.match("^[0-9a-fA-F]*$", script):
         script = binascii.unhexlify(script)
-    if script[:3] == b"\x76\xa9\x14" and script[-2:] == b"\x88\xac" and len(script) == 25:
+    if (
+        script[:3] == b"\x76\xa9\x14"
+        and script[-2:] == b"\x88\xac"
+        and len(script) == 25
+    ):
         return bin_to_b58check(script[3:-2], vbyte)  # pubkey hash addresses
     else:
         if vbyte in [111, 196]:
@@ -322,8 +332,12 @@ def script_to_address(script, vbyte=0):
 
 
 def p2sh_scriptaddr(script, magicbyte=5):
-    if re.match("^[0-9a-fA-F]*$", script):
+    if isinstance(script, str) and re.match("^[0-9a-fA-F]*$", script):
         script = binascii.unhexlify(script)
+    elif isinstance(script, bytes):
+        pass  # Already bytes, use as-is
+    else:
+        script = binascii.unhexlify(script.decode("utf-8"))
     return hex_to_b58check(hash160(script), magicbyte)
 
 
@@ -332,7 +346,9 @@ scriptaddr = p2sh_scriptaddr
 
 def deserialize_script(script):
     if isinstance(script, str) and re.match("^[0-9a-fA-F]*$", script):
-        return json_changebase(deserialize_script(binascii.unhexlify(script)), lambda x: safe_hexlify(x))
+        return json_changebase(
+            deserialize_script(binascii.unhexlify(script)), lambda x: safe_hexlify(x)
+        )
     out, pos = [], 0
     while pos < len(script):
         code = from_byte_to_int(script[pos])
@@ -379,14 +395,22 @@ if is_python2:
 
     def serialize_script(script):
         if json_is_base(script, 16):
-            return binascii.hexlify(serialize_script(json_changebase(script, lambda x: binascii.unhexlify(x))))
+            return binascii.hexlify(
+                serialize_script(
+                    json_changebase(script, lambda x: binascii.unhexlify(x))
+                )
+            )
         return "".join(map(serialize_script_unit, script))
 
 else:
 
     def serialize_script(script):
         if json_is_base(script, 16):
-            return safe_hexlify(serialize_script(json_changebase(script, lambda x: binascii.unhexlify(x))))
+            return safe_hexlify(
+                serialize_script(
+                    json_changebase(script, lambda x: binascii.unhexlify(x))
+                )
+            )
 
         result = bytes()
         for b in map(serialize_script_unit, script):
@@ -432,7 +456,9 @@ def mk_OPCS_multisig_script(form):
         elif len(s["keys"]) > 1:
             subscript.insert(from_int_to_byte(s["reqs"]), 0)
             subscript.insert(from_int_to_byte(len(s["keys"])), len(s["keys"]) + 1)
-            subscript.append(OP_CHECKMULTISIG if i == len(s) - 1 else OP_CHECKMULTISIGVERIFY)
+            subscript.append(
+                OP_CHECKMULTISIG if i == len(s) - 1 else OP_CHECKMULTISIGVERIFY
+            )
         else:
             raise ValueError("no keys condition")
         if i != len(s) - 1:
@@ -471,7 +497,9 @@ def verify_tx_input(tx, i, script, sig, pub):
 def sign(tx, i, priv, hashcode=SIGHASH_ALL):
     i = int(i)
     txobj = tx if isinstance(tx, dict) else deserialize(tx)
-    if not isinstance(tx, dict) and ((not is_python2 and isinstance(re, bytes)) or not re.match("^[0-9a-fA-F]*$", tx)):
+    if not isinstance(tx, dict) and (
+        (not is_python2 and isinstance(re, bytes)) or not re.match("^[0-9a-fA-F]*$", tx)
+    ):
         return binascii.unhexlify(sign(safe_hexlify(tx), i, priv))
     if len(priv) <= 33:
         priv = safe_hexlify(priv)
@@ -486,7 +514,9 @@ def sign(tx, i, priv, hashcode=SIGHASH_ALL):
 def p2pk_sign(tx, i, priv, hashcode=SIGHASH_ALL):
     i = int(i)
     txobj = tx if isinstance(tx, dict) else deserialize(tx)
-    if not isinstance(tx, dict) and ((not is_python2 and isinstance(re, bytes)) or not re.match("^[0-9a-fA-F]*$", tx)):
+    if not isinstance(tx, dict) and (
+        (not is_python2 and isinstance(re, bytes)) or not re.match("^[0-9a-fA-F]*$", tx)
+    ):
         return binascii.unhexlify(sign(safe_hexlify(tx), i, priv))
     if len(priv) <= 33:
         priv = safe_hexlify(priv)
@@ -528,7 +558,9 @@ def apply_multisignatures(*args):
         script = binascii.unhexlify(script)
     sigs = [binascii.unhexlify(x) if x[:2] == "30" else x for x in sigs]
     if isinstance(tx, str) and re.match("^[0-9a-fA-F]*$", tx):
-        return safe_hexlify(apply_multisignatures(binascii.unhexlify(tx), i, script, sigs))
+        return safe_hexlify(
+            apply_multisignatures(binascii.unhexlify(tx), i, script, sigs)
+        )
 
     # Not pushing empty elements on the top of the stack if passing no
     # script (in case of bare multisig inputs there is no script)
@@ -556,7 +588,6 @@ def mktx(*args, **kwargs):
 
     txobj = {"locktime": kwargs.get("locktime", 0), "version": 1, "ins": [], "outs": []}
     for i in ins:
-
         "begin segwit"
         seg_input = isinstance(i, dict) and i.get("segregated")
         sequence = isinstance(i, dict) and i.get("sequence", None)
@@ -571,7 +602,9 @@ def mktx(*args, **kwargs):
                 {
                     "outpoint": {"hash": i[:64], "index": int(i[65:])},
                     "script": "",
-                    "sequence": 4294967295 if not sequence and sequence != 0 else sequence,
+                    "sequence": 4294967295
+                    if not sequence and sequence != 0
+                    else sequence,
                 }
             )
         if seg_input:
@@ -654,13 +687,28 @@ def mk_opreturn(msg, rawtx=None, json=0):
         if len(data) < 0x4C:
             return from_int_to_byte(len(data)) + data
         elif len(data) < 0xFF:
-            return from_int_to_byte(76) + struct.pack("<B", len(data)) + from_string_to_bytes(data)
+            return (
+                from_int_to_byte(76)
+                + struct.pack("<B", len(data))
+                + from_string_to_bytes(data)
+            )
         elif len(data) < 0xFFFF:
-            return from_int_to_byte(77) + struct.pack("<H", len(data)) + from_string_to_bytes(data)
+            return (
+                from_int_to_byte(77)
+                + struct.pack("<H", len(data))
+                + from_string_to_bytes(data)
+            )
         elif len(data) < 0xFFFFFFFF:
-            return from_int_to_byte(78) + struct.pack("<I", len(data)) + from_string_to_bytes(data)
+            return (
+                from_int_to_byte(78)
+                + struct.pack("<I", len(data))
+                + from_string_to_bytes(data)
+            )
         else:
-            raise Exception("Input data error. Rawtx must be hex chars" + "0xffffffff > len(data) > 0 ??")
+            raise Exception(
+                "Input data error. Rawtx must be hex chars"
+                + "0xffffffff > len(data) > 0 ??"
+            )
 
     orhex = safe_hexlify(b"\x6a" + op_push(msg))
     orjson = {"script": orhex, "value": 0}
