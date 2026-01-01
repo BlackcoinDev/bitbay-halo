@@ -11942,6 +11942,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
 
     def stop(self):
         self.amrunning = False
+
     def stop_daemon(self):
         """Stop the blackmored daemon gracefully."""
         global BlackHalo
@@ -11949,6 +11950,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
         try:
             if BlackHalo is not None and BlackHalo.poll() is None:
                 import time as time_module
+
                 # Try graceful shutdown via RPC first
                 try:
                     BLK.stop()
@@ -11972,8 +11974,6 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                     print("blackmored force killed")
         except Exception as e:
             print(f"Error stopping blackmored: {e}")
-
-
 
     def run(self):
         global \
@@ -60652,12 +60652,19 @@ class MyApp(
             print("Success!")
         ThePeg.stop()
         downloadThread.exit()
+        downloadThread.wait(5000)
         bitmessThread.exit()
+        bitmessThread.wait(5000)
         blackcoindThread.exit()
+        blackcoindThread.wait(5000)
         RPC.exit()
+        RPC.wait(5000)
         FileSave.exit()
+        FileSave.wait(5000)
         RunPython.exit()
+        RunPython.wait(5000)
         TheBridgeThread.exit()
+        TheBridgeThread.wait(5000)
         try:
             if debug != 0:
                 sys.stdout = sys.__stdout__
@@ -60676,19 +60683,30 @@ class MyApp(
         except:
             print("Exception closing bridge subprocess")
         try:
+            import socket as socket_module
+
             BitMRPC = xmlrpclib.ServerProxy("http://localhost:8878")
-            try:
-                socket.setdefaulttimeout(10)
-            except:
-                print("Socket timeout not set")
-            BitMRPC.ExitBitmessage("password")
-            try:
-                socket.setdefaulttimeout(None)
-            except:
-                pass
-            print("Success!")
-        except:
-            print("Could not connect to Bitmessage for clean exit. ")
+            sock = socket_module.socket(
+                socket_module.AF_INET, socket_module.SOCK_STREAM
+            )
+            sock.settimeout(2)
+            is_open = sock.connect_ex(("localhost", 8878)) == 0
+            sock.close()
+            if not is_open:
+                print("Bitmessage API port not open, skipping clean exit")
+            else:
+                try:
+                    socket_module.setdefaulttimeout(10)
+                except:
+                    print("Socket timeout not set")
+                BitMRPC.ExitBitmessage("password")
+                try:
+                    socket_module.setdefaulttimeout(None)
+                except:
+                    pass
+                print("Bitmessage clean exit command sent")
+        except Exception as e:
+            print(f"Could not connect to Bitmessage for clean exit: {e}")
         try:
             tick = 0
             while BitMHalo.poll() == None:

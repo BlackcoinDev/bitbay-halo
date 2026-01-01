@@ -13,7 +13,6 @@ from .class_sendDataThread import *
 
 
 class outgoingSynSender(threading.Thread):
-
     def __init__(self):
         threading.Thread.__init__(self)
 
@@ -30,7 +29,7 @@ class outgoingSynSender(threading.Thread):
             peer = shared.trustedPeer
             shared.knownNodes[self.streamNumber][peer] = time.time()
         else:
-            (peer,) = random.sample(shared.knownNodes[self.streamNumber], 1)
+            (peer,) = random.sample(list(shared.knownNodes[self.streamNumber]), 1)
         shared.knownNodesLock.release()
 
         return peer
@@ -38,16 +37,26 @@ class outgoingSynSender(threading.Thread):
     def run(self):
         while shared.safeConfigGetBoolean("bitmessagesettings", "dontconnect"):
             time.sleep(2)
-        while shared.safeConfigGetBoolean("bitmessagesettings", "sendoutgoingconnections"):
-            maximumConnections = 1 if shared.trustedPeer else 8  # maximum number of outgoing connections = 8
-            while len(self.selfInitiatedConnections[self.streamNumber]) >= maximumConnections:
+        while shared.safeConfigGetBoolean(
+            "bitmessagesettings", "sendoutgoingconnections"
+        ):
+            maximumConnections = (
+                1 if shared.trustedPeer else 8
+            )  # maximum number of outgoing connections = 8
+            while (
+                len(self.selfInitiatedConnections[self.streamNumber])
+                >= maximumConnections
+            ):
                 time.sleep(10)
             if shared.shutdown:
                 break
             random.seed()
             peer = self._getPeer()
             shared.alreadyAttemptedConnectionsListLock.acquire()
-            while peer in shared.alreadyAttemptedConnectionsList or peer.host in shared.connectedHostsList:
+            while (
+                peer in shared.alreadyAttemptedConnectionsList
+                or peer.host in shared.connectedHostsList
+            ):
                 shared.alreadyAttemptedConnectionsListLock.release()
                 # print 'choosing new sample'
                 random.seed()
@@ -56,7 +65,9 @@ class outgoingSynSender(threading.Thread):
                 # Clear out the shared.alreadyAttemptedConnectionsList every half
                 # hour so that this program will again attempt a connection
                 # to any nodes, even ones it has already tried.
-                if (time.time() - shared.alreadyAttemptedConnectionsListResetTime) > 1800:
+                if (
+                    time.time() - shared.alreadyAttemptedConnectionsListResetTime
+                ) > 1800:
                     shared.alreadyAttemptedConnectionsList.clear()
                     shared.alreadyAttemptedConnectionsListResetTime = int(time.time())
                 shared.alreadyAttemptedConnectionsListLock.acquire()
@@ -97,7 +108,10 @@ class outgoingSynSender(threading.Thread):
             # can rebind faster
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.settimeout(20)
-            if shared.config.get("bitmessagesettings", "socksproxytype") == "none" and shared.verbose >= 2:
+            if (
+                shared.config.get("bitmessagesettings", "socksproxytype") == "none"
+                and shared.verbose >= 2
+            ):
                 with shared.printLock:
                     print(("Trying an outgoing connection to", peer))
 
@@ -105,16 +119,31 @@ class outgoingSynSender(threading.Thread):
             elif shared.config.get("bitmessagesettings", "socksproxytype") == "SOCKS4a":
                 if shared.verbose >= 2:
                     with shared.printLock:
-                        print(("(Using SOCKS4a) Trying an outgoing connection to", peer))
+                        print(
+                            ("(Using SOCKS4a) Trying an outgoing connection to", peer)
+                        )
 
                 proxytype = socks.PROXY_TYPE_SOCKS4
                 sockshostname = shared.config.get("bitmessagesettings", "sockshostname")
                 socksport = shared.config.getint("bitmessagesettings", "socksport")
                 rdns = True  # Do domain name lookups through the proxy; though this setting doesn't really matter since we won't be doing any domain name lookups anyway.
-                if shared.config.getboolean("bitmessagesettings", "socksauthentication"):
-                    socksusername = shared.config.get("bitmessagesettings", "socksusername")
-                    sockspassword = shared.config.get("bitmessagesettings", "sockspassword")
-                    sock.setproxy(proxytype, sockshostname, socksport, rdns, socksusername, sockspassword)
+                if shared.config.getboolean(
+                    "bitmessagesettings", "socksauthentication"
+                ):
+                    socksusername = shared.config.get(
+                        "bitmessagesettings", "socksusername"
+                    )
+                    sockspassword = shared.config.get(
+                        "bitmessagesettings", "sockspassword"
+                    )
+                    sock.setproxy(
+                        proxytype,
+                        sockshostname,
+                        socksport,
+                        rdns,
+                        socksusername,
+                        sockspassword,
+                    )
                 else:
                     sock.setproxy(proxytype, sockshostname, socksport, rdns)
             elif shared.config.get("bitmessagesettings", "socksproxytype") == "SOCKS5":
@@ -126,23 +155,34 @@ class outgoingSynSender(threading.Thread):
                 sockshostname = shared.config.get("bitmessagesettings", "sockshostname")
                 socksport = shared.config.getint("bitmessagesettings", "socksport")
                 rdns = True  # Do domain name lookups through the proxy; though this setting doesn't really matter since we won't be doing any domain name lookups anyway.
-                if shared.config.getboolean("bitmessagesettings", "socksauthentication"):
-                    socksusername = shared.config.get("bitmessagesettings", "socksusername")
-                    sockspassword = shared.config.get("bitmessagesettings", "sockspassword")
-                    sock.setproxy(proxytype, sockshostname, socksport, rdns, socksusername, sockspassword)
+                if shared.config.getboolean(
+                    "bitmessagesettings", "socksauthentication"
+                ):
+                    socksusername = shared.config.get(
+                        "bitmessagesettings", "socksusername"
+                    )
+                    sockspassword = shared.config.get(
+                        "bitmessagesettings", "sockspassword"
+                    )
+                    sock.setproxy(
+                        proxytype,
+                        sockshostname,
+                        socksport,
+                        rdns,
+                        socksusername,
+                        sockspassword,
+                    )
                 else:
                     sock.setproxy(proxytype, sockshostname, socksport, rdns)
 
             try:
                 sock.connect((peer.host, peer.port))
                 rd = receiveDataThread()
-                rd.daemon = True  # close the main program even if there are threads left
-                someObjectsOfWhichThisRemoteNodeIsAlreadyAware = (
-                    {}
-                )  # This is not necessairly a complete list; we clear it from time to time to save memory.
-                sendDataThreadQueue = (
-                    Queue.Queue()
-                )  # Used to submit information to the send data thread for this connection.
+                rd.daemon = (
+                    True  # close the main program even if there are threads left
+                )
+                someObjectsOfWhichThisRemoteNodeIsAlreadyAware = {}  # This is not necessairly a complete list; we clear it from time to time to save memory.
+                sendDataThreadQueue = Queue.Queue()  # Used to submit information to the send data thread for this connection.
                 rd.setup(
                     sock,
                     peer.host,
@@ -157,14 +197,27 @@ class outgoingSynSender(threading.Thread):
                     print((self, "connected to", peer, "during an outgoing attempt."))
 
                 sd = sendDataThread(sendDataThreadQueue)
-                sd.setup(sock, peer.host, peer.port, self.streamNumber, someObjectsOfWhichThisRemoteNodeIsAlreadyAware)
+                sd.setup(
+                    sock,
+                    peer.host,
+                    peer.port,
+                    self.streamNumber,
+                    someObjectsOfWhichThisRemoteNodeIsAlreadyAware,
+                )
                 sd.start()
                 sd.sendVersionMessage()
 
             except socks.GeneralProxyError as err:
                 if shared.verbose >= 2:
                     with shared.printLock:
-                        print(("Could NOT connect to", peer, "during outgoing attempt.", err))
+                        print(
+                            (
+                                "Could NOT connect to",
+                                peer,
+                                "during outgoing attempt.",
+                                err,
+                            )
+                        )
 
                 deletedPeer = None
                 with shared.knownNodesLock:
@@ -178,9 +231,10 @@ class outgoingSynSender(threading.Thread):
                     """
                     if peer in shared.knownNodes[self.streamNumber]:
                         timeLastSeen = shared.knownNodes[self.streamNumber][peer]
-                        if (int(time.time()) - timeLastSeen) > 172800 and len(
-                            shared.knownNodes[self.streamNumber]
-                        ) > 1000:  # for nodes older than 48 hours old if we have more than 1000 hosts in our list, delete from the shared.knownNodes data-structure.
+                        if (
+                            (int(time.time()) - timeLastSeen) > 172800
+                            and len(shared.knownNodes[self.streamNumber]) > 1000
+                        ):  # for nodes older than 48 hours old if we have more than 1000 hosts in our list, delete from the shared.knownNodes data-structure.
                             del shared.knownNodes[self.streamNumber][peer]
                             deletedPeer = peer
                 if deletedPeer:
@@ -197,23 +251,45 @@ class outgoingSynSender(threading.Thread):
                 shared.UISignalQueue.put(
                     (
                         "updateStatusBar",
-                        tr.translateText("MainWindow", "SOCKS5 Authentication problem: %1").arg(str(err)),
+                        tr.translateText(
+                            "MainWindow", "SOCKS5 Authentication problem: %1"
+                        ).arg(str(err)),
                     )
                 )
             except socks.Socks5Error as err:
                 if "0x01" in str(err):  # General SOCKS server failure
-                    print(("SOCKS5 error. (It is possible that the server wants authentication).)", str(err)))
+                    print(
+                        (
+                            "SOCKS5 error. (It is possible that the server wants authentication).)",
+                            str(err),
+                        )
+                    )
                 else:
                     print(("SOCKS5 error.", err))
             except socks.Socks4Error as err:
                 print(("Socks4Error:", err))
             except socket.error as err:
-                if shared.config.get("bitmessagesettings", "socksproxytype")[0:5] == "SOCKS":
-                    print(("Bitmessage MIGHT be having trouble connecting to the SOCKS server. " + str(err)))
+                if (
+                    shared.config.get("bitmessagesettings", "socksproxytype")[0:5]
+                    == "SOCKS"
+                ):
+                    print(
+                        (
+                            "Bitmessage MIGHT be having trouble connecting to the SOCKS server. "
+                            + str(err)
+                        )
+                    )
                 else:
                     if shared.verbose >= 1:
                         with shared.printLock:
-                            print(("Could NOT connect to", peer, "during outgoing attempt.", err))
+                            print(
+                                (
+                                    "Could NOT connect to",
+                                    peer,
+                                    "during outgoing attempt.",
+                                    err,
+                                )
+                            )
 
                 deletedPeer = None
                 with shared.knownNodesLock:
@@ -228,9 +304,10 @@ class outgoingSynSender(threading.Thread):
                     """
                     if peer in shared.knownNodes[self.streamNumber]:
                         timeLastSeen = shared.knownNodes[self.streamNumber][peer]
-                        if (int(time.time()) - timeLastSeen) > 172800 and len(
-                            shared.knownNodes[self.streamNumber]
-                        ) > 1000:  # for nodes older than 48 hours old if we have more than 1000 hosts in our list, delete from the shared.knownNodes data-structure.
+                        if (
+                            (int(time.time()) - timeLastSeen) > 172800
+                            and len(shared.knownNodes[self.streamNumber]) > 1000
+                        ):  # for nodes older than 48 hours old if we have more than 1000 hosts in our list, delete from the shared.knownNodes data-structure.
                             del shared.knownNodes[self.streamNumber][peer]
                             deletedPeer = peer
                 if deletedPeer:
@@ -248,10 +325,19 @@ class outgoingSynSender(threading.Thread):
                     if (
                         str(err) != "timed out" and str(err) != "socket error"
                     ):  # We don't want to print 'timed out' or 'socket error' because they are too common.
-                        print(("Could NOT connect to", peer, "during outgoing attempt.", err))
+                        print(
+                            (
+                                "Could NOT connect to",
+                                peer,
+                                "during outgoing attempt.",
+                                err,
+                            )
+                        )
                     if (
                         peer in shared.knownNodes[self.streamNumber]
-                        and int(time.time()) - shared.knownNodes[self.streamNumber][peer] > 172800
+                        and int(time.time())
+                        - shared.knownNodes[self.streamNumber][peer]
+                        > 172800
                     ):  # If we have known about this node for more than 48 hours and we still can't connect, delete entirely.
                         print(
                             (

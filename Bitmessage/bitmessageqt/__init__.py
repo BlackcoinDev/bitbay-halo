@@ -420,7 +420,7 @@ class MyForm(QtWidgets.QMainWindow):
                     )
                     if reply == QtWidgets.QMessageBox.Yes:
                         shared.config.remove_section(addressInKeysFile)
-                        with open(shared.appdata + "keys.dat", "wb") as configfile:
+                        with open(shared.appdata + "keys.dat", "w") as configfile:
                             shared.config.write(configfile)
 
         # Configure Bitmessage to start on startup (or remove the
@@ -1444,7 +1444,7 @@ class MyForm(QtWidgets.QMainWindow):
         if self.connectDialogInstance.exec():
             if self.connectDialogInstance.ui.radioButtonConnectNow.isChecked():
                 shared.config.remove_option("bitmessagesettings", "dontconnect")
-                with open(shared.appdata + "keys.dat", "wb") as configfile:
+                with open(shared.appdata + "keys.dat", "w") as configfile:
                     shared.config.write(configfile)
             else:
                 self.click_actionSettings()
@@ -2612,7 +2612,7 @@ class MyForm(QtWidgets.QMainWindow):
             # shared.config.set('bitmessagesettings', 'maxcores',
             # str(self.settingsDialogInstance.ui.comboBoxMaxCores.currentText()))
 
-            with open(shared.appdata + "keys.dat", "wb") as configfile:
+            with open(shared.appdata + "keys.dat", "w") as configfile:
                 shared.config.write(configfile)
 
             if "win32" in sys.platform or "win64" in sys.platform:
@@ -2635,7 +2635,7 @@ class MyForm(QtWidgets.QMainWindow):
             ):  # If we are NOT using portable mode now but the user selected that we should.
                 # Write the keys.dat file to disk in the new location
                 sqlStoredProcedure("movemessagstoprog")
-                with open("keys.dat", "wb") as configfile:
+                with open("keys.dat", "w") as configfile:
                     shared.config.write(configfile)
                 # Write the knownnodes.dat file to disk in the new location
                 shared.knownNodesLock.acquire()
@@ -2662,7 +2662,7 @@ class MyForm(QtWidgets.QMainWindow):
                     os.makedirs(shared.appdata)
                 sqlStoredProcedure("movemessagstoappdata")
                 # Write the keys.dat file to disk in the new location
-                with open(shared.appdata + "keys.dat", "wb") as configfile:
+                with open(shared.appdata + "keys.dat", "w") as configfile:
                     shared.config.write(configfile)
                 # Write the knownnodes.dat file to disk in the new location
                 shared.knownNodesLock.acquire()
@@ -2682,7 +2682,7 @@ class MyForm(QtWidgets.QMainWindow):
     def click_radioButtonBlacklist(self):
         if shared.config.get("bitmessagesettings", "blackwhitelist") == "white":
             shared.config.set("bitmessagesettings", "blackwhitelist", "black")
-            with open(shared.appdata + "keys.dat", "wb") as configfile:
+            with open(shared.appdata + "keys.dat", "w") as configfile:
                 shared.config.write(configfile)
             # self.ui.tableWidgetBlacklist.clearContents()
             self.ui.tableWidgetBlacklist.setRowCount(0)
@@ -2692,7 +2692,7 @@ class MyForm(QtWidgets.QMainWindow):
     def click_radioButtonWhitelist(self):
         if shared.config.get("bitmessagesettings", "blackwhitelist") == "black":
             shared.config.set("bitmessagesettings", "blackwhitelist", "white")
-            with open(shared.appdata + "keys.dat", "wb") as configfile:
+            with open(shared.appdata + "keys.dat", "w") as configfile:
                 shared.config.write(configfile)
             # self.ui.tableWidgetBlacklist.clearContents()
             self.ui.tableWidgetBlacklist.setRowCount(0)
@@ -2770,7 +2770,7 @@ class MyForm(QtWidgets.QMainWindow):
                     str(self.dialog.ui.lineEditMailingListName.text().toUtf8()),
                 )
                 self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(QtGui.QColor(137, 4, 177))  # magenta
-            with open(shared.appdata + "keys.dat", "wb") as configfile:
+            with open(shared.appdata + "keys.dat", "w") as configfile:
                 shared.config.write(configfile)
             self.rerenderInboxToLabels()
 
@@ -3300,7 +3300,7 @@ class MyForm(QtWidgets.QMainWindow):
         currentRow = self.ui.tableWidgetYourIdentities.currentRow()
         addressAtCurrentRow = str(self.ui.tableWidgetYourIdentities.item(currentRow, 1).text())
         shared.config.set(addressAtCurrentRow, "enabled", "true")
-        with open(shared.appdata + "keys.dat", "wb") as configfile:
+        with open(shared.appdata + "keys.dat", "w") as configfile:
             shared.config.write(configfile)
         self.ui.tableWidgetYourIdentities.item(currentRow, 0).setTextColor(QApplication.palette().text().color())
         self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(QApplication.palette().text().color())
@@ -3320,7 +3320,7 @@ class MyForm(QtWidgets.QMainWindow):
         self.ui.tableWidgetYourIdentities.item(currentRow, 2).setTextColor(QtGui.QColor(128, 128, 128))
         if shared.safeConfigGetBoolean(addressAtCurrentRow, "mailinglist"):
             self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(QtGui.QColor(137, 4, 177))  # magenta
-        with open(shared.appdata + "keys.dat", "wb") as configfile:
+        with open(shared.appdata + "keys.dat", "w") as configfile:
             shared.config.write(configfile)
         shared.reloadMyAddressHashes()
 
@@ -3549,7 +3549,7 @@ class MyForm(QtWidgets.QMainWindow):
                 "label",
                 str(self.ui.tableWidgetYourIdentities.item(currentRow, 0).text().toUtf8()),
             )
-            with open(shared.appdata + "keys.dat", "wb") as configfile:
+            with open(shared.appdata + "keys.dat", "w") as configfile:
                 shared.config.write(configfile)
             self.rerenderComboBoxSendFrom()
             # self.rerenderInboxFromLabels()
