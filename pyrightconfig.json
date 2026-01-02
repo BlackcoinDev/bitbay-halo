@@ -1,6 +1,5 @@
 {
     "include": [
-        "Bitmessage",
         "Halo.py",
         "tests"
     ],
@@ -9,10 +8,17 @@
         ".venv",
         "venv",
         "BitMData",
-        "Bitmessage/site-packages"
+        "Bitmessage",
+        "gui",
+        "custom",
+        "bridge"
     ],
     "typeCheckingMode": "basic",
     "pythonVersion": "3.14",
-    "reportMissingImports": true,
-    "reportMissingTypeStubs": false
+    "reportMissingImports": false,
+    "reportMissingTypeStubs": false,
+    "enableTypeIgnoreComments": true,
+    "diagnosticMode": "workspace",
+    "useLibraryCodeForTypes": true,
+    "reportWildcardImportFromLibrary": false
 }

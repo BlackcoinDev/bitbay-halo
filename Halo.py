@@ -91,7 +91,7 @@ def Qhandler(msgtype, message):
 
 try:
     QtCore.qInstallMsgHandler(Qhandler)
-except:
+except (AttributeError, NameError):
     pass
 
 try:
@@ -103,10 +103,10 @@ except AttributeError:
 
 
 try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
+    _encoding = getattr(QtWidgets.QApplication, "UnicodeUTF8", None)
 
     def _translate(context, text, disambig=None):
-        _encoding = QtWidgets.QApplication.UnicodeUTF8
+        _encoding = getattr(QtWidgets.QApplication, "UnicodeUTF8", None)
         if window.language != "DEFAULT" and window.language != "en":
             if window.language not in window.translations:
                 window.translations[window.language] = {}
@@ -119,7 +119,7 @@ try:
                     window.translations[window.language][text]
                 )
                 return str(translateThis)
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, -1)
 
 except AttributeError:
 
@@ -139,12 +139,15 @@ CoinSelect = {}
 def subprocess_call(*args, **kwargs):
     # also works for Popen. It creates a new *hidden* window, so it will work in frozen apps (.exe).
     if IS_WIN32:
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags = (
-            subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
-        )
-        startupinfo.wShowWindow = subprocess.SW_HIDE
-        kwargs["startupinfo"] = startupinfo
+        try:
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags = (
+                subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+            )
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+            kwargs["startupinfo"] = startupinfo
+        except AttributeError:
+            pass  # Constants not available on non-Windows
     retcode = subprocess.call(*args, **kwargs)
     return retcode
 
@@ -257,7 +260,11 @@ try:
     import ssl
 
     from requests.adapters import HTTPAdapter
-    from requests.packages.urllib3.poolmanager import PoolManager
+
+    try:
+        from urllib3.poolmanager import PoolManager
+    except ImportError:
+        from requests.packages.urllib3.poolmanager import PoolManager
 
     pass
 except:
@@ -296,7 +303,11 @@ try:
     import ssl
 
     from requests.adapters import HTTPAdapter
-    from requests.packages.urllib3.poolmanager import PoolManager
+
+    try:
+        from urllib3.poolmanager import PoolManager
+    except ImportError:
+        from requests.packages.urllib3.poolmanager import PoolManager
 
     class MyAdapter(HTTPAdapter):
         def init_poolmanager(self, connections, maxsize, block=False):
@@ -1855,11 +1866,11 @@ class IdenticonRendererBase(object):
         ]
         rotation = [0, 90, 180, 270]
 
-        nopen = QtGui.QPen(foreColor, QtCore.Qt.NoPen)
-        foreBrush = QtGui.QBrush(foreColor, QtCore.Qt.SolidPattern)
+        nopen = QtGui.QPen(foreColor, QtCore.Qt.PenStyle.NoPen)
+        foreBrush = QtGui.QBrush(foreColor, QtCore.Qt.BrushStyle.SolidPattern)
         if penwidth > 0:
             pen_color = QtGui.QColor(255, 255, 255)
-            pen = QtGui.QPen(pen_color, QtCore.Qt.SolidPattern)
+            pen = QtGui.QPen(pen_color, QtCore.Qt.BrushStyle.SolidPattern)
             pen.setWidth(penwidth)
 
         painter = QtGui.QPainter()
@@ -1878,10 +1889,10 @@ class IdenticonRendererBase(object):
         if penwidth > 0:
             # draw the borders
             painter.setPen(pen)
-            painter.drawPolygon(polygon, QtCore.Qt.WindingFill)
+            painter.drawPolygon(polygon, QtCore.Qt.FillRule.WindingFill)
         # draw the fill
         painter.setPen(nopen)
-        painter.drawPolygon(polygon, QtCore.Qt.WindingFill)
+        painter.drawPolygon(polygon, QtCore.Qt.FillRule.WindingFill)
 
         painter.end()
 
@@ -2773,7 +2784,7 @@ def Loop():
     if "InboxCleanTime" not in AdvanceArray:
         AdvanceArray["InboxCleanTime"] = time.time()
     if "MySettings" not in AdvanceArray:
-        AdvanceArray["MySettings"] = {
+        AdvanceArray["MySettings"] = {  # type: ignore[index]
             "Proxy": "",
             "AntiLogger": False,
             "ManualLogin": False,
@@ -2786,8 +2797,8 @@ def Loop():
             "Voting": [],
         }
     else:
-        if "EnableBridge" in AdvanceArray["MySettings"]:
-            if AdvanceArray["MySettings"]["EnableBridge"] == True:
+        if "EnableBridge" in AdvanceArray["MySettings"]:  # type: ignore[index]
+            if AdvanceArray["MySettings"]["EnableBridge"] == True:  # type: ignore[index]
                 try:
                     bitmessThread.amrunning = False
                 except:
@@ -8548,8 +8559,8 @@ class PegThread(QtCore.QThread):
             {
                 "script": "6a"
                 + hexlen
-                + num_to_var_int(safe_hexlify((len(hexlify(uniqueid)) / 2)))
-                + hexlify(uniqueid),
+                + num_to_var_int(safe_hexlify(len(uniqueid) // 2))
+                + uniqueid,
                 "value": 5575,
             }
         )
@@ -9040,8 +9051,8 @@ class PegThread(QtCore.QThread):
             {
                 "script": "6a"
                 + hexlen
-                + num_to_var_int(safe_hexlify((len(hexlify(uniqueid)) / 2)))
-                + hexlify(uniqueid),
+                + num_to_var_int(safe_hexlify(len(uniqueid) // 2))
+                + uniqueid,
                 "value": 5575,
             }
         )
@@ -11465,7 +11476,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
             BMStartTime, \
             BitMRPC
         BitAddrGlob = BitAddr
-        BitMRPC = xmlrpclib.ServerProxy("http://localhost:8878")
+        BitMRPC = xmlrpclib.ServerProxy("http://blackhalo:blackhalo123@localhost:8878")
         action = 1
         with open(os.path.join(application_path, "BitTMP.dat"), "a+") as f:
             f.close()
@@ -11526,7 +11537,9 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                 if result == False:
                     skpread = 1
             except:
-                BitMRPC = xmlrpclib.ServerProxy("http://localhost:8878")
+                BitMRPC = xmlrpclib.ServerProxy(
+                    "http://blackhalo:blackhalo123@localhost:8878"
+                )
             if skpread == 0:
                 try:
                     with open(os.path.join(application_path, "BitTMP.dat"), "r") as f:
@@ -11758,7 +11771,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                     result = BitMRPC.FileLock("1")
                                 except:
                                     BitMRPC = xmlrpclib.ServerProxy(
-                                        "http://localhost:8878"
+                                        "http://blackhalo:blackhalo123@localhost:8878"
                                     )
                                 with open(
                                     os.path.join(application_path, "BitTMP.dat"), "w"
@@ -11882,7 +11895,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                     result = BitMRPC.FileLock("2")
                                 except:
                                     BitMRPC = xmlrpclib.ServerProxy(
-                                        "http://localhost:8878"
+                                        "http://blackhalo:blackhalo123@localhost:8878"
                                     )
                                 BitQueue.pop(0)
                                 SaveQueue()
@@ -11902,7 +11915,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                     result = BitMRPC.FileLock("1")
                                 except:
                                     BitMRPC = xmlrpclib.ServerProxy(
-                                        "http://localhost:8878"
+                                        "http://blackhalo:blackhalo123@localhost:8878"
                                     )
                                 try:
                                     with open(
@@ -11922,7 +11935,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                     result = BitMRPC.FileLock("2")
                                 except:
                                     BitMRPC = xmlrpclib.ServerProxy(
-                                        "http://localhost:8878"
+                                        "http://blackhalo:blackhalo123@localhost:8878"
                                     )
                             break
                 except:
@@ -28844,7 +28857,9 @@ def GetEmailPassword():
                     )
                     ManualPassword = password.EncryptWithAES("Halo Master", text)
                     try:
-                        BitMRPC = xmlrpclib.ServerProxy("http://localhost:8878")
+                        BitMRPC = xmlrpclib.ServerProxy(
+                            "http://blackhalo:blackhalo123@localhost:8878"
+                        )
                         res = BitMRPC.StorePassword(ManualPassword, "password")
                         if res == True:
                             BMHasPW = res
@@ -33620,7 +33635,15 @@ class TimedMessageBox(
             self.done(99)
 
 
-def QuestionBox(text, button1, button2="", button3="", notrans=0, timed=0, defres=0):
+def QuestionBox(
+    text: str,
+    button1: str | int,
+    button2: str | int = "",
+    button3: str | int = "",
+    notrans: int = 0,
+    timed: int = 0,
+    defres: int = 0,
+) -> int:
     global SilenceUI
     if SilenceUI == 1:  # This tells which box to check when questioned
         return 0
@@ -60685,7 +60708,9 @@ class MyApp(
         try:
             import socket as socket_module
 
-            BitMRPC = xmlrpclib.ServerProxy("http://localhost:8878")
+            BitMRPC = xmlrpclib.ServerProxy(
+                "http://blackhalo:blackhalo123@localhost:8878"
+            )
             sock = socket_module.socket(
                 socket_module.AF_INET, socket_module.SOCK_STREAM
             )

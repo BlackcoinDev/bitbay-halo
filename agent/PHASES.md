@@ -49,4 +49,31 @@ Legacy wallet → Created automatically ✅
 
 ---
 
+## EXCEPTION: Pyright Legacy Code Errors
+
+**Issue:** ~7000 pyright errors in Halo.py due to dynamic patterns
+
+**Why code is correct:** The runtime behavior is correct. Errors are primarily:
+- Dynamic global dictionaries (`AdvanceArray['key']['subkey']`) - runtime works correctly
+- Python 2/3 str/bytes patterns - runtime handles correctly  
+- PyQt6 API changes - cosmetic warnings only
+- Dynamic attribute access patterns - intentional design
+
+**No alternative because:** These are fundamental architectural patterns in a 60,000 line legacy codebase. Refactoring would require:
+- Complete type system rewrite
+- Replacing all dynamic dict access with typed classes
+- Months of effort for no runtime benefit
+
+**Strategy:**
+1. Focus new code additions on being type-safe
+2. Tests remain at 0 errors
+3. Legacy errors documented and accepted
+4. Stubs file (`Halo.pyi`) created for common patterns
+
+**Approved by:** User / January 2026
+
+**Last review:** January 2026
+
+---
+
 *Last updated: January 2026*

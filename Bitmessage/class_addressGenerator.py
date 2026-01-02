@@ -12,7 +12,6 @@ from .pyelliptic.openssl import OpenSSL
 
 
 class addressGenerator(threading.Thread):
-
     def __init__(self):
         # QThread.__init__(self, parent)
         threading.Thread.__init__(self)
@@ -23,7 +22,13 @@ class addressGenerator(threading.Thread):
             nonceTrialsPerByte = 0
             payloadLengthExtraBytes = 0
             if queueValue[0] == "createChan":
-                command, addressVersionNumber, streamNumber, label, deterministicPassphrase = queueValue
+                (
+                    command,
+                    addressVersionNumber,
+                    streamNumber,
+                    label,
+                    deterministicPassphrase,
+                ) = queueValue
                 eighteenByteRipe = False
                 numberOfAddressesToMake = 1
                 numberOfNullBytesDemandedOnFrontOfRipeHash = 1
@@ -85,16 +90,27 @@ class addressGenerator(threading.Thread):
                     % addressVersionNumber
                 )
             if nonceTrialsPerByte == 0:
-                nonceTrialsPerByte = shared.config.getint("bitmessagesettings", "defaultnoncetrialsperbyte")
-            if nonceTrialsPerByte < shared.networkDefaultProofOfWorkNonceTrialsPerByte:
+                nonceTrialsPerByte = shared.config.getint(
+                    "bitmessagesettings", "defaultnoncetrialsperbyte"
+                )
+            if int(nonceTrialsPerByte) < int(
+                shared.networkDefaultProofOfWorkNonceTrialsPerByte
+            ):
                 nonceTrialsPerByte = shared.networkDefaultProofOfWorkNonceTrialsPerByte
             if payloadLengthExtraBytes == 0:
-                payloadLengthExtraBytes = shared.config.getint("bitmessagesettings", "defaultpayloadlengthextrabytes")
-            if payloadLengthExtraBytes < shared.networkDefaultPayloadLengthExtraBytes:
+                payloadLengthExtraBytes = shared.config.getint(
+                    "bitmessagesettings", "defaultpayloadlengthextrabytes"
+                )
+            if int(payloadLengthExtraBytes) < int(
+                shared.networkDefaultPayloadLengthExtraBytes
+            ):
                 payloadLengthExtraBytes = shared.networkDefaultPayloadLengthExtraBytes
             if command == "createRandomAddress":
                 shared.UISignalQueue.put(
-                    ("updateStatusBar", tr.translateText("MainWindow", "Generating one new address"))
+                    (
+                        "updateStatusBar",
+                        tr.translateText("MainWindow", "Generating one new address"),
+                    )
                 )
                 # This next section is a little bit strange. We're going to generate keys over and over until we
                 # find one that starts with either \x00 or \x00\x00. Then when we pack them into a Bitmessage address,
@@ -103,11 +119,15 @@ class addressGenerator(threading.Thread):
                 startTime = time.time()
                 numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix = 0
                 potentialPrivSigningKey = OpenSSL.rand(32)
-                potentialPubSigningKey = highlevelcrypto.pointMult(potentialPrivSigningKey)
+                potentialPubSigningKey = highlevelcrypto.pointMult(
+                    potentialPrivSigningKey
+                )
                 while True:
                     numberOfAddressesWeHadToMakeBeforeWeFoundOneWithTheCorrectRipePrefix += 1
                     potentialPrivEncryptionKey = OpenSSL.rand(32)
-                    potentialPubEncryptionKey = highlevelcrypto.pointMult(potentialPrivEncryptionKey)
+                    potentialPubEncryptionKey = highlevelcrypto.pointMult(
+                        potentialPrivEncryptionKey
+                    )
                     # print 'potentialPubSigningKey', potentialPubSigningKey.encode('hex')
                     # print 'potentialPubEncryptionKey',
                     # potentialPubEncryptionKey.encode('hex')
@@ -133,29 +153,43 @@ class addressGenerator(threading.Thread):
                         "addresses per second before finding one with the correct ripe-prefix.",
                     )
                 )
-                address = encodeAddress(addressVersionNumber, streamNumber, ripe.digest())
+                address = encodeAddress(
+                    addressVersionNumber, streamNumber, ripe.digest()
+                )
 
                 # An excellent way for us to store our keys is in Wallet Import Format. Let us convert now.
                 # https://en.bitcoin.it/wiki/Wallet_import_format
                 privSigningKey = b"\x80" + potentialPrivSigningKey
-                checksum = hashlib.sha256(hashlib.sha256(privSigningKey).digest()).digest()[0:4]
-                privSigningKeyWIF = arithmetic.changebase(privSigningKey + checksum, 256, 58)
+                checksum = hashlib.sha256(
+                    hashlib.sha256(privSigningKey).digest()
+                ).digest()[0:4]
+                privSigningKeyWIF = arithmetic.changebase(
+                    privSigningKey + checksum, 256, 58
+                )
                 # print 'privSigningKeyWIF',privSigningKeyWIF
 
                 privEncryptionKey = b"\x80" + potentialPrivEncryptionKey
-                checksum = hashlib.sha256(hashlib.sha256(privEncryptionKey).digest()).digest()[0:4]
-                privEncryptionKeyWIF = arithmetic.changebase(privEncryptionKey + checksum, 256, 58)
+                checksum = hashlib.sha256(
+                    hashlib.sha256(privEncryptionKey).digest()
+                ).digest()[0:4]
+                privEncryptionKeyWIF = arithmetic.changebase(
+                    privEncryptionKey + checksum, 256, 58
+                )
                 # print 'privEncryptionKeyWIF',privEncryptionKeyWIF
 
                 shared.config.add_section(address)
                 shared.config.set(address, "label", label)
                 shared.config.set(address, "enabled", "true")
                 shared.config.set(address, "decoy", "false")
-                shared.config.set(address, "noncetrialsperbyte", str(nonceTrialsPerByte))
-                shared.config.set(address, "payloadlengthextrabytes", str(payloadLengthExtraBytes))
+                shared.config.set(
+                    address, "noncetrialsperbyte", str(nonceTrialsPerByte)
+                )
+                shared.config.set(
+                    address, "payloadlengthextrabytes", str(payloadLengthExtraBytes)
+                )
                 shared.config.set(address, "privSigningKey", privSigningKeyWIF)
                 shared.config.set(address, "privEncryptionKey", privEncryptionKeyWIF)
-                with open(shared.appdata + "keys.dat", "wb") as configfile:
+                with open(shared.appdata + "keys.dat", "w") as configfile:
                     shared.config.write(configfile)
 
                 # The API and the join and create Chan functionality
@@ -166,11 +200,14 @@ class addressGenerator(threading.Thread):
                     (
                         "updateStatusBar",
                         tr.translateText(
-                            "MainWindow", "Done generating address. Doing work necessary to broadcast it."
+                            "MainWindow",
+                            "Done generating address. Doing work necessary to broadcast it.",
                         ),
                     )
                 )
-                shared.UISignalQueue.put(("writeNewAddressToTable", (label, address, streamNumber)))
+                shared.UISignalQueue.put(
+                    ("writeNewAddressToTable", (label, address, streamNumber))
+                )
                 shared.reloadMyAddressHashes()
                 if addressVersionNumber == 3:
                     shared.workerQueue.put(("sendOutOrStoreMyV3Pubkey", ripe.digest()))
@@ -188,13 +225,13 @@ class addressGenerator(threading.Thread):
                         "WARNING: You are creating deterministic address(es) using a blank passphrase. Bitmessage will do it but it is rather stupid."
                     )
                 if command == "createDeterministicAddresses":
-                    statusbar = "Generating " + str(numberOfAddressesToMake) + " new addresses."
+                    statusbar = (
+                        "Generating " + str(numberOfAddressesToMake) + " new addresses."
+                    )
                     shared.UISignalQueue.put(("updateStatusBar", statusbar))
                 signingKeyNonce = 0
                 encryptionKeyNonce = 1
-                listOfNewAddressesToSendOutThroughTheAPI = (
-                    []
-                )  # We fill out this list no matter what although we only need it if we end up passing the info to the API.
+                listOfNewAddressesToSendOutThroughTheAPI = []  # We fill out this list no matter what although we only need it if we end up passing the info to the API.
 
                 for i in range(numberOfAddressesToMake):
                     # This next section is a little bit strange. We're going to generate keys over and over until we
@@ -211,8 +248,12 @@ class addressGenerator(threading.Thread):
                         potentialPrivEncryptionKey = hashlib.sha512(
                             deterministicPassphrase + encodeVarint(encryptionKeyNonce)
                         ).digest()[:32]
-                        potentialPubSigningKey = highlevelcrypto.pointMult(potentialPrivSigningKey)
-                        potentialPubEncryptionKey = highlevelcrypto.pointMult(potentialPrivEncryptionKey)
+                        potentialPubSigningKey = highlevelcrypto.pointMult(
+                            potentialPrivSigningKey
+                        )
+                        potentialPubEncryptionKey = highlevelcrypto.pointMult(
+                            potentialPrivEncryptionKey
+                        )
                         # print 'potentialPubSigningKey', potentialPubSigningKey.encode('hex')
                         # print 'potentialPubEncryptionKey',
                         # potentialPubEncryptionKey.encode('hex')
@@ -245,13 +286,17 @@ class addressGenerator(threading.Thread):
                     except:  # Divide by zero can happen for some odd reason. However ignoring it seems to work
                         traceback.print_exc()
 
-                    address = encodeAddress(addressVersionNumber, streamNumber, ripe.digest())
+                    address = encodeAddress(
+                        addressVersionNumber, streamNumber, ripe.digest()
+                    )
 
                     saveAddressToDisk = True
                     # If we are joining an existing chan, let us check to make sure it matches the provided Bitmessage address
                     if command == "joinChan":
                         if address != chanAddress:
-                            shared.apiAddressGeneratorReturnQueue.put("chan name does not match address")
+                            shared.apiAddressGeneratorReturnQueue.put(
+                                "chan name does not match address"
+                            )
                             saveAddressToDisk = False
                     if command == "getDeterministicAddress":
                         saveAddressToDisk = False
@@ -260,12 +305,20 @@ class addressGenerator(threading.Thread):
                         # An excellent way for us to store our keys is in Wallet Import Format. Let us convert now.
                         # https://en.bitcoin.it/wiki/Wallet_import_format
                         privSigningKey = b"\x80" + potentialPrivSigningKey
-                        checksum = hashlib.sha256(hashlib.sha256(privSigningKey).digest()).digest()[0:4]
-                        privSigningKeyWIF = arithmetic.changebase(privSigningKey + checksum, 256, 58)
+                        checksum = hashlib.sha256(
+                            hashlib.sha256(privSigningKey).digest()
+                        ).digest()[0:4]
+                        privSigningKeyWIF = arithmetic.changebase(
+                            privSigningKey + checksum, 256, 58
+                        )
 
                         privEncryptionKey = b"\x80" + potentialPrivEncryptionKey
-                        checksum = hashlib.sha256(hashlib.sha256(privEncryptionKey).digest()).digest()[0:4]
-                        privEncryptionKeyWIF = arithmetic.changebase(privEncryptionKey + checksum, 256, 58)
+                        checksum = hashlib.sha256(
+                            hashlib.sha256(privEncryptionKey).digest()
+                        ).digest()[0:4]
+                        privEncryptionKeyWIF = arithmetic.changebase(
+                            privEncryptionKey + checksum, 256, 58
+                        )
 
                         addressAlreadyExists = False
                         try:
@@ -280,22 +333,41 @@ class addressGenerator(threading.Thread):
                             shared.config.set(address, "decoy", "false")
                             if command == "joinChan" or command == "createChan":
                                 shared.config.set(address, "chan", "true")
-                            shared.config.set(address, "noncetrialsperbyte", str(nonceTrialsPerByte))
-                            shared.config.set(address, "payloadlengthextrabytes", str(payloadLengthExtraBytes))
-                            shared.config.set(address, "privSigningKey", privSigningKeyWIF)
-                            shared.config.set(address, "privEncryptionKey", privEncryptionKeyWIF)
-                            with open(shared.appdata + "keys.dat", "wb") as configfile:
+                            shared.config.set(
+                                address, "noncetrialsperbyte", str(nonceTrialsPerByte)
+                            )
+                            shared.config.set(
+                                address,
+                                "payloadlengthextrabytes",
+                                str(payloadLengthExtraBytes),
+                            )
+                            shared.config.set(
+                                address, "privSigningKey", privSigningKeyWIF
+                            )
+                            shared.config.set(
+                                address, "privEncryptionKey", privEncryptionKeyWIF
+                            )
+                            with open(shared.appdata + "keys.dat", "w") as configfile:
                                 shared.config.write(configfile)
 
-                            shared.UISignalQueue.put(("writeNewAddressToTable", (label, address, str(streamNumber))))
+                            shared.UISignalQueue.put(
+                                (
+                                    "writeNewAddressToTable",
+                                    (label, address, str(streamNumber)),
+                                )
+                            )
                             listOfNewAddressesToSendOutThroughTheAPI.append(address)
-                            shared.myECCryptorObjects[ripe.digest()] = highlevelcrypto.makeCryptor(
-                                potentialPrivEncryptionKey.hex()
+                            shared.myECCryptorObjects[ripe.digest()] = (
+                                highlevelcrypto.makeCryptor(
+                                    potentialPrivEncryptionKey.hex()
+                                )
                             )
                             shared.myAddressesByHash[ripe.digest()] = address
                             tag = hashlib.sha512(
                                 hashlib.sha512(
-                                    encodeVarint(addressVersionNumber) + encodeVarint(streamNumber) + ripe.digest()
+                                    encodeVarint(addressVersionNumber)
+                                    + encodeVarint(streamNumber)
+                                    + ripe.digest()
                                 ).digest()
                             ).digest()[32:]
                             shared.myAddressesByTag[tag] = address
@@ -305,13 +377,24 @@ class addressGenerator(threading.Thread):
                                 )  # If this is a chan address,
                                 # the worker thread won't send out the pubkey over the network.
                             elif addressVersionNumber == 4:
-                                shared.workerQueue.put(("sendOutOrStoreMyV4Pubkey", address))
+                                shared.workerQueue.put(
+                                    ("sendOutOrStoreMyV4Pubkey", address)
+                                )
 
                 # Done generating addresses.
-                if command == "createDeterministicAddresses" or command == "joinChan" or command == "createChan":
-                    shared.apiAddressGeneratorReturnQueue.put(listOfNewAddressesToSendOutThroughTheAPI)
+                if (
+                    command == "createDeterministicAddresses"
+                    or command == "joinChan"
+                    or command == "createChan"
+                ):
+                    shared.apiAddressGeneratorReturnQueue.put(
+                        listOfNewAddressesToSendOutThroughTheAPI
+                    )
                     shared.UISignalQueue.put(
-                        ("updateStatusBar", tr.translateText("MainWindow", "Done generating address"))
+                        (
+                            "updateStatusBar",
+                            tr.translateText("MainWindow", "Done generating address"),
+                        )
                     )
                     # shared.reloadMyAddressHashes()
                 elif command == "getDeterministicAddress":
