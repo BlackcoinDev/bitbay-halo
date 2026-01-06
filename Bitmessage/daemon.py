@@ -86,9 +86,7 @@ def lookupAppdataFolder():  # gets the appropriate folders for the .dat files de
         if "HOME" in environ:
             dataFolder = path.join(os.environ["HOME"], "Library/Application support/", APPNAME) + "/"
         else:
-            print(
-                "     Could not find home folder, please report this message and your OS X version to the Daemon Github."
-            )
+            print("     Could not find home folder, please report this message and your OS X version to the Daemon Github.")
             os.exit()
 
     elif "win32" in sys.platform or "win64" in sys.platform:
@@ -252,9 +250,7 @@ def apiData():
         apiInit("")  # Initalize the keys.dat file with API information
 
     # keys.dat file was found or appropriately configured, allow information retrieval
-    apiEnabled = apiInit(
-        safeConfigGetBoolean("bitmessagesettings", "apienabled")
-    )  # if false it will prompt the user, if true it will return true
+    apiEnabled = apiInit(safeConfigGetBoolean("bitmessagesettings", "apienabled"))  # if false it will prompt the user, if true it will return true
 
     config.read(keysPath)  # read again since changes have been made
     apiPort = int(config.get("bitmessagesettings", "apiport"))
@@ -264,9 +260,7 @@ def apiData():
 
     print("\n     API data successfully imported.\n")
 
-    return (
-        "http://" + apiUsername + ":" + apiPassword + "@" + apiInterface + ":" + str(apiPort) + "/"
-    )  # Build the api credentials
+    return "http://" + apiUsername + ":" + apiPassword + "@" + apiInterface + ":" + str(apiPort) + "/"  # Build the api credentials
 
 
 # End keys.dat interactions
@@ -663,9 +657,7 @@ def attachment():  # Allows users to attach a file to their message or broadcast
         theAttachment = ""
 
         while True:  # loops until valid path is entered
-            filePath = userInput(
-                "\nPlease enter the path to the attachment or just the attachment name if in this folder."
-            )
+            filePath = userInput("\nPlease enter the path to the attachment or just the attachment name if in this folder.")
 
             try:
                 with open(filePath):
@@ -708,9 +700,7 @@ def attachment():  # Allows users to attach a file to their message or broadcast
             isImage = True
             time.sleep(2)
 
-        print(
-            "\n     Encoding Attachment, Please Wait .\n"
-        )  # Alert the user that the encoding process may take some time.
+        print("\n     Encoding Attachment, Please Wait .\n")  # Alert the user that the encoding process may take some time.
 
         with open(filePath, "rb") as f:  # Begin the actual encoding
             data = f.read(188743680)  # Reads files up to 180MB, the maximum size for Bitmessage.
@@ -764,9 +754,7 @@ Encoding:base64
     return theAttachmentS
 
 
-def sendMsg(
-    toAddress, fromAddress, subject, message
-):  # With no arguments sent, sendMsg fills in the blanks. subject and message must be encoded before they are passed.
+def sendMsg(toAddress, fromAddress, subject, message):  # With no arguments sent, sendMsg fills in the blanks. subject and message must be encoded before they are passed.
     global usrPrompt
     if validAddress(toAddress) == False:
         while True:
@@ -985,17 +973,13 @@ def outbox():
         print("     Message Number:", msgNum)  # Message Number
         # print '     Message ID:', outboxMessages['sentMessages'][msgNum]['msgid']
         print("     To:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["toAddress"]))  # Get the to address
-        print(
-            "     From:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["fromAddress"])
-        )  # Get the from address
+        print("     From:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["fromAddress"]))  # Get the from address
         print("     Subject:", outboxMessages["sentMessages"][msgNum]["subject"].decode("base64"))  # Get the subject
         print("     Status:", outboxMessages["sentMessages"][msgNum]["status"])  # Get the subject
 
         print(
             "     Last Action Time:",
-            datetime.datetime.fromtimestamp(float(outboxMessages["sentMessages"][msgNum]["lastActionTime"])).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
+            datetime.datetime.fromtimestamp(float(outboxMessages["sentMessages"][msgNum]["lastActionTime"])).strftime("%Y-%m-%d %H:%M:%S"),
         )
 
         if msgNum % 20 == 0 and msgNum != 0:
@@ -1041,9 +1025,7 @@ def readSentMsg(msgNum):  # Opens a sent message for reading
                 fnPos = attPos
                 fileName = "Attachment"
 
-            uInput = userInput(
-                "\n     Attachment Detected. Would you like to save the attachment, (Y)es or (N)o?"
-            ).lower()
+            uInput = userInput("\n     Attachment Detected. Would you like to save the attachment, (Y)es or (N)o?").lower()
             if uInput == "y" or uInput == "yes":
 
                 attachment = message[attPos + 9 : attEndPos]
@@ -1057,16 +1039,12 @@ def readSentMsg(msgNum):  # Opens a sent message for reading
     # End attachment Detection
 
     print("\n     To:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["toAddress"]))  # Get the to address
-    print(
-        "     From:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["fromAddress"])
-    )  # Get the from address
+    print("     From:", getLabelForAddress(outboxMessages["sentMessages"][msgNum]["fromAddress"]))  # Get the from address
     print("     Subject:", outboxMessages["sentMessages"][msgNum]["subject"].decode("base64"))  # Get the subject
     print("     Status:", outboxMessages["sentMessages"][msgNum]["status"])  # Get the subject
     print(
         "     Last Action Time:",
-        datetime.datetime.fromtimestamp(float(outboxMessages["sentMessages"][msgNum]["lastActionTime"])).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        ),
+        datetime.datetime.fromtimestamp(float(outboxMessages["sentMessages"][msgNum]["lastActionTime"])).strftime("%Y-%m-%d %H:%M:%S"),
     )
     print("     Message:\n")
     print(message)  # inboxMessages['inboxMessages'][msgNum]['message'].decode('base64')
@@ -1106,9 +1084,7 @@ def readMsg(msgNum):  # Opens a message for reading
                 fnPos = attPos
                 fileName = "Attachment"
 
-            uInput = userInput(
-                "\n     Attachment Detected. Would you like to save the attachment, (Y)es or (N)o?"
-            ).lower()
+            uInput = userInput("\n     Attachment Detected. Would you like to save the attachment, (Y)es or (N)o?").lower()
             if uInput == "y" or uInput == "yes":
 
                 attachment = message[attPos + 9 : attEndPos]
@@ -1121,17 +1097,11 @@ def readMsg(msgNum):  # Opens a message for reading
 
     # End attachment Detection
     print("\n     To:", getLabelForAddress(inboxMessages["inboxMessages"][msgNum]["toAddress"]))  # Get the to address
-    print(
-        "     From:", getLabelForAddress(inboxMessages["inboxMessages"][msgNum]["fromAddress"])
-    )  # Get the from address
-    print(
-        "     Subject:", base64.b64decode(inboxMessages["inboxMessages"][msgNum]["subject"]).decode("utf-8", "ignore")
-    )  # Get the subject
+    print("     From:", getLabelForAddress(inboxMessages["inboxMessages"][msgNum]["fromAddress"]))  # Get the from address
+    print("     Subject:", base64.b64decode(inboxMessages["inboxMessages"][msgNum]["subject"]).decode("utf-8", "ignore"))  # Get the subject
     print(
         "     Received:",
-        datetime.datetime.fromtimestamp(float(inboxMessages["inboxMessages"][msgNum]["receivedTime"])).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        ),
+        datetime.datetime.fromtimestamp(float(inboxMessages["inboxMessages"][msgNum]["receivedTime"])).strftime("%Y-%m-%d %H:%M:%S"),
     )
     print("     Message:\n")
     print(message)  # inboxMessages['inboxMessages'][msgNum]['message'].decode('base64')
@@ -1139,9 +1109,7 @@ def readMsg(msgNum):  # Opens a message for reading
     return inboxMessages["inboxMessages"][msgNum]["msgid"]
 
 
-def replyMsg(
-    msgNum, forwardORreply
-):  # Allows you to reply to the message you are currently on. Saves typing in the addresses and subject.
+def replyMsg(msgNum, forwardORreply):  # Allows you to reply to the message you are currently on. Saves typing in the addresses and subject.
     global usrPrompt
     forwardORreply = forwardORreply.lower()  # makes it lowercase
     try:
@@ -1152,9 +1120,7 @@ def replyMsg(
         main()
 
     fromAdd = inboxMessages["inboxMessages"][msgNum]["toAddress"]  # Address it was sent To, now the From address
-    message = base64.b64decode(inboxMessages["inboxMessages"][msgNum]["message"]).decode(
-        "utf-8", "ignore"
-    )  # Message that you are replying too.
+    message = base64.b64decode(inboxMessages["inboxMessages"][msgNum]["message"]).decode("utf-8", "ignore")  # Message that you are replying too.
 
     subject = inboxMessages["inboxMessages"][msgNum]["subject"]
     subject = base64.b64decode(subject).decode("utf-8", "ignore")
@@ -1622,9 +1588,7 @@ def UI(usrInput):  # Main user menu
         elif uInput == "o" or uInput == "outbox":
             readSentMsg(msgNum)
 
-            uInput = userInput(
-                "Would you like to (D)elete, or (Exit) this message?"
-            ).lower()  # Gives the user the option to delete the message
+            uInput = userInput("Would you like to (D)elete, or (Exit) this message?").lower()  # Gives the user the option to delete the message
 
             if uInput == "d" or uInput == "delete":
                 uInput = userInput("Are you sure, (Y)es or (N)o?").lower()  # Prevent accidental deletion
@@ -1663,9 +1627,7 @@ def UI(usrInput):  # Main user menu
                     break
 
             subject = base64.b64decode(inboxMessages["inboxMessages"][msgNum]["subject"]).decode("utf-8", "ignore")
-            message = inboxMessages["inboxMessages"][msgNum][
-                "message"
-            ]  # Don't decode since it is done in the saveFile function
+            message = inboxMessages["inboxMessages"][msgNum]["message"]  # Don't decode since it is done in the saveFile function
 
         elif uInput == "o" or uInput == "outbox":
             outboxMessages = json.loads(api.getAllSentMessages())
@@ -1680,9 +1642,7 @@ def UI(usrInput):  # Main user menu
                     break
 
             subject = base64.b64decode(outboxMessages["sentMessages"][msgNum]["subject"]).decode("utf-8", "ignore")
-            message = outboxMessages["sentMessages"][msgNum][
-                "message"
-            ]  # Don't decode since it is done in the saveFile function
+            message = outboxMessages["sentMessages"][msgNum]["message"]  # Don't decode since it is done in the saveFile function
 
         subject = subject + ".txt"
         saveFile(subject, message)
@@ -1699,9 +1659,7 @@ def UI(usrInput):  # Main user menu
             numMessages = len(inboxMessages["inboxMessages"])
 
             while True:
-                msgNum = userInput(
-                    "Enter the number of the message you wish to delete or (A)ll to empty the inbox."
-                ).lower()
+                msgNum = userInput("Enter the number of the message you wish to delete or (A)ll to empty the inbox.").lower()
 
                 if msgNum == "a" or msgNum == "all":
                     break
@@ -1733,9 +1691,7 @@ def UI(usrInput):  # Main user menu
             numMessages = len(outboxMessages["sentMessages"])
 
             while True:
-                msgNum = userInput(
-                    "Enter the number of the message you wish to delete or (A)ll to empty the inbox."
-                ).lower()
+                msgNum = userInput("Enter the number of the message you wish to delete or (A)ll to empty the inbox.").lower()
 
                 if msgNum == "a" or msgNum == "all":
                     break

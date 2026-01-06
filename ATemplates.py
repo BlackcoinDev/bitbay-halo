@@ -23,9 +23,7 @@ class myQLabel(QtWidgets.QLabel):
     def __init__(self, *args, **kargs):
         super(myQLabel, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(
-            QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored)
-        )
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored))
 
         self.setMinSize(6)
 
@@ -79,9 +77,7 @@ class myQCheckBox(QtWidgets.QCheckBox):
     def __init__(self, *args, **kargs):
         super(QtWidgets.QCheckBox, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(
-            QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored)
-        )
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored))
 
         self.setMinSize(6)
 
@@ -370,9 +366,7 @@ class MyForm(QtWidgets.QDialog):
         self.NotesText1.setObjectName(_fromUtf8("NotesText1"))
         self.NotesBox1 = QtWidgets.QTextEdit(self.page1)
         self.NotesBox1.setGeometry(QtCore.QRect(400, 470, 271, 125))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox1.sizePolicy().hasHeightForWidth())
@@ -645,9 +639,7 @@ class MyForm(QtWidgets.QDialog):
         self.OtherInfo.setObjectName(_fromUtf8("OtherInfo"))
         self.OtherBox = QtWidgets.QTextEdit(self.page2)
         self.OtherBox.setGeometry(QtCore.QRect(0, 470, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox.sizePolicy().hasHeightForWidth())
@@ -747,9 +739,7 @@ class MyForm(QtWidgets.QDialog):
         self.PhoneText1.setObjectName(_fromUtf8("PhoneText1"))
         self.OtherBox2 = QtWidgets.QTextEdit(self.page3)
         self.OtherBox2.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox2.sizePolicy().hasHeightForWidth())
@@ -962,9 +952,7 @@ class MyForm(QtWidgets.QDialog):
         self.Secret2.setObjectName(_fromUtf8("Secret2"))
         self.OtherBox3 = QtWidgets.QTextEdit(self.page4)
         self.OtherBox3.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherBox3.sizePolicy().hasHeightForWidth())
@@ -1011,9 +999,7 @@ class MyForm(QtWidgets.QDialog):
         self.Update4.setObjectName(_fromUtf8("Update4"))
         self.DebitBox = QtWidgets.QTextEdit(self.page5)
         self.DebitBox.setGeometry(QtCore.QRect(0, 190, 501, 200))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DebitBox.sizePolicy().hasHeightForWidth())
@@ -1103,9 +1089,7 @@ class MyForm(QtWidgets.QDialog):
         self.OtherFundBrowser.setObjectName(_fromUtf8("OtherFundBrowser"))
         self.OtherFundBox = QtWidgets.QTextEdit(self.page6)
         self.OtherFundBox.setGeometry(QtCore.QRect(0, 190, 501, 200))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherFundBox.sizePolicy().hasHeightForWidth())
@@ -1262,9 +1246,7 @@ class MyForm(QtWidgets.QDialog):
         self.InsuranceCheckCash.setObjectName(_fromUtf8("InsuranceCheckCash"))
         self.OtherInfoCashBox = QtWidgets.QTextEdit(self.page7)
         self.OtherInfoCashBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherInfoCashBox.sizePolicy().hasHeightForWidth())
@@ -1305,9 +1287,7 @@ class MyForm(QtWidgets.QDialog):
         self.AddressTextCash.setObjectName(_fromUtf8("AddressTextCash"))
         self.AddressCashBox = QtWidgets.QTextEdit(self.page7)
         self.AddressCashBox.setGeometry(QtCore.QRect(0, 410, 661, 41))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddressCashBox.sizePolicy().hasHeightForWidth())
@@ -1370,9 +1350,7 @@ class MyForm(QtWidgets.QDialog):
         self.Remove7.setObjectName(_fromUtf8("Remove7"))
         self.OtherMailBox = QtWidgets.QTextEdit(self.page8)
         self.OtherMailBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherMailBox.sizePolicy().hasHeightForWidth())
@@ -1429,9 +1407,7 @@ class MyForm(QtWidgets.QDialog):
         self.OtherMailText.setObjectName(_fromUtf8("OtherMailText"))
         self.AddressMailBox = QtWidgets.QTextEdit(self.page8)
         self.AddressMailBox.setGeometry(QtCore.QRect(0, 410, 661, 41))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddressMailBox.sizePolicy().hasHeightForWidth())
@@ -1625,9 +1601,7 @@ class MyForm(QtWidgets.QDialog):
         self.PhoneContactBox.setObjectName(_fromUtf8("PhoneContactBox"))
         self.OtherContactBox = QtWidgets.QTextEdit(self.page9)
         self.OtherContactBox.setGeometry(QtCore.QRect(0, 510, 501, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.OtherContactBox.sizePolicy().hasHeightForWidth())
@@ -2034,9 +2008,7 @@ class MyForm(QtWidgets.QDialog):
         self.PriceBox2.setObjectName(_fromUtf8("PriceBox2"))
         self.NotesBox2 = QtWidgets.QTextEdit(self.page10)
         self.NotesBox2.setGeometry(QtCore.QRect(400, 470, 271, 125))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox2.sizePolicy().hasHeightForWidth())
@@ -2120,9 +2092,7 @@ class MyForm(QtWidgets.QDialog):
         self.Description1.setObjectName(_fromUtf8("Description1"))
         self.NotesBox3 = QtWidgets.QTextEdit(self.page11)
         self.NotesBox3.setGeometry(QtCore.QRect(400, 519, 271, 81))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox3.sizePolicy().hasHeightForWidth())
@@ -2186,9 +2156,7 @@ class MyForm(QtWidgets.QDialog):
         self.JobTitle1.setObjectName(_fromUtf8("JobTitle1"))
         self.DescriptionBox2 = QtWidgets.QTextEdit(self.page11)
         self.DescriptionBox2.setGeometry(QtCore.QRect(0, 120, 671, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBox2.sizePolicy().hasHeightForWidth())
@@ -2410,9 +2378,7 @@ class MyForm(QtWidgets.QDialog):
         self.Notes4.setObjectName(_fromUtf8("Notes4"))
         self.DescriptionBox2_2 = QtWidgets.QTextEdit(self.page12)
         self.DescriptionBox2_2.setGeometry(QtCore.QRect(0, 120, 671, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBox2_2.sizePolicy().hasHeightForWidth())
@@ -2483,9 +2449,7 @@ class MyForm(QtWidgets.QDialog):
         self.LinkResumeBox.setObjectName(_fromUtf8("LinkResumeBox"))
         self.NotesBox4 = QtWidgets.QTextEdit(self.page12)
         self.NotesBox4.setGeometry(QtCore.QRect(400, 519, 271, 81))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox4.sizePolicy().hasHeightForWidth())
@@ -2666,9 +2630,7 @@ class MyForm(QtWidgets.QDialog):
         self.SellImageText.setObjectName(_fromUtf8("SellImageText"))
         self.NotesBox5 = QtWidgets.QTextEdit(self.page13)
         self.NotesBox5.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox5.sizePolicy().hasHeightForWidth())
@@ -2894,9 +2856,7 @@ class MyForm(QtWidgets.QDialog):
         self.DescriptionSellText.setObjectName(_fromUtf8("DescriptionSellText"))
         self.DescriptionSellBox = QtWidgets.QTextEdit(self.page13)
         self.DescriptionSellBox.setGeometry(QtCore.QRect(0, 80, 361, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionSellBox.sizePolicy().hasHeightForWidth())
@@ -3155,9 +3115,7 @@ class MyForm(QtWidgets.QDialog):
         self.BidBuyText.setObjectName(_fromUtf8("BidBuyText"))
         self.DescriptionBuyBox = QtWidgets.QTextEdit(self.page14)
         self.DescriptionBuyBox.setGeometry(QtCore.QRect(0, 80, 361, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBuyBox.sizePolicy().hasHeightForWidth())
@@ -3251,9 +3209,7 @@ class MyForm(QtWidgets.QDialog):
         self.BuyAttachImage.setObjectName(_fromUtf8("BuyAttachImage"))
         self.NotesBox6 = QtWidgets.QTextEdit(self.page14)
         self.NotesBox6.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox6.sizePolicy().hasHeightForWidth())
@@ -3526,9 +3482,7 @@ class MyForm(QtWidgets.QDialog):
         self.TimeLimitText7.setObjectName(_fromUtf8("TimeLimitText7"))
         self.NotesBox7 = QtWidgets.QTextEdit(self.page15)
         self.NotesBox7.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox7.sizePolicy().hasHeightForWidth())
@@ -3676,9 +3630,7 @@ class MyForm(QtWidgets.QDialog):
         self.EstValueUSD.addItem(_fromUtf8(""))
         self.AddDescriptionBox = QtWidgets.QTextEdit(self.page16)
         self.AddDescriptionBox.setGeometry(QtCore.QRect(0, 150, 391, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.AddDescriptionBox.sizePolicy().hasHeightForWidth())
@@ -3958,9 +3910,7 @@ class MyForm(QtWidgets.QDialog):
         self.Notes8.setObjectName(_fromUtf8("Notes8"))
         self.NotesBox8 = QtWidgets.QTextEdit(self.page17)
         self.NotesBox8.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox8.sizePolicy().hasHeightForWidth())
@@ -4198,9 +4148,7 @@ class MyForm(QtWidgets.QDialog):
         self.TimeLimitDays9.addItem(_fromUtf8(""))
         self.NotesBox9 = QtWidgets.QTextEdit(self.page)
         self.NotesBox9.setGeometry(QtCore.QRect(400, 510, 271, 90))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.NotesBox9.sizePolicy().hasHeightForWidth())
@@ -4295,9 +4243,7 @@ class MyForm(QtWidgets.QDialog):
         self.DepositSettings9.addItem(_fromUtf8(""))
         self.DescriptionPythonBox = QtWidgets.QTextEdit(self.page)
         self.DescriptionPythonBox.setGeometry(QtCore.QRect(0, 131, 341, 89))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionPythonBox.sizePolicy().hasHeightForWidth())
@@ -4818,9 +4764,7 @@ class MyForm(QtWidgets.QDialog):
         self.TheirDepositText10.setObjectName(_fromUtf8("TheirDepositText10"))
         self.TextBox1 = QtWidgets.QTextEdit(self.page19)
         self.TextBox1.setGeometry(QtCore.QRect(400, 499, 281, 111))
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.TextBox1.sizePolicy().hasHeightForWidth())
@@ -5138,9 +5082,7 @@ class MyForm(QtWidgets.QDialog):
         self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.JavascriptEnabled, False)
 
         self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.PluginsEnabled, False)
-        self.Display1.settings().setAttribute(
-            QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False
-        )
+        self.Display1.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False)
         self.Display1.setGeometry(QtCore.QRect(0, 40, 331, 231))
         self.Display1.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.Display1.setObjectName(_fromUtf8("Display1"))
@@ -5148,9 +5090,7 @@ class MyForm(QtWidgets.QDialog):
         self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.JavascriptEnabled, False)
 
         self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.PluginsEnabled, False)
-        self.Display2.settings().setAttribute(
-            QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False
-        )
+        self.Display2.settings().setAttribute(QtWebEngineCore.QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False)
         self.Display2.setGeometry(QtCore.QRect(340, 40, 331, 231))
         self.Display2.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
         self.Display2.setObjectName(_fromUtf8("Display2"))
@@ -5198,9 +5138,7 @@ class MyForm(QtWidgets.QDialog):
         self.TheirDepositText.setText(_translate("Form", "Their Deposit:", None))
         self.MyDepositText.setText(_translate("Form", "My Deposit:", None))
         self.PaymentOptions.setText(_translate("Form", "Payment Options:", None))
-        self.agreelabel.setText(
-            _translate("Form", "You agree to accept any of the marked boxes below as payment", None)
-        )
+        self.agreelabel.setText(_translate("Form", "You agree to accept any of the marked boxes below as payment", None))
         self.NotesText1.setText(_translate("Form", "Notes/Extra Details:", None))
         self.BankWireCheck.setText(_translate("Form", "Bank Wire/SEPA", None))
         self.WUCheck.setText(_translate("Form", "Western Union", None))
@@ -5305,9 +5243,7 @@ class MyForm(QtWidgets.QDialog):
         self.Create4.setText(_translate("Form", "Create New Profile", None))
         self.Save4.setText(_translate("Form", "Save Profile And Continue", None))
         self.DebitText.setText(_translate("Form", "Prepaid Debit Card", None))
-        self.DebitInfoText.setText(
-            _translate("Form", "Please list all of the funding information for your prepaid card:", None)
-        )
+        self.DebitInfoText.setText(_translate("Form", "Please list all of the funding information for your prepaid card:", None))
         self.DebitBrowser.setHtml(
             _translate(
                 "Form",
@@ -5341,9 +5277,7 @@ class MyForm(QtWidgets.QDialog):
         self.CashMailText.setText(_translate("Form", "Cash In The Mail", None))
         self.Remove6.setText(_translate("Form", "Remove Current Profile", None))
         self.Save6.setText(_translate("Form", "Save Profile And Continue", None))
-        self.OtherInfoCash.setText(
-            _translate("Form", "Other Information, email, contact info or special instructions (Optional):", None)
-        )
+        self.OtherInfoCash.setText(_translate("Form", "Other Information, email, contact info or special instructions (Optional):", None))
         self.Update6.setText(_translate("Form", "Update Current Profile", None))
         self.CashMailBrowser.setHtml(
             _translate(
@@ -5364,9 +5298,7 @@ class MyForm(QtWidgets.QDialog):
         self.AddressTextCash.setText(_translate("Form", "Address:", None))
         self.ZipCashText.setText(_translate("Form", "Zip Code:", None))
         self.Remove7.setText(_translate("Form", "Remove Current Profile", None))
-        self.OtherMailText.setText(
-            _translate("Form", "Other Information, email, contact info or special instructions (Optional):", None)
-        )
+        self.OtherMailText.setText(_translate("Form", "Other Information, email, contact info or special instructions (Optional):", None))
         self.Update7.setText(_translate("Form", "Update Current Profile", None))
         self.InsuranceMailCheck.setText(_translate("Form", "Request Insurance", None))
         self.Save7.setText(_translate("Form", "Save Profile And Continue", None))
@@ -5707,9 +5639,7 @@ class MyForm(QtWidgets.QDialog):
         self.AddMaxSizeUSD.setItemText(1, _translate("Form", "Coins", None))
         self.AddMaxSizeUSD.setItemText(2, _translate("Form", "Kilograms", None))
         self.AddMaxSizeUSD.setItemText(3, _translate("Form", "Pounds", None))
-        self.AddNoteText.setText(
-            _translate("Form", "Note: Shipping must be arranged seperately in escrow or is included in value", None)
-        )
+        self.AddNoteText.setText(_translate("Form", "Note: Shipping must be arranged seperately in escrow or is included in value", None))
         self.AddQuantityText.setText(_translate("Form", "Quantity:", None))
         self.DepositServiceSelect.setItemText(0, _translate("Form", "100% Minimum Deposit On Service Charge", None))
         self.DepositServiceSelect.setItemText(1, _translate("Form", "Set Custom Minimum Deposit On Service", None))

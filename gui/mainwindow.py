@@ -53,9 +53,7 @@ class myQLineEdit(QtWidgets.QLineEdit):
     def __init__(self, *args, **kargs):
         super(myQLineEdit, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(
-            QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
-        )
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding))
         self.setReadOnly(True)
         self.setMinSize(12)
 
@@ -137,9 +135,7 @@ class Ui_MainWindow(object):
             if self.language == "en" or self.language == "DEFAULT":
                 self.translist = []
                 return False
-            if (
-                self.yandexAPI == ""
-            ):  # For now google translate is too slow without API access although this can be expanded upon
+            if self.yandexAPI == "":  # For now google translate is too slow without API access although this can be expanded upon
                 print("Yandex API key not available")
                 return False
             else:
@@ -376,9 +372,7 @@ class Ui_MainWindow(object):
         tabsGroup.addButton(tb_chat)
         left_panel_vbox.addWidget(tb_chat)
 
-        left_panel_vbox.addItem(
-            QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
-        )
+        left_panel_vbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
 
         tb_contacts = QtWidgets.QToolButton()
         self.tb_contacts = tb_contacts
@@ -398,9 +392,7 @@ class Ui_MainWindow(object):
         tabsGroup.addButton(tb_contacts)
         left_panel_vbox.addWidget(tb_contacts)
 
-        left_panel_vbox.addItem(
-            QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        )
+        left_panel_vbox.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding))
 
     def setupMarketView(self, main_window):
         self.Market = QtWidgets.QWidget()
@@ -700,9 +692,7 @@ class Ui_MainWindow(object):
         main_window.setStatusBar(None)
 
         self.centralwidget = QtWidgets.QWidget(main_window)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
@@ -733,9 +723,7 @@ class Ui_MainWindow(object):
         indicators_bar_hbox = QtWidgets.QHBoxLayout(self.indicatorsBar)
         indicators_bar_hbox.setContentsMargins(0, 0, 0, 0)
         indicators_bar_hbox.setSpacing(12)
-        indicators_bar_hbox.addItem(
-            QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
-        )
+        indicators_bar_hbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed))
 
         ic_locked = QtGui.QIcon()
         ic_locked.addPixmap(QtGui.QPixmap(":/icons/ind_locked"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -811,9 +799,7 @@ class Ui_MainWindow(object):
         self.Rescan.setIcon(QtGui.QIcon(":/icons/rescan"))
         self.Rescan.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         bottom_panel_hbox.addWidget(self.Rescan)
-        bottom_panel_hbox.addItem(
-            QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
-        )
+        bottom_panel_hbox.addItem(QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed))
 
         self.mainPanelWidget = QtWidgets.QWidget()
         self.mainPanelWidget.setObjectName("mainPanelWidget")
@@ -1058,9 +1044,7 @@ class Ui_MainWindow(object):
         self.Chat.webView.setEnabled(True)
 
         self.webView = self.Chat.webView
-        self.webView.setHtml(
-            _fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-        )
+        self.webView.setHtml(_fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
         self.webView.setObjectName(_fromUtf8("webView"))
 
         self.Tabs.addWidget(self.Chat)
@@ -1299,9 +1283,7 @@ class Ui_MainWindow(object):
         # self.Tabs.setTabIcon(5,icon23)
         icon24 = QtGui.QIcon()
         icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
-        icon24.addPixmap(
-            QtGui.QPixmap(":/icons/tabs/pendingoffers_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off
-        )
+        icon24.addPixmap(QtGui.QPixmap(":/icons/tabs/pendingoffers_off"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.Off)
         # self.Tabs.setTabIcon(6,icon24)
         icon25 = QtGui.QIcon()
         icon25.addPixmap(QtGui.QPixmap(":/icons/tabs/orders_on"), QtGui.QIcon.Mode.Active, QtGui.QIcon.State.On)
@@ -1381,31 +1363,19 @@ class Ui_MainWindow(object):
         )
         self.SendBitcoins.l_stepOneHead.setText(self._translate("MainWindow", "Step 1", None))
         self.SendBitcoins.l_stepTwoHead.setText(self._translate("MainWindow", "Step 2", None))
-        self.ReceiveBitcoins.receiveCoinsGroupBox.setTitle(
-            self._translate("MainWindow", "Receive BitBay and Contracts", None)
-        )
+        self.ReceiveBitcoins.receiveCoinsGroupBox.setTitle(self._translate("MainWindow", "Receive BitBay and Contracts", None))
         self.History.gb_history.setTitle(self._translate("MainWindow", "History", None))
         self.Market.gb_market.setTitle(self._translate("MainWindow", "Market", None))
-        self.Market.label_2.setText(
-            self._translate("MainWindow", "These markets are decentralized. However volunteers may moderate.", None)
-        )
-        self.Market.l_noPostIllegal.setText(
-            self._translate("MainWindow", "Do not post illegal content to the market or you may get blocked.", None)
-        )
-        self.Market.MarketRules.setText(
-            self._translate(
-                "MainWindow", "These revolutionary markets are a way of connecting to people worldwide.", None
-            )
-        )
+        self.Market.label_2.setText(self._translate("MainWindow", "These markets are decentralized. However volunteers may moderate.", None))
+        self.Market.l_noPostIllegal.setText(self._translate("MainWindow", "Do not post illegal content to the market or you may get blocked.", None))
+        self.Market.MarketRules.setText(self._translate("MainWindow", "These revolutionary markets are a way of connecting to people worldwide.", None))
         self.Market.label_4.setText(self._translate("MainWindow", "Market:", None))
         self.MakeAnOffer.gb_create.setTitle(self._translate("MainWindow", "Create a Smart Contract", None))
         self.PendingOffers.gb_pendingOffers.setTitle(self._translate("MainWindow", "Pending Offers", None))
         self.OpenContracts.gb_openContracts.setTitle(self._translate("MainWindow", "Open Contracts", None))
         self.Chat.gb_chat.setTitle(self._translate("MainWindow", "Chat", None))
         self.Contacts.gb_contacts.setTitle(self._translate("MainWindow", "Contacts", None))
-        self.Contacts.ContactLabel.setText(
-            self._translate("MainWindow", "Add contacts to your BitBay Address Book", None)
-        )
+        self.Contacts.ContactLabel.setText(self._translate("MainWindow", "Add contacts to your BitBay Address Book", None))
 
         self.tab.l_actualBalance.setText(self._translate("MainWindow", "Actual Balance:", None))
         self.tab.l_availableBalance.setText(self._translate("MainWindow", "Available Balance:", None))
@@ -1447,16 +1417,12 @@ class Ui_MainWindow(object):
         self.SendMyBitcoins.setText(self._translate("MainWindow", "Send", None))
         self.CreateSignatureOne.setToolTip(self._translate("MainWindow", "Create Signature File", None))
         self.CreateSignatureOne.setText(self._translate("MainWindow", "Create Signature File", None))
-        self.OpenBitSignatureAndSend.setToolTip(
-            self._translate("MainWindow", "Open Signature File, Sign and Send", None)
-        )
+        self.OpenBitSignatureAndSend.setToolTip(self._translate("MainWindow", "Open Signature File, Sign and Send", None))
         self.OpenBitSignatureAndSend.setText(self._translate("MainWindow", "Open Signature File, Sign and Send", None))
         self.ExplainReceive.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainReceive.setText(self._translate("MainWindow", "?", None))
         self.CopyAddressToClipboard.setToolTip(self._translate("MainWindow", "Copy Address to Clipboard", None))
-        self.ReceiveBitcoins.receiveBitMessageAddressLabel.setText(
-            self._translate("MainWindow", "Your BitMessage Address: ", None)
-        )
+        self.ReceiveBitcoins.receiveBitMessageAddressLabel.setText(self._translate("MainWindow", "Your BitMessage Address: ", None))
         self.CopyAddressToClipboard_2.setToolTip(self._translate("MainWindow", "Copy Address to Clipboard", None))
         self.BitmessageStatus.setText(self._translate("MainWindow", "Status:", None))
         self.EnableBitmessage.setText(self._translate("MainWindow", "Enable Bitmessage", None))
@@ -1464,9 +1430,7 @@ class Ui_MainWindow(object):
         self.MyEmail.setText(self._translate("MainWindow", "Your Email Address: ", None))
         self.AddEmail_2.setToolTip(self._translate("MainWindow", "Copy Address to Clipboard", None))
         self.EmailStatus.setText(self._translate("MainWindow", "Status:", None))
-        self.EmailBox.setPlaceholderText(
-            self._translate("MainWindow", 'Enter your Email here and then click the"Add/Change" button.', None)
-        )
+        self.EmailBox.setPlaceholderText(self._translate("MainWindow", 'Enter your Email here and then click the"Add/Change" button.', None))
         self.AddEmail.setToolTip(self._translate("MainWindow", "Add / Change Email", None))
         self.AddEmail.setText(self._translate("MainWindow", "Add/Change", None))
         self.EnableEmail.setText(self._translate("MainWindow", "Enable Email (Encrypted)", None))
@@ -1518,9 +1482,7 @@ class Ui_MainWindow(object):
         self.AutoBackupLabel_2.setText(self._translate("MainWindow", "Auto Backup", None))
         self.ExplainAutoBackupOffer.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainAutoBackupOffer.setText(self._translate("MainWindow", "?", None))
-        self.TxBackupPath.setPlaceholderText(
-            self._translate("MainWindow", "Path to flash drive or backup folder.", None)
-        )
+        self.TxBackupPath.setPlaceholderText(self._translate("MainWindow", "Path to flash drive or backup folder.", None))
         self.BrowseTxBackup.setToolTip(self._translate("MainWindow", "Create path to Backup Folder", None))
         self.InstantRefundLabel.setText(self._translate("MainWindow", "Instant Refund", None))
         self.instantexplain.setToolTip(self._translate("MainWindow", "Help", None))
@@ -1670,9 +1632,7 @@ if __name__ == "__main__":
     NewCoin1["stakeconfirmations"] = 120
     NewCoin1["logo"] = "/images/BitBay.png"
     NewCoin1["name"] = "BitBay"
-    NewCoin1["website"] = (
-        "http://bitbaymarket.net/"  # "http://www.thebitbay.org/"  and bitbaymarket is also under Bitbays control
-    )
+    NewCoin1["website"] = "http://bitbaymarket.net/"  # "http://www.thebitbay.org/"  and bitbaymarket is also under Bitbays control
     NewCoin1["videolibrary"] = "https://www.youtube.com/watch?v=CIU4s2G8jU8&list=PL4MGGKJn4DizGw7oBXwzETMVLNCZ6G2_t"
     NewCoin1["updatewindows"] = "https://bithalo.github.io/bithalo/downloads/BitBayUpdateWin.html"
     NewCoin1["TabText"] = "rgb(255, 255, 255)"
@@ -1686,14 +1646,10 @@ if __name__ == "__main__":
     NewCoin1["Symbol"] = "BAY"
     NewCoin1["CommandLinkColor"] = "#fbfbfb"
     NewCoin1["ProgressBarColor"] = "#a5d1e4"  # 545d6d
-    NewCoin1["TabGradient"] = (
-        "qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
-    )
+    NewCoin1["TabGradient"] = "qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
     NewCoin1["NavBarIcon"] = "/images/navbar_arrow_bay.png"
     NewCoin1["default market"] = "BitBay"
-    NewCoin1["IRC"] = (
-        "https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#BitBay"  # http://webchat.freenode.net?channels=BitHalo,#BitBay&amp;uio=OT10cnVlJjExPTIzNg6b"
-    )
+    NewCoin1["IRC"] = "https://kiwiirc.com/client/irc.kiwiirc.com/#BitHalo,#BitBay"  # http://webchat.freenode.net?channels=BitHalo,#BitBay&amp;uio=OT10cnVlJjExPTIzNg6b"
     NewCoin1["links"] = (
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
         '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'

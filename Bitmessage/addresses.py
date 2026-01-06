@@ -95,10 +95,7 @@ def decodeVarint(data):
     if firstByte == 253:
         # encodes 253 to 65535
         if len(data) < 3:
-            raise varintDecodeError(
-                "The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 3."
-                % (firstByte, len(data))
-            )
+            raise varintDecodeError("The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 3." % (firstByte, len(data)))
         (encodedValue,) = unpack(">H", data[1:3])
         if encodedValue < 253:
             raise varintDecodeError("This varint does not encode the value with the lowest possible number of bytes.")
@@ -106,10 +103,7 @@ def decodeVarint(data):
     if firstByte == 254:
         # encodes 65536 to 4294967295
         if len(data) < 5:
-            raise varintDecodeError(
-                "The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 5."
-                % (firstByte, len(data))
-            )
+            raise varintDecodeError("The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 5." % (firstByte, len(data)))
         (encodedValue,) = unpack(">I", data[1:5])
         if encodedValue < 65536:
             raise varintDecodeError("This varint does not encode the value with the lowest possible number of bytes.")
@@ -117,10 +111,7 @@ def decodeVarint(data):
     if firstByte == 255:
         # encodes 4294967296 to 18446744073709551615
         if len(data) < 9:
-            raise varintDecodeError(
-                "The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 9."
-                % (firstByte, len(data))
-            )
+            raise varintDecodeError("The first byte of this varint as an integer is %s but the total length is only %s. It needs to be at least 9." % (firstByte, len(data)))
         (encodedValue,) = unpack(">Q", data[1:9])
         if encodedValue < 4294967296:
             raise varintDecodeError("This varint does not encode the value with the lowest possible number of bytes.")
@@ -264,9 +255,7 @@ def addBMIfNotPresent(address):
 
 
 if __name__ == "__main__":
-    print(
-        "Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:"
-    )
+    print("Let us make an address from scratch. Suppose we generate two random 32 byte values and call the first one the signing key and the second one the encryption key:")
     privateSigningKey = "93d0b61371a54b53df143b954035d612f8efa8a3ed1cf842c2186bfd8f876665"
     privateEncryptionKey = "4b0b73a54e19b059dc274ab69df095fe699f43b17397bca26fdf40f4d7400a3a"
     print(("privateSigningKey =", privateSigningKey))

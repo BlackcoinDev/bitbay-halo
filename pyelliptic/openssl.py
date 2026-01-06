@@ -20,14 +20,7 @@ class CipherName:
         self._blocksize = blocksize
 
     def __str__(self):
-        return (
-            "Cipher : "
-            + self._name
-            + " | Blocksize : "
-            + str(self._blocksize)
-            + " | Fonction pointer : "
-            + str(self._pointer)
-        )
+        return "Cipher : " + self._name + " | Blocksize : " + str(self._blocksize) + " | Fonction pointer : " + str(self._pointer)
 
     def get_pointer(self):
         return self._pointer()

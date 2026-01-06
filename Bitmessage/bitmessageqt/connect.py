@@ -45,9 +45,7 @@ class Ui_connectDialog(object):
         self.radioButtonConfigureNetwork = QtWidgets.QRadioButton(connectDialog)
         self.radioButtonConfigureNetwork.setObjectName("radioButtonConfigureNetwork")
         self.gridLayout.addWidget(self.radioButtonConfigureNetwork, 2, 0, 1, 2)
-        spacerItem = QtWidgets.QSpacerItem(
-            185, 24, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(185, 24, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem, 3, 0, 1, 1)
         self.buttonBox = QtWidgets.QDialogButtonBox(connectDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
@@ -64,6 +62,4 @@ class Ui_connectDialog(object):
         connectDialog.setWindowTitle(_translate("connectDialog", "Bitmessage", None))
         self.label.setText(_translate("connectDialog", "Bitmessage won't connect to anyone until you let it. ", None))
         self.radioButtonConnectNow.setText(_translate("connectDialog", "Connect now", None))
-        self.radioButtonConfigureNetwork.setText(
-            _translate("connectDialog", "Let me configure special network settings first", None)
-        )
+        self.radioButtonConfigureNetwork.setText(_translate("connectDialog", "Let me configure special network settings first", None))

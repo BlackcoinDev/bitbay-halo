@@ -47,9 +47,7 @@ class myQLabel(QtWidgets.QLabel):
     def __init__(self, *args, **kargs):
         super(myQLabel, self).__init__(*args, **kargs)
 
-        self.setSizePolicy(
-            QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored)
-        )
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored, QtWidgets.QSizePolicy.Policy.Ignored))
 
         self.setMinSize(6)
 
@@ -116,9 +114,7 @@ class Ui_MainWindow(object):
             if self.language == "en" or self.language == "DEFAULT":
                 self.translist = []
                 return False
-            if (
-                self.yandexAPI == ""
-            ):  # For now google translate is too slow without API access although this can be expanded upon
+            if self.yandexAPI == "":  # For now google translate is too slow without API access although this can be expanded upon
                 print("Yandex API key not available")
                 return False
             else:
@@ -178,15 +174,11 @@ class Ui_MainWindow(object):
         self.NewCoin["TabSelected"] = "#acb6c6"
         self.NewCoin["QTabBackground"] = "rgba(0, 0, 34, 250)"
         self.NewCoin["QFrameColor"] = "#00000"
-        self.NewCoin["FrameGradient"] = (
-            "qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgba(50, 50, 50, 250)"
-        )
+        self.NewCoin["FrameGradient"] = "qlineargradient(x1:1, y1:1, x2:0, y2:1, stop:0 #2f3339, stop: 0.4 rgba(0, 0, 34, 250), stop:0 rgba(50, 50, 50, 250)"
         self.NewCoin["Symbol"] = "BAY"
         self.NewCoin["CommandLinkColor"] = "#fbfbfb"
         self.NewCoin["ProgressBarColor"] = "#545d6d"
-        self.NewCoin["TabGradient"] = (
-            "qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
-        )
+        self.NewCoin["TabGradient"] = "qlineargradient(x1:1, y1:1, x2:1, y2:0, stop:0 #009ee3, stop: 0.4 rgba(0, 90, 177, 250), stop:1 rgba(0, 50, 100, 250))"
         self.NewCoin["NavBarIcon"] = "/images/navbar_arrow_bay.png"
         self.NewCoin["IRC"] = "http://webchat.freenode.net?channels=BitHalo,#Blackcoin&amp;uio=OT10cnVlJjExPTIzNg6b"
         # self.ApplicationPath="C:\\Users\\David\\Desktop\\BlackHalo\Halo\\"
@@ -202,9 +194,7 @@ class Ui_MainWindow(object):
         )
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
@@ -215,9 +205,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.Tabs = QtWidgets.QTabWidget(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(60)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.Tabs.sizePolicy().hasHeightForWidth())
@@ -277,9 +265,7 @@ class Ui_MainWindow(object):
         self.Tabs.setDocumentMode(False)
         self.Tabs.setObjectName(_fromUtf8("Tabs"))
         self.tab = QtWidgets.QWidget()
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tab.sizePolicy().hasHeightForWidth())
@@ -290,9 +276,7 @@ class Ui_MainWindow(object):
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
         self.frame_2 = QtWidgets.QFrame(self.tab)
         self.frame_2.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
@@ -333,9 +317,7 @@ class Ui_MainWindow(object):
         self.frame_3 = QtWidgets.QFrame(self.frame_2)
         self.frame_3.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_3.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_3.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_3.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_3.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_3.setObjectName(_fromUtf8("frame_3"))
@@ -358,9 +340,7 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.verticalLayout.addWidget(self.label_3)
         self.horizontalLayout_2.addLayout(self.verticalLayout)
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.commandLinkButton = QtWidgets.QPushButton(self.frame_2)
         self.commandLinkButton.setMinimumSize(QtCore.QSize(220, 40))
@@ -412,9 +392,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(0, 0, -1, -1)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.frame_5 = QtWidgets.QFrame(self.tab)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.frame_5.sizePolicy().hasHeightForWidth())
@@ -450,9 +428,7 @@ class Ui_MainWindow(object):
         self.MyAddress_7.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.NoTextInteraction)
         self.MyAddress_7.setObjectName(_fromUtf8("MyAddress_7"))
         self.horizontalLayout.addWidget(self.frame_5)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            5, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.CopyAddressToClipboard_3 = QtWidgets.QPushButton(self.tab)
         self.CopyAddressToClipboard_3.setMinimumSize(QtCore.QSize(40, 40))
@@ -519,9 +495,7 @@ class Ui_MainWindow(object):
         font.setItalic(False)
         font.setWeight(75)
         # self.WelcomeActualBalance.setFont(font)
-        self.WelcomeActualBalance.setStyleSheet(
-            _fromUtf8("color: rgb(104, 104, 104);\n" "font: Bold;")
-        )  # 16px \"Arial\";
+        self.WelcomeActualBalance.setStyleSheet(_fromUtf8("color: rgb(104, 104, 104);\n" "font: Bold;"))  # 16px \"Arial\";
         # self.WelcomeActualBalance.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.WelcomeActualBalance.setObjectName(_fromUtf8("WelcomeActualBalance"))
         self.WelcomeAvailableBalance = myQLabel(self.frame_4)
@@ -539,60 +513,36 @@ class Ui_MainWindow(object):
         self.WelcomeAvailableBalance.setObjectName(_fromUtf8("WelcomeAvailableBalance"))
         self.line_6 = QtWidgets.QFrame(self.frame_4)
         self.line_6.setGeometry(QtCore.QRect(10, 40, 471, 20))
-        self.line_6.setStyleSheet(
-            _fromUtf8("border: 1px dotted #000000; \n" "border-style: dotted none none; \n" "color: #fff;")
-        )
+        self.line_6.setStyleSheet(_fromUtf8("border: 1px dotted #000000; \n" "border-style: dotted none none; \n" "color: #fff;"))
         self.line_6.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.line_6.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_6.setObjectName(_fromUtf8("line_6"))
         self.Symbol_1 = myQLabel(self.frame_4)
         self.Symbol_1.setGeometry(QtCore.QRect(430, 10, 36, 21))
         self.Symbol_1.setStyleSheet(_fromUtf8('font: bold "Arial";\n' "color: #24282C;"))
-        self.Symbol_1.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading
-            | QtCore.Qt.AlignmentFlag.AlignLeft
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.Symbol_1.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.Symbol_1.setObjectName(_fromUtf8("Symbol_1"))
         self.Symbol_2 = myQLabel(self.frame_4)
         self.Symbol_2.setGeometry(QtCore.QRect(430, 50, 41, 21))
         self.Symbol_2.setStyleSheet(_fromUtf8('font: bold "Arial";\n' "color: #24282C;"))
-        self.Symbol_2.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading
-            | QtCore.Qt.AlignmentFlag.AlignLeft
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.Symbol_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.Symbol_2.setObjectName(_fromUtf8("Symbol_2"))
         self.MyBalance_4 = QtWidgets.QLabel(self.frame_4)
         self.MyBalance_4.setGeometry(QtCore.QRect(170, 50, 251, 20))
         self.MyBalance_4.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
         self.MyBalance_4.setTextFormat(QtCore.Qt.TextFormat.PlainText)
-        self.MyBalance_4.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.MyBalance_4.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        self.MyBalance_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyBalance_4.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.MyBalance_4.setObjectName(_fromUtf8("MyBalance_4"))
         self.MyBalance_3 = QtWidgets.QLabel(self.frame_4)
         self.MyBalance_3.setGeometry(QtCore.QRect(170, 10, 251, 20))
         self.MyBalance_3.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
         self.MyBalance_3.setTextFormat(QtCore.Qt.TextFormat.PlainText)
-        self.MyBalance_3.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.MyBalance_3.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        self.MyBalance_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyBalance_3.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.MyBalance_3.setObjectName(_fromUtf8("MyBalance_3"))
         self.verticalLayout_2.addWidget(self.frame_4)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_2.addItem(spacerItem2)
 
         self.Conversion = QtWidgets.QPushButton(self.frame_4)
@@ -649,9 +599,7 @@ class Ui_MainWindow(object):
         self.OpenAccount.setIconSize(QtCore.QSize(20, 20))
         self.OpenAccount.setObjectName(_fromUtf8("OpenAccount"))
         self.horizontalLayout_4.addWidget(self.OpenAccount)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem3)
         self.JointAccount = QtWidgets.QPushButton(self.tab)
         self.JointAccount.setMinimumSize(QtCore.QSize(281, 71))
@@ -689,9 +637,7 @@ class Ui_MainWindow(object):
         self.JointAccount.setObjectName(_fromUtf8("JointAccount"))
         self.horizontalLayout_4.addWidget(self.JointAccount)
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_4.addItem(spacerItem4)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
@@ -905,9 +851,7 @@ class Ui_MainWindow(object):
         self.BuyAnything.setIconSize(QtCore.QSize(20, 20))
         self.BuyAnything.setObjectName(_fromUtf8("BuyAnything"))
         self.gridLayout_2.addWidget(self.BuyAnything, 1, 0, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_2.addItem(spacerItem5, 0, 1, 1, 1)
         self.BuyCoins = QtWidgets.QPushButton(self.tab)
         self.BuyCoins.setMinimumSize(QtCore.QSize(181, 71))
@@ -943,23 +887,17 @@ class Ui_MainWindow(object):
         self.BuyCoins.setIconSize(QtCore.QSize(20, 20))
         self.BuyCoins.setObjectName(_fromUtf8("BuyCoins"))
         self.gridLayout_2.addWidget(self.BuyCoins, 0, 0, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_2.addItem(spacerItem6, 0, 3, 1, 1)
         self.verticalLayout_4.addLayout(self.gridLayout_2)
         self.verticalLayout_2.addLayout(self.verticalLayout_4)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_2.addItem(spacerItem7)
         self.horizontalLayout_3.addLayout(self.verticalLayout_2)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setContentsMargins(20, -1, -1, -1)
         self.horizontalLayout_9.setObjectName(_fromUtf8("horizontalLayout_9"))
-        spacerItem8 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_9.addItem(spacerItem8)
         self.line = QtWidgets.QFrame(self.tab)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Expanding)
@@ -978,9 +916,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setContentsMargins(25, -1, 30, -1)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        spacerItem9 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem9 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_3.addItem(spacerItem9)
         self.HaloContactsIcon_2 = QtWidgets.QPushButton(self.tab)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -1011,9 +947,7 @@ class Ui_MainWindow(object):
         self.HaloContactsIcon_2.setFlat(True)
         self.HaloContactsIcon_2.setObjectName(_fromUtf8("HaloContactsIcon_2"))
         self.verticalLayout_3.addWidget(self.HaloContactsIcon_2)
-        spacerItem10 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem10 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_3.addItem(spacerItem10)
         self.switchcoin = QtWidgets.QPushButton(self.tab)
         self.switchcoin.setMinimumSize(QtCore.QSize(221, 71))
@@ -1129,22 +1063,16 @@ class Ui_MainWindow(object):
         self.VideoLibrary.setIconSize(QtCore.QSize(20, 20))
         self.VideoLibrary.setObjectName(_fromUtf8("VideoLibrary"))
         self.verticalLayout_3.addWidget(self.VideoLibrary)
-        spacerItem11 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem11 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_3.addItem(spacerItem11)
-        spacerItem12 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_3.addItem(spacerItem12)
         self.horizontalLayout_3.addLayout(self.verticalLayout_3)
         self.gridLayout_7.addLayout(self.horizontalLayout_3, 1, 0, 1, 1)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setContentsMargins(-1, -1, -1, 1)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        spacerItem13 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem13 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_5.addItem(spacerItem13)
         self.LineBalance_5 = QtWidgets.QFrame(self.tab)
         self.LineBalance_5.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
@@ -1155,9 +1083,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setContentsMargins(-1, -1, -1, 5)
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
-        spacerItem14 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem14)
         self.labelProgress = QtWidgets.QLabel(self.tab)
         self.labelProgress.setMinimumSize(QtCore.QSize(0, 0))
@@ -1226,9 +1152,7 @@ class Ui_MainWindow(object):
         self.Rescan.setIcon(icon12)
         self.Rescan.setObjectName(_fromUtf8("Rescan"))
         self.horizontalLayout_6.addWidget(self.Rescan)
-        spacerItem15 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem15 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem15)
         self.verticalLayout_5.addLayout(self.horizontalLayout_6)
         self.gridLayout_7.addLayout(self.verticalLayout_5, 2, 0, 1, 1)
@@ -1279,9 +1203,7 @@ class Ui_MainWindow(object):
         self.frame_7 = QtWidgets.QFrame(self.frame)
         self.frame_7.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_7.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_7.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_7.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_7.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_7.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_7.setObjectName(_fromUtf8("frame_7"))
@@ -1304,9 +1226,7 @@ class Ui_MainWindow(object):
         self.label_8.setObjectName(_fromUtf8("label_8"))
         self.verticalLayout_7.addWidget(self.label_8)
         self.horizontalLayout_11.addLayout(self.verticalLayout_7)
-        spacerItem16 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem16 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_11.addItem(spacerItem16)
         self.commandLinkButton_3 = QtWidgets.QPushButton(self.frame)
         self.commandLinkButton_3.setMinimumSize(QtCore.QSize(220, 40))
@@ -1461,11 +1381,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.SendActualBalance.setFont(font)
         self.SendActualBalance.setStyleSheet(_fromUtf8("color: rgb(104, 104, 104);\n" 'font: Bold "Arial";'))
-        self.SendActualBalance.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.SendActualBalance.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.SendActualBalance.setObjectName(_fromUtf8("SendActualBalance"))
         self.SendAvailableBalance = myQLabel(self.frame_6)
         self.SendAvailableBalance.setGeometry(QtCore.QRect(0, 50, 151, 21))
@@ -1478,73 +1394,43 @@ class Ui_MainWindow(object):
         self.SendAvailableBalance.setFont(font)
         self.SendAvailableBalance.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.SendAvailableBalance.setStyleSheet(_fromUtf8("color: rgb(104, 104, 104);\n" 'font: bold "Arial";'))
-        self.SendAvailableBalance.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.SendAvailableBalance.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.SendAvailableBalance.setObjectName(_fromUtf8("SendAvailableBalance"))
         self.line_7 = QtWidgets.QFrame(self.frame_6)
         self.line_7.setGeometry(QtCore.QRect(10, 40, 471, 20))
-        self.line_7.setStyleSheet(
-            _fromUtf8("border: 1px dotted #000000; \n" "border-style: dotted none none; \n" "color: #fff;")
-        )
+        self.line_7.setStyleSheet(_fromUtf8("border: 1px dotted #000000; \n" "border-style: dotted none none; \n" "color: #fff;"))
         self.line_7.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.line_7.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_7.setObjectName(_fromUtf8("line_7"))
         self.Symbol_3 = QtWidgets.QLabel(self.frame_6)
         self.Symbol_3.setGeometry(QtCore.QRect(430, 10, 46, 21))
         self.Symbol_3.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
-        self.Symbol_3.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading
-            | QtCore.Qt.AlignmentFlag.AlignLeft
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.Symbol_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.Symbol_3.setObjectName(_fromUtf8("Symbol_3"))
         self.Symbol_4 = QtWidgets.QLabel(self.frame_6)
         self.Symbol_4.setGeometry(QtCore.QRect(430, 50, 46, 21))
         self.Symbol_4.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
-        self.Symbol_4.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading
-            | QtCore.Qt.AlignmentFlag.AlignLeft
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.Symbol_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.Symbol_4.setObjectName(_fromUtf8("Symbol_4"))
         self.MyBalance_8 = QtWidgets.QLabel(self.frame_6)
         self.MyBalance_8.setGeometry(QtCore.QRect(170, 50, 251, 20))
         self.MyBalance_8.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
         self.MyBalance_8.setTextFormat(QtCore.Qt.TextFormat.PlainText)
-        self.MyBalance_8.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.MyBalance_8.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        self.MyBalance_8.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyBalance_8.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.MyBalance_8.setObjectName(_fromUtf8("MyBalance_8"))
         self.MyBalance_7 = QtWidgets.QLabel(self.frame_6)
         self.MyBalance_7.setGeometry(QtCore.QRect(170, 10, 251, 20))
         self.MyBalance_7.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
         self.MyBalance_7.setTextFormat(QtCore.Qt.TextFormat.PlainText)
-        self.MyBalance_7.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.MyBalance_7.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        self.MyBalance_7.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyBalance_7.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.MyBalance_7.setObjectName(_fromUtf8("MyBalance_7"))
         self.gridLayout_3.addWidget(self.frame_6, 1, 1, 1, 1)
-        spacerItem17 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem17 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_3.addItem(spacerItem17, 2, 2, 1, 1)
         self.verticalLayout_8.addLayout(self.gridLayout_3)
-        spacerItem18 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem18 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem18)
         self.LineBalance_7 = QtWidgets.QFrame(self.SendBitcoins)
         self.LineBalance_7.setMinimumSize(QtCore.QSize(600, 0))
@@ -1553,16 +1439,12 @@ class Ui_MainWindow(object):
         self.LineBalance_7.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_7.setObjectName(_fromUtf8("LineBalance_7"))
         self.verticalLayout_8.addWidget(self.LineBalance_7)
-        spacerItem19 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem19 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem19)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setContentsMargins(0, -1, -1, -1)
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
-        spacerItem20 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem20 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem20)
         self.AdvancedSend = QtWidgets.QPushButton(self.SendBitcoins)
         self.AdvancedSend.setMinimumSize(QtCore.QSize(250, 50))
@@ -1624,9 +1506,7 @@ class Ui_MainWindow(object):
         self.ExplainSpend.setIconSize(QtCore.QSize(20, 20))
         self.ExplainSpend.setObjectName(_fromUtf8("ExplainSpend"))
         self.horizontalLayout_12.addWidget(self.ExplainSpend)
-        spacerItem21 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem21 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem21)
         self.SendMyBitcoins = QtWidgets.QPushButton(self.SendBitcoins)
         self.SendMyBitcoins.setMinimumSize(QtCore.QSize(300, 50))
@@ -1669,14 +1549,10 @@ class Ui_MainWindow(object):
         self.SendMyBitcoins.setIconSize(QtCore.QSize(20, 20))
         self.SendMyBitcoins.setObjectName(_fromUtf8("SendMyBitcoins"))
         self.horizontalLayout_12.addWidget(self.SendMyBitcoins)
-        spacerItem22 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem22 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem22)
         self.verticalLayout_8.addLayout(self.horizontalLayout_12)
-        spacerItem23 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem23 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem23)
         self.verticalLayout_9 = QtWidgets.QVBoxLayout()
         self.verticalLayout_9.setContentsMargins(-1, 0, -1, -1)
@@ -1724,16 +1600,12 @@ class Ui_MainWindow(object):
         self.LineBalance_9.setObjectName(_fromUtf8("LineBalance_9"))
         self.horizontalLayout_13.addWidget(self.LineBalance_9)
         self.verticalLayout_9.addLayout(self.horizontalLayout_13)
-        spacerItem24 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem24 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_9.addItem(spacerItem24)
         self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_14.setContentsMargins(0, 0, 0, -1)
         self.horizontalLayout_14.setObjectName(_fromUtf8("horizontalLayout_14"))
-        spacerItem25 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem25 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem25)
         self.LabelStepOne = QtWidgets.QTextBrowser(self.SendBitcoins)
         self.LabelStepOne.setMinimumSize(QtCore.QSize(300, 90))
@@ -1752,9 +1624,7 @@ class Ui_MainWindow(object):
         self.LabelStepOne.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.LabelStepOne.setObjectName(_fromUtf8("LabelStepOne"))
         self.horizontalLayout_14.addWidget(self.LabelStepOne)
-        spacerItem26 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem26 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem26)
         self.LabelStepTwo = QtWidgets.QTextBrowser(self.SendBitcoins)
         self.LabelStepTwo.setMinimumSize(QtCore.QSize(300, 90))
@@ -1773,15 +1643,11 @@ class Ui_MainWindow(object):
         self.LabelStepTwo.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.LabelStepTwo.setObjectName(_fromUtf8("LabelStepTwo"))
         self.horizontalLayout_14.addWidget(self.LabelStepTwo)
-        spacerItem27 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem27 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem27)
         self.verticalLayout_9.addLayout(self.horizontalLayout_14)
         self.verticalLayout_8.addLayout(self.verticalLayout_9)
-        spacerItem28 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem28 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem28)
         self.LineBalance_12 = QtWidgets.QFrame(self.SendBitcoins)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -1791,23 +1657,17 @@ class Ui_MainWindow(object):
         self.LineBalance_12.setSizePolicy(sizePolicy)
         self.LineBalance_12.setMinimumSize(QtCore.QSize(800, 0))
         self.LineBalance_12.setMaximumSize(QtCore.QSize(800, 16777215))
-        self.LineBalance_12.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_12.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_12.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_12.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_12.setObjectName(_fromUtf8("LineBalance_12"))
         self.verticalLayout_8.addWidget(self.LineBalance_12)
-        spacerItem29 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem29 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem29)
         self.horizontalLayout_15 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, -1)
         self.horizontalLayout_15.setObjectName(_fromUtf8("horizontalLayout_15"))
-        spacerItem30 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem30 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_15.addItem(spacerItem30)
         self.CreateSignatureOne = QtWidgets.QPushButton(self.SendBitcoins)
         self.CreateSignatureOne.setMinimumSize(QtCore.QSize(300, 50))
@@ -1843,9 +1703,7 @@ class Ui_MainWindow(object):
         self.CreateSignatureOne.setIconSize(QtCore.QSize(20, 20))
         self.CreateSignatureOne.setObjectName(_fromUtf8("CreateSignatureOne"))
         self.horizontalLayout_15.addWidget(self.CreateSignatureOne)
-        spacerItem31 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem31 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_15.addItem(spacerItem31)
         self.OpenBitSignatureAndSend = QtWidgets.QPushButton(self.SendBitcoins)
         self.OpenBitSignatureAndSend.setMinimumSize(QtCore.QSize(300, 50))
@@ -1875,19 +1733,13 @@ class Ui_MainWindow(object):
         self.OpenBitSignatureAndSend.setIconSize(QtCore.QSize(20, 20))
         self.OpenBitSignatureAndSend.setObjectName(_fromUtf8("OpenBitSignatureAndSend"))
         self.horizontalLayout_15.addWidget(self.OpenBitSignatureAndSend)
-        spacerItem32 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem32 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_15.addItem(spacerItem32)
         self.verticalLayout_8.addLayout(self.horizontalLayout_15)
-        spacerItem33 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem33 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_8.addItem(spacerItem33)
         self.horizontalLayout_10.addLayout(self.verticalLayout_8)
-        spacerItem34 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem34 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem34)
         self.gridLayout_11.addLayout(self.horizontalLayout_10, 1, 0, 1, 1)
         icon17 = QtGui.QIcon()
@@ -1936,9 +1788,7 @@ class Ui_MainWindow(object):
         self.frame_21 = QtWidgets.QFrame(self.frame_8)
         self.frame_21.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_21.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_21.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_21.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_21.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_21.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_21.setObjectName(_fromUtf8("frame_21"))
@@ -1962,9 +1812,7 @@ class Ui_MainWindow(object):
         self.label_10.setObjectName(_fromUtf8("label_10"))
         self.verticalLayout_10.addWidget(self.label_10)
         self.horizontalLayout_17.addLayout(self.verticalLayout_10)
-        spacerItem35 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem35 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_17.addItem(spacerItem35)
         self.commandLinkButton_4 = QtWidgets.QPushButton(self.frame_8)
         self.commandLinkButton_4.setMinimumSize(QtCore.QSize(220, 40))
@@ -2011,9 +1859,7 @@ class Ui_MainWindow(object):
         self.LineBalance_24.setSizePolicy(sizePolicy)
         self.LineBalance_24.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_24.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_24.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_24.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_24.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_24.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_24.setObjectName(_fromUtf8("LineBalance_24"))
@@ -2037,9 +1883,7 @@ class Ui_MainWindow(object):
         self.LineBalance_25.setSizePolicy(sizePolicy)
         self.LineBalance_25.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_25.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_25.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_25.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_25.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_25.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_25.setObjectName(_fromUtf8("LineBalance_25"))
@@ -2073,16 +1917,12 @@ class Ui_MainWindow(object):
         self.ExplainReceive.setObjectName(_fromUtf8("ExplainReceive"))
         self.horizontalLayout_59.addWidget(self.ExplainReceive)
         self.verticalLayout_11.addLayout(self.horizontalLayout_59)
-        spacerItem36 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem36 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem36)
         self.horizontalLayout_18 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_18.setObjectName(_fromUtf8("horizontalLayout_18"))
         self.frame_10 = QtWidgets.QFrame(self.ReceiveBitcoins)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
@@ -2120,9 +1960,7 @@ class Ui_MainWindow(object):
         self.MyAddress.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.NoTextInteraction)
         self.MyAddress.setObjectName(_fromUtf8("MyAddress"))
         self.horizontalLayout_18.addWidget(self.frame_10)
-        spacerItem37 = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem37 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_18.addItem(spacerItem37)
         self.CopyAddressToClipboard = QtWidgets.QPushButton(self.ReceiveBitcoins)
         self.CopyAddressToClipboard.setMinimumSize(QtCore.QSize(40, 40))
@@ -2156,9 +1994,7 @@ class Ui_MainWindow(object):
         self.CopyAddressToClipboard.setObjectName(_fromUtf8("CopyAddressToClipboard"))
         self.horizontalLayout_18.addWidget(self.CopyAddressToClipboard)
         self.verticalLayout_11.addLayout(self.horizontalLayout_18)
-        spacerItem38 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem38 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem38)
         self.LineBalance_13 = QtWidgets.QFrame(self.ReceiveBitcoins)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -2168,23 +2004,17 @@ class Ui_MainWindow(object):
         self.LineBalance_13.setSizePolicy(sizePolicy)
         self.LineBalance_13.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_13.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_13.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_13.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_13.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_13.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_13.setObjectName(_fromUtf8("LineBalance_13"))
         self.verticalLayout_11.addWidget(self.LineBalance_13)
-        spacerItem39 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem39 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem39)
         self.horizontalLayout_19 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_19.setObjectName(_fromUtf8("horizontalLayout_19"))
         self.frame_11 = QtWidgets.QFrame(self.ReceiveBitcoins)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
@@ -2222,9 +2052,7 @@ class Ui_MainWindow(object):
         self.MyAddress_3.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.NoTextInteraction)
         self.MyAddress_3.setObjectName(_fromUtf8("MyAddress_3"))
         self.horizontalLayout_19.addWidget(self.frame_11)
-        spacerItem40 = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem40 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_19.addItem(spacerItem40)
         self.CopyAddressToClipboard_2 = QtWidgets.QPushButton(self.ReceiveBitcoins)
         self.CopyAddressToClipboard_2.setMinimumSize(QtCore.QSize(40, 40))
@@ -2288,15 +2116,11 @@ class Ui_MainWindow(object):
         self.EnableIRC.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 15px "Arial";'))
         self.EnableIRC.setObjectName(_fromUtf8("EnableIRC"))
         self.horizontalLayout_20.addWidget(self.EnableIRC)
-        spacerItem41 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem41 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_20.addItem(spacerItem41)
         self.verticalLayout_12.addLayout(self.horizontalLayout_20)
         self.verticalLayout_11.addLayout(self.verticalLayout_12)
-        spacerItem42 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem42 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem42)
         self.LineBalance_14 = QtWidgets.QFrame(self.ReceiveBitcoins)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -2306,23 +2130,17 @@ class Ui_MainWindow(object):
         self.LineBalance_14.setSizePolicy(sizePolicy)
         self.LineBalance_14.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_14.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_14.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_14.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_14.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_14.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_14.setObjectName(_fromUtf8("LineBalance_14"))
         self.verticalLayout_11.addWidget(self.LineBalance_14)
-        spacerItem43 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem43 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem43)
         self.horizontalLayout_21 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_21.setObjectName(_fromUtf8("horizontalLayout_21"))
         self.frame_12 = QtWidgets.QFrame(self.ReceiveBitcoins)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_12.sizePolicy().hasHeightForWidth())
@@ -2360,9 +2178,7 @@ class Ui_MainWindow(object):
         self.MyEmail.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.NoTextInteraction)
         self.MyEmail.setObjectName(_fromUtf8("MyEmail"))
         self.horizontalLayout_21.addWidget(self.frame_12)
-        spacerItem44 = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem44 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_21.addItem(spacerItem44)
         self.AddEmail_2 = QtWidgets.QPushButton(self.ReceiveBitcoins)
         self.AddEmail_2.setMinimumSize(QtCore.QSize(40, 40))
@@ -2426,9 +2242,7 @@ class Ui_MainWindow(object):
         self.EmailBox.setText(_fromUtf8(""))
         self.EmailBox.setObjectName(_fromUtf8("EmailBox"))
         self.horizontalLayout_22.addWidget(self.EmailBox)
-        spacerItem45 = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem45 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_22.addItem(spacerItem45)
         self.AddEmail = QtWidgets.QPushButton(self.ReceiveBitcoins)
         self.AddEmail.setMinimumSize(QtCore.QSize(150, 40))
@@ -2465,9 +2279,7 @@ class Ui_MainWindow(object):
         self.AddEmail.setIconSize(QtCore.QSize(20, 20))
         self.AddEmail.setObjectName(_fromUtf8("AddEmail"))
         self.horizontalLayout_22.addWidget(self.AddEmail)
-        spacerItem46 = QtWidgets.QSpacerItem(
-            180, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem46 = QtWidgets.QSpacerItem(180, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_22.addItem(spacerItem46)
         self.verticalLayout_11.addLayout(self.horizontalLayout_22)
         self.horizontalLayout_23 = QtWidgets.QHBoxLayout()
@@ -2483,9 +2295,7 @@ class Ui_MainWindow(object):
         self.EnableEmail.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 15px "Arial";'))
         self.EnableEmail.setObjectName(_fromUtf8("EnableEmail"))
         self.horizontalLayout_23.addWidget(self.EnableEmail)
-        spacerItem47 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem47 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_23.addItem(spacerItem47)
         self.verticalLayout_11.addLayout(self.horizontalLayout_23)
         self.OutboxButton = QtWidgets.QPushButton(self.ReceiveBitcoins)
@@ -2522,18 +2332,12 @@ class Ui_MainWindow(object):
         self.OutboxButton.setObjectName(_fromUtf8("OutboxButton"))
         self.verticalLayout_11.addWidget(self.OutboxButton)
 
-        spacerItem48 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem48 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem48)
-        spacerItem49 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem49 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_11.addItem(spacerItem49)
         self.gridLayout_6.addLayout(self.verticalLayout_11, 1, 0, 1, 1)
-        spacerItem50 = QtWidgets.QSpacerItem(
-            343, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem50 = QtWidgets.QSpacerItem(343, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_6.addItem(spacerItem50, 1, 1, 1, 1)
         icon18 = QtGui.QIcon()
         icon18.addPixmap(
@@ -2645,9 +2449,7 @@ class Ui_MainWindow(object):
         self.frame_22 = QtWidgets.QFrame(self.frame_9)
         self.frame_22.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_22.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_22.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_22.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_22.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_22.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_22.setObjectName(_fromUtf8("frame_22"))
@@ -2671,9 +2473,7 @@ class Ui_MainWindow(object):
         self.label_15.setObjectName(_fromUtf8("label_15"))
         self.verticalLayout_13.addWidget(self.label_15)
         self.horizontalLayout_25.addLayout(self.verticalLayout_13)
-        spacerItem51 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem51 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_25.addItem(spacerItem51)
         self.commandLinkButton_5 = QtWidgets.QPushButton(self.frame_9)
         self.commandLinkButton_5.setMinimumSize(QtCore.QSize(220, 40))
@@ -2779,9 +2579,7 @@ class Ui_MainWindow(object):
         self.CopyAddressToClipboard_5.setFlat(False)
         self.CopyAddressToClipboard_5.setObjectName(_fromUtf8("CopyAddressToClipboard_5"))
         self.horizontalLayout_27.addWidget(self.CopyAddressToClipboard_5)
-        spacerItem52 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem52 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_27.addItem(spacerItem52)
         self.verticalLayout_14.addLayout(self.horizontalLayout_27)
         self.verticalLayout_17.addLayout(self.verticalLayout_14)
@@ -2817,38 +2615,22 @@ class Ui_MainWindow(object):
         self.HistoryBalance.setFont(font)
         self.HistoryBalance.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.HistoryBalance.setStyleSheet(_fromUtf8("color: rgb(104, 104, 104);\n" 'font: bold 16px "Arial";'))
-        self.HistoryBalance.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.HistoryBalance.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.HistoryBalance.setObjectName(_fromUtf8("MyBalance"))
         self.Symbol_5 = QtWidgets.QLabel(self.frame_14)
         self.Symbol_5.setGeometry(QtCore.QRect(430, 10, 41, 21))
         self.Symbol_5.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
-        self.Symbol_5.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading
-            | QtCore.Qt.AlignmentFlag.AlignLeft
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.Symbol_5.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.Symbol_5.setObjectName(_fromUtf8("Symbol_5"))
         self.MyBalance = QtWidgets.QLabel(self.frame_14)
         self.MyBalance.setGeometry(QtCore.QRect(170, 10, 251, 20))
         self.MyBalance.setStyleSheet(_fromUtf8('font: bold 16px "Arial";\n' "color: #24282C;"))
         self.MyBalance.setTextFormat(QtCore.Qt.TextFormat.PlainText)
-        self.MyBalance.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.MyBalance.setTextInteractionFlags(
-            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse
-        )
+        self.MyBalance.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.MyBalance.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse | QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         self.MyBalance.setObjectName(_fromUtf8("MyBalance"))
         self.horizontalLayout_26.addWidget(self.frame_14)
-        spacerItem53 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem53 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_26.addItem(spacerItem53)
         self.verticalLayout_17.addLayout(self.horizontalLayout_26)
         self.horizontalLayout_30 = QtWidgets.QHBoxLayout()
@@ -2860,9 +2642,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_28 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_28.setObjectName(_fromUtf8("horizontalLayout_28"))
         self.TitleRecent = QtWidgets.QLabel(self.History)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.TitleRecent.sizePolicy().hasHeightForWidth())
@@ -2878,9 +2658,7 @@ class Ui_MainWindow(object):
         self.TitleRecent.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 16px "Arial";'))
         self.TitleRecent.setObjectName(_fromUtf8("TitleRecent"))
         self.horizontalLayout_28.addWidget(self.TitleRecent)
-        spacerItem54 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem54 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_28.addItem(spacerItem54)
         self.KeysConnected = QtWidgets.QLineEdit(self.History)
         self.KeysConnected.setMinimumSize(QtCore.QSize(300, 40))
@@ -2931,9 +2709,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_28.addWidget(self.Refresh)
         self.verticalLayout_15.addLayout(self.horizontalLayout_28)
         self.HistorylistWidget = QtWidgets.QListWidget(self.History)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.HistorylistWidget.sizePolicy().hasHeightForWidth())
@@ -2956,9 +2732,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_31 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_31.setContentsMargins(0, 20, -1, 7)
         self.horizontalLayout_31.setObjectName(_fromUtf8("horizontalLayout_31"))
-        spacerItem55 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem55 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_31.addItem(spacerItem55)
         self.labelProgress2 = QtWidgets.QLabel(self.History)
         self.labelProgress2.setMinimumSize(QtCore.QSize(0, 0))
@@ -2967,9 +2741,7 @@ class Ui_MainWindow(object):
         self.labelProgress2.setObjectName(_fromUtf8("labelProgress2"))
         self.horizontalLayout_31.addWidget(self.labelProgress2)
         self.progressBar2 = QtWidgets.QProgressBar(self.History)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.progressBar2.sizePolicy().hasHeightForWidth())
@@ -3023,9 +2795,7 @@ class Ui_MainWindow(object):
         self.Rescan2.setIcon(icon12)
         self.Rescan2.setObjectName(_fromUtf8("Rescan2"))
         self.horizontalLayout_31.addWidget(self.Rescan2)
-        spacerItem56 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem56 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_31.addItem(spacerItem56)
         self.verticalLayout_15.addLayout(self.horizontalLayout_31)
         self.horizontalLayout_30.addLayout(self.verticalLayout_15)
@@ -3075,9 +2845,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_29.addWidget(self.ExplainHistory)
         self.verticalLayout_16.addLayout(self.horizontalLayout_29)
         self.FullHistory = QtWidgets.QTableWidget(self.History)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.FullHistory.sizePolicy().hasHeightForWidth())
@@ -3128,29 +2896,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_32 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_32.setContentsMargins(-1, 10, -1, -1)
         self.horizontalLayout_32.setObjectName(_fromUtf8("horizontalLayout_32"))
-        spacerItem57 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem57 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem57)
-        spacerItem58 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem58 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem58)
-        spacerItem59 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem59 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem59)
-        spacerItem60 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem60 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem60)
-        spacerItem61 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem61 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem61)
-        spacerItem62 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem62 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem62)
         self.ExportToCSV = QtWidgets.QPushButton(self.History)
         self.ExportToCSV.setMinimumSize(QtCore.QSize(150, 40))
@@ -3187,9 +2943,7 @@ class Ui_MainWindow(object):
         self.ExportToCSV.setIconSize(QtCore.QSize(20, 20))
         self.ExportToCSV.setObjectName(_fromUtf8("ExportToCSV"))
         self.horizontalLayout_32.addWidget(self.ExportToCSV)
-        spacerItem63 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem63 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_32.addItem(spacerItem63)
         self.ClearHistory = QtWidgets.QPushButton(self.History)
         self.ClearHistory.setMinimumSize(QtCore.QSize(150, 40))
@@ -3278,9 +3032,7 @@ class Ui_MainWindow(object):
         self.frame_23 = QtWidgets.QFrame(self.frame_15)
         self.frame_23.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_23.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_23.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_23.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_23.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_23.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_23.setObjectName(_fromUtf8("frame_23"))
@@ -3304,9 +3056,7 @@ class Ui_MainWindow(object):
         self.label_17.setObjectName(_fromUtf8("label_17"))
         self.verticalLayout_18.addWidget(self.label_17)
         self.horizontalLayout_33.addLayout(self.verticalLayout_18)
-        spacerItem64 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem64 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_33.addItem(spacerItem64)
         self.commandLinkButton_6 = QtWidgets.QPushButton(self.frame_15)
         self.commandLinkButton_6.setMinimumSize(QtCore.QSize(220, 40))
@@ -3344,9 +3094,7 @@ class Ui_MainWindow(object):
         self.formLayout_7.setObjectName(_fromUtf8("formLayout_7"))
         self.webView = QtWebEngineWidgets.QWebEngineView(self.Chat)
         self.webView.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.webView.sizePolicy().hasHeightForWidth())
@@ -3372,9 +3120,7 @@ class Ui_MainWindow(object):
             )
         )
         # self.webView.setUrl(QtCore.QUrl(_fromUtf8("'<b>Hello World</b>'")))
-        self.webView.setHtml(
-            _fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-        )
+        self.webView.setHtml(_fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
         self.webView.setObjectName(_fromUtf8("webView"))
         self.formLayout_7.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.webView)
         self.gridLayout_8.addLayout(self.formLayout_7, 1, 0, 1, 1)
@@ -3424,9 +3170,7 @@ class Ui_MainWindow(object):
         self.frame_24 = QtWidgets.QFrame(self.frame_16)
         self.frame_24.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_24.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_24.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_24.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_24.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_24.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_24.setObjectName(_fromUtf8("frame_24"))
@@ -3450,9 +3194,7 @@ class Ui_MainWindow(object):
         self.label_19.setObjectName(_fromUtf8("label_19"))
         self.verticalLayout_19.addWidget(self.label_19)
         self.horizontalLayout_34.addLayout(self.verticalLayout_19)
-        spacerItem65 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem65 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_34.addItem(spacerItem65)
         self.commandLinkButton_7 = QtWidgets.QPushButton(self.frame_16)
         self.commandLinkButton_7.setMinimumSize(QtCore.QSize(220, 40))
@@ -3501,9 +3243,7 @@ class Ui_MainWindow(object):
         self.LineBalance_17.setSizePolicy(sizePolicy)
         self.LineBalance_17.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_17.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_17.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_17.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_17.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_17.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_17.setObjectName(_fromUtf8("LineBalance_17"))
@@ -3527,9 +3267,7 @@ class Ui_MainWindow(object):
         self.LineBalance_16.setSizePolicy(sizePolicy)
         self.LineBalance_16.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_16.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_16.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_16.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_16.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_16.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_16.setObjectName(_fromUtf8("LineBalance_16"))
@@ -3578,9 +3316,7 @@ class Ui_MainWindow(object):
         self.SendLabel_3.setObjectName(_fromUtf8("SendLabel_3"))
         self.horizontalLayout_54.addWidget(self.SendLabel_3)
         self.DescriptionBox = QtWidgets.QTextEdit(self.MakeAnOffer)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.DescriptionBox.sizePolicy().hasHeightForWidth())
@@ -3601,9 +3337,7 @@ class Ui_MainWindow(object):
         self.DescriptionBox.setObjectName(_fromUtf8("DescriptionBox"))
         self.horizontalLayout_54.addWidget(self.DescriptionBox)
         self.verticalLayout_27.addLayout(self.horizontalLayout_54)
-        spacerItem66 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem66 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem66)
         self.horizontalLayout_42 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_42.setObjectName(_fromUtf8("horizontalLayout_42"))
@@ -3665,9 +3399,7 @@ class Ui_MainWindow(object):
         self.AttachImage.setObjectName(_fromUtf8("AttachImage"))
         self.horizontalLayout_42.addWidget(self.AttachImage)
         self.verticalLayout_27.addLayout(self.horizontalLayout_42)
-        spacerItem67 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem67 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem67)
         self.horizontalLayout_43 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_43.setObjectName(_fromUtf8("horizontalLayout_43"))
@@ -3700,9 +3432,7 @@ class Ui_MainWindow(object):
         self.ContractTo.setObjectName(_fromUtf8("ContractTo"))
         self.horizontalLayout_43.addWidget(self.ContractTo)
         self.verticalLayout_27.addLayout(self.horizontalLayout_43)
-        spacerItem68 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem68 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem68)
         self.horizontalLayout_44 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_44.setObjectName(_fromUtf8("horizontalLayout_44"))
@@ -3739,9 +3469,7 @@ class Ui_MainWindow(object):
         )
         self.ContractAmount.setObjectName(_fromUtf8("ContractAmount"))
         self.horizontalLayout_44.addWidget(self.ContractAmount)
-        spacerItem69 = QtWidgets.QSpacerItem(
-            5, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem69 = QtWidgets.QSpacerItem(5, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_44.addItem(spacerItem69)
         self.WhoPays = QtWidgets.QComboBox(self.MakeAnOffer)
         self.WhoPays.setMinimumSize(QtCore.QSize(0, 40))
@@ -3763,9 +3491,7 @@ class Ui_MainWindow(object):
         self.WhoPays.addItem(_fromUtf8(""))
         self.horizontalLayout_44.addWidget(self.WhoPays)
         self.verticalLayout_27.addLayout(self.horizontalLayout_44)
-        spacerItem70 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem70 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem70)
         self.horizontalLayout_45 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_45.setObjectName(_fromUtf8("horizontalLayout_45"))
@@ -3799,9 +3525,7 @@ class Ui_MainWindow(object):
         self.ContractFee.setObjectName(_fromUtf8("ContractFee"))
         self.horizontalLayout_45.addWidget(self.ContractFee)
         self.verticalLayout_27.addLayout(self.horizontalLayout_45)
-        spacerItem71 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem71 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem71)
         self.horizontalLayout_46 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_46.setObjectName(_fromUtf8("horizontalLayout_46"))
@@ -3834,9 +3558,7 @@ class Ui_MainWindow(object):
         self.YouDeposit.setObjectName(_fromUtf8("YouDeposit"))
         self.horizontalLayout_46.addWidget(self.YouDeposit)
         self.verticalLayout_27.addLayout(self.horizontalLayout_46)
-        spacerItem72 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem72 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem72)
         self.horizontalLayout_47 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_47.setObjectName(_fromUtf8("horizontalLayout_47"))
@@ -3869,9 +3591,7 @@ class Ui_MainWindow(object):
         self.TheyDeposit.setObjectName(_fromUtf8("TheyDeposit"))
         self.horizontalLayout_47.addWidget(self.TheyDeposit)
         self.verticalLayout_27.addLayout(self.horizontalLayout_47)
-        spacerItem73 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem73 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem73)
         self.horizontalLayout_48 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_48.setObjectName(_fromUtf8("horizontalLayout_48"))
@@ -3923,14 +3643,10 @@ class Ui_MainWindow(object):
         self.DaysMultiplier.addItem(_fromUtf8(""))
         self.horizontalLayout_48.addWidget(self.DaysMultiplier)
         self.verticalLayout_27.addLayout(self.horizontalLayout_48)
-        spacerItem74 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem74 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_27.addItem(spacerItem74)
         self.horizontalLayout_41.addLayout(self.verticalLayout_27)
-        spacerItem75 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem75 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_41.addItem(spacerItem75)
         self.horizontalLayout_53 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_53.setContentsMargins(20, -1, 20, -1)
@@ -3962,9 +3678,7 @@ class Ui_MainWindow(object):
         self.LineBalance_19.setSizePolicy(sizePolicy)
         self.LineBalance_19.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_19.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_19.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_19.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_19.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_19.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_19.setObjectName(_fromUtf8("LineBalance_19"))
@@ -3988,9 +3702,7 @@ class Ui_MainWindow(object):
         self.LineBalance_18.setSizePolicy(sizePolicy)
         self.LineBalance_18.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_18.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_18.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_18.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_18.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_18.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_18.setObjectName(_fromUtf8("LineBalance_18"))
@@ -4076,9 +3788,7 @@ class Ui_MainWindow(object):
         self.AutoBackupLabel.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 13px "Arial";'))
         self.AutoBackupLabel.setObjectName(_fromUtf8("AutoBackupLabel"))
         self.verticalLayout_28.addWidget(self.AutoBackupLabel)
-        spacerItem76 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem76 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_28.addItem(spacerItem76)
         self.verticalLayout_29 = QtWidgets.QVBoxLayout()
         self.verticalLayout_29.setObjectName(_fromUtf8("verticalLayout_29"))
@@ -4093,9 +3803,7 @@ class Ui_MainWindow(object):
         self.LineBalance_21.setSizePolicy(sizePolicy)
         self.LineBalance_21.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_21.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_21.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_21.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_21.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_21.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_21.setObjectName(_fromUtf8("LineBalance_21"))
@@ -4119,9 +3827,7 @@ class Ui_MainWindow(object):
         self.LineBalance_20.setSizePolicy(sizePolicy)
         self.LineBalance_20.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_20.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_20.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_20.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_20.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_20.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_20.setObjectName(_fromUtf8("LineBalance_20"))
@@ -4188,9 +3894,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_28.addLayout(self.verticalLayout_29)
         self.horizontalLayout_56 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_56.setObjectName(_fromUtf8("horizontalLayout_56"))
-        spacerItem77 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem77 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_56.addItem(spacerItem77)
         self.InstantWhoPays = QtWidgets.QComboBox(self.MakeAnOffer)
         self.InstantWhoPays.setMinimumSize(QtCore.QSize(0, 40))
@@ -4211,15 +3915,11 @@ class Ui_MainWindow(object):
         self.InstantWhoPays.addItem(_fromUtf8(""))
         self.horizontalLayout_56.addWidget(self.InstantWhoPays)
         self.verticalLayout_28.addLayout(self.horizontalLayout_56)
-        spacerItem78 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem78 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_28.addItem(spacerItem78)
         self.horizontalLayout_49 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_49.setObjectName(_fromUtf8("horizontalLayout_49"))
-        spacerItem79 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem79 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_49.addItem(spacerItem79)
         self.SendContract = QtWidgets.QPushButton(self.MakeAnOffer)
         self.SendContract.setMinimumSize(QtCore.QSize(281, 71))
@@ -4256,14 +3956,10 @@ class Ui_MainWindow(object):
         self.SendContract.setIconSize(QtCore.QSize(20, 20))
         self.SendContract.setObjectName(_fromUtf8("SendContract"))
         self.horizontalLayout_49.addWidget(self.SendContract)
-        spacerItem80 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem80 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_49.addItem(spacerItem80)
         self.verticalLayout_28.addLayout(self.horizontalLayout_49)
-        spacerItem81 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem81 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_28.addItem(spacerItem81)
         self.horizontalLayout_41.addLayout(self.verticalLayout_28)
         self.gridLayout_12.addLayout(self.horizontalLayout_41, 1, 0, 1, 1)
@@ -4313,9 +4009,7 @@ class Ui_MainWindow(object):
         self.frame_26 = QtWidgets.QFrame(self.frame_18)
         self.frame_26.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_26.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_26.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_26.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_26.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_26.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_26.setObjectName(_fromUtf8("frame_26"))
@@ -4339,9 +4033,7 @@ class Ui_MainWindow(object):
         self.label_23.setObjectName(_fromUtf8("label_23"))
         self.verticalLayout_21.addWidget(self.label_23)
         self.horizontalLayout_36.addLayout(self.verticalLayout_21)
-        spacerItem82 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem82 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_36.addItem(spacerItem82)
         self.commandLinkButton_9 = QtWidgets.QPushButton(self.frame_18)
         self.commandLinkButton_9.setMinimumSize(QtCore.QSize(220, 40))
@@ -4384,25 +4076,19 @@ class Ui_MainWindow(object):
         self.checkBox.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 15px "Arial";'))
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.horizontalLayout_8.addWidget(self.checkBox)
-        spacerItem83 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem83 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem83)
         self.FilterCustom = QtWidgets.QCheckBox(self.PendingOffers)
         self.FilterCustom.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 15px "Arial";'))
         self.FilterCustom.setObjectName(_fromUtf8("FilterCustom"))
         self.horizontalLayout_8.addWidget(self.FilterCustom)
-        spacerItem84 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem84 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem84)
         self.DisableSpamFilter = QtWidgets.QCheckBox(self.PendingOffers)
         self.DisableSpamFilter.setStyleSheet(_fromUtf8("color:#24282C;\n" 'font: bold 15px "Arial";'))
         self.DisableSpamFilter.setObjectName(_fromUtf8("DisableSpamFilter"))
         self.horizontalLayout_8.addWidget(self.DisableSpamFilter)
-        spacerItem85 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem85 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem85)
         self.ExplainPending = QtWidgets.QPushButton(self.PendingOffers)
         self.ExplainPending.setMinimumSize(QtCore.QSize(40, 40))
@@ -4499,9 +4185,7 @@ class Ui_MainWindow(object):
         self.frame_25 = QtWidgets.QFrame(self.frame_17)
         self.frame_25.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_25.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_25.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_25.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_25.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_25.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_25.setObjectName(_fromUtf8("frame_25"))
@@ -4525,9 +4209,7 @@ class Ui_MainWindow(object):
         self.label_21.setObjectName(_fromUtf8("label_21"))
         self.verticalLayout_20.addWidget(self.label_21)
         self.horizontalLayout_35.addLayout(self.verticalLayout_20)
-        spacerItem86 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem86 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_35.addItem(spacerItem86)
         self.commandLinkButton_8 = QtWidgets.QPushButton(self.frame_17)
         self.commandLinkButton_8.setMinimumSize(QtCore.QSize(220, 40))
@@ -4575,9 +4257,7 @@ class Ui_MainWindow(object):
         self.LineBalance_26.setSizePolicy(sizePolicy)
         self.LineBalance_26.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_26.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_26.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_26.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_26.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_26.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_26.setObjectName(_fromUtf8("LineBalance_26"))
@@ -4601,9 +4281,7 @@ class Ui_MainWindow(object):
         self.LineBalance_27.setSizePolicy(sizePolicy)
         self.LineBalance_27.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_27.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_27.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_27.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_27.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_27.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_27.setObjectName(_fromUtf8("LineBalance_27"))
@@ -4637,9 +4315,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_61.addWidget(self.ExplainOpen)
         self.verticalLayout_6.addLayout(self.horizontalLayout_61)
         self.MyOpenContracts = QtWidgets.QListWidget(self.OpenContracts)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.MyOpenContracts.sizePolicy().hasHeightForWidth())
@@ -4774,9 +4450,7 @@ class Ui_MainWindow(object):
         self.frame_27 = QtWidgets.QFrame(self.frame_19)
         self.frame_27.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_27.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_27.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_27.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_27.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_27.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_27.setObjectName(_fromUtf8("frame_27"))
@@ -4800,9 +4474,7 @@ class Ui_MainWindow(object):
         self.label_25.setObjectName(_fromUtf8("label_25"))
         self.verticalLayout_23.addWidget(self.label_25)
         self.horizontalLayout_37.addLayout(self.verticalLayout_23)
-        spacerItem87 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem87 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_37.addItem(spacerItem87)
         self.commandLinkButton_10 = QtWidgets.QPushButton(self.frame_19)
         self.commandLinkButton_10.setMinimumSize(QtCore.QSize(220, 40))
@@ -5015,9 +4687,7 @@ class Ui_MainWindow(object):
         self.MarketBox.setObjectName(_fromUtf8("MarketBox"))
         self.MarketBox.addItem(_fromUtf8(""))
         self.verticalLayout_30.addWidget(self.MarketBox)
-        spacerItem88 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem88 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_30.addItem(spacerItem88)
         self.OfferBox = QtWidgets.QComboBox(self.Market)
         self.OfferBox.setMinimumSize(QtCore.QSize(200, 40))
@@ -5073,9 +4743,7 @@ class Ui_MainWindow(object):
         self.PostToMarket.setIconSize(QtCore.QSize(20, 20))
         self.PostToMarket.setObjectName(_fromUtf8("PostToMarket"))
         self.verticalLayout_30.addWidget(self.PostToMarket)
-        spacerItem89 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem89 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_30.addItem(spacerItem89)
         self.SettingsMarket = QtWidgets.QPushButton(self.Market)
         self.SettingsMarket.setMinimumSize(QtCore.QSize(0, 40))
@@ -5106,9 +4774,7 @@ class Ui_MainWindow(object):
         self.SettingsMarket.setIconSize(QtCore.QSize(20, 20))
         self.SettingsMarket.setObjectName(_fromUtf8("SettingsMarket"))
         self.verticalLayout_30.addWidget(self.SettingsMarket)
-        spacerItem90 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem90 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_30.addItem(spacerItem90)
         self.JoinChan = QtWidgets.QPushButton(self.Market)
         self.JoinChan.setMinimumSize(QtCore.QSize(0, 40))
@@ -5174,9 +4840,7 @@ class Ui_MainWindow(object):
         self.LeaveChan.setIconSize(QtCore.QSize(20, 20))
         self.LeaveChan.setObjectName(_fromUtf8("LeaveChan"))
         self.verticalLayout_30.addWidget(self.LeaveChan)
-        spacerItem91 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem91 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_30.addItem(spacerItem91)
         self.horizontalLayout_57.addLayout(self.verticalLayout_30)
         self.gridLayout_13.addLayout(self.horizontalLayout_57, 1, 0, 1, 1)
@@ -5248,9 +4912,7 @@ class Ui_MainWindow(object):
         self.frame_28 = QtWidgets.QFrame(self.frame_20)
         self.frame_28.setMinimumSize(QtCore.QSize(37, 37))
         self.frame_28.setMaximumSize(QtCore.QSize(37, 37))
-        self.frame_28.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_28.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.frame_28.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.frame_28.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_28.setObjectName(_fromUtf8("frame_28"))
@@ -5274,9 +4936,7 @@ class Ui_MainWindow(object):
         self.label_27.setObjectName(_fromUtf8("label_27"))
         self.verticalLayout_24.addWidget(self.label_27)
         self.horizontalLayout_38.addLayout(self.verticalLayout_24)
-        spacerItem56B = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem56B = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_38.addItem(spacerItem56B)
         self.commandLinkButton_11 = QtWidgets.QPushButton(self.frame_20)
         self.commandLinkButton_11.setMinimumSize(QtCore.QSize(220, 40))
@@ -5327,9 +4987,7 @@ class Ui_MainWindow(object):
         self.LineBalance_23.setSizePolicy(sizePolicy)
         self.LineBalance_23.setMinimumSize(QtCore.QSize(20, 0))
         self.LineBalance_23.setMaximumSize(QtCore.QSize(20, 16777215))
-        self.LineBalance_23.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_23.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_23.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_23.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_23.setObjectName(_fromUtf8("LineBalance_23"))
@@ -5353,9 +5011,7 @@ class Ui_MainWindow(object):
         self.LineBalance_22.setSizePolicy(sizePolicy)
         self.LineBalance_22.setMinimumSize(QtCore.QSize(0, 0))
         self.LineBalance_22.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.LineBalance_22.setStyleSheet(
-            _fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;")
-        )
+        self.LineBalance_22.setStyleSheet(_fromUtf8("border: 1px #b9b9b9;\n" "\n" "border-style: solid none none none;"))
         self.LineBalance_22.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.LineBalance_22.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.LineBalance_22.setObjectName(_fromUtf8("LineBalance_22"))
@@ -5455,9 +5111,7 @@ class Ui_MainWindow(object):
         self.BackupContacts.setIconSize(QtCore.QSize(20, 20))
         self.BackupContacts.setObjectName(_fromUtf8("BackupContacts"))
         self.verticalLayout_26.addWidget(self.BackupContacts)
-        spacerItem92 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem92 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_26.addItem(spacerItem92)
         self.HaloContactsIcon = QtWidgets.QPushButton(self.Contacts)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -5488,9 +5142,7 @@ class Ui_MainWindow(object):
         self.HaloContactsIcon.setFlat(True)
         self.HaloContactsIcon.setObjectName(_fromUtf8("HaloContactsIcon"))
         self.verticalLayout_26.addWidget(self.HaloContactsIcon)
-        spacerItem93 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem93 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_26.addItem(spacerItem93)
         self.horizontalLayout_39.addLayout(self.verticalLayout_26)
         self.verticalLayout_34.addLayout(self.horizontalLayout_39)
@@ -5626,9 +5278,7 @@ class Ui_MainWindow(object):
         m = self._translate("MainWindow", "Not connected to internet!", None)
         MainWindow.setWindowTitle(self._translate("MainWindow", "BitHalo", None))
         self.label_2.setText(self._translate("MainWindow", "Welcome to BitHalo", None))
-        self.label_3.setText(
-            self._translate("MainWindow", "Multi-Signature Wallet, Decentralized Smart Contracting & Exchange", None)
-        )
+        self.label_3.setText(self._translate("MainWindow", "Multi-Signature Wallet, Decentralized Smart Contracting & Exchange", None))
         self.commandLinkButton.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
         self.commandLinkButton.setText(self._translate("MainWindow", "New Pending Offer!", None))
         self.MyAddress_7.setText(self._translate("MainWindow", "Your Bitcoin Address:", None))
@@ -5665,9 +5315,7 @@ class Ui_MainWindow(object):
         self.Rescan.setText(self._translate("MainWindow", "Rescan", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab), self._translate("MainWindow", "Home", None))
         self.label_7.setText(self._translate("MainWindow", "Send Bitcoins", None))
-        self.label_8.setText(
-            self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None)
-        )
+        self.label_8.setText(self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None))
         self.commandLinkButton_3.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
         self.commandLinkButton_3.setText(self._translate("MainWindow", "New Pending Offer!", None))
         self.PayToLabel.setText(self._translate("MainWindow", "Pay To:", None))
@@ -5715,9 +5363,7 @@ class Ui_MainWindow(object):
         )
         self.CreateSignatureOne.setToolTip(self._translate("MainWindow", "Create Signature File", None))
         self.CreateSignatureOne.setText(self._translate("MainWindow", "Create Signature File", None))
-        self.OpenBitSignatureAndSend.setToolTip(
-            self._translate("MainWindow", "Open Signature File, Sign and Send", None)
-        )
+        self.OpenBitSignatureAndSend.setToolTip(self._translate("MainWindow", "Open Signature File, Sign and Send", None))
         self.OpenBitSignatureAndSend.setText(self._translate("MainWindow", "Open Signature File, Sign and Send", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.SendBitcoins), self._translate("MainWindow", "Send Bitcoins", None))
         self.label_9.setText(self._translate("MainWindow", "Receive Bitcoins", None))
@@ -5736,17 +5382,13 @@ class Ui_MainWindow(object):
         self.MyEmail.setText(self._translate("MainWindow", "Your Email Address: ", None))
         self.AddEmail_2.setToolTip(self._translate("MainWindow", "Copy Address to Clipboard", None))
         self.EmailStatus.setText(self._translate("MainWindow", "Status:", None))
-        self.EmailBox.setPlaceholderText(
-            self._translate("MainWindow", 'Enter your Email here and then click the"Add/Change" button...', None)
-        )
+        self.EmailBox.setPlaceholderText(self._translate("MainWindow", 'Enter your Email here and then click the"Add/Change" button...', None))
         self.AddEmail.setToolTip(self._translate("MainWindow", "Add / Change Email", None))
         self.AddEmail.setText(self._translate("MainWindow", "Add/Change", None))
         self.EnableEmail.setText(self._translate("MainWindow", "Enable Email (Encrypted)", None))
         self.OutboxButton.setToolTip(self._translate("MainWindow", "Outbox", None))
         self.OutboxButton.setText(self._translate("MainWindow", "Outbox", None))
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Bitcoins", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Bitcoins", None))
         self.label_14.setText(self._translate("MainWindow", "History", None))
         self.label_15.setText(self._translate("MainWindow", "Bitcoin Transfer History", None))
         self.commandLinkButton_5.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
@@ -5783,9 +5425,7 @@ class Ui_MainWindow(object):
         self.ClearHistory.setText(self._translate("MainWindow", "Clear History", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.History), self._translate("MainWindow", "History", None))
         self.label_16.setText(self._translate("MainWindow", "Chat", None))
-        self.label_17.setText(
-            self._translate("MainWindow", "Use IRC to find people to make smart contracts with", None)
-        )
+        self.label_17.setText(self._translate("MainWindow", "Use IRC to find people to make smart contracts with", None))
         self.commandLinkButton_6.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
         self.commandLinkButton_6.setText(self._translate("MainWindow", "New Pending Offer!", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.Chat), self._translate("MainWindow", "Chat", None))
@@ -5814,9 +5454,7 @@ class Ui_MainWindow(object):
         self.AutoBackupLabel_2.setText(self._translate("MainWindow", "Auto Backup", None))
         self.ExplainAutoBackupOffer.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainAutoBackupOffer.setText(self._translate("MainWindow", "?", None))
-        self.TxBackupPath.setPlaceholderText(
-            self._translate("MainWindow", "Path to flash drive or backup folder..", None)
-        )
+        self.TxBackupPath.setPlaceholderText(self._translate("MainWindow", "Path to flash drive or backup folder..", None))
         self.BrowseTxBackup.setToolTip(self._translate("MainWindow", "Create path to Backup Folder", None))
         self.AutoBackupLabel.setText(self._translate("MainWindow", "This auto-backup is for contracts only!", None))
         self.InstantRefundLabel.setText(self._translate("MainWindow", "Instant Refund", None))
@@ -5837,9 +5475,7 @@ class Ui_MainWindow(object):
         self.DisableSpamFilter.setText(self._translate("MainWindow", "Disable spam filter", None))
         self.ExplainPending.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainPending.setText(self._translate("MainWindow", "?", None))
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.PendingOffers), self._translate("MainWindow", "Pending Offers", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.PendingOffers), self._translate("MainWindow", "Pending Offers", None))
         self.label_20.setText(self._translate("MainWindow", "Open Contracts", None))
         self.label_21.setText(self._translate("MainWindow", "Listed Smart Contract Negotiations", None))
         self.commandLinkButton_8.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
@@ -5847,9 +5483,7 @@ class Ui_MainWindow(object):
         self.SmartContractLabel_2.setText(self._translate("MainWindow", "Open Contracts", None))
         self.ExplainOpen.setToolTip(self._translate("MainWindow", "Help", None))
         self.ExplainOpen.setText(self._translate("MainWindow", "?", None))
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.OpenContracts), self._translate("MainWindow", "Open Contracts", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.OpenContracts), self._translate("MainWindow", "Open Contracts", None))
         self.label_24.setText(self._translate("MainWindow", "Market", None))
         self.label_25.setText(self._translate("MainWindow", "Welcome to the Halo Marketplace", None))
         self.commandLinkButton_10.setToolTip(self._translate("MainWindow", "New Pending Offer", None))
@@ -5919,9 +5553,7 @@ class Ui_MainWindow(object):
             + '<span style=" font-weight:600;">'
             + self._translate("MainWindow", "Do not post illegal content to the markets or you may get blocked.", None)
             + "</span>"
-            + self._translate(
-                "MainWindow", " These revolutionary markets are a way of connecting to people worldwide.", None
-            )
+            + self._translate("MainWindow", " These revolutionary markets are a way of connecting to people worldwide.", None)
             + "</p></body></html>"
         )
         self.Tabs.setTabText(self.Tabs.indexOf(self.Market), self._translate("MainWindow", "Market", None))
@@ -5999,23 +5631,13 @@ class Ui_MainWindow(object):
             QtGui.QIcon.State.Off,
         )
         if self.NewCoin["Moderator"] == 1:
-            self.label_25.setText(
-                self._translate("MainWindow", "Welcome to the Halo Marketplace: Moderator version", None)
-            )
+            self.label_25.setText(self._translate("MainWindow", "Welcome to the Halo Marketplace: Moderator version", None))
         MainWindow.setWindowIcon(icon)
-        self.webView.setHtml(
-            _fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-        )
+        self.webView.setHtml(_fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
         self.label_7.setText(self._translate("MainWindow", "Send Bitcoins", None))
         self.label_9.setText(self._translate("MainWindow", "Receive Bitcoins", None))
-        self.label_8.setText(
-            self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None)
-        )
-        self.label_10.setText(
-            self._translate(
-                "MainWindow", "Receive contracts with your Bitcoin Address, BitMessage Address or Email", None
-            )
-        )
+        self.label_8.setText(self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None))
+        self.label_10.setText(self._translate("MainWindow", "Receive contracts with your Bitcoin Address, BitMessage Address or Email", None))
         self.Tabs.setStyleSheet(
             _fromUtf8(
                 "QTabWidget::pane { /* The tab widget frame */\n"
@@ -6079,9 +5701,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_3.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_3.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_2.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
         self.commandLinkButton.setStyleSheet(
@@ -6210,9 +5830,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_7.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_7.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.label_7.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
         self.commandLinkButton_3.setStyleSheet(
             _fromUtf8(
@@ -6260,9 +5878,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_21.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_21.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_9.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
 
@@ -6312,9 +5928,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_22.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_22.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
         self.label_14.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
         self.commandLinkButton_5.setStyleSheet(
             _fromUtf8(
@@ -6383,9 +5997,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_23.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_23.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_16.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
         self.commandLinkButton_6.setStyleSheet(
@@ -6433,9 +6045,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_24.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_24.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_18.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
 
@@ -6484,9 +6094,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_26.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_26.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_22.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
         self.commandLinkButton_9.setStyleSheet(
@@ -6535,9 +6143,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_25.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_25.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_20.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
 
@@ -6585,9 +6191,7 @@ class Ui_MainWindow(object):
                 "}"
             )
         )
-        self.frame_27.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_27.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_24.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
 
@@ -6636,9 +6240,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_28.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);")
-        )
+        self.frame_28.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow.png);"))
 
         self.label_26.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #604004;\n" "\n" ""))
 
@@ -6685,9 +6287,7 @@ class Ui_MainWindow(object):
 
         self.Symbol_1.setText(self._translate("MainWindow", "BTC", None))
         self.Symbol_2.setText(self._translate("MainWindow", "", None))
-        self.label_8.setText(
-            self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None)
-        )
+        self.label_8.setText(self._translate("MainWindow", 'Send Bitcoins using "Two Step" - multisignature security.', None))
 
         self.Symbol_3.setText(self._translate("MainWindow", "BTC", None))
         self.Symbol_4.setText(self._translate("MainWindow", "BTC", None))
@@ -6697,9 +6297,7 @@ class Ui_MainWindow(object):
 
         self.MyAddress.setText(self._translate("MainWindow", "Your Bitcoin Address:", None))
 
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Bitcoins", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Bitcoins", None))
 
         self.label_15.setText(self._translate("MainWindow", "Bitcoin Transfer History", None))
 
@@ -6722,25 +6320,15 @@ class Ui_MainWindow(object):
         )
         MainWindow.setWindowIcon(icon)
         if self.NewCoin["Moderator"] == 1:
-            self.label_25.setText(
-                self._translate("MainWindow", "Welcome to the Halo Marketplace: Moderator version", None)
-            )
-        self.webView.setHtml(
-            _fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-        )
+            self.label_25.setText(self._translate("MainWindow", "Welcome to the Halo Marketplace: Moderator version", None))
+        self.webView.setHtml(_fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
         # self.Tabs.setTabPosition(QtWidgets.QTabWidget.West)
         # self.MarketBox.setItemText(0, self._translate("MainWindow", self.NewCoin['default market'], None))
         self.ContactLabel_2.setText(self._translate("MainWindow", "Your Accounts", None))
         self.label_7.setText(self._translate("MainWindow", "Send Blackcoins", None))
         self.label_9.setText(self._translate("MainWindow", "Receive Blackcoins", None))
-        self.label_8.setText(
-            self._translate("MainWindow", 'Send Blackcoins using "Two Step" - multisignature security.', None)
-        )
-        self.label_10.setText(
-            self._translate(
-                "MainWindow", "Receive contracts with your Blackcoin Address, BitMessage Address or Email", None
-            )
-        )
+        self.label_8.setText(self._translate("MainWindow", 'Send Blackcoins using "Two Step" - multisignature security.', None))
+        self.label_10.setText(self._translate("MainWindow", "Receive contracts with your Blackcoin Address, BitMessage Address or Email", None))
         self.Tabs.setStyleSheet(
             _fromUtf8(
                 "QTabWidget::pane { /* The tab widget frame */\n"
@@ -6802,9 +6390,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_3.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_3.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_2.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -6933,9 +6519,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_7.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_7.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
         self.label_7.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
         self.commandLinkButton_3.setStyleSheet(
             _fromUtf8(
@@ -6983,9 +6567,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_21.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_21.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_9.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -7035,9 +6617,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_22.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_22.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
         self.label_14.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
         self.commandLinkButton_5.setStyleSheet(
             _fromUtf8(
@@ -7106,9 +6686,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_23.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_23.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_16.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
         self.commandLinkButton_6.setStyleSheet(
@@ -7156,9 +6734,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_24.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_24.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_18.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -7207,9 +6783,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_26.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_26.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_22.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
         self.commandLinkButton_9.setStyleSheet(
@@ -7258,9 +6832,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_25.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_25.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_20.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -7308,9 +6880,7 @@ class Ui_MainWindow(object):
                 "}"
             )
         )
-        self.frame_27.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_27.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_24.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -7359,9 +6929,7 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_28.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);")
-        )
+        self.frame_28.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + "/images/navbar_arrow_bc.png);"))
 
         self.label_26.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: #e8b100;\n" "\n" ""))
 
@@ -7408,21 +6976,15 @@ class Ui_MainWindow(object):
 
         self.Symbol_1.setText(self._translate("MainWindow", "BC", None))
         self.Symbol_2.setText(self._translate("MainWindow", "BC", None))
-        self.label_8.setText(
-            self._translate("MainWindow", 'Send Blackcoins using "Two Step" - multisignature security.', None)
-        )
+        self.label_8.setText(self._translate("MainWindow", 'Send Blackcoins using "Two Step" - multisignature security.', None))
 
         self.Symbol_4.setText(self._translate("MainWindow", "BC", None))
         self.Symbol_3.setText(self._translate("MainWindow", "BC", None))
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.SendBitcoins), self._translate("MainWindow", "Send Blackcoins", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.SendBitcoins), self._translate("MainWindow", "Send Blackcoins", None))
 
         self.MyAddress.setText(self._translate("MainWindow", "Your Blackcoin Address:", None))
 
-        self.Tabs.setTabText(
-            self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Blackcoins", None)
-        )
+        self.Tabs.setTabText(self.Tabs.indexOf(self.ReceiveBitcoins), self._translate("MainWindow", "Receive Blackcoins", None))
 
         self.label_15.setText(self._translate("MainWindow", "Blackcoin Transfer History", None))
 
@@ -7446,23 +7008,15 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(icon)
         # self.Tabs.setTabPosition(QtWidgets.QTabWidget.West)
         # self.MarketBox.setItemText(0, self._translate("MainWindow", self.NewCoin['default market'], None))
-        self.webView.setHtml(
-            _fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-        )
+        self.webView.setHtml(_fromUtf8("<iframe src=" + self.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
         if self.NewCoin["name"] == "BitBay":
             if self.NewCoin["Moderator"] == 1:
-                self.label_25.setText(
-                    self._translate("MainWindow", "Welcome to the BitBay Marketplace: Moderator version", None)
-                )
+                self.label_25.setText(self._translate("MainWindow", "Welcome to the BitBay Marketplace: Moderator version", None))
             self.textBrowser.setHtml(self.NewCoin["links"])
         self.ContactLabel_2.setText(self._translate("MainWindow", "Your Accounts", None))
         self.label_7.setText(self._translate("MainWindow", "Send " + self.NewCoin["name"], None))
         self.label_9.setText(self._translate("MainWindow", "Receive " + self.NewCoin["name"], None))
-        self.label_8.setText(
-            self._translate(
-                "MainWindow", "Send " + self.NewCoin["name"] + ' using "Two Step" - multisignature security.', None
-            )
-        )
+        self.label_8.setText(self._translate("MainWindow", "Send " + self.NewCoin["name"] + ' using "Two Step" - multisignature security.', None))
         self.label_10.setText(
             self._translate(
                 "MainWindow",
@@ -7531,13 +7085,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_3.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_3.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_2.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_2.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton.setStyleSheet(
             _fromUtf8(
@@ -7664,12 +7214,8 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_7.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
-        self.label_7.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.frame_7.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
+        self.label_7.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
         self.commandLinkButton_3.setStyleSheet(
             _fromUtf8(
                 "QPushButton#commandLinkButton_3 {\n"
@@ -7716,13 +7262,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_21.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_21.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_9.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_9.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton_4.setStyleSheet(
             _fromUtf8(
@@ -7770,12 +7312,8 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_22.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
-        self.label_14.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.frame_22.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
+        self.label_14.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
         self.commandLinkButton_5.setStyleSheet(
             _fromUtf8(
                 "QPushButton#commandLinkButton_5 {\n"
@@ -7843,13 +7381,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_23.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_23.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_16.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_16.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
         self.commandLinkButton_6.setStyleSheet(
             _fromUtf8(
                 "QPushButton#commandLinkButton_6 {\n"
@@ -7895,13 +7429,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_24.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_24.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_18.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_18.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton_7.setStyleSheet(
             _fromUtf8(
@@ -7948,13 +7478,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_26.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_26.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_22.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_22.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
         self.commandLinkButton_9.setStyleSheet(
             _fromUtf8(
                 "QPushButton#commandLinkButton_9 {\n"
@@ -8001,13 +7527,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_25.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_25.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_20.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_20.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton_8.setStyleSheet(
             _fromUtf8(
@@ -8053,13 +7575,9 @@ class Ui_MainWindow(object):
                 "}"
             )
         )
-        self.frame_27.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_27.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_24.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_24.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton_10.setStyleSheet(
             _fromUtf8(
@@ -8106,13 +7624,9 @@ class Ui_MainWindow(object):
             )
         )
 
-        self.frame_28.setStyleSheet(
-            _fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");")
-        )
+        self.frame_28.setStyleSheet(_fromUtf8("background-image: url(" + self.ApplicationPath + self.NewCoin["NavBarIcon"] + ");"))
 
-        self.label_26.setStyleSheet(
-            _fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" "")
-        )
+        self.label_26.setStyleSheet(_fromUtf8('font: bold 24px "Arial";\n' "color: " + self.NewCoin["LabelText"] + ";\n" "\n" ""))
 
         self.commandLinkButton_11.setStyleSheet(
             _fromUtf8(
@@ -8178,9 +7692,7 @@ class Ui_MainWindow(object):
 
         self.Symbol_5.setText(self._translate("MainWindow", self.NewCoin["Symbol"], None))
 
-        self.label_27.setText(
-            self._translate("MainWindow", "Add contacts to your " + self.NewCoin["name"] + " Address Book", None)
-        )
+        self.label_27.setText(self._translate("MainWindow", "Add contacts to your " + self.NewCoin["name"] + " Address Book", None))
 
 
 from PyQt6 import QtWebEngineCore, QtWebEngineWidgets

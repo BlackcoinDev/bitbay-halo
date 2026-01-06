@@ -2160,9 +2160,7 @@ def mnemonic_to_seed(mnemonic_phrase, passphrase=""):
                 from pbkdf2 import PBKDF2
 
                 def pbkdf2_hmac_sha256(password, salt, iters=2048):
-                    return PBKDF2(password, salt, iterations=iters, macmodule=hmac, digestmodule=hashlib.sha512).read(
-                        64
-                    )
+                    return PBKDF2(password, salt, iterations=iters, macmodule=hmac, digestmodule=hashlib.sha512).read(64)
 
             except:
                 raise RuntimeError("No implementation of pbkdf2 was found!")

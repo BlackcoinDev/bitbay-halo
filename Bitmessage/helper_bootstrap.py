@@ -26,17 +26,13 @@ def knownNodes():
                 shared.knownNodes[stream][peer] = time
     except Exception as err:
         if "keys.dat" in str(err):
-            print(
-                "Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage."
-            )
+            print("Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage.")
             # We have to kill the process because the error will happen in a loop
             # if we don't.
             raise SystemExit
         shared.knownNodes = defaultKnownNodes.createDefaultKnownNodes(shared.appdata)
     if shared.config.getint("bitmessagesettings", "settingsversion") > 10:
-        print(
-            "Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage."
-        )
+        print("Bitmessage cannot read future versions of the keys file (keys.dat). Run the newer version of Bitmessage.")
         raise SystemExit
 
 

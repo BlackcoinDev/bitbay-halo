@@ -116,14 +116,10 @@ def segwit_signature_form(tx, i, script, amount, hashcode=SIGHASH_ALL, fork_id=N
     d = deserialize(tx)
 
     def parse_vout(o):
-        return b"".join(
-            [struct.pack("<Q", o["value"]), struct.pack("B", len(o["script"]) // 2), binascii.unhexlify(o["script"])]
-        )
+        return b"".join([struct.pack("<Q", o["value"]), struct.pack("B", len(o["script"]) // 2), binascii.unhexlify(o["script"])])
 
     def parse_vin(inp):
-        return b"".join(
-            [binascii.unhexlify(inp["outpoint"]["hash"])[::-1], struct.pack("<I", (inp["outpoint"]["index"]))]
-        )
+        return b"".join([binascii.unhexlify(inp["outpoint"]["hash"])[::-1], struct.pack("<I", (inp["outpoint"]["index"]))])
 
     vin_outpoint = [
         binascii.unhexlify(d["ins"][i]["outpoint"]["hash"])[::-1],
@@ -135,15 +131,9 @@ def segwit_signature_form(tx, i, script, amount, hashcode=SIGHASH_ALL, fork_id=N
     outputs_to_sign = hashcode_strategy.get_outputs(d, i)
     outputs = [parse_vout(out) for out in outputs_to_sign]
 
-    hash_outputs = (
-        hashlib.sha256(hashlib.sha256(b"".join(outputs)).digest()).digest() if outputs_to_sign else b"\x00" * 32
-    )
-    hash_sequences = (
-        hashlib.sha256(hashlib.sha256(b"".join(sequences)).digest()).digest() if sequences else b"\x00" * 32
-    )
-    hash_outpoints = (
-        hashlib.sha256(hashlib.sha256(b"".join(outpoints)).digest()).digest() if outpoints else b"\x00" * 32
-    )
+    hash_outputs = hashlib.sha256(hashlib.sha256(b"".join(outputs)).digest()).digest() if outputs_to_sign else b"\x00" * 32
+    hash_sequences = hashlib.sha256(hashlib.sha256(b"".join(sequences)).digest()).digest() if sequences else b"\x00" * 32
+    hash_outpoints = hashlib.sha256(hashlib.sha256(b"".join(outpoints)).digest()).digest() if outpoints else b"\x00" * 32
     hashcode = fork_id != None and (int(fork_id) | hashcode) or hashcode
     preimage = [
         struct.pack("<I", d["version"]),

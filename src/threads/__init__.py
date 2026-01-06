@@ -245,9 +245,7 @@ class PeriodicWorker(WorkerThread):
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Initialize periodic worker"""
-        super().__init__(
-            name=name, is_daemon=is_daemon, target=target, args=args, kwargs=kwargs
-        )
+        super().__init__(name=name, is_daemon=is_daemon, target=target, args=args, kwargs=kwargs)
         self._interval = interval
         self._last_run: Optional[datetime] = None
 
@@ -303,9 +301,7 @@ class ThreadPoolManager:
         """Initialize thread pool manager"""
         self._max_workers = max_workers
         self._thread_prefix = thread_prefix
-        self._executor = ThreadPoolExecutor(
-            max_workers=max_workers, thread_name_prefix=thread_prefix
-        )
+        self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix=thread_prefix)
         self._workers: List[WorkerThread] = []
         self._worker_lock = Lock()
         self._running = False
@@ -503,9 +499,7 @@ class BackgroundTaskManager:
             return True
         return False
 
-    def wait_for_completion(
-        self, task_ids: Optional[List[str]] = None, timeout: Optional[float] = None
-    ) -> bool:
+    def wait_for_completion(self, task_ids: Optional[List[str]] = None, timeout: Optional[float] = None) -> bool:
         """Wait for tasks to complete"""
         tasks_to_wait = task_ids or list(self._tasks.keys())
         start_time = time.time()

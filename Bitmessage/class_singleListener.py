@@ -51,9 +51,7 @@ class singleListener(threading.Thread):
         # SOCKS proxy, unless they have configured otherwise. If they eventually select
         # proxy 'none' or configure SOCKS listening then this will start listening for
         # connections.
-        while shared.config.get("bitmessagesettings", "socksproxytype")[
-            0:5
-        ] == "SOCKS" and not shared.config.getboolean("bitmessagesettings", "sockslisten"):
+        while shared.config.get("bitmessagesettings", "socksproxytype")[0:5] == "SOCKS" and not shared.config.getboolean("bitmessagesettings", "sockslisten"):
             time.sleep(5)
 
         with shared.printLock:
@@ -78,15 +76,11 @@ class singleListener(threading.Thread):
             # SOCKS proxy, unless they have configured otherwise. If they eventually select
             # proxy 'none' or configure SOCKS listening then this will start listening for
             # connections.
-            while shared.config.get("bitmessagesettings", "socksproxytype")[
-                0:5
-            ] == "SOCKS" and not shared.config.getboolean("bitmessagesettings", "sockslisten"):
+            while shared.config.get("bitmessagesettings", "socksproxytype")[0:5] == "SOCKS" and not shared.config.getboolean("bitmessagesettings", "sockslisten"):
                 time.sleep(10)
             while len(shared.connectedHostsList) > 220:
                 with shared.printLock:
-                    print(
-                        "We are connected to too many people. Not accepting further incoming connections for ten seconds."
-                    )
+                    print("We are connected to too many people. Not accepting further incoming connections for ten seconds.")
 
                 time.sleep(10)
 
@@ -112,12 +106,8 @@ class singleListener(threading.Thread):
                 else:
                     break
 
-            someObjectsOfWhichThisRemoteNodeIsAlreadyAware = (
-                {}
-            )  # This is not necessairly a complete list; we clear it from time to time to save memory.
-            sendDataThreadQueue = (
-                Queue.Queue()
-            )  # Used to submit information to the send data thread for this connection.
+            someObjectsOfWhichThisRemoteNodeIsAlreadyAware = {}  # This is not necessairly a complete list; we clear it from time to time to save memory.
+            sendDataThreadQueue = Queue.Queue()  # Used to submit information to the send data thread for this connection.
             socketObject.settimeout(20)
 
             sd = sendDataThread(sendDataThreadQueue)

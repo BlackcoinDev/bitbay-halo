@@ -295,9 +295,7 @@ def deserialize(data: Any) -> dict:
     return result
 
 
-def serialize_transaction(
-    version: int, inputs: list, outputs: list, locktime: int = 0
-) -> str:
+def serialize_transaction(version: int, inputs: list, outputs: list, locktime: int = 0) -> str:
     """Serialize transaction to hex"""
     # Simplified placeholder
     result = struct.pack("<L", version)
@@ -345,9 +343,7 @@ class MultiSigInfo:
     total_signers: int
 
 
-def create_multisig_address(
-    public_keys: list[bytes], required_signers: int
-) -> MultiSigInfo:
+def create_multisig_address(public_keys: list[bytes], required_signers: int) -> MultiSigInfo:
     """
     Create multisignature address
 

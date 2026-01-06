@@ -37,9 +37,7 @@ class Ui_regenerateAddressesDialog(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.buttonBox = QtWidgets.QDialogButtonBox(regenerateAddressesDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
         self.groupBox = QtWidgets.QGroupBox(regenerateAddressesDialog)
@@ -50,9 +48,7 @@ class Ui_regenerateAddressesDialog(object):
         self.label_6.setObjectName("label_6")
         self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
         self.lineEditPassphrase = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEditPassphrase.setInputMethodHints(
-            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText
-        )
+        self.lineEditPassphrase.setInputMethodHints(QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText)
         self.lineEditPassphrase.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEditPassphrase.setObjectName("lineEditPassphrase")
         self.gridLayout.addWidget(self.lineEditPassphrase, 2, 0, 1, 5)
@@ -69,9 +65,7 @@ class Ui_regenerateAddressesDialog(object):
         self.spinBoxNumberOfAddressesToMake.setProperty("value", 8)
         self.spinBoxNumberOfAddressesToMake.setObjectName("spinBoxNumberOfAddressesToMake")
         self.gridLayout.addWidget(self.spinBoxNumberOfAddressesToMake, 3, 3, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(
-            132, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(132, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem, 3, 4, 1, 1)
         self.label_2 = QtWidgets.QLabel(self.groupBox)
         self.label_2.setObjectName("label_2")
@@ -87,9 +81,7 @@ class Ui_regenerateAddressesDialog(object):
         self.lineEditAddressVersionNumber.setText(_fromUtf8(""))
         self.lineEditAddressVersionNumber.setObjectName("lineEditAddressVersionNumber")
         self.gridLayout.addWidget(self.lineEditAddressVersionNumber, 4, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem1, 4, 2, 1, 1)
         self.label_3 = QtWidgets.QLabel(self.groupBox)
         self.label_3.setObjectName("label_3")
@@ -104,9 +96,7 @@ class Ui_regenerateAddressesDialog(object):
         self.lineEditStreamNumber.setMaximumSize(QtCore.QSize(31, 16777215))
         self.lineEditStreamNumber.setObjectName("lineEditStreamNumber")
         self.gridLayout.addWidget(self.lineEditStreamNumber, 5, 1, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            325, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(325, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem2, 5, 2, 1, 3)
         self.checkBoxEighteenByteRipe = QtWidgets.QCheckBox(self.groupBox)
         self.checkBoxEighteenByteRipe.setObjectName("checkBoxEighteenByteRipe")
@@ -127,14 +117,10 @@ class Ui_regenerateAddressesDialog(object):
         QtCore.QMetaObject.connectSlotsByName(regenerateAddressesDialog)
 
     def retranslateUi(self, regenerateAddressesDialog):
-        regenerateAddressesDialog.setWindowTitle(
-            _translate("regenerateAddressesDialog", "Regenerate Existing Addresses", None)
-        )
+        regenerateAddressesDialog.setWindowTitle(_translate("regenerateAddressesDialog", "Regenerate Existing Addresses", None))
         self.groupBox.setTitle(_translate("regenerateAddressesDialog", "Regenerate existing addresses", None))
         self.label_6.setText(_translate("regenerateAddressesDialog", "Passphrase", None))
-        self.label_11.setText(
-            _translate("regenerateAddressesDialog", "Number of addresses to make based on your passphrase:", None)
-        )
+        self.label_11.setText(_translate("regenerateAddressesDialog", "Number of addresses to make based on your passphrase:", None))
         self.label_2.setText(_translate("regenerateAddressesDialog", "Address version number:", None))
         self.label_3.setText(_translate("regenerateAddressesDialog", "Stream number:", None))
         self.lineEditStreamNumber.setText(_translate("regenerateAddressesDialog", "1", None))

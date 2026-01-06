@@ -85,9 +85,7 @@ class TestProtocol(unittest.TestCase):
         unit(self.ADDRESS_RIPE)
         unit("00000000000000000000")
 
-        self.assertEqual(
-            crypt.encodeAddress(self.ADDRESS_RIPE, self.ADDRESS_STREAM, self.ADDRESS_VERSION), self.ADDRESS_STR
-        )
+        self.assertEqual(crypt.encodeAddress(self.ADDRESS_RIPE, self.ADDRESS_STREAM, self.ADDRESS_VERSION), self.ADDRESS_STR)
 
     def test_message(self):
         class TestMessage:

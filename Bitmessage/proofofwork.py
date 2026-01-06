@@ -36,9 +36,7 @@ def _pool_worker(nonce, initialHash, target, pool_size):
     trialValue = float("inf")
     while trialValue > target:
         nonce += pool_size
-        (trialValue,) = unpack(
-            ">Q", hashlib.sha512(hashlib.sha512(pack(">Q", nonce) + initialHash).digest()).digest()[0:8]
-        )
+        (trialValue,) = unpack(">Q", hashlib.sha512(hashlib.sha512(pack(">Q", nonce) + initialHash).digest()).digest()[0:8])
     return [trialValue, nonce]
 
 
@@ -47,9 +45,7 @@ def _doSafePoW(target, initialHash):
     trialValue = float("inf")
     while trialValue > target:
         nonce += 1
-        (trialValue,) = unpack(
-            ">Q", hashlib.sha512(hashlib.sha512(pack(">Q", nonce) + initialHash).digest()).digest()[0:8]
-        )
+        (trialValue,) = unpack(">Q", hashlib.sha512(hashlib.sha512(pack(">Q", nonce) + initialHash).digest()).digest()[0:8])
     return [trialValue, nonce]
 
 
@@ -75,9 +71,7 @@ def _doFastPoW(target, initialHash):
         if shared.shutdown >= 1:
             pool.terminate()
             while True:
-                time.sleep(
-                    10
-                )  # Don't let this thread return here; it will return nothing and cause an exception in bitmessagemain.py
+                time.sleep(10)  # Don't let this thread return here; it will return nothing and cause an exception in bitmessagemain.py
             return
         for i in range(pool_size):
             if result[i].ready():

@@ -10,7 +10,9 @@ from distutils.version import StrictVersion
 from . import shared
 from .namecoin import ensureNamecoinOptions
 
-storeConfigFilesInSameDirectoryAsProgramByDefault = False  # The user may de-select Portable Mode in the settings if they want the config files to stay in the application data folder.
+storeConfigFilesInSameDirectoryAsProgramByDefault = (
+    False  # The user may de-select Portable Mode in the settings if they want the config files to stay in the application data folder.
+)
 
 
 def loadConfig():
@@ -75,9 +77,7 @@ def loadConfig():
             "defaultnoncetrialsperbyte",
             str(shared.networkDefaultProofOfWorkNonceTrialsPerByte * 2),
         )
-        shared.config.set(
-            "bitmessagesettings", "defaultpayloadlengthextrabytes", str(shared.networkDefaultPayloadLengthExtraBytes)
-        )
+        shared.config.set("bitmessagesettings", "defaultpayloadlengthextrabytes", str(shared.networkDefaultPayloadLengthExtraBytes))
         shared.config.set("bitmessagesettings", "minimizeonclose", "false")
         shared.config.set("bitmessagesettings", "maxacceptablenoncetrialsperbyte", "0")
         shared.config.set("bitmessagesettings", "maxacceptablepayloadlengthextrabytes", "0")

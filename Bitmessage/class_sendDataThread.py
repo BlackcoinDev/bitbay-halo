@@ -30,23 +30,15 @@ class sendDataThread(threading.Thread):
         self.sock = sock
         self.peer = shared.Peer(HOST, PORT)
         self.streamNumber = streamNumber
-        self.remoteProtocolVersion = (
-            -1
-        )  # This must be set using setRemoteProtocolVersion command which is sent through the self.sendDataThreadQueue queue.
-        self.lastTimeISentData = int(
-            time.time()
-        )  # If this value increases beyond five minutes ago, we'll send a pong message to keep the connection alive.
+        self.remoteProtocolVersion = -1  # This must be set using setRemoteProtocolVersion command which is sent through the self.sendDataThreadQueue queue.
+        self.lastTimeISentData = int(time.time())  # If this value increases beyond five minutes ago, we'll send a pong message to keep the connection alive.
         self.someObjectsOfWhichThisRemoteNodeIsAlreadyAware = someObjectsOfWhichThisRemoteNodeIsAlreadyAware
         with shared.printLock:
-            print(
-                ("The streamNumber of this sendDataThread (ID:", str(id(self)) + ") at setup() is", self.streamNumber)
-            )
+            print(("The streamNumber of this sendDataThread (ID:", str(id(self)) + ") at setup() is", self.streamNumber))
         try:
             # We must send the version packet (and then an address packet)
             # before we can send any other data.
-            datatosend = shared.assembleVersionMessage(
-                self.peer.host, self.peer.port, self.streamNumber
-            )  # the IP and port of the remote host, and my streamNumber.
+            datatosend = shared.assembleVersionMessage(self.peer.host, self.peer.port, self.streamNumber)  # the IP and port of the remote host, and my streamNumber.
             if shared.verbose >= 2:
                 print(("Sending version packet: ", repr(datatosend)))
             self.sock.sendall(datatosend)
@@ -60,9 +52,7 @@ class sendDataThread(threading.Thread):
             traceback.print_exc()
 
     def sendVersionMessage(self):
-        datatosend = shared.assembleVersionMessage(
-            self.peer.host, self.peer.port, self.streamNumber
-        )  # the IP and port of the remote host, and my streamNumber.
+        datatosend = shared.assembleVersionMessage(self.peer.host, self.peer.port, self.streamNumber)  # the IP and port of the remote host, and my streamNumber.
 
         with shared.printLock:
             print(("Sending version packet: ", repr(datatosend)))
@@ -99,9 +89,7 @@ class sendDataThread(threading.Thread):
                             uploadRateLimitBytes = shared.config.getint("bitmessagesettings", "maxuploadrate") * 1000
                 numberOfBytesWeMaySend = uploadRateLimitBytes - shared.numberOfBytesSentLastSecond
                 self.sock.sendall(data[:numberOfBytesWeMaySend])
-                shared.numberOfBytesSent += len(
-                    data[:numberOfBytesWeMaySend]
-                )  # used for the 'network status' tab in the UI
+                shared.numberOfBytesSent += len(data[:numberOfBytesWeMaySend])  # used for the 'network status' tab in the UI
                 shared.numberOfBytesSentLastSecond += len(data[:numberOfBytesWeMaySend])
                 self.lastTimeISentData = int(time.time())
                 data = data[numberOfBytesWeMaySend:]
@@ -156,9 +144,7 @@ class sendDataThread(threading.Thread):
                 elif command == "advertisepeer":
                     self.objectHashHolderInstance.holdPeer(data)
                 elif command == "sendaddr":
-                    if (
-                        self.connectionIsOrWasFullyEstablished
-                    ):  # only send addr messages if we have sent and heard a verack from the remote node
+                    if self.connectionIsOrWasFullyEstablished:  # only send addr messages if we have sent and heard a verack from the remote node
                         numberOfAddressesInAddrMessage = len(data)
                         payload = ""
                         for hostDetails in data:
@@ -180,9 +166,7 @@ class sendDataThread(threading.Thread):
                 elif command == "advertiseobject":
                     self.objectHashHolderInstance.holdHash(data)
                 elif command == "sendinv":
-                    if (
-                        self.connectionIsOrWasFullyEstablished
-                    ):  # only send inv messages if we have send and heard a verack from the remote node
+                    if self.connectionIsOrWasFullyEstablished:  # only send inv messages if we have send and heard a verack from the remote node
                         payload = ""
                         for hash in data:
                             if hash not in self.someObjectsOfWhichThisRemoteNodeIsAlreadyAware:
@@ -214,9 +198,7 @@ class sendDataThread(threading.Thread):
                         self.sendBytes(data)
                     except:
                         with shared.printLock:
-                            print(
-                                ("Sending of data to", self.peer, "failed. sendDataThread thread", self, "ending now.")
-                            )
+                            print(("Sending of data to", self.peer, "failed. sendDataThread thread", self, "ending now."))
                         break
                 elif command == "connectionIsOrWasFullyEstablished":
                     self.connectionIsOrWasFullyEstablished = True

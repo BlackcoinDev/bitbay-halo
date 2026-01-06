@@ -14,9 +14,7 @@ except AttributeError:
 
 def setupFonts(main_window):
     fonts_path = main_window.ApplicationPath + "/gui" + "/fonts"
-    ttf_files = [
-        f for f in os.listdir(fonts_path) if os.path.isfile(os.path.join(fonts_path, f)) and f.endswith(".ttf")
-    ]
+    ttf_files = [f for f in os.listdir(fonts_path) if os.path.isfile(os.path.join(fonts_path, f)) and f.endswith(".ttf")]
     for f in ttf_files:
         QtGui.QFontDatabase.addApplicationFont(os.path.join(fonts_path, f))
     font = QtGui.QFont("Roboto", 12, 0)
@@ -27,9 +25,7 @@ def setupFonts(main_window):
 
 def setupFontsForeign(main_window):
     fonts_path = main_window.ApplicationPath + "/gui" + "/fonts"
-    ttf_files = [
-        f for f in os.listdir(fonts_path) if os.path.isfile(os.path.join(fonts_path, f)) and f.endswith(".ttf")
-    ]
+    ttf_files = [f for f in os.listdir(fonts_path) if os.path.isfile(os.path.join(fonts_path, f)) and f.endswith(".ttf")]
     for f in ttf_files:
         QtGui.QFontDatabase.addApplicationFont(os.path.join(fonts_path, f))
     font = QtGui.QFont("Arial Unicode MS", 12, 0)
@@ -80,9 +76,7 @@ def apply(ui, main_window):
     )
     main_window.setWindowIcon(icon)
 
-    ui.webView.setHtml(
-        _fromUtf8("<iframe src=" + ui.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-    )
+    ui.webView.setHtml(_fromUtf8("<iframe src=" + ui.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
     # if ui.NewCoin.has_key('Moderator') and ui.NewCoin['Moderator']==1:
     #    ui.label_25.setText(ui._translate("MainWindow", "Welcome to the BitBay Marketplace: Moderator version", None))
 

@@ -16,9 +16,7 @@ class objectHashHolder(threading.Thread):
     def __init__(self, sendDataThreadMailbox):
         threading.Thread.__init__(self)
         self.shutdown = False
-        self.sendDataThreadMailbox = (
-            sendDataThreadMailbox  # This queue is used to submit data back to our associated sendDataThread.
-        )
+        self.sendDataThreadMailbox = sendDataThreadMailbox  # This queue is used to submit data back to our associated sendDataThread.
         self.collectionOfHashLists = {}
         self.collectionOfPeerLists = {}
         for i in range(10):

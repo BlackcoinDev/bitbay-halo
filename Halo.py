@@ -76,7 +76,10 @@ def getPythonFileLocation():
     else:
         from inspect import getsourcefile
 
-        return os.path.dirname(os.path.abspath(getsourcefile(lambda _: None)))
+        source_file = getsourcefile(lambda _: None)
+        if source_file:
+            return os.path.dirname(os.path.abspath(source_file))
+        return os.getcwd()
 
 
 application_path = getPythonFileLocation()
@@ -136,9 +139,19 @@ global CoinSelect
 CoinSelect = {}
 
 
+if IS_WIN32:
+    try:
+        import msvcrt
+
+        _WIN32_IMPORTS_OK = True
+    except ImportError:
+        _WIN32_IMPORTS_OK = False
+else:
+    _WIN32_IMPORTS_OK = False
+
+
 def subprocess_call(*args, **kwargs):
-    # also works for Popen. It creates a new *hidden* window, so it will work in frozen apps (.exe).
-    if IS_WIN32:
+    if _WIN32_IMPORTS_OK:
         try:
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags = (
@@ -146,8 +159,8 @@ def subprocess_call(*args, **kwargs):
             )
             startupinfo.wShowWindow = subprocess.SW_HIDE
             kwargs["startupinfo"] = startupinfo
-        except AttributeError:
-            pass  # Constants not available on non-Windows
+        except (AttributeError, NameError):
+            pass
     retcode = subprocess.call(*args, **kwargs)
     return retcode
 
@@ -166,7 +179,13 @@ import electrumaccessor as ea  # Electrum synchronization
 import pybitcoincashtools as pybit2
 import pybitcointools as pybit
 import pyblackcointools
-from pyblackcointools import *
+from pyblackcointools import (
+    sign,
+    mk_multisig_script,
+    scriptaddr,
+    safe_hexlify,
+    safe_unhexlify,
+)
 
 if os.name == "nt":
     import msvcrt as m  # getch for testing
@@ -186,6 +205,7 @@ import base64
 import binascii  # Used for converting strings
 import datetime  # For comparing dates to get difference in hours.
 import socket
+import webbrowser
 from binascii import hexlify, unhexlify  # Changing from hex values
 from collections import Counter  # For filtering lists and duplicates
 from decimal import *  # Useful for avoiding errors since floats are not accurate
@@ -203,20 +223,6 @@ import testblock  # the api for blockchain requests
 from highlevelcrypto import *  # Used for public key encryption
 
 # Email authenitcation
-
-
-def safe_hexlify(a):
-    if a is None:
-        return None
-    if isinstance(a, str):
-        a = a.encode("latin1")
-    return binascii.hexlify(a).decode()
-
-
-def safe_unhexlify(a):
-    if a is None:
-        return None
-    return binascii.unhexlify(a)
 
 
 import email
@@ -2141,9 +2147,7 @@ def json_deep_copy(data, useast=0):
     #  precise_float is slower, but we get more reports of diffs
     #  without it (floats being floats)
     try:
-        data_copy = ujson.loads(
-            ujson.dumps(data, double_precision=15), precise_float=True
-        )
+        data_copy = ujson.loads(ujson.dumps(data))
         if isinstance(data_copy, list):
             update_list(data_copy, data)
         else:
@@ -34605,7 +34609,6 @@ def ApplyCSS(mywindow, other=1, font=1):
 
 import sys
 import time
-import webbrowser
 
 from PyQt6 import QtCore, QtGui
 
@@ -47703,10 +47706,12 @@ class Explanations(QtWidgets.QDialog):
             QtGui.QIcon(application_path + "/images/" + CoinSelect["HaloName"] + ".png")
         )
         self.setWindowTitle(CoinSelect["HaloName"])
-        if "pegging" in CoinSelect and CoinSelect["pegging"]:
-            uic.loadUi(application_path + "/images/" + "Explanation2.ui", self)
-        else:
-            uic.loadUi(application_path + "/images/" + "Explanation.ui", self)
+        ui_path = os.path.join(
+            application_path,
+            "images",
+            "Explanation2.ui" if CoinSelect.get("pegging") else "Explanation.ui",
+        )
+        uic.loadUi(ui_path, self)
 
 
 class ChangeList(QtWidgets.QWidget):

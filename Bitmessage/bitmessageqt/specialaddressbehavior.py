@@ -42,9 +42,7 @@ class Ui_SpecialAddressBehaviorDialog(object):
         self.buttonBox = QtWidgets.QDialogButtonBox(SpecialAddressBehaviorDialog)
         self.buttonBox.setMinimumSize(QtCore.QSize(368, 0))
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 
@@ -54,22 +52,16 @@ class Ui_SpecialAddressBehaviorDialog(object):
         self.radioButtonBehaviorMailingList.clicked.connect(self.lineEditMailingListName.setEnabled)
         self.radioButtonBehaveNormalAddress.clicked.connect(self.lineEditMailingListName.setDisabled)
         QtCore.QMetaObject.connectSlotsByName(SpecialAddressBehaviorDialog)
-        SpecialAddressBehaviorDialog.setTabOrder(
-            self.radioButtonBehaveNormalAddress, self.radioButtonBehaviorMailingList
-        )
+        SpecialAddressBehaviorDialog.setTabOrder(self.radioButtonBehaveNormalAddress, self.radioButtonBehaviorMailingList)
         SpecialAddressBehaviorDialog.setTabOrder(self.radioButtonBehaviorMailingList, self.lineEditMailingListName)
         SpecialAddressBehaviorDialog.setTabOrder(self.lineEditMailingListName, self.buttonBox)
 
     def retranslateUi(self, SpecialAddressBehaviorDialog):
         SpecialAddressBehaviorDialog.setWindowTitle(
-            QtWidgets.QApplication.translate(
-                "SpecialAddressBehaviorDialog", "Special Address Behavior", None, QtWidgets.QApplication.UnicodeUTF8
-            )
+            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Special Address Behavior", None, QtWidgets.QApplication.UnicodeUTF8)
         )
         self.radioButtonBehaveNormalAddress.setText(
-            QtWidgets.QApplication.translate(
-                "SpecialAddressBehaviorDialog", "Behave as a normal address", None, QtWidgets.QApplication.UnicodeUTF8
-            )
+            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Behave as a normal address", None, QtWidgets.QApplication.UnicodeUTF8)
         )
         self.radioButtonBehaviorMailingList.setText(
             QtWidgets.QApplication.translate(

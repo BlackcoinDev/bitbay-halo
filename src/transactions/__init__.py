@@ -155,12 +155,8 @@ class ITransactionBuilder(Protocol):
     """Protocol for transaction builder interface"""
 
     def create_transaction(self, outputs: List[Dict[str, Any]]) -> Transaction: ...
-    def add_input(
-        self, txid: str, vout: int, amount: Decimal, address: str
-    ) -> None: ...
-    def add_output(
-        self, address: str, value: Decimal, output_type: OutputType
-    ) -> None: ...
+    def add_input(self, txid: str, vout: int, amount: Decimal, address: str) -> None: ...
+    def add_output(self, address: str, value: Decimal, output_type: OutputType) -> None: ...
     def set_fee(self, fee: Decimal) -> None: ...
     def sign_input(self, input_index: int, private_key: str) -> SignatureResult: ...
     def finalize(self) -> Transaction: ...
@@ -446,9 +442,7 @@ class MultiSigConfig:
         if self.required_signers > self.total_signers:
             raise ValueError("Required signers cannot exceed total signers")
         if len(self.addresses) != self.total_signers:
-            raise ValueError(
-                f"Expected {self.total_signers} addresses, got {len(self.addresses)}"
-            )
+            raise ValueError(f"Expected {self.total_signers} addresses, got {len(self.addresses)}")
 
 
 class MultiSigTransactionBuilder(TransactionBuilder):
@@ -462,9 +456,7 @@ class MultiSigTransactionBuilder(TransactionBuilder):
         fee_per_byte: Decimal = Decimal("0.0001"),
     ) -> None:
         """Initialize multi-sig transaction builder"""
-        super().__init__(
-            version=version, lock_time=lock_time, fee_per_byte=fee_per_byte
-        )
+        super().__init__(version=version, lock_time=lock_time, fee_per_byte=fee_per_byte)
         self._multi_sig = multi_sig
         self._signatures_required = multi_sig.required_signers
 

@@ -323,8 +323,7 @@ def blockr_fetchtx(txhash, network="btc"):
             [
                 (
                     x.hex()
-                    if isinstance(x, bytes)
-                    and not re.match("^[0-9a-fA-F]*$", x.decode("latin1") if isinstance(x, bytes) else x)
+                    if isinstance(x, bytes) and not re.match("^[0-9a-fA-F]*$", x.decode("latin1") if isinstance(x, bytes) else x)
                     else (x.decode("latin1") if isinstance(x, bytes) else x)
                 )
                 for x in txhash
@@ -483,9 +482,7 @@ def get_tx_composite(inputs, outputs, output_value, change_address=None, network
     inputs = [inputs] if not isinstance(inputs, list) else inputs
     outputs = [outputs] if not isinstance(outputs, list) else outputs
     network = set_network(change_address or inputs) if not network else network.lower()
-    url = "http://api.blockcypher.com/v1/btc/{network}/txs/new?includeToSignTx=true".format(
-        network=("test3" if network == "testnet" else "main")
-    )
+    url = "http://api.blockcypher.com/v1/btc/{network}/txs/new?includeToSignTx=true".format(network=("test3" if network == "testnet" else "main"))
     is_address = lambda a: bool(re.match("^[123mn][a-km-zA-HJ-NP-Z0-9]{26,33}$", a))
     if any([is_address(x) for x in inputs]):
         inputs_type = "addresses"  # also accepts UTXOs, only addresses supported presently
@@ -501,10 +498,7 @@ def get_tx_composite(inputs, outputs, output_value, change_address=None, network
         data["change_address"] = change_address  #
     jdata = json.loads(make_request(url, data))
     hash, txh = jdata.get("tosign")[0], jdata.get("tosign_tx")[0]
-    assert (
-        bytes.fromhex(bin_dbl_sha256(bytes.fromhex(txh)).hex()) == bytes.fromhex(hash)
-        or bin_dbl_sha256(bytes.fromhex(txh)).hex() == hash
-    ), ("checksum mismatch %s" % hash)
+    assert bytes.fromhex(bin_dbl_sha256(bytes.fromhex(txh)).hex()) == bytes.fromhex(hash) or bin_dbl_sha256(bytes.fromhex(txh)).hex() == hash, "checksum mismatch %s" % hash
     return txh.encode("utf-8") if isinstance(txh, str) else txh
 
 

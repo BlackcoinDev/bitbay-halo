@@ -131,12 +131,8 @@ class IBMDaemon(Protocol):
     def add_subscription(self, address: str, label: str) -> Dict[str, Any]: ...
     def delete_subscription(self, address: str) -> Dict[str, Any]: ...
     def list_subscriptions(self) -> List[Dict[str, Any]]: ...
-    def create_address(
-        self, deterministic: bool = False, num_addresses: int = 1
-    ) -> Dict[str, Any]: ...
-    def create_deterministic_address(
-        self, passphrase: str, num_addresses: int = 1, is_chan: bool = False
-    ) -> Dict[str, Any]: ...
+    def create_address(self, deterministic: bool = False, num_addresses: int = 1) -> Dict[str, Any]: ...
+    def create_deterministic_address(self, passphrase: str, num_addresses: int = 1, is_chan: bool = False) -> Dict[str, Any]: ...
     def list_addresses(self) -> List[Dict[str, Any]]: ...
     def decode_address(self, address: str) -> Dict[str, Any]: ...
     def send_message(
@@ -147,9 +143,7 @@ class IBMDaemon(Protocol):
         message: str,
         encoding: int = 2,
     ) -> Dict[str, Any]: ...
-    def send_broadcast(
-        self, from_address: str, subject: str, message: str, encoding: int = 2
-    ) -> Dict[str, Any]: ...
+    def send_broadcast(self, from_address: str, subject: str, message: str, encoding: int = 2) -> Dict[str, Any]: ...
     def get_inbox_messages(self) -> List[Dict[str, Any]]: ...
     def get_all_inbox_messages(self) -> List[Dict[str, Any]]: ...
     def get_sent_messages(self) -> List[Dict[str, Any]]: ...
@@ -190,9 +184,7 @@ class PyBitmessageClient:
         self.auth_string = f"{username}:{password}"
         self._is_connected = False
 
-    def _make_request(
-        self, method: str, params: Optional[List[Any]] = None
-    ) -> Dict[str, Any]:
+    def _make_request(self, method: str, params: Optional[List[Any]] = None) -> Dict[str, Any]:
         """Make JSON-RPC request to BitMessage API"""
         import urllib.request
         import urllib.error
@@ -256,17 +248,11 @@ class PyBitmessageClient:
         result = self._make_request("listSubscriptions")
         return result.get("subscriptions", [])
 
-    def create_address(
-        self, deterministic: bool = False, num_addresses: int = 1
-    ) -> Dict[str, Any]:
+    def create_address(self, deterministic: bool = False, num_addresses: int = 1) -> Dict[str, Any]:
         """Create new address(es)"""
-        return self._make_request(
-            "createRandomAddress", ["", deterministic, num_addresses]
-        )
+        return self._make_request("createRandomAddress", ["", deterministic, num_addresses])
 
-    def create_deterministic_address(
-        self, passphrase: str, num_addresses: int = 1, is_chan: bool = False
-    ) -> Dict[str, Any]:
+    def create_deterministic_address(self, passphrase: str, num_addresses: int = 1, is_chan: bool = False) -> Dict[str, Any]:
         """Create deterministic address from passphrase"""
         return self._make_request(
             "createDeterministicAddresses",
@@ -309,13 +295,9 @@ class PyBitmessageClient:
             ],
         )
 
-    def send_broadcast(
-        self, from_address: str, subject: str, message: str, encoding: int = 2
-    ) -> Dict[str, Any]:
+    def send_broadcast(self, from_address: str, subject: str, message: str, encoding: int = 2) -> Dict[str, Any]:
         """Send a broadcast"""
-        return self._make_request(
-            "sendBroadcast", [from_address, subject, message, encoding]
-        )
+        return self._make_request("sendBroadcast", [from_address, subject, message, encoding])
 
     def get_inbox_messages(self) -> List[Dict[str, Any]]:
         """Get inbox messages"""
@@ -487,9 +469,7 @@ class BitMessageManager:
                     body=m.get("message", ""),
                     status=m.get("status", "unknown"),
                     ack_data=m.get("ackData", ""),
-                    sent_at=datetime.fromtimestamp(m.get("lastActionTime", 0))
-                    if m.get("lastActionTime", 0) > 0
-                    else None,
+                    sent_at=datetime.fromtimestamp(m.get("lastActionTime", 0)) if m.get("lastActionTime", 0) > 0 else None,
                 )
                 for m in sent_messages
             ]
@@ -515,9 +495,7 @@ class BitMessageManager:
         """Get count of unread messages"""
         return sum(1 for m in self._inbox if not m.read)
 
-    def create_new_address(
-        self, label: str = "", deterministic: bool = False
-    ) -> Optional[str]:
+    def create_new_address(self, label: str = "", deterministic: bool = False) -> Optional[str]:
         """Create new address"""
         result = self.client.create_address(deterministic)
         if "address" in result:
@@ -528,13 +506,9 @@ class BitMessageManager:
             return address
         return None
 
-    def create_deterministic_address(
-        self, passphrase: str, is_chan: bool = False
-    ) -> Optional[str]:
+    def create_deterministic_address(self, passphrase: str, is_chan: bool = False) -> Optional[str]:
         """Create deterministic address from passphrase"""
-        result = self.client.create_deterministic_address(
-            passphrase, num_addresses=1, is_chan=is_chan
-        )
+        result = self.client.create_deterministic_address(passphrase, num_addresses=1, is_chan=is_chan)
         if "addresses" in result and len(result["addresses"]) > 0:
             address = result["addresses"][0]
             self.refresh_addresses()

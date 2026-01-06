@@ -239,11 +239,7 @@ class Context(object):
         TLSv1_1_METHOD: "TLSv1_1_method",
         TLSv1_2_METHOD: "TLSv1_2_method",
     }
-    _methods = dict(
-        (identifier, getattr(_lib, name))
-        for (identifier, name) in list(_methods.items())
-        if getattr(_lib, name, None) is not None
-    )
+    _methods = dict((identifier, getattr(_lib, name)) for (identifier, name) in list(_methods.items()) if getattr(_lib, name, None) is not None)
 
     def __init__(self, method):
         """

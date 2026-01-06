@@ -58,15 +58,11 @@ class sqlThread(threading.Thread):
             self.cur.execute(
                 """CREATE TABLE inventory (hash blob, objecttype int, streamnumber int, payload blob, expirestime integer, tag blob, UNIQUE(hash) ON CONFLICT REPLACE)"""
             )
-            self.cur.execute(
-                """INSERT INTO subscriptions VALUES('Bitmessage new releases/announcements','BM-GtovgYdgs7qXPkoYaRgrLFuFKz1SFpsw',1)"""
-            )
+            self.cur.execute("""INSERT INTO subscriptions VALUES('Bitmessage new releases/announcements','BM-GtovgYdgs7qXPkoYaRgrLFuFKz1SFpsw',1)""")
             self.cur.execute("""CREATE TABLE settings (key blob, value blob, UNIQUE(key) ON CONFLICT REPLACE)""")
             self.cur.execute("""INSERT INTO settings VALUES('version','7')""")
             self.cur.execute("""INSERT INTO settings VALUES('lastvacuumtime',?)""", (int(time.time()),))
-            self.cur.execute(
-                """CREATE TABLE objectprocessorqueue (objecttype int, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)"""
-            )
+            self.cur.execute("""CREATE TABLE objectprocessorqueue (objecttype int, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)""")
             self.conn.commit()
             logger.info("Created messages database file")
         except Exception as err:
@@ -156,29 +152,17 @@ class sqlThread(threading.Thread):
             self.cur.execute("""INSERT INTO settings VALUES('version','1')""")
             self.cur.execute("""INSERT INTO settings VALUES('lastvacuumtime',?)""", (int(time.time()),))
             logger.debug("In messages.dat database, removing an obsolete field from the pubkeys table.")
-            self.cur.execute(
-                """CREATE TEMPORARY TABLE pubkeys_backup(hash blob, transmitdata blob, time int, usedpersonally text, UNIQUE(hash) ON CONFLICT REPLACE);"""
-            )
-            self.cur.execute(
-                """INSERT INTO pubkeys_backup SELECT hash, transmitdata, time, usedpersonally FROM pubkeys;"""
-            )
+            self.cur.execute("""CREATE TEMPORARY TABLE pubkeys_backup(hash blob, transmitdata blob, time int, usedpersonally text, UNIQUE(hash) ON CONFLICT REPLACE);""")
+            self.cur.execute("""INSERT INTO pubkeys_backup SELECT hash, transmitdata, time, usedpersonally FROM pubkeys;""")
             self.cur.execute("""DROP TABLE pubkeys""")
-            self.cur.execute(
-                """CREATE TABLE pubkeys (hash blob, transmitdata blob, time int, usedpersonally text, UNIQUE(hash) ON CONFLICT REPLACE)"""
-            )
-            self.cur.execute(
-                """INSERT INTO pubkeys SELECT hash, transmitdata, time, usedpersonally FROM pubkeys_backup;"""
-            )
+            self.cur.execute("""CREATE TABLE pubkeys (hash blob, transmitdata blob, time int, usedpersonally text, UNIQUE(hash) ON CONFLICT REPLACE)""")
+            self.cur.execute("""INSERT INTO pubkeys SELECT hash, transmitdata, time, usedpersonally FROM pubkeys_backup;""")
             self.cur.execute("""DROP TABLE pubkeys_backup;""")
-            logger.debug(
-                "Deleting all pubkeys from inventory. They will be redownloaded and then saved with the correct times."
-            )
+            logger.debug("Deleting all pubkeys from inventory. They will be redownloaded and then saved with the correct times.")
             self.cur.execute("""delete from inventory where objecttype = 'pubkey';""")
             logger.debug("replacing Bitmessage announcements mailing list with a new one.")
             self.cur.execute("""delete from subscriptions where address='BM-BbkPSZbzPwpVcYZpU4yHwf9ZPEapN5Zx' """)
-            self.cur.execute(
-                """INSERT INTO subscriptions VALUES('Bitmessage new releases/announcements','BM-GtovgYdgs7qXPkoYaRgrLFuFKz1SFpsw',1)"""
-            )
+            self.cur.execute("""INSERT INTO subscriptions VALUES('Bitmessage new releases/announcements','BM-GtovgYdgs7qXPkoYaRgrLFuFKz1SFpsw',1)""")
             logger.debug("Commiting.")
             self.conn.commit()
             logger.debug("Vacuuming message.dat. You might notice that the file size gets much smaller.")
@@ -219,16 +203,10 @@ class sqlThread(threading.Thread):
             self.cur.execute(
                 """CREATE TEMPORARY TABLE inventory_backup(hash blob, objecttype text, streamnumber int, payload blob, receivedtime integer, UNIQUE(hash) ON CONFLICT REPLACE);"""
             )
-            self.cur.execute(
-                """INSERT INTO inventory_backup SELECT hash, objecttype, streamnumber, payload, receivedtime FROM inventory;"""
-            )
+            self.cur.execute("""INSERT INTO inventory_backup SELECT hash, objecttype, streamnumber, payload, receivedtime FROM inventory;""")
             self.cur.execute("""DROP TABLE inventory""")
-            self.cur.execute(
-                """CREATE TABLE inventory (hash blob, objecttype text, streamnumber int, payload blob, receivedtime integer, UNIQUE(hash) ON CONFLICT REPLACE)"""
-            )
-            self.cur.execute(
-                """INSERT INTO inventory SELECT hash, objecttype, streamnumber, payload, receivedtime FROM inventory_backup;"""
-            )
+            self.cur.execute("""CREATE TABLE inventory (hash blob, objecttype text, streamnumber int, payload blob, receivedtime integer, UNIQUE(hash) ON CONFLICT REPLACE)""")
+            self.cur.execute("""INSERT INTO inventory SELECT hash, objecttype, streamnumber, payload, receivedtime FROM inventory_backup;""")
             self.cur.execute("""DROP TABLE inventory_backup;""")
             item = """update settings set value=? WHERE key='version';"""
             parameters = (3,)
@@ -303,9 +281,7 @@ class sqlThread(threading.Thread):
         currentVersion = int(self.cur.fetchall()[0][0])
         if currentVersion == 5:
             self.cur.execute("""DROP TABLE knownnodes""")
-            self.cur.execute(
-                """CREATE TABLE objectprocessorqueue (objecttype text, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)"""
-            )
+            self.cur.execute("""CREATE TABLE objectprocessorqueue (objecttype text, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)""")
             item = """update settings set value=? WHERE key='version';"""
             parameters = (6,)
             self.cur.execute(item, parameters)
@@ -323,9 +299,7 @@ class sqlThread(threading.Thread):
                 """CREATE TABLE inventory (hash blob, objecttype int, streamnumber int, payload blob, expirestime integer, tag blob, UNIQUE(hash) ON CONFLICT REPLACE)"""
             )
             self.cur.execute("""DROP TABLE objectprocessorqueue""")
-            self.cur.execute(
-                """CREATE TABLE objectprocessorqueue (objecttype int, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)"""
-            )
+            self.cur.execute("""CREATE TABLE objectprocessorqueue (objecttype int, data blob, UNIQUE(objecttype, data) ON CONFLICT REPLACE)""")
             item = """update settings set value=? WHERE key='version';"""
             parameters = (7,)
             self.cur.execute(item, parameters)
@@ -343,18 +317,10 @@ class sqlThread(threading.Thread):
                 "defaultpayloadlengthextrabytes",
                 str(shared.networkDefaultPayloadLengthExtraBytes),
             )
-            previousTotalDifficulty = (
-                int(shared.config.getint("bitmessagesettings", "maxacceptablenoncetrialsperbyte")) / 320
-            )
-            previousSmallMessageDifficulty = (
-                int(shared.config.getint("bitmessagesettings", "maxacceptablepayloadlengthextrabytes")) / 14000
-            )
-            shared.config.set(
-                "bitmessagesettings", "maxacceptablenoncetrialsperbyte", str(previousTotalDifficulty * 1000)
-            )
-            shared.config.set(
-                "bitmessagesettings", "maxacceptablepayloadlengthextrabytes", str(previousSmallMessageDifficulty * 1000)
-            )
+            previousTotalDifficulty = int(shared.config.getint("bitmessagesettings", "maxacceptablenoncetrialsperbyte")) / 320
+            previousSmallMessageDifficulty = int(shared.config.getint("bitmessagesettings", "maxacceptablepayloadlengthextrabytes")) / 14000
+            shared.config.set("bitmessagesettings", "maxacceptablenoncetrialsperbyte", str(previousTotalDifficulty * 1000))
+            shared.config.set("bitmessagesettings", "maxacceptablepayloadlengthextrabytes", str(previousSmallMessageDifficulty * 1000))
             shared.config.set("bitmessagesettings", "settingsversion", "9")
 
         # Adjust the required POW values for each of this user's addresses to conform to protocol v3 norms.
@@ -362,17 +328,13 @@ class sqlThread(threading.Thread):
             for addressInKeysFile in shared.config.sections():
                 try:
                     previousTotalDifficulty = float(shared.config.getint(addressInKeysFile, "noncetrialsperbyte")) / 320
-                    previousSmallMessageDifficulty = (
-                        float(shared.config.getint(addressInKeysFile, "payloadlengthextrabytes")) / 14000
-                    )
+                    previousSmallMessageDifficulty = float(shared.config.getint(addressInKeysFile, "payloadlengthextrabytes")) / 14000
                     if previousTotalDifficulty <= 2:
                         previousTotalDifficulty = 1
                     if previousSmallMessageDifficulty < 1:
                         previousSmallMessageDifficulty = 1
                     shared.config.set(addressInKeysFile, "noncetrialsperbyte", str(int(previousTotalDifficulty * 1000)))
-                    shared.config.set(
-                        addressInKeysFile, "payloadlengthextrabytes", str(int(previousSmallMessageDifficulty * 1000))
-                    )
+                    shared.config.set(addressInKeysFile, "payloadlengthextrabytes", str(int(previousSmallMessageDifficulty * 1000)))
                 except:
                     continue
             shared.config.set("bitmessagesettings", "maxdownloadrate", "0")
@@ -405,9 +367,7 @@ class sqlThread(threading.Thread):
                 os._exit(0)
         except Exception as err:
             if str(err) == "database or disk is full":
-                logger.fatal(
-                    "(While null value test) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                )
+                logger.fatal("(While null value test) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                 shared.UISignalQueue.put(
                     (
                         "alert",
@@ -442,9 +402,7 @@ class sqlThread(threading.Thread):
                     self.cur.execute(""" VACUUM """)
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(While VACUUM) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(While VACUUM) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",
@@ -473,9 +431,7 @@ class sqlThread(threading.Thread):
                     self.conn.commit()
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(While committing) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(While committing) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",
@@ -505,9 +461,7 @@ class sqlThread(threading.Thread):
                     self.conn.commit()
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(while movemessagstoprog) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(while movemessagstoprog) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",
@@ -537,9 +491,7 @@ class sqlThread(threading.Thread):
                     self.conn.commit()
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(while movemessagstoappdata) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(while movemessagstoappdata) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",
@@ -570,9 +522,7 @@ class sqlThread(threading.Thread):
                     self.cur.execute(""" VACUUM """)
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(while deleteandvacuume) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(while deleteandvacuume) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",
@@ -598,9 +548,7 @@ class sqlThread(threading.Thread):
                     self.cur.execute(item, parameters)
                 except Exception as err:
                     if str(err) == "database or disk is full":
-                        logger.fatal(
-                            "(while cur.execute) Alert: Your disk or data storage volume is full. sqlThread will now exit."
-                        )
+                        logger.fatal("(while cur.execute) Alert: Your disk or data storage volume is full. sqlThread will now exit.")
                         shared.UISignalQueue.put(
                             (
                                 "alert",

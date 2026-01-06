@@ -44,11 +44,7 @@ class Ui_aboutDialog(object):
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
-        self.label.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight
-            | QtCore.Qt.AlignmentFlag.AlignTrailing
-            | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTrailing | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.label.setObjectName("label")
         self.labelVersion = QtWidgets.QLabel(aboutDialog)
         self.labelVersion.setGeometry(QtCore.QRect(190, 126, 161, 20))

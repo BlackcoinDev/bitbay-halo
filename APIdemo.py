@@ -30,9 +30,7 @@ def LoadExchange():
     exchangeaddress = "BQWPRHbTKbo6VJwCjtvLaUg4fykPmiWZdN"
     feeaccount = "B65aJgkuAinZ35Rt1EnqVB3yX8gESe9ogV"
     time.sleep(0.2)
-    res = HaloRPC.ExchangeSettings(
-        [exchangeaddress], feeaccount, {"min": 10000000, "max": 1000000000, "percent": 0.001}, "", "pw"
-    )
+    res = HaloRPC.ExchangeSettings([exchangeaddress], feeaccount, {"min": 10000000, "max": 1000000000, "percent": 0.001}, "", "pw")
 
 
 # It's recommended to iterate and ask for specific addresses instead of all at once

@@ -122,9 +122,7 @@ def drawtab(stdscr):
             for i, item in enumerate(inbox[max(min(len(inbox) - curses.LINES + 6, inboxcur - 5), 0) :]):
                 if 6 + i < curses.LINES:
                     a = 0
-                    if i == inboxcur - max(
-                        min(len(inbox) - curses.LINES + 6, inboxcur - 5), 0
-                    ):  # Highlight current address
+                    if i == inboxcur - max(min(len(inbox) - curses.LINES + 6, inboxcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     if item[7] == False:  # If not read, highlight
                         a = a | curses.A_BOLD
@@ -141,9 +139,7 @@ def drawtab(stdscr):
             for i, item in enumerate(sentbox[max(min(len(sentbox) - curses.LINES + 6, sentcur - 5), 0) :]):
                 if 6 + i < curses.LINES:
                     a = 0
-                    if i == sentcur - max(
-                        min(len(sentbox) - curses.LINES + 6, sentcur - 5), 0
-                    ):  # Highlight current address
+                    if i == sentcur - max(min(len(sentbox) - curses.LINES + 6, sentcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     stdscr.addstr(5 + i, 5, item[0][:34], a)
                     stdscr.addstr(5 + i, 40, item[2][:39], a)
@@ -157,9 +153,7 @@ def drawtab(stdscr):
             for i, item in enumerate(addresses[max(min(len(addresses) - curses.LINES + 6, addrcur - 5), 0) :]):
                 if 6 + i < curses.LINES:
                     a = 0
-                    if i == addrcur - max(
-                        min(len(addresses) - curses.LINES + 6, addrcur - 5), 0
-                    ):  # Highlight current address
+                    if i == addrcur - max(min(len(addresses) - curses.LINES + 6, addrcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     if item[1] == True and item[3] not in [8, 9]:  # Embolden enabled, non-special addresses
                         a = a | curses.A_BOLD
@@ -174,9 +168,7 @@ def drawtab(stdscr):
             for i, item in enumerate(subscriptions[max(min(len(subscriptions) - curses.LINES + 6, subcur - 5), 0) :]):
                 if 6 + i < curses.LINES:
                     a = 0
-                    if i == subcur - max(
-                        min(len(subscriptions) - curses.LINES + 6, subcur - 5), 0
-                    ):  # Highlight current address
+                    if i == subcur - max(min(len(subscriptions) - curses.LINES + 6, subcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     if item[2] == True:  # Embolden enabled subscriptions
                         a = a | curses.A_BOLD
@@ -190,9 +182,7 @@ def drawtab(stdscr):
             for i, item in enumerate(addrbook[max(min(len(addrbook) - curses.LINES + 6, abookcur - 5), 0) :]):
                 if 6 + i < curses.LINES:
                     a = 0
-                    if i == abookcur - max(
-                        min(len(addrbook) - curses.LINES + 6, abookcur - 5), 0
-                    ):  # Highlight current address
+                    if i == abookcur - max(min(len(addrbook) - curses.LINES + 6, abookcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     stdscr.addstr(5 + i, 5, item[0][:34], a)
                     stdscr.addstr(5 + i, 40, item[1][:39], a)
@@ -205,9 +195,7 @@ def drawtab(stdscr):
             for i, item in enumerate(blacklist[max(min(len(blacklist) - curses.LINES + 6, blackcur - 5), 0) :]):
                 if 7 + i < curses.LINES:
                     a = 0
-                    if i == blackcur - max(
-                        min(len(blacklist) - curses.LINES + 6, blackcur - 5), 0
-                    ):  # Highlight current address
+                    if i == blackcur - max(min(len(blacklist) - curses.LINES + 6, blackcur - 5), 0):  # Highlight current address
                         a = a | curses.A_REVERSE
                     if item[2] == True:  # Embolden enabled subscriptions
                         a = a | curses.A_BOLD
@@ -236,12 +224,8 @@ def drawtab(stdscr):
 
             # Uptime and processing data
             stdscr.addstr(6, 35, "Since startup on " + l10n.formatTimestamp(startuptime, False))
-            stdscr.addstr(
-                7, 40, "Processed " + str(shared.numberOfMessagesProcessed).ljust(4) + " person-to-person messages."
-            )
-            stdscr.addstr(
-                8, 40, "Processed " + str(shared.numberOfBroadcastsProcessed).ljust(4) + " broadcast messages."
-            )
+            stdscr.addstr(7, 40, "Processed " + str(shared.numberOfMessagesProcessed).ljust(4) + " person-to-person messages.")
+            stdscr.addstr(8, 40, "Processed " + str(shared.numberOfBroadcastsProcessed).ljust(4) + " broadcast messages.")
             stdscr.addstr(9, 40, "Processed " + str(shared.numberOfPubkeysProcessed).ljust(4) + " public keys.")
 
             # Inventory data
@@ -307,15 +291,7 @@ def handlech(c, stdscr):
                     )
                     if r == d.DIALOG_OK:
                         if t == "1":  # View
-                            d.set_background_title(
-                                '"'
-                                + inbox[inboxcur][5]
-                                + '" from "'
-                                + inbox[inboxcur][3]
-                                + '" to "'
-                                + inbox[inboxcur][1]
-                                + '"'
-                            )
+                            d.set_background_title('"' + inbox[inboxcur][5] + '" from "' + inbox[inboxcur][3] + '" to "' + inbox[inboxcur][1] + '"')
                             data = ""
                             ret = sqlQuery("SELECT message FROM inbox WHERE msgid=?", inbox[inboxcur][0])
                             if ret != []:
@@ -344,9 +320,7 @@ def handlech(c, stdscr):
                                     break
                             if not addresses[i][1]:
                                 d.scrollbox(
-                                    str(
-                                        "Sending address disabled, please either enable it or choose a different address."
-                                    ),
+                                    str("Sending address disabled, please either enable it or choose a different address."),
                                     exit_label="Continue",
                                 )
                                 return
@@ -379,9 +353,7 @@ def handlech(c, stdscr):
                                     addrbook.append([label, addr])
                                     addrbook.reverse()
                             else:
-                                d.scrollbox(
-                                    str("The selected address is already in the Address Book."), exit_label="Continue"
-                                )
+                                d.scrollbox(str("The selected address is already in the Address Book."), exit_label="Continue")
                         elif t == "5":  # Save message
                             d.set_background_title('Save "' + inbox[inboxcur][5] + '" as text file')
                             r, t = d.inputbox("Filename", init=inbox[inboxcur][5] + ".txt")
@@ -400,9 +372,7 @@ def handlech(c, stdscr):
                             sqlExecute("UPDATE inbox SET folder='trash' WHERE msgid=?", inbox[inboxcur][0])
                             del inbox[inboxcur]
                             d.scrollbox(
-                                str(
-                                    "Message moved to trash. There is no interface to view your trash, \nbut the message is still on disk if you are desperate to recover it."
-                                ),
+                                str("Message moved to trash. There is no interface to view your trash, \nbut the message is still on disk if you are desperate to recover it."),
                                 exit_label="Continue",
                             )
                 elif menutab == 2:
@@ -418,15 +388,7 @@ def handlech(c, stdscr):
                     )
                     if r == d.DIALOG_OK:
                         if t == "1":  # View
-                            d.set_background_title(
-                                '"'
-                                + sentbox[sentcur][4]
-                                + '" from "'
-                                + sentbox[sentcur][3]
-                                + '" to "'
-                                + sentbox[sentcur][1]
-                                + '"'
-                            )
+                            d.set_background_title('"' + sentbox[sentcur][4] + '" from "' + sentbox[sentcur][3] + '" to "' + sentbox[sentcur][1] + '"')
                             data = ""
                             ret = sqlQuery(
                                 "SELECT message FROM sent WHERE subject=? AND ackdata=?",
@@ -451,9 +413,7 @@ def handlech(c, stdscr):
                             )
                             del sentbox[sentcur]
                             d.scrollbox(
-                                str(
-                                    "Message moved to trash. There is no interface to view your trash, \nbut the message is still on disk if you are desperate to recover it."
-                                ),
+                                str("Message moved to trash. There is no interface to view your trash, \nbut the message is still on disk if you are desperate to recover it."),
                                 exit_label="Continue",
                             )
                 elif menutab == 4:
@@ -525,9 +485,7 @@ def handlech(c, stdscr):
                                         )
                                         if r == d.DIALOG_OK and "1" in t:
                                             shorten = True
-                                        shared.addressGeneratorQueue.put(
-                                            ("createRandomAddress", 4, stream, label, 1, "", shorten)
-                                        )
+                                        shared.addressGeneratorQueue.put(("createRandomAddress", 4, stream, label, 1, "", shorten))
                                 elif t == "2":
                                     d.set_background_title("Make deterministic addresses")
                                     r, t = d.passwordform(
@@ -542,9 +500,7 @@ def handlech(c, stdscr):
                                     if r == d.DIALOG_OK:
                                         if t[0] == t[1]:
                                             passphrase = t[0]
-                                            r, t = d.rangebox(
-                                                "Number of addresses to generate", width=48, min=1, max=99, init=8
-                                            )
+                                            r, t = d.rangebox("Number of addresses to generate", width=48, min=1, max=99, init=8)
                                             if r == d.DIALOG_OK:
                                                 number = t
                                                 stream = 1
@@ -858,9 +814,7 @@ def sendMessage(sender="", recv="", broadcast=None, subject="", body="", reply=F
     d = Dialog(dialog="dialog")
     d.set_background_title("Send a message")
     if recv == "":
-        r, t = d.inputbox(
-            "Recipient address (Cancel to load from the Address Book or leave blank to broadcast)", 10, 60
-        )
+        r, t = d.inputbox("Recipient address (Cancel to load from the Address Book or leave blank to broadcast)", 10, 60)
         if r != d.DIALOG_OK:
             global menutab
             menutab = 6
@@ -929,19 +883,13 @@ def sendMessage(sender="", recv="", broadcast=None, subject="", body="", reply=F
                     if stream > 1 or stream == 0:
                         d.set_background_title("Recipient address error")
                         d.scrollbox(
-                            str(
-                                "Bitmessage currently only supports stream numbers of 1, unlike as requested for address "
-                                + addr
-                                + "."
-                            ),
+                            str("Bitmessage currently only supports stream numbers of 1, unlike as requested for address " + addr + "."),
                             exit_label="Continue",
                         )
                         continue
                     if len(shared.connectedHostsList) == 0:
                         d.set_background_title("Not connected warning")
-                        d.scrollbox(
-                            str("Because you are not currently connected to the network, "), exit_label="Continue"
-                        )
+                        d.scrollbox(str("Because you are not currently connected to the network, "), exit_label="Continue")
                     ackdata = OpenSSL.rand(32)
                     sqlExecute(
                         "INSERT INTO sent VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1038,9 +986,7 @@ def loadInbox():
         fromlabel = shared.fixPotentiallyInvalidUTF8Data(fromlabel)
 
         # Load into array
-        inbox.append(
-            [msgid, tolabel, toaddr, fromlabel, fromaddr, subject, l10n.formatTimestamp(received, False), read]
-        )
+        inbox.append([msgid, tolabel, toaddr, fromlabel, fromaddr, subject, l10n.formatTimestamp(received, False), read])
     inbox.reverse()
 
 

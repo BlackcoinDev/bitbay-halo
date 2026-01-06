@@ -90,9 +90,7 @@ class XMLRPC_TEST(unittest.TestCase):
     def test_06_send_messages(self):
         addr = api.createRandomAddress("sendtest")
         api.addSubscription("a", "BM-2D9vJkoGoTBhqMyZyjvELKgBWFMr6iGCQQ")
-        ackdata1 = api.sendMessage(
-            addr, "BM-2D9vJkoGoTBhqMyZyjvELKgBWFMr6iGCQQ", "apitest", "apitest\nhttps://github.com/merlink01/PyBitAPI"
-        )
+        ackdata1 = api.sendMessage(addr, "BM-2D9vJkoGoTBhqMyZyjvELKgBWFMr6iGCQQ", "apitest", "apitest\nhttps://github.com/merlink01/PyBitAPI")
         ackdata2 = api.sendBroadcast(addr, "apitest", "apitest")
         while api.getSentMessageByAckData(ackdata1) == "notfound":
             pass

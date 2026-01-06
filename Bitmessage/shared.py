@@ -1,6 +1,8 @@
 softwareVersion = "0.4.4"
 verbose = 1
-maximumAgeOfAnObjectThatIAmWillingToAccept = 216000  # This is obsolete with the change to protocol v3 but the singleCleaner thread still hasn't been updated so we need this a little longer.
+maximumAgeOfAnObjectThatIAmWillingToAccept = (
+    216000  # This is obsolete with the change to protocol v3 but the singleCleaner thread still hasn't been updated so we need this a little longer.
+)
 lengthOfTimeToHoldOnToAllPubkeys = 2419200  # Equals 4 weeks. You could make this longer if you want but making it shorter would not be advisable because there is a very small possibility that it could keep you from obtaining a needed pubkey for a period of time.
 maximumAgeOfNodesThatIAdvertiseToOthers = 10800  # Equals three hours
 useVeryEasyProofOfWorkForTesting = False  # If you set this to True while on the normal network, you won't be able to send or sometimes receive messages.
@@ -46,7 +48,9 @@ inventory = {}  # of objects (like msg payloads and pubkey payloads) Does not in
 inventoryLock = threading.Lock()  # Guarantees that two receiveDataThreads don't receive and process the same message concurrently (probably sent by a malicious individual)
 printLock = threading.Lock()
 objectProcessorQueueSizeLock = threading.Lock()
-objectProcessorQueueSize = 0  # in Bytes. We maintain this to prevent nodes from flooing us with objects which take up too much memory. If this gets too big we'll sleep before asking for further objects.
+objectProcessorQueueSize = (
+    0  # in Bytes. We maintain this to prevent nodes from flooing us with objects which take up too much memory. If this gets too big we'll sleep before asking for further objects.
+)
 appdata = ""  # holds the location of the application data storage directory
 workingdir = ""
 statusIconColor = "red"
@@ -59,9 +63,7 @@ alreadyAttemptedConnectionsListResetTime = int(
 )  # used to clear out the alreadyAttemptedConnectionsList periodically so that we will retry connecting to hosts to which we have already tried to connect.
 numberOfObjectsThatWeHaveYetToGetPerPeer = {}
 neededPubkeys = {}
-eightBytesOfRandomDataUsedToDetectConnectionsToSelf = pack(
-    ">Q", random.randrange(1, 18446744073709551615)
-)
+eightBytesOfRandomDataUsedToDetectConnectionsToSelf = pack(">Q", random.randrange(1, 18446744073709551615))
 successfullyDecryptMessageTimings = []  # A list of the amounts of time it took to successfully decrypt msg messages
 apiAddressGeneratorReturnQueue = Queue.Queue()  # The address generator thread uses this queue to get information back to the API thread.
 ackdataForWhichImWatching = {}
@@ -79,17 +81,19 @@ lastTimeWeResetBytesSent = 0  # used for the bandwidth rate limit
 sendDataLock = threading.Lock()  # used for the bandwidth rate limit
 receiveDataLock = threading.Lock()  # used for the bandwidth rate limit
 daemon = False
-inventorySets = {}  # key = streamNumer, value = a set which holds the inventory object hashes that we are aware of. This is used whenever we receive an inv message from a peer to check to see what items are new to us. We don't delete things out of it; instead, the singleCleaner thread clears and refills it every couple hours.
-needToWriteKnownNodesToDisk = (
-    False  # If True, the singleCleaner will write it to disk eventually.
-)
+inventorySets = (
+    {}
+)  # key = streamNumer, value = a set which holds the inventory object hashes that we are aware of. This is used whenever we receive an inv message from a peer to check to see what items are new to us. We don't delete things out of it; instead, the singleCleaner thread clears and refills it every couple hours.
+needToWriteKnownNodesToDisk = False  # If True, the singleCleaner will write it to disk eventually.
 maximumLengthOfTimeToBotherResendingMessages = 0
 objectProcessorQueue = Queue.Queue()  # receiveDataThreads dump objects they hear on the network into this queue to be processed.
 streamsInWhichIAmParticipating = {}
 
 # If changed, these values will cause particularly unexpected behavior: You won't be able to either send or receive messages because the proof of work you do (or demand) won't match that done or demanded by others. Don't change them!
 networkDefaultProofOfWorkNonceTrialsPerByte = 1000  # The amount of work that should be performed (and demanded) per byte of the payload.
-networkDefaultPayloadLengthExtraBytes = 1000  # To make sending short messages a little more difficult, this value is added to the payload length for use in calculating the proof of work target.
+networkDefaultPayloadLengthExtraBytes = (
+    1000  # To make sending short messages a little more difficult, this value is added to the payload length for use in calculating the proof of work target.
+)
 
 # Remember here the RPC port read from namecoin.conf so we can restore to
 # it as default whenever the user changes the "method" selection for
@@ -138,9 +142,7 @@ def isInSqlInventory(hash):
 
 def encodeHost(host):
     if host.find(":") == -1:
-        return b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff" + socket.inet_aton(
-            host
-        )
+        return b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff" + socket.inet_aton(host)
     else:
         return socket.inet_pton(socket.AF_INET6, host)
 
@@ -151,15 +153,13 @@ def assembleVersionMessage(remoteHost, remotePort, myStreamNumber):
     payload += pack(">q", 1)  # bitflags of the services I offer.
     payload += pack(">q", int(time.time()))
 
-    payload += pack(
-        ">q", 1
-    )  # boolservices of remote connection; ignored by the remote host.
+    payload += pack(">q", 1)  # boolservices of remote connection; ignored by the remote host.
     payload += encodeHost(remoteHost)
     payload += pack(">H", remotePort)  # remote IPv6 and port
 
     payload += pack(">q", 1)  # bitflags of the services I offer.
-    payload += (
-        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff" + pack(">L", 2130706433)
+    payload += b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff" + pack(
+        ">L", 2130706433
     )  # = 127.0.0.1. This will be ignored by the remote host. The actual remote connected IP will be used.
     payload += pack(">H", shared.config.getint("bitmessagesettings", "port"))
 
@@ -168,9 +168,7 @@ def assembleVersionMessage(remoteHost, remotePort, myStreamNumber):
     userAgent = b"/PyBitmessage:" + shared.softwareVersion.encode("utf-8") + b"/"
     payload += encodeVarint(len(userAgent))
     payload += userAgent
-    payload += encodeVarint(
-        1
-    )  # The number of streams about which I care. PyBitmessage currently only supports 1 per connection.
+    payload += encodeVarint(1)  # The number of streams about which I care. PyBitmessage currently only supports 1 per connection.
     payload += encodeVarint(myStreamNumber)
 
     return CreatePacket("version", payload)
@@ -215,11 +213,7 @@ def lookupAppdataFolder():
         for arg in sys.argv:
             if "path=" in arg:
                 sysdir = arg
-            if (
-                "bitbay" in arg.lower()
-                or "bithalo" in arg.lower()
-                or "blackhalo" in arg.lower()
-            ):
+            if "bitbay" in arg.lower() or "bithalo" in arg.lower() or "blackhalo" in arg.lower():
                 argdir = arg
     except:
         pass
@@ -272,10 +266,7 @@ def lookupAppdataFolder():
             dataFolder += os.path.sep
     elif sys.platform == "darwin":
         if "HOME" in environ:
-            dataFolder = (
-                path.join(os.environ["HOME"], "Library/Application Support/", APPNAME)
-                + "/"
-            )
+            dataFolder = path.join(os.environ["HOME"], "Library/Application Support/", APPNAME) + "/"
         else:
             stringToLog = "Could not find home folder, please report this message and your OS X version to the BitMessage Github."
             if "logger" in globals():
@@ -316,17 +307,13 @@ def lookupAppdataFolder():
 
 
 def isAddressInMyAddressBook(address):
-    queryreturn = sqlQuery(
-        """select address from addressbook where address=?""", address
-    )
+    queryreturn = sqlQuery("""select address from addressbook where address=?""", address)
     return queryreturn != []
 
 
 # At this point we should really just have a isAddressInMy(book, address).
 def isAddressInMySubscriptionsList(address):
-    queryreturn = sqlQuery(
-        """select * from subscriptions where address=?""", str(address)
-    )
+    queryreturn = sqlQuery("""select * from subscriptions where address=?""", str(address))
     return queryreturn != []
 
 
@@ -334,9 +321,7 @@ def isAddressInMyAddressBookSubscriptionsListOrWhitelist(address):
     if isAddressInMyAddressBook(address):
         return True
 
-    queryreturn = sqlQuery(
-        """SELECT address FROM whitelist where address=? and enabled = '1' """, address
-    )
+    queryreturn = sqlQuery("""SELECT address FROM whitelist where address=? and enabled = '1' """, address)
     if queryreturn != []:
         return True
 
@@ -361,9 +346,7 @@ def decodeWalletImportFormat(WIFstring):
     privkey = fullString[:-4]
     if fullString[-4:] != hashlib.sha256(hashlib.sha256(privkey).digest()).digest()[:4]:
         logger.critical(
-            "Major problem! When trying to decode one of your private keys, the checksum "
-            "failed. Here are the first 6 characters of the PRIVATE key: %s"
-            % str(WIFstring)[:6]
+            "Major problem! When trying to decode one of your private keys, the checksum " "failed. Here are the first 6 characters of the PRIVATE key: %s" % str(WIFstring)[:6]
         )
         os._exit(0)
         return b""
@@ -396,40 +379,20 @@ def reloadMyAddressHashes():
             isEnabled = config.getboolean(addressInKeysFile, "enabled")
             if isEnabled:
                 hasEnabledKeys = True
-                status, addressVersionNumber, streamNumber, hash = decodeAddress(
-                    addressInKeysFile
-                )
-                if (
-                    addressVersionNumber == 2
-                    or addressVersionNumber == 3
-                    or addressVersionNumber == 4
-                ):
+                status, addressVersionNumber, streamNumber, hash = decodeAddress(addressInKeysFile)
+                if addressVersionNumber == 2 or addressVersionNumber == 3 or addressVersionNumber == 4:
                     # Returns a simple 32 bytes of information encoded in 64 Hex characters,
                     # or null if there was an error.
-                    privEncryptionKey = decodeWalletImportFormat(
-                        config.get(addressInKeysFile, "privencryptionkey")
-                    ).hex()
+                    privEncryptionKey = decodeWalletImportFormat(config.get(addressInKeysFile, "privencryptionkey")).hex()
 
-                    if (
-                        len(privEncryptionKey) == 64
-                    ):  # It is 32 bytes encoded as 64 hex characters
-                        myECCryptorObjects[hash] = highlevelcrypto.makeCryptor(
-                            privEncryptionKey
-                        )
+                    if len(privEncryptionKey) == 64:  # It is 32 bytes encoded as 64 hex characters
+                        myECCryptorObjects[hash] = highlevelcrypto.makeCryptor(privEncryptionKey)
                         myAddressesByHash[hash] = addressInKeysFile
-                        tag = hashlib.sha512(
-                            hashlib.sha512(
-                                encodeVarint(addressVersionNumber)
-                                + encodeVarint(streamNumber)
-                                + hash
-                            ).digest()
-                        ).digest()[32:]
+                        tag = hashlib.sha512(hashlib.sha512(encodeVarint(addressVersionNumber) + encodeVarint(streamNumber) + hash).digest()).digest()[32:]
                         myAddressesByTag[tag] = addressInKeysFile
 
                 else:
-                    logger.error(
-                        "Error in reloadMyAddressHashes: Can't handle address versions other than 2, 3, or 4.\n"
-                    )
+                    logger.error("Error in reloadMyAddressHashes: Can't handle address versions other than 2, 3, or 4.\n")
 
     if not keyfileSecure:
         fixSensitiveFilePermissions(appdata + "keys.dat", hasEnabledKeys)
@@ -448,25 +411,13 @@ def reloadBroadcastSendersForWhichImWatching():
         # Now, for all addresses, even version 2 addresses, we should create Cryptor objects in a dictionary which we will use to attempt to decrypt encrypted broadcast messages.
 
         if addressVersionNumber <= 3:
-            privEncryptionKey = hashlib.sha512(
-                encodeVarint(addressVersionNumber) + encodeVarint(streamNumber) + hash
-            ).digest()[:32]
-            MyECSubscriptionCryptorObjects[hash] = highlevelcrypto.makeCryptor(
-                privEncryptionKey.hex()
-            )
+            privEncryptionKey = hashlib.sha512(encodeVarint(addressVersionNumber) + encodeVarint(streamNumber) + hash).digest()[:32]
+            MyECSubscriptionCryptorObjects[hash] = highlevelcrypto.makeCryptor(privEncryptionKey.hex())
         else:
-            doubleHashOfAddressData = hashlib.sha512(
-                hashlib.sha512(
-                    encodeVarint(addressVersionNumber)
-                    + encodeVarint(streamNumber)
-                    + hash
-                ).digest()
-            ).digest()
+            doubleHashOfAddressData = hashlib.sha512(hashlib.sha512(encodeVarint(addressVersionNumber) + encodeVarint(streamNumber) + hash).digest()).digest()
             tag = doubleHashOfAddressData[32:]
             privEncryptionKey = doubleHashOfAddressData[:32]
-            MyECSubscriptionCryptorObjects[tag] = highlevelcrypto.makeCryptor(
-                privEncryptionKey.hex()
-            )
+            MyECSubscriptionCryptorObjects[tag] = highlevelcrypto.makeCryptor(privEncryptionKey.hex())
 
 
 def isProofOfWorkSufficient(data, nonceTrialsPerByte=0, payloadLengthExtraBytes=0):
@@ -480,18 +431,9 @@ def isProofOfWorkSufficient(data, nonceTrialsPerByte=0, payloadLengthExtraBytes=
         TTL = 300
     (POW,) = unpack(
         ">Q",
-        hashlib.sha512(
-            hashlib.sha512(data[:8] + hashlib.sha512(data[8:]).digest()).digest()
-        ).digest()[0:8],
+        hashlib.sha512(hashlib.sha512(data[:8] + hashlib.sha512(data[8:]).digest()).digest()).digest()[0:8],
     )
-    return POW <= 2**64 / (
-        nonceTrialsPerByte
-        * (
-            len(data)
-            + payloadLengthExtraBytes
-            + ((TTL * (len(data) + payloadLengthExtraBytes)) / (2**16))
-        )
-    )
+    return POW <= 2**64 / (nonceTrialsPerByte * (len(data) + payloadLengthExtraBytes + ((TTL * (len(data) + payloadLengthExtraBytes)) / (2**16))))
 
 
 def doCleanShutdown():
@@ -504,9 +446,7 @@ def doCleanShutdown():
         objectProcessorQueue.put(("checkShutdownVariable", data))
 
     knownNodesLock.acquire()
-    UISignalQueue.put(
-        ("updateStatusBar", "Saving the knownNodes list of peers to disk.")
-    )
+    UISignalQueue.put(("updateStatusBar", "Saving the knownNodes list of peers to disk."))
     output = open(appdata + "knownnodes.dat", "wb")
     logger.info("finished opening knownnodes.dat. Now pickle.dump")
     pickle.dump(knownNodes, output)
@@ -514,9 +454,7 @@ def doCleanShutdown():
     output.close()
     knownNodesLock.release()
     logger.info("Finished closing knownnodes.dat output file.")
-    UISignalQueue.put(
-        ("updateStatusBar", "Done saving the knownNodes list of peers to disk.")
-    )
+    UISignalQueue.put(("updateStatusBar", "Done saving the knownNodes list of peers to disk."))
 
     logger.info("Flushing inventory in memory out to disk.")
     UISignalQueue.put(
@@ -579,10 +517,7 @@ def fixPotentiallyInvalidUTF8Data(text):
     try:
         return text.decode("utf-8")
     except:
-        output = (
-            "Part of the message is corrupt. The message cannot be displayed the normal way.\n\n"
-            + repr(text)
-        )
+        output = "Part of the message is corrupt. The message cannot be displayed the normal way.\n\n" + repr(text)
         return output
 
 
@@ -605,9 +540,7 @@ def checkSensitiveFilePermissions(filename):
             # Skip known problems for non-Win32 filesystems without POSIX permissions.
             import subprocess
 
-            fstype = subprocess.check_output(
-                'stat -f -c "%%T" %s' % (filename), shell=True, stderr=subprocess.STDOUT
-            ).decode("utf-8")
+            fstype = subprocess.check_output('stat -f -c "%%T" %s' % (filename), shell=True, stderr=subprocess.STDOUT).decode("utf-8")
             if "fuseblk" in fstype:
                 logger.info(
                     "Skipping file permissions check for %s. Filesystem fuseblk detected.",
@@ -625,14 +558,9 @@ def checkSensitiveFilePermissions(filename):
 # Fixes permissions on a sensitive file.
 def fixSensitiveFilePermissions(filename, hasEnabledKeys):
     if hasEnabledKeys:
-        logger.warning(
-            "Keyfile had insecure permissions, and there were enabled keys. "
-            "The truly paranoid should stop using them immediately."
-        )
+        logger.warning("Keyfile had insecure permissions, and there were enabled keys. " "The truly paranoid should stop using them immediately.")
     else:
-        logger.warning(
-            "Keyfile had insecure permissions, but there were no enabled keys."
-        )
+        logger.warning("Keyfile had insecure permissions, but there were no enabled keys.")
     try:
         present_permissions = os.stat(filename)[0]
         disallowed_permissions = stat.S_IRWXG | stat.S_IRWXO
@@ -675,34 +603,22 @@ def decryptAndCheckPubkeyPayload(data, address):
         status, addressVersion, streamNumber, ripe = decodeAddress(address)
 
         readPosition = 20  # bypass the nonce, time, and object type
-        embeddedAddressVersion, varintLength = decodeVarint(
-            data[readPosition : readPosition + 10]
-        )
+        embeddedAddressVersion, varintLength = decodeVarint(data[readPosition : readPosition + 10])
         readPosition += varintLength
-        embeddedStreamNumber, varintLength = decodeVarint(
-            data[readPosition : readPosition + 10]
-        )
+        embeddedStreamNumber, varintLength = decodeVarint(data[readPosition : readPosition + 10])
         readPosition += varintLength
 
         if addressVersion != embeddedAddressVersion:
-            logger.info(
-                "Pubkey decryption was UNsuccessful due to address version mismatch."
-            )
+            logger.info("Pubkey decryption was UNsuccessful due to address version mismatch.")
             return "failed"
         if streamNumber != embeddedStreamNumber:
-            logger.info(
-                "Pubkey decryption was UNsuccessful due to stream number mismatch."
-            )
+            logger.info("Pubkey decryption was UNsuccessful due to stream number mismatch.")
             return "failed"
 
         (expiresTime,) = unpack(">Q", data[8:16])
         TTL = 28 * 24 * 60 * 60
-        signedDataOldMethod = pack(
-            ">Q", (expiresTime - TTL)
-        )  # the time that the pubkey was signed. 8 bytes.
-        signedDataOldMethod += data[
-            20:readPosition
-        ]  # the address version and stream number
+        signedDataOldMethod = pack(">Q", (expiresTime - TTL))  # the time that the pubkey was signed. 8 bytes.
+        signedDataOldMethod += data[20:readPosition]  # the address version and stream number
 
         tag = data[readPosition : readPosition + 32]
         readPosition += 32
@@ -714,10 +630,7 @@ def decryptAndCheckPubkeyPayload(data, address):
         # Let us try to decrypt the pubkey
         toAddress, cryptorObject = shared.neededPubkeys[tag]
         if toAddress != address:
-            logger.critical(
-                "decryptAndCheckPubkeyPayload failed due to toAddress mismatch. This is very peculiar. toAddress: %s, address %s"
-                % (toAddress, address)
-            )
+            logger.critical("decryptAndCheckPubkeyPayload failed due to toAddress mismatch. This is very peculiar. toAddress: %s, address %s" % (toAddress, address))
             # the only way I can think that this could happen is if someone encodes their address data two different ways.
             # That sort of address-malleability should have been prevented earlier.
             return "failed"
@@ -736,43 +649,25 @@ def decryptAndCheckPubkeyPayload(data, address):
         readPosition += 64
         publicEncryptionKey = b"\x04" + decryptedData[readPosition : readPosition + 64]
         readPosition += 64
-        specifiedNonceTrialsPerByte, specifiedNonceTrialsPerByteLength = decodeVarint(
-            decryptedData[readPosition : readPosition + 10]
-        )
+        specifiedNonceTrialsPerByte, specifiedNonceTrialsPerByteLength = decodeVarint(decryptedData[readPosition : readPosition + 10])
         readPosition += specifiedNonceTrialsPerByteLength
-        specifiedPayloadLengthExtraBytes, specifiedPayloadLengthExtraBytesLength = (
-            decodeVarint(decryptedData[readPosition : readPosition + 10])
-        )
+        specifiedPayloadLengthExtraBytes, specifiedPayloadLengthExtraBytesLength = decodeVarint(decryptedData[readPosition : readPosition + 10])
         readPosition += specifiedPayloadLengthExtraBytesLength
         signedDataOldMethod += decryptedData[:readPosition]
         signedDataNewMethod += decryptedData[:readPosition]
-        signatureLength, signatureLengthLength = decodeVarint(
-            decryptedData[readPosition : readPosition + 10]
-        )
+        signatureLength, signatureLengthLength = decodeVarint(decryptedData[readPosition : readPosition + 10])
         readPosition += signatureLengthLength
         signature = decryptedData[readPosition : readPosition + signatureLength]
 
-        if highlevelcrypto.verify(
-            signedDataOldMethod, signature, publicSigningKey.hex()
-        ):
-            logger.info(
-                "ECDSA verify passed (within decryptAndCheckPubkeyPayload, old method)"
-            )
+        if highlevelcrypto.verify(signedDataOldMethod, signature, publicSigningKey.hex()):
+            logger.info("ECDSA verify passed (within decryptAndCheckPubkeyPayload, old method)")
         else:
-            logger.info(
-                "ECDSA verify failed (within decryptAndCheckPubkeyPayload, old method)"
-            )
+            logger.info("ECDSA verify failed (within decryptAndCheckPubkeyPayload, old method)")
             # Try the protocol v3 signing method
-            if highlevelcrypto.verify(
-                signedDataNewMethod, signature, publicSigningKey.hex()
-            ):
-                logger.info(
-                    "ECDSA verify passed (within decryptAndCheckPubkeyPayload, new method)"
-                )
+            if highlevelcrypto.verify(signedDataNewMethod, signature, publicSigningKey.hex()):
+                logger.info("ECDSA verify passed (within decryptAndCheckPubkeyPayload, new method)")
             else:
-                logger.info(
-                    "ECDSA verify failed (within decryptAndCheckPubkeyPayload, new method)"
-                )
+                logger.info("ECDSA verify failed (within decryptAndCheckPubkeyPayload, new method)")
                 return "failed"
 
         sha = hashlib.new("sha512")
@@ -811,10 +706,7 @@ def decryptAndCheckPubkeyPayload(data, address):
         logger.info("Pubkey decryption was UNsuccessful due to a malformed varint.")
         return "failed"
     except Exception as e:
-        logger.critical(
-            "Pubkey decryption was UNsuccessful because of an unhandled exception! This is definitely a bug! \n%s"
-            % traceback.format_exc()
-        )
+        logger.critical("Pubkey decryption was UNsuccessful because of an unhandled exception! This is definitely a bug! \n%s" % traceback.format_exc())
         return "failed"
 
 
@@ -829,10 +721,7 @@ def checkAndShareObjectWithPeers(data):
     if we are receiving it off of the wire.
     """
     if len(data) > 2**18:
-        logger.info(
-            "The payload length of this object is too large (%s bytes). Ignoring it."
-            % len(data)
-        )
+        logger.info("The payload length of this object is too large (%s bytes). Ignoring it." % len(data))
         return
     # Let us check to make sure that the proof of work is sufficient.
     if not isProofOfWorkSufficient(data):
@@ -840,21 +729,11 @@ def checkAndShareObjectWithPeers(data):
         return 0
 
     (endOfLifeTime,) = unpack(">Q", data[8:16])
-    if (
-        endOfLifeTime - int(time.time()) > 28 * 24 * 60 * 60 + 10800
-    ):  # The TTL may not be larger than 28 days + 3 hours of wiggle room
-        logger.info(
-            "This object's End of Life time is too far in the future. Ignoring it. Time is %s"
-            % endOfLifeTime
-        )
+    if endOfLifeTime - int(time.time()) > 28 * 24 * 60 * 60 + 10800:  # The TTL may not be larger than 28 days + 3 hours of wiggle room
+        logger.info("This object's End of Life time is too far in the future. Ignoring it. Time is %s" % endOfLifeTime)
         return 0
-    if (
-        endOfLifeTime - int(time.time()) < -3600
-    ):  # The EOL time was more than an hour ago. That's too much.
-        logger.info(
-            "This object's End of Life time was more than an hour ago. Ignoring the object. Time is %s"
-            % endOfLifeTime
-        )
+    if endOfLifeTime - int(time.time()) < -3600:  # The EOL time was more than an hour ago. That's too much.
+        logger.info("This object's End of Life time was more than an hour ago. Ignoring the object. Time is %s" % endOfLifeTime)
         return 0
     (intObjectType,) = unpack(">I", data[16:20])
     try:
@@ -874,14 +753,10 @@ def checkAndShareObjectWithPeers(data):
             _checkAndShareUndefinedObjectWithPeers(data)
             return 0.6
     except varintDecodeError as e:
-        logger.debug(
-            "There was a problem with a varint while checking to see whether it was appropriate to share an object with peers. Some details: %s"
-            % e
-        )
+        logger.debug("There was a problem with a varint while checking to see whether it was appropriate to share an object with peers. Some details: %s" % e)
     except Exception as e:
         logger.critical(
-            "There was a problem while checking to see whether it was appropriate to share an object with peers. This is definitely a bug! \n%s"
-            % traceback.format_exc()
+            "There was a problem while checking to see whether it was appropriate to share an object with peers. This is definitely a bug! \n%s" % traceback.format_exc()
         )
     return 0
 
@@ -889,17 +764,11 @@ def checkAndShareObjectWithPeers(data):
 def _checkAndShareUndefinedObjectWithPeers(data):
     (embeddedTime,) = unpack(">Q", data[8:16])
     readPosition = 20  # bypass nonce, time, and object type
-    objectVersion, objectVersionLength = decodeVarint(
-        data[readPosition : readPosition + 9]
-    )
+    objectVersion, objectVersionLength = decodeVarint(data[readPosition : readPosition + 9])
     readPosition += objectVersionLength
-    streamNumber, streamNumberLength = decodeVarint(
-        data[readPosition : readPosition + 9]
-    )
+    streamNumber, streamNumberLength = decodeVarint(data[readPosition : readPosition + 9])
     if not streamNumber in streamsInWhichIAmParticipating:
-        logger.debug(
-            "The streamNumber %s isn't one we are interested in." % streamNumber
-        )
+        logger.debug("The streamNumber %s isn't one we are interested in." % streamNumber)
         return
 
     inventoryHash = calculateInventoryHash(data)
@@ -910,9 +779,7 @@ def _checkAndShareUndefinedObjectWithPeers(data):
         inventoryLock.release()
         return
     elif isInSqlInventory(inventoryHash):
-        logger.debug(
-            "We have already received this undefined object (it is stored on disk in the SQL inventory). Ignoring it."
-        )
+        logger.debug("We have already received this undefined object (it is stored on disk in the SQL inventory). Ignoring it.")
         inventoryLock.release()
         return
     (objectType,) = unpack(">I", data[16:20])
@@ -926,13 +793,9 @@ def _checkAndShareUndefinedObjectWithPeers(data):
 def _checkAndShareMsgWithPeers(data):
     (embeddedTime,) = unpack(">Q", data[8:16])
     readPosition = 20  # bypass nonce, time, and object type
-    streamNumber, streamNumberLength = decodeVarint(
-        data[readPosition : readPosition + 9]
-    )
+    streamNumber, streamNumberLength = decodeVarint(data[readPosition : readPosition + 9])
     if not streamNumber in streamsInWhichIAmParticipating:
-        logger.debug(
-            "The streamNumber %s isn't one we are interested in." % streamNumber
-        )
+        logger.debug("The streamNumber %s isn't one we are interested in." % streamNumber)
         return
     readPosition += streamNumberLength
     inventoryHash = calculateInventoryHash(data)
@@ -943,9 +806,7 @@ def _checkAndShareMsgWithPeers(data):
         inventoryLock.release()
         return
     elif isInSqlInventory(inventoryHash):
-        logger.debug(
-            "We have already received this msg message (it is stored on disk in the SQL inventory). Ignoring it."
-        )
+        logger.debug("We have already received this msg message (it is stored on disk in the SQL inventory). Ignoring it.")
         inventoryLock.release()
         return
     # This msg message is valid. Let's let our peers know about it.
@@ -970,22 +831,14 @@ def _checkAndShareGetpubkeyWithPeers(data):
         logger.info("getpubkey message doesn't contain enough data. Ignoring.")
         return
     if len(data) > 200:
-        logger.info(
-            "getpubkey is abnormally long. Sanity check failed. Ignoring object."
-        )
+        logger.info("getpubkey is abnormally long. Sanity check failed. Ignoring object.")
     (embeddedTime,) = unpack(">Q", data[8:16])
     readPosition = 20  # bypass the nonce, time, and object type
-    requestedAddressVersionNumber, addressVersionLength = decodeVarint(
-        data[readPosition : readPosition + 10]
-    )
+    requestedAddressVersionNumber, addressVersionLength = decodeVarint(data[readPosition : readPosition + 10])
     readPosition += addressVersionLength
-    streamNumber, streamNumberLength = decodeVarint(
-        data[readPosition : readPosition + 10]
-    )
+    streamNumber, streamNumberLength = decodeVarint(data[readPosition : readPosition + 10])
     if not streamNumber in streamsInWhichIAmParticipating:
-        logger.debug(
-            "The streamNumber %s isn't one we are interested in." % streamNumber
-        )
+        logger.debug("The streamNumber %s isn't one we are interested in." % streamNumber)
         return
     readPosition += streamNumberLength
 
@@ -997,9 +850,7 @@ def _checkAndShareGetpubkeyWithPeers(data):
         inventoryLock.release()
         return
     elif isInSqlInventory(inventoryHash):
-        logger.debug(
-            "We have already received this getpubkey request (it is stored on disk in the SQL inventory). Ignoring it."
-        )
+        logger.debug("We have already received this getpubkey request (it is stored on disk in the SQL inventory). Ignoring it.")
         inventoryLock.release()
         return
 
@@ -1030,9 +881,7 @@ def _checkAndSharePubkeyWithPeers(data):
     streamNumber, varintLength = decodeVarint(data[readPosition : readPosition + 10])
     readPosition += varintLength
     if not streamNumber in streamsInWhichIAmParticipating:
-        logger.debug(
-            "The streamNumber %s isn't one we are interested in." % streamNumber
-        )
+        logger.debug("The streamNumber %s isn't one we are interested in." % streamNumber)
         return
     if addressVersion >= 4:
         tag = data[readPosition : readPosition + 32]
@@ -1048,9 +897,7 @@ def _checkAndSharePubkeyWithPeers(data):
         inventoryLock.release()
         return
     elif isInSqlInventory(inventoryHash):
-        logger.debug(
-            "We have already received this pubkey (it is stored on disk in the SQL inventory). Ignoring it."
-        )
+        logger.debug("We have already received this pubkey (it is stored on disk in the SQL inventory). Ignoring it.")
         inventoryLock.release()
         return
     objectType = 1
@@ -1072,25 +919,17 @@ def _checkAndSharePubkeyWithPeers(data):
 
 def _checkAndShareBroadcastWithPeers(data):
     if len(data) < 180:
-        logger.debug(
-            "The payload length of this broadcast packet is unreasonably low. Someone is probably trying funny business. Ignoring message."
-        )
+        logger.debug("The payload length of this broadcast packet is unreasonably low. Someone is probably trying funny business. Ignoring message.")
         return
     (embeddedTime,) = unpack(">Q", data[8:16])
     readPosition = 20  # bypass the nonce, time, and object type
-    broadcastVersion, broadcastVersionLength = decodeVarint(
-        data[readPosition : readPosition + 10]
-    )
+    broadcastVersion, broadcastVersionLength = decodeVarint(data[readPosition : readPosition + 10])
     readPosition += broadcastVersionLength
     if broadcastVersion >= 2:
-        streamNumber, streamNumberLength = decodeVarint(
-            data[readPosition : readPosition + 10]
-        )
+        streamNumber, streamNumberLength = decodeVarint(data[readPosition : readPosition + 10])
         readPosition += streamNumberLength
         if not streamNumber in streamsInWhichIAmParticipating:
-            logger.debug(
-                "The streamNumber %s isn't one we are interested in." % streamNumber
-            )
+            logger.debug("The streamNumber %s isn't one we are interested in." % streamNumber)
             return
     if broadcastVersion >= 3:
         tag = data[readPosition : readPosition + 32]
@@ -1104,9 +943,7 @@ def _checkAndShareBroadcastWithPeers(data):
         inventoryLock.release()
         return
     elif isInSqlInventory(inventoryHash):
-        logger.debug(
-            "We have already received this broadcast object (it is stored on disk in the SQL inventory). Ignoring it."
-        )
+        logger.debug("We have already received this broadcast object (it is stored on disk in the SQL inventory). Ignoring it.")
         inventoryLock.release()
         return
     # It is valid. Let's let our peers know about it.

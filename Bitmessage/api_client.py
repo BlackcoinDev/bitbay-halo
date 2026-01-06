@@ -22,14 +22,10 @@ print(api.listAddresses())
 print("Let's list our address again, but this time let's parse the json data into a Python data structure:")
 jsonAddresses = json.loads(api.listAddresses())
 print(jsonAddresses)
-print(
-    "Now that we have our address data in a nice Python data structure, let's look at the first address (index 0) and print its label:"
-)
+print("Now that we have our address data in a nice Python data structure, let's look at the first address (index 0) and print its label:")
 print(jsonAddresses["addresses"][0]["label"])
 
-print(
-    "Uncomment the next two lines to create a new random address with a slightly higher difficulty setting than normal."
-)
+print("Uncomment the next two lines to create a new random address with a slightly higher difficulty setting than normal.")
 # addressLabel = 'new address label'.encode('base64')
 # print api.createRandomAddress(addressLabel,False,1.05,1.1111)
 

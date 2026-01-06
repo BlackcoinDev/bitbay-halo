@@ -76,10 +76,7 @@ class BitShell(cmd.Cmd):
                 read = "r"
             else:
                 read = "u"
-            self._print(
-                "%03d:[%s] [%s]%s"
-                % (counter, read, datetime.datetime.utcfromtimestamp(int(message["receivedTime"])), title)
-            )
+            self._print("%03d:[%s] [%s]%s" % (counter, read, datetime.datetime.utcfromtimestamp(int(message["receivedTime"])), title))
 
         self._print("")
 
@@ -104,10 +101,7 @@ class BitShell(cmd.Cmd):
 
         for message in messages:
             if message["msgid"] == self.messages[num]:
-                self._print(
-                    "Recieved from: %s at %s"
-                    % (message["fromAddress"], datetime.datetime.utcfromtimestamp(int(message["receivedTime"])))
-                )
+                self._print("Recieved from: %s at %s" % (message["fromAddress"], datetime.datetime.utcfromtimestamp(int(message["receivedTime"]))))
                 self._print("#" * 80)
                 self._print(message["subject"].decode("utf-8"))
                 self._print("#" * 80)
@@ -337,9 +331,7 @@ class BitShell(cmd.Cmd):
                 if entry["address"] == mto:
                     printName = "%s(%s)" % (entry["label"], entry["address"])
 
-            self._print(
-                "%03d:%s - To:%s\nSubject:[%s]" % (counter, msg["status"], printName, msg["subject"].decode("utf-8"))
-            )
+            self._print("%03d:%s - To:%s\nSubject:[%s]" % (counter, msg["status"], printName, msg["subject"].decode("utf-8")))
 
     def do_status(self, *args):
         info = self.api.clientStatus()

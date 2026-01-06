@@ -34,9 +34,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(885, 580)
         icon = QtGui.QIcon()
-        icon.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/can-icon-24px.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon.addPixmap(QtGui.QPixmap(":/newPrefix/images/can-icon-24px.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setTabShape(QtWidgets.QTabWidget.TabShape.Rounded)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -45,9 +43,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
@@ -161,9 +157,7 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.send)
         self.label_2.setObjectName("label_2")
         self.gridLayout_2.addWidget(self.label_2, 2, 0, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 297, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 297, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 6, 0, 1, 1)
         self.radioButtonBroadcast = QtWidgets.QRadioButton(self.send)
         self.radioButtonBroadcast.setObjectName("radioButtonBroadcast")
@@ -172,9 +166,7 @@ class Ui_MainWindow(object):
         self.lineEditSubject.setText(_fromUtf8(""))
         self.lineEditSubject.setObjectName("lineEditSubject")
         self.gridLayout_2.addWidget(self.lineEditSubject, 4, 1, 1, 5)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_2.addItem(spacerItem1, 3, 4, 1, 1)
         self.pushButtonSend = QtWidgets.QPushButton(self.send)
         self.pushButtonSend.setObjectName("pushButtonSend")
@@ -253,9 +245,7 @@ class Ui_MainWindow(object):
         self.pushButtonNewAddress = QtWidgets.QPushButton(self.youridentities)
         self.pushButtonNewAddress.setObjectName("pushButtonNewAddress")
         self.gridLayout_3.addWidget(self.pushButtonNewAddress, 0, 0, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_3.addItem(spacerItem2, 0, 1, 1, 1)
         self.tableWidgetYourIdentities = QtWidgets.QTableWidget(self.youridentities)
         self.tableWidgetYourIdentities.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
@@ -286,9 +276,7 @@ class Ui_MainWindow(object):
         self.tableWidgetYourIdentities.verticalHeader().setStretchLastSection(False)
         self.gridLayout_3.addWidget(self.tableWidgetYourIdentities, 1, 0, 1, 2)
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/identities.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon4.addPixmap(QtGui.QPixmap(":/newPrefix/images/identities.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tabWidget.addTab(self.youridentities, icon4, _fromUtf8(""))
         self.subscriptions = QtWidgets.QWidget()
         self.subscriptions.setObjectName("subscriptions")
@@ -301,9 +289,7 @@ class Ui_MainWindow(object):
         self.pushButtonAddSubscription = QtWidgets.QPushButton(self.subscriptions)
         self.pushButtonAddSubscription.setObjectName("pushButtonAddSubscription")
         self.gridLayout_4.addWidget(self.pushButtonAddSubscription, 1, 0, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_4.addItem(spacerItem3, 1, 1, 1, 1)
         self.tableWidgetSubscriptions = QtWidgets.QTableWidget(self.subscriptions)
         self.tableWidgetSubscriptions.setAlternatingRowColors(True)
@@ -324,9 +310,7 @@ class Ui_MainWindow(object):
         self.tableWidgetSubscriptions.verticalHeader().setVisible(False)
         self.gridLayout_4.addWidget(self.tableWidgetSubscriptions, 2, 0, 1, 2)
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/subscriptions.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon5.addPixmap(QtGui.QPixmap(":/newPrefix/images/subscriptions.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tabWidget.addTab(self.subscriptions, icon5, _fromUtf8(""))
         self.addressbook = QtWidgets.QWidget()
         self.addressbook.setObjectName("addressbook")
@@ -339,9 +323,7 @@ class Ui_MainWindow(object):
         self.pushButtonAddAddressBook = QtWidgets.QPushButton(self.addressbook)
         self.pushButtonAddAddressBook.setObjectName("pushButtonAddAddressBook")
         self.gridLayout_5.addWidget(self.pushButtonAddAddressBook, 1, 0, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_5.addItem(spacerItem4, 1, 1, 1, 1)
         self.tableWidgetAddressBook = QtWidgets.QTableWidget(self.addressbook)
         self.tableWidgetAddressBook.setAlternatingRowColors(True)
@@ -361,9 +343,7 @@ class Ui_MainWindow(object):
         self.tableWidgetAddressBook.verticalHeader().setVisible(False)
         self.gridLayout_5.addWidget(self.tableWidgetAddressBook, 2, 0, 1, 2)
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/addressbook.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon6.addPixmap(QtGui.QPixmap(":/newPrefix/images/addressbook.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tabWidget.addTab(self.addressbook, icon6, _fromUtf8(""))
         self.blackwhitelist = QtWidgets.QWidget()
         self.blackwhitelist.setObjectName("blackwhitelist")
@@ -379,9 +359,7 @@ class Ui_MainWindow(object):
         self.pushButtonAddBlacklist = QtWidgets.QPushButton(self.blackwhitelist)
         self.pushButtonAddBlacklist.setObjectName("pushButtonAddBlacklist")
         self.gridLayout_6.addWidget(self.pushButtonAddBlacklist, 2, 0, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(689, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_6.addItem(spacerItem5, 2, 1, 1, 1)
         self.tableWidgetBlacklist = QtWidgets.QTableWidget(self.blackwhitelist)
         self.tableWidgetBlacklist.setAlternatingRowColors(True)
@@ -402,9 +380,7 @@ class Ui_MainWindow(object):
         self.tableWidgetBlacklist.verticalHeader().setVisible(False)
         self.gridLayout_6.addWidget(self.tableWidgetBlacklist, 3, 0, 1, 2)
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/blacklist.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon7.addPixmap(QtGui.QPixmap(":/newPrefix/images/blacklist.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tabWidget.addTab(self.blackwhitelist, icon7, _fromUtf8(""))
         self.networkstatus = QtWidgets.QWidget()
         self.networkstatus.setObjectName("networkstatus")
@@ -470,9 +446,7 @@ class Ui_MainWindow(object):
         self.labelBytesSentCount.setGeometry(QtCore.QRect(350, 230, 251, 16))
         self.labelBytesSentCount.setObjectName("labelBytesSentCount")
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(
-            QtGui.QPixmap(":/newPrefix/images/networkstatus.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off
-        )
+        icon9.addPixmap(QtGui.QPixmap(":/newPrefix/images/networkstatus.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.tabWidget.addTab(self.networkstatus, icon9, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -605,9 +579,7 @@ class Ui_MainWindow(object):
         )
         self.label.setText(_translate("MainWindow", "To:", None))
         self.label_2.setText(_translate("MainWindow", "From:", None))
-        self.radioButtonBroadcast.setText(
-            _translate("MainWindow", "Broadcast to everyone who is subscribed to your address", None)
-        )
+        self.radioButtonBroadcast.setText(_translate("MainWindow", "Broadcast to everyone who is subscribed to your address", None))
         self.pushButtonSend.setText(_translate("MainWindow", "Send", None))
         self.labelSendBroadcastWarning.setText(
             _translate(
@@ -641,9 +613,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Address", None))
         item = self.tableWidgetYourIdentities.horizontalHeaderItem(2)
         item.setText(_translate("MainWindow", "Stream", None))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.youridentities), _translate("MainWindow", "Your Identities", None)
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.youridentities), _translate("MainWindow", "Your Identities", None))
         self.label_5.setText(
             _translate(
                 "MainWindow",
@@ -657,9 +627,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Label", None))
         item = self.tableWidgetSubscriptions.horizontalHeaderItem(1)
         item.setText(_translate("MainWindow", "Address", None))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.subscriptions), _translate("MainWindow", "Subscriptions", None)
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.subscriptions), _translate("MainWindow", "Subscriptions", None))
         self.label_6.setText(
             _translate(
                 "MainWindow",
@@ -673,28 +641,16 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Name or Label", None))
         item = self.tableWidgetAddressBook.horizontalHeaderItem(1)
         item.setText(_translate("MainWindow", "Address", None))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.addressbook), _translate("MainWindow", "Address Book", None)
-        )
-        self.radioButtonBlacklist.setText(
-            _translate(
-                "MainWindow", "Use a Blacklist (Allow all incoming messages except those on the Blacklist)", None
-            )
-        )
-        self.radioButtonWhitelist.setText(
-            _translate(
-                "MainWindow", "Use a Whitelist (Block all incoming messages except those on the Whitelist)", None
-            )
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.addressbook), _translate("MainWindow", "Address Book", None))
+        self.radioButtonBlacklist.setText(_translate("MainWindow", "Use a Blacklist (Allow all incoming messages except those on the Blacklist)", None))
+        self.radioButtonWhitelist.setText(_translate("MainWindow", "Use a Whitelist (Block all incoming messages except those on the Whitelist)", None))
         self.pushButtonAddBlacklist.setText(_translate("MainWindow", "Add new entry", None))
         self.tableWidgetBlacklist.setSortingEnabled(True)
         item = self.tableWidgetBlacklist.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Name or Label", None))
         item = self.tableWidgetBlacklist.horizontalHeaderItem(1)
         item.setText(_translate("MainWindow", "Address", None))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.blackwhitelist), _translate("MainWindow", "Blacklist", None)
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.blackwhitelist), _translate("MainWindow", "Blacklist", None))
         item = self.tableWidgetConnectionCount.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "Stream #", None))
         item = self.tableWidgetConnectionCount.horizontalHeaderItem(1)
@@ -707,9 +663,7 @@ class Ui_MainWindow(object):
         self.labelLookupsPerSecond.setText(_translate("MainWindow", "Inventory lookups per second: 0", None))
         self.labelBytesRecvCount.setText(_translate("MainWindow", "Down: 0 KB/s", None))
         self.labelBytesSentCount.setText(_translate("MainWindow", "Up: 0 KB/s", None))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.networkstatus), _translate("MainWindow", "Network Status", None)
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.networkstatus), _translate("MainWindow", "Network Status", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuSettings.setTitle(_translate("MainWindow", "Settings", None))
         self.menuHelp.setTitle(_translate("MainWindow", "Help", None))
@@ -721,9 +675,7 @@ class Ui_MainWindow(object):
         self.actionHelp.setShortcut(_translate("MainWindow", "F1", None))
         self.actionAbout.setText(_translate("MainWindow", "About", None))
         self.actionSettings.setText(_translate("MainWindow", "Settings", None))
-        self.actionRegenerateDeterministicAddresses.setText(
-            _translate("MainWindow", "Regenerate deterministic addresses", None)
-        )
+        self.actionRegenerateDeterministicAddresses.setText(_translate("MainWindow", "Regenerate deterministic addresses", None))
         self.actionDeleteAllTrashedMessages.setText(_translate("MainWindow", "Delete all trashed messages", None))
         self.actionJoinChan.setText(_translate("MainWindow", "Join / Create chan", None))
 

@@ -94,9 +94,7 @@ class namecoinConnection(object):
                 return (tr.translateText("MainWindow", "The name %1 was not found.").replace("%1", str(string)), None)
             else:
                 return (
-                    tr.translateText("MainWindow", "The namecoin query failed (%1)").replace(
-                        "%1", str(exc.error["message"])
-                    ),
+                    tr.translateText("MainWindow", "The namecoin query failed (%1)").replace("%1", str(exc.error["message"])),
                     None,
                 )
         except Exception as exc:
@@ -114,9 +112,7 @@ class namecoinConnection(object):
         if "bitmessage" in val:
             return (None, val["bitmessage"])
         return (
-            tr.translateText("MainWindow", "The name %1 has no associated Bitmessage address.").replace(
-                "%1", str(string)
-            ),
+            tr.translateText("MainWindow", "The name %1 has no associated Bitmessage address.").replace("%1", str(string)),
             None,
         )
 
@@ -140,9 +136,7 @@ class namecoinConnection(object):
                     versStr = "0.%d.%d.%d" % (v1, v2, v3)
                 return (
                     "success",
-                    tr.translateText("MainWindow", "Success!  Namecoind version %1 running.").replace(
-                        "%1", str(versStr)
-                    ),
+                    tr.translateText("MainWindow", "Success!  Namecoind version %1 running.").replace("%1", str(versStr)),
                 )
 
             elif self.nmctype == "nmcontrol":
@@ -240,12 +234,7 @@ def lookupNamecoinFolder():
         if "HOME" in environ:
             dataFolder = path.join(os.environ["HOME"], "Library/Application Support/", app) + "/"
         else:
-            print(
-                (
-                    "Could not find home folder, please report this message"
-                    + " and your OS X version to the BitMessage Github."
-                )
-            )
+            print(("Could not find home folder, please report this message" + " and your OS X version to the BitMessage Github."))
             sys.exit()
 
     elif "win32" in sys.platform or "win64" in sys.platform:

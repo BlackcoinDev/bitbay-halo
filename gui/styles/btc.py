@@ -30,9 +30,7 @@ def apply(ui, mainWindow):
     # if ui.NewCoin['Moderator']==1:
     #    ui.label_25.setText(ui._translate("MainWindow", "Welcome to the Halo Marketplace: Moderator version", None))
     mainWindow.setWindowIcon(icon)
-    ui.webView.setHtml(
-        _fromUtf8("<iframe src=" + ui.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>")
-    )
+    ui.webView.setHtml(_fromUtf8("<iframe src=" + ui.NewCoin["IRC"] + " width='100%' height='500'></iframe></div></div></div>"))
 
     icon1 = QtGui.QIcon()
     icon1.addPixmap(

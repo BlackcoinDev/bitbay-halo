@@ -69,9 +69,7 @@ class BlackHaloQt6App:
             logger.error(f"Failed to start Qt6 app: {e}")
             return False
 
-    def create_window(
-        self, title: str = "BlackHalo", width: int = 1024, height: int = 768
-    ) -> Any:
+    def create_window(self, title: str = "BlackHalo", width: int = 1024, height: int = 768) -> Any:
         try:
             from PyQt6 import QtCore, QtWidgets, QtGui
 
@@ -102,9 +100,7 @@ class BlackHaloQt6App:
         except ImportError:
             pass
 
-    def create_notification(
-        self, title: str, message: str, level: str = "info"
-    ) -> None:
+    def create_notification(self, title: str, message: str, level: str = "info") -> None:
         try:
             from PyQt6 import QtWidgets, QtCore
 
@@ -144,9 +140,7 @@ class BlackHaloQt6App:
             pass
 
 
-def create_qt6_app(
-    title: str = "BlackHalo", width: int = 1024, height: int = 768
-) -> Optional[BlackHaloQt6App]:
+def create_qt6_app(title: str = "BlackHalo", width: int = 1024, height: int = 768) -> Optional[BlackHaloQt6App]:
     app = BlackHaloQt6App()
     if app.start():
         window = app.create_window(title, width, height)
@@ -175,9 +169,7 @@ if __name__ == "__main__":
             layout.addWidget(label)
 
             button = QtWidgets.QPushButton("Test Button")
-            button.clicked.connect(
-                lambda: app.create_notification("Test", "Button clicked!", "info")
-            )
+            button.clicked.connect(lambda: app.create_notification("Test", "Button clicked!", "info"))
             layout.addWidget(button)
 
         except ImportError:

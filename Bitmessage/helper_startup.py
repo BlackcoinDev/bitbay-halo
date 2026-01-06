@@ -15,7 +15,9 @@ except ImportError:
 
 from .namecoin import ensureNamecoinOptions
 
-storeConfigFilesInSameDirectoryAsProgramByDefault = False  # The user may de-select Portable Mode in the settings if they want the config files to stay in the application data folder.
+storeConfigFilesInSameDirectoryAsProgramByDefault = (
+    False  # The user may de-select Portable Mode in the settings if they want the config files to stay in the application data folder.
+)
 
 
 def _loadTrustedPeer():
@@ -87,12 +89,8 @@ def loadConfig():
         shared.config.set("bitmessagesettings", "sockspassword", "")
         shared.config.set("bitmessagesettings", "keysencrypted", "false")
         shared.config.set("bitmessagesettings", "messagesencrypted", "false")
-        shared.config.set(
-            "bitmessagesettings", "defaultnoncetrialsperbyte", str(shared.networkDefaultProofOfWorkNonceTrialsPerByte)
-        )
-        shared.config.set(
-            "bitmessagesettings", "defaultpayloadlengthextrabytes", str(shared.networkDefaultPayloadLengthExtraBytes)
-        )
+        shared.config.set("bitmessagesettings", "defaultnoncetrialsperbyte", str(shared.networkDefaultProofOfWorkNonceTrialsPerByte))
+        shared.config.set("bitmessagesettings", "defaultpayloadlengthextrabytes", str(shared.networkDefaultPayloadLengthExtraBytes))
         shared.config.set("bitmessagesettings", "minimizeonclose", "false")
         shared.config.set("bitmessagesettings", "maxacceptablenoncetrialsperbyte", "0")
         shared.config.set("bitmessagesettings", "maxacceptablepayloadlengthextrabytes", "0")

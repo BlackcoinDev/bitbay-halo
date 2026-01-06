@@ -46,18 +46,14 @@ class RPCClient:
 
     def __post_init__(self) -> None:
         """Initialize RPC client"""
-        self._auth_header: str = base64.b64encode(
-            f"{self.username}:{self.password}".encode()
-        ).decode()
+        self._auth_header: str = base64.b64encode(f"{self.username}:{self.password}".encode()).decode()
 
     def _next_id(self) -> str:
         """Generate next request ID"""
         self._id_counter += 1
         return str(self._id_counter)
 
-    def _make_request(
-        self, method: str, params: Optional[List[Any]] = None
-    ) -> RPCResponse:
+    def _make_request(self, method: str, params: Optional[List[Any]] = None) -> RPCResponse:
         """Make JSON-RPC request"""
         request_data: Dict[str, Any] = {
             "jsonrpc": "2.0",
@@ -192,11 +188,7 @@ class RPCClient:
         """Get wallet balance"""
         response = self._make_request("getbalance", [minconf])
         try:
-            return (
-                Decimal(str(response.result))
-                if response.result is not None
-                else Decimal("0")
-            )
+            return Decimal(str(response.result)) if response.result is not None else Decimal("0")
         except (TypeError, ValueError):
             return Decimal("0")
 
@@ -254,11 +246,7 @@ class RPCClient:
         """Estimate fee for confirmation in nblocks"""
         response = self._make_request("estimatefee", [nblocks])
         try:
-            return (
-                Decimal(str(response.result))
-                if response.result is not None
-                else Decimal("0.0001")
-            )
+            return Decimal(str(response.result)) if response.result is not None else Decimal("0.0001")
         except (TypeError, ValueError):
             return Decimal("0.0001")
 
@@ -328,11 +316,7 @@ class BlackCoinClient(RPCClient):
         """Get stake split threshold"""
         response = self._make_request("getstakesplitthreshold")
         try:
-            return (
-                Decimal(str(response.result))
-                if response.result is not None
-                else Decimal("1000")
-            )
+            return Decimal(str(response.result)) if response.result is not None else Decimal("1000")
         except (TypeError, ValueError):
             return Decimal("1000")
 

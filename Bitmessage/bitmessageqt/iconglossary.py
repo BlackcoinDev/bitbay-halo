@@ -53,15 +53,11 @@ class Ui_iconGlossaryDialog(object):
         self.label_3.setObjectName("label_3")
         self.gridLayout_2.addWidget(self.label_3, 1, 0, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
-        )
+        self.label_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading | QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop)
         self.label_4.setWordWrap(True)
         self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 1, 1, 2, 1)
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 73, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 73, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 2, 0, 2, 1)
         self.labelPortNumber = QtWidgets.QLabel(self.groupBox)
         self.labelPortNumber.setObjectName("labelPortNumber")
@@ -98,9 +94,7 @@ class Ui_iconGlossaryDialog(object):
                 None,
             )
         )
-        self.labelPortNumber.setText(
-            _translate("iconGlossaryDialog", "You are using TCP port ?. (This can be changed in the settings).", None)
-        )
+        self.labelPortNumber.setText(_translate("iconGlossaryDialog", "You are using TCP port ?. (This can be changed in the settings).", None))
         self.label_6.setText(
             _translate(
                 "iconGlossaryDialog",

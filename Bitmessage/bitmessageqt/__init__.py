@@ -88,15 +88,7 @@ def identiconize(address):
         hash = hashlib.md5((addBMIfNotPresent(address) + identiconsuffix).encode("utf-8")).hexdigest()
         use_two_colors = identicon_lib[: len("qidenticon_two")] == "qidenticon_two"
         opacity = (
-            int(
-                not (
-                    (identicon_lib == "qidenticon_x")
-                    | (identicon_lib == "qidenticon_two_x")
-                    | (identicon_lib == "qidenticon_b")
-                    | (identicon_lib == "qidenticon_two_b")
-                )
-            )
-            * 255
+            int(not ((identicon_lib == "qidenticon_x") | (identicon_lib == "qidenticon_two_x") | (identicon_lib == "qidenticon_b") | (identicon_lib == "qidenticon_two_b"))) * 255
         )
         penwidth = 0
         image = qidenticon.render_identicon(int(hash, 16), size, use_two_colors, opacity, penwidth)
@@ -191,9 +183,7 @@ class MyForm(QtWidgets.QMainWindow):
         self.ui.actionExit.triggered.connect(self.quit)
         self.ui.actionManageKeys.triggered.connect(self.click_actionManageKeys)
         self.ui.actionDeleteAllTrashedMessages.triggered.connect(self.click_actionDeleteAllTrashedMessages)
-        self.ui.actionRegenerateDeterministicAddresses.triggered.connect(
-            self.click_actionRegenerateDeterministicAddresses
-        )
+        self.ui.actionRegenerateDeterministicAddresses.triggered.connect(self.click_actionRegenerateDeterministicAddresses)
         self.ui.actionJoinChan.triggered.connect(self.click_actionJoinChan)  # also used for creating chans.
         self.ui.pushButtonNewAddress.clicked.connect(self.click_NewAddressDialog)
         self.ui.comboBoxSendFrom.activated.connect(self.redrawLabelFrom)
@@ -214,24 +204,14 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Inbox tab
         self.ui.inboxContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionReply = self.ui.inboxContextMenuToolbar.addAction(
-            _translate("MainWindow", "Reply"), self.on_action_InboxReply
-        )
+        self.actionReply = self.ui.inboxContextMenuToolbar.addAction(_translate("MainWindow", "Reply"), self.on_action_InboxReply)
         self.actionAddSenderToAddressBook = self.ui.inboxContextMenuToolbar.addAction(
             _translate("MainWindow", "Add sender to your Address Book"), self.on_action_InboxAddSenderToAddressBook
         )
-        self.actionTrashInboxMessage = self.ui.inboxContextMenuToolbar.addAction(
-            _translate("MainWindow", "Move to Trash"), self.on_action_InboxTrash
-        )
-        self.actionForceHtml = self.ui.inboxContextMenuToolbar.addAction(
-            _translate("MainWindow", "View HTML code as formatted text"), self.on_action_InboxMessageForceHtml
-        )
-        self.actionSaveMessageAs = self.ui.inboxContextMenuToolbar.addAction(
-            _translate("MainWindow", "Save message as."), self.on_action_InboxSaveMessageAs
-        )
-        self.actionMarkUnread = self.ui.inboxContextMenuToolbar.addAction(
-            _translate("MainWindow", "Mark Unread"), self.on_action_InboxMarkUnread
-        )
+        self.actionTrashInboxMessage = self.ui.inboxContextMenuToolbar.addAction(_translate("MainWindow", "Move to Trash"), self.on_action_InboxTrash)
+        self.actionForceHtml = self.ui.inboxContextMenuToolbar.addAction(_translate("MainWindow", "View HTML code as formatted text"), self.on_action_InboxMessageForceHtml)
+        self.actionSaveMessageAs = self.ui.inboxContextMenuToolbar.addAction(_translate("MainWindow", "Save message as."), self.on_action_InboxSaveMessageAs)
+        self.actionMarkUnread = self.ui.inboxContextMenuToolbar.addAction(_translate("MainWindow", "Mark Unread"), self.on_action_InboxMarkUnread)
         self.ui.tableWidgetInbox.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.tableWidgetInbox.customContextMenuRequested.connect(self.on_context_menuInbox)
         self.popMenuInbox = QtWidgets.QMenu(self)
@@ -248,21 +228,11 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Your Identities tab
         self.ui.addressContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionNew = self.ui.addressContextMenuToolbar.addAction(
-            _translate("MainWindow", "New"), self.on_action_YourIdentitiesNew
-        )
-        self.actionEnable = self.ui.addressContextMenuToolbar.addAction(
-            _translate("MainWindow", "Enable"), self.on_action_YourIdentitiesEnable
-        )
-        self.actionDisable = self.ui.addressContextMenuToolbar.addAction(
-            _translate("MainWindow", "Disable"), self.on_action_YourIdentitiesDisable
-        )
-        self.actionSetAvatar = self.ui.addressContextMenuToolbar.addAction(
-            _translate("MainWindow", "Set avatar."), self.on_action_YourIdentitiesSetAvatar
-        )
-        self.actionClipboard = self.ui.addressContextMenuToolbar.addAction(
-            _translate("MainWindow", "Copy address to clipboard"), self.on_action_YourIdentitiesClipboard
-        )
+        self.actionNew = self.ui.addressContextMenuToolbar.addAction(_translate("MainWindow", "New"), self.on_action_YourIdentitiesNew)
+        self.actionEnable = self.ui.addressContextMenuToolbar.addAction(_translate("MainWindow", "Enable"), self.on_action_YourIdentitiesEnable)
+        self.actionDisable = self.ui.addressContextMenuToolbar.addAction(_translate("MainWindow", "Disable"), self.on_action_YourIdentitiesDisable)
+        self.actionSetAvatar = self.ui.addressContextMenuToolbar.addAction(_translate("MainWindow", "Set avatar."), self.on_action_YourIdentitiesSetAvatar)
+        self.actionClipboard = self.ui.addressContextMenuToolbar.addAction(_translate("MainWindow", "Copy address to clipboard"), self.on_action_YourIdentitiesClipboard)
         self.actionSpecialAddressBehavior = self.ui.addressContextMenuToolbar.addAction(
             _translate("MainWindow", "Special address behavior."), self.on_action_SpecialAddressBehaviorDialog
         )
@@ -282,24 +252,16 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Address Book page
         self.ui.addressBookContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionAddressBookSend = self.ui.addressBookContextMenuToolbar.addAction(
-            _translate("MainWindow", "Send message to this address"), self.on_action_AddressBookSend
-        )
+        self.actionAddressBookSend = self.ui.addressBookContextMenuToolbar.addAction(_translate("MainWindow", "Send message to this address"), self.on_action_AddressBookSend)
         self.actionAddressBookClipboard = self.ui.addressBookContextMenuToolbar.addAction(
             _translate("MainWindow", "Copy address to clipboard"), self.on_action_AddressBookClipboard
         )
         self.actionAddressBookSubscribe = self.ui.addressBookContextMenuToolbar.addAction(
             _translate("MainWindow", "Subscribe to this address"), self.on_action_AddressBookSubscribe
         )
-        self.actionAddressBookSetAvatar = self.ui.addressBookContextMenuToolbar.addAction(
-            _translate("MainWindow", "Set avatar."), self.on_action_AddressBookSetAvatar
-        )
-        self.actionAddressBookNew = self.ui.addressBookContextMenuToolbar.addAction(
-            _translate("MainWindow", "Add New Address"), self.on_action_AddressBookNew
-        )
-        self.actionAddressBookDelete = self.ui.addressBookContextMenuToolbar.addAction(
-            _translate("MainWindow", "Delete"), self.on_action_AddressBookDelete
-        )
+        self.actionAddressBookSetAvatar = self.ui.addressBookContextMenuToolbar.addAction(_translate("MainWindow", "Set avatar."), self.on_action_AddressBookSetAvatar)
+        self.actionAddressBookNew = self.ui.addressBookContextMenuToolbar.addAction(_translate("MainWindow", "Add New Address"), self.on_action_AddressBookNew)
+        self.actionAddressBookDelete = self.ui.addressBookContextMenuToolbar.addAction(_translate("MainWindow", "Delete"), self.on_action_AddressBookDelete)
         self.ui.tableWidgetAddressBook.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.tableWidgetAddressBook.customContextMenuRequested.connect(self.on_context_menuAddressBook)
         self.popMenuAddressBook = QtWidgets.QMenu(self)
@@ -315,24 +277,14 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Subscriptions page
         self.ui.subscriptionsContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionsubscriptionsNew = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "New"), self.on_action_SubscriptionsNew
-        )
-        self.actionsubscriptionsDelete = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "Delete"), self.on_action_SubscriptionsDelete
-        )
+        self.actionsubscriptionsNew = self.ui.subscriptionsContextMenuToolbar.addAction(_translate("MainWindow", "New"), self.on_action_SubscriptionsNew)
+        self.actionsubscriptionsDelete = self.ui.subscriptionsContextMenuToolbar.addAction(_translate("MainWindow", "Delete"), self.on_action_SubscriptionsDelete)
         self.actionsubscriptionsClipboard = self.ui.subscriptionsContextMenuToolbar.addAction(
             _translate("MainWindow", "Copy address to clipboard"), self.on_action_SubscriptionsClipboard
         )
-        self.actionsubscriptionsEnable = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "Enable"), self.on_action_SubscriptionsEnable
-        )
-        self.actionsubscriptionsDisable = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "Disable"), self.on_action_SubscriptionsDisable
-        )
-        self.actionsubscriptionsSetAvatar = self.ui.subscriptionsContextMenuToolbar.addAction(
-            _translate("MainWindow", "Set avatar."), self.on_action_SubscriptionsSetAvatar
-        )
+        self.actionsubscriptionsEnable = self.ui.subscriptionsContextMenuToolbar.addAction(_translate("MainWindow", "Enable"), self.on_action_SubscriptionsEnable)
+        self.actionsubscriptionsDisable = self.ui.subscriptionsContextMenuToolbar.addAction(_translate("MainWindow", "Disable"), self.on_action_SubscriptionsDisable)
+        self.actionsubscriptionsSetAvatar = self.ui.subscriptionsContextMenuToolbar.addAction(_translate("MainWindow", "Set avatar."), self.on_action_SubscriptionsSetAvatar)
         self.ui.tableWidgetSubscriptions.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.tableWidgetSubscriptions.customContextMenuRequested.connect(self.on_context_menuSubscriptions)
         self.popMenuSubscriptions = QtWidgets.QMenu(self)
@@ -349,15 +301,9 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Sent page
         self.ui.sentContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionTrashSentMessage = self.ui.sentContextMenuToolbar.addAction(
-            _translate("MainWindow", "Move to Trash"), self.on_action_SentTrash
-        )
-        self.actionSentClipboard = self.ui.sentContextMenuToolbar.addAction(
-            _translate("MainWindow", "Copy destination address to clipboard"), self.on_action_SentClipboard
-        )
-        self.actionForceSend = self.ui.sentContextMenuToolbar.addAction(
-            _translate("MainWindow", "Force send"), self.on_action_ForceSend
-        )
+        self.actionTrashSentMessage = self.ui.sentContextMenuToolbar.addAction(_translate("MainWindow", "Move to Trash"), self.on_action_SentTrash)
+        self.actionSentClipboard = self.ui.sentContextMenuToolbar.addAction(_translate("MainWindow", "Copy destination address to clipboard"), self.on_action_SentClipboard)
+        self.actionForceSend = self.ui.sentContextMenuToolbar.addAction(_translate("MainWindow", "Force send"), self.on_action_ForceSend)
         self.ui.tableWidgetSent.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.tableWidgetSent.customContextMenuRequested.connect(self.on_context_menuSent)
         # self.popMenuSent = QtWidgets.QMenu( self )
@@ -368,24 +314,12 @@ class MyForm(QtWidgets.QMainWindow):
         # Popup menu for the Blacklist page
         self.ui.blacklistContextMenuToolbar = QtWidgets.QToolBar()
         # Actions
-        self.actionBlacklistNew = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Add new entry"), self.on_action_BlacklistNew
-        )
-        self.actionBlacklistDelete = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Delete"), self.on_action_BlacklistDelete
-        )
-        self.actionBlacklistClipboard = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Copy address to clipboard"), self.on_action_BlacklistClipboard
-        )
-        self.actionBlacklistEnable = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Enable"), self.on_action_BlacklistEnable
-        )
-        self.actionBlacklistDisable = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Disable"), self.on_action_BlacklistDisable
-        )
-        self.actionBlacklistSetAvatar = self.ui.blacklistContextMenuToolbar.addAction(
-            _translate("MainWindow", "Set avatar."), self.on_action_BlacklistSetAvatar
-        )
+        self.actionBlacklistNew = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Add new entry"), self.on_action_BlacklistNew)
+        self.actionBlacklistDelete = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Delete"), self.on_action_BlacklistDelete)
+        self.actionBlacklistClipboard = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Copy address to clipboard"), self.on_action_BlacklistClipboard)
+        self.actionBlacklistEnable = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Enable"), self.on_action_BlacklistEnable)
+        self.actionBlacklistDisable = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Disable"), self.on_action_BlacklistDisable)
+        self.actionBlacklistSetAvatar = self.ui.blacklistContextMenuToolbar.addAction(_translate("MainWindow", "Set avatar."), self.on_action_BlacklistSetAvatar)
         self.ui.tableWidgetBlacklist.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.ui.tableWidgetBlacklist.customContextMenuRequested.connect(self.on_context_menuBlacklist)
         self.popMenuBlacklist = QtWidgets.QMenu(self)
@@ -412,12 +346,9 @@ class MyForm(QtWidgets.QMainWindow):
                 if addressVersionNumber == 1:
                     displayMsg = _translate(
                         "MainWindow",
-                        "One of your addresses, %1, is an old version 1 address. Version 1 addresses are no longer supported. "
-                        + "May we delete it now?",
+                        "One of your addresses, %1, is an old version 1 address. Version 1 addresses are no longer supported. " + "May we delete it now?",
                     ).replace("%1", addressInKeysFile)
-                    reply = QtWidgets.QMessageBox.question(
-                        self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
-                    )
+                    reply = QtWidgets.QMessageBox.question(self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
                     if reply == QtWidgets.QMessageBox.Yes:
                         shared.config.remove_section(addressInKeysFile)
                         with open(shared.appdata + "keys.dat", "w") as configfile:
@@ -429,9 +360,7 @@ class MyForm(QtWidgets.QMainWindow):
             # Auto-startup for Windows
             RUN_PATH = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
             self.settings = QSettings(RUN_PATH, QSettings.NativeFormat)
-            self.settings.remove(
-                "PyBitmessage"
-            )  # In case the user moves the program and the registry entry is no longer valid, this will delete the old registry entry.
+            self.settings.remove("PyBitmessage")  # In case the user moves the program and the registry entry is no longer valid, this will delete the old registry entry.
             if shared.config.getboolean("bitmessagesettings", "startonlogon"):
                 self.settings.setValue("PyBitmessage", sys.argv[0])
         elif "darwin" in sys.platform:
@@ -522,9 +451,7 @@ class MyForm(QtWidgets.QMainWindow):
         # self.ui.pushButtonStatusIcon.setIcon(QIcon(":/newPrefix/images/yellowicon.png"))
         self.statusbar = self.statusBar()
         self.statusbar.insertPermanentWidget(0, self.ui.pushButtonStatusIcon)
-        self.ui.labelStartupTime.setText(
-            _translate("MainWindow", "Since startup on %1").replace("%1", l10n.formatTimestamp())
-        )
+        self.ui.labelStartupTime.setText(_translate("MainWindow", "Since startup on %1").replace("%1", l10n.formatTimestamp()))
         self.numberOfMessagesProcessed = 0
         self.numberOfBroadcastsProcessed = 0
         self.numberOfPubkeysProcessed = 0
@@ -590,9 +517,7 @@ class MyForm(QtWidgets.QMainWindow):
             # else:
             # self.showMaximized()
             self.show()
-            self.setWindowState(
-                self.windowState() & ~QtCore.Qt.WindowState.WindowMinimized | QtCore.Qt.WindowState.WindowActive
-            )
+            self.setWindowState(self.windowState() & ~QtCore.Qt.WindowState.WindowMinimized | QtCore.Qt.WindowState.WindowActive)
             self.activateWindow()
 
     # pointer to the application
@@ -740,9 +665,7 @@ class MyForm(QtWidgets.QMainWindow):
 
             if fromLabel == "":
                 fromLabel = fromAddress
-            fromAddressItem = QtWidgets.QTableWidgetItem(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            fromAddressItem = QtWidgets.QTableWidgetItem(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             fromAddressItem.setToolTip(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             fromAddressItem.setIcon(avatarize(fromAddress))
             fromAddressItem.setData(Qt.UserRole, str(fromAddress))
@@ -761,42 +684,30 @@ class MyForm(QtWidgets.QMainWindow):
             elif status == "msgqueued":
                 statusText = _translate("MainWindow", "Queued.")
             elif status == "msgsent":
-                statusText = _translate("MainWindow", "Message sent. Waiting for acknowledgement. Sent at %1").replace(
-                    "%1", l10n.formatTimestamp(lastactiontime)
-                )
+                statusText = _translate("MainWindow", "Message sent. Waiting for acknowledgement. Sent at %1").replace("%1", l10n.formatTimestamp(lastactiontime))
             elif status == "msgsentnoackexpected":
-                statusText = _translate("MainWindow", "Message sent. Sent at %1").replace(
-                    "%1", l10n.formatTimestamp(lastactiontime)
-                )
+                statusText = _translate("MainWindow", "Message sent. Sent at %1").replace("%1", l10n.formatTimestamp(lastactiontime))
             elif status == "doingmsgpow":
                 statusText = _translate("MainWindow", "Need to do work to send message. Work is queued.")
             elif status == "ackreceived":
-                statusText = _translate("MainWindow", "Acknowledgement of the message received %1").replace(
-                    "%1", l10n.formatTimestamp(lastactiontime)
-                )
+                statusText = _translate("MainWindow", "Acknowledgement of the message received %1").replace("%1", l10n.formatTimestamp(lastactiontime))
             elif status == "broadcastqueued":
                 statusText = _translate("MainWindow", "Broadcast queued.")
             elif status == "broadcastsent":
-                statusText = _translate("MainWindow", "Broadcast on %1").replace(
-                    "%1", l10n.formatTimestamp(lastactiontime)
-                )
+                statusText = _translate("MainWindow", "Broadcast on %1").replace("%1", l10n.formatTimestamp(lastactiontime))
             elif status == "toodifficult":
                 statusText = _translate(
                     "MainWindow",
                     "Problem: The work demanded by the recipient is more difficult than you are willing to do. %1",
                 ).replace("%1", l10n.formatTimestamp(lastactiontime))
             elif status == "badkey":
-                statusText = _translate(
-                    "MainWindow", "Problem: The recipient's encryption key is no good. Could not encrypt message. %1"
-                ).replace("%1", l10n.formatTimestamp(lastactiontime))
+                statusText = _translate("MainWindow", "Problem: The recipient's encryption key is no good. Could not encrypt message. %1").replace(
+                    "%1", l10n.formatTimestamp(lastactiontime)
+                )
             elif status == "forcepow":
                 statusText = _translate("MainWindow", "Forced difficulty override. Send should start soon.")
             else:
-                statusText = (
-                    _translate("MainWindow", "Unknown status: %1 %2")
-                    .replace("%1", status)
-                    .replace("%2", l10n.formatTimestamp(lastactiontime))
-                )
+                statusText = _translate("MainWindow", "Unknown status: %1 %2").replace("%1", status).replace("%2", l10n.formatTimestamp(lastactiontime))
             newItem = myTableWidgetItem(statusText)
             newItem.setToolTip(statusText)
             newItem.setData(Qt.UserRole, QByteArray(ackdata))
@@ -881,9 +792,7 @@ class MyForm(QtWidgets.QMainWindow):
             to_item.setIcon(avatarize(toAddress))
             self.ui.tableWidgetInbox.setItem(0, 0, to_item)
             # from
-            from_item = QtWidgets.QTableWidgetItem(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            from_item = QtWidgets.QTableWidgetItem(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             from_item.setToolTip(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             from_item.setFlags(QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
             if not read:
@@ -894,9 +803,7 @@ class MyForm(QtWidgets.QMainWindow):
             from_item.setIcon(avatarize(fromAddress))
             self.ui.tableWidgetInbox.setItem(0, 1, from_item)
             # subject
-            subject_item = QtWidgets.QTableWidgetItem(
-                subject.decode("utf-8") if isinstance(subject, bytes) else subject
-            )
+            subject_item = QtWidgets.QTableWidgetItem(subject.decode("utf-8") if isinstance(subject, bytes) else subject)
             subject_item.setToolTip(subject.decode("utf-8") if isinstance(subject, bytes) else subject)
             subject_item.setFlags(QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
             if not read:
@@ -1098,11 +1005,7 @@ class MyForm(QtWidgets.QMainWindow):
     # returns true if the given sound category is a connection sound
     # rather than a received message sound
     def isConnectionSound(self, category):
-        if (
-            category is self.SOUND_CONNECTED
-            or category is self.SOUND_DISCONNECTED
-            or category is self.SOUND_CONNECTION_GREEN
-        ):
+        if category is self.SOUND_CONNECTED or category is self.SOUND_DISCONNECTED or category is self.SOUND_CONNECTION_GREEN:
             return True
         return False
 
@@ -1117,9 +1020,7 @@ class MyForm(QtWidgets.QMainWindow):
         # if the address had a known label in the address book
         if label is not None:
             # Does a sound file exist for this particular contact?
-            if os.path.isfile(shared.appdata + "sounds/" + label + ".wav") or os.path.isfile(
-                shared.appdata + "sounds/" + label + ".mp3"
-            ):
+            if os.path.isfile(shared.appdata + "sounds/" + label + ".wav") or os.path.isfile(shared.appdata + "sounds/" + label + ".mp3"):
                 soundFilename = shared.appdata + "sounds/" + label
 
         # Avoid making sounds more frequently than the threshold.
@@ -1172,9 +1073,7 @@ class MyForm(QtWidgets.QMainWindow):
                             print("WARNING: gst123 must be installed in order to play mp3 sounds")
                         if not gst_available:
                             try:
-                                subprocess.call(
-                                    ["mpg123", soundFilename], stdin=subprocess.PIPE, stdout=subprocess.PIPE
-                                )
+                                subprocess.call(["mpg123", soundFilename], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
                                 gst_available = True
                             except:
                                 print("WARNING: mpg123 must be installed in order to play mp3 sounds")
@@ -1307,9 +1206,7 @@ class MyForm(QtWidgets.QMainWindow):
             else:
                 streamNumberForAddress = int(self.regenerateAddressesDialogInstance.ui.lineEditStreamNumber.text())
                 try:
-                    addressVersionNumber = int(
-                        self.regenerateAddressesDialogInstance.ui.lineEditAddressVersionNumber.text()
-                    )
+                    addressVersionNumber = int(self.regenerateAddressesDialogInstance.ui.lineEditAddressVersionNumber.text())
                 except:
                     QMessageBox.about(
                         self,
@@ -1346,9 +1243,7 @@ class MyForm(QtWidgets.QMainWindow):
                         "createChan",
                         4,
                         1,
-                        self.str_chan
-                        + " "
-                        + str(self.newChanDialogInstance.ui.lineEditChanNameCreate.text().encode("utf-8")),
+                        self.str_chan + " " + str(self.newChanDialogInstance.ui.lineEditChanNameCreate.text().encode("utf-8")),
                         self.newChanDialogInstance.ui.lineEditChanNameCreate.text().encode("utf-8"),
                     )
                 )
@@ -1358,9 +1253,7 @@ class MyForm(QtWidgets.QMainWindow):
                     QMessageBox.about(
                         self,
                         _translate("MainWindow", "Address already present"),
-                        _translate(
-                            "MainWindow", "Could not add chan because it appears to already be one of your identities."
-                        ),
+                        _translate("MainWindow", "Could not add chan because it appears to already be one of your identities."),
                     )
                     return
                 createdAddress = addressGeneratorReturnValue[0]
@@ -1381,10 +1274,7 @@ class MyForm(QtWidgets.QMainWindow):
                         _translate("MainWindow", "You didn't enter a chan name."),
                     )
                     return
-                if (
-                    decodeAddress(self.newChanDialogInstance.ui.lineEditChanBitmessageAddress.text())[0]
-                    == "versiontoohigh"
-                ):
+                if decodeAddress(self.newChanDialogInstance.ui.lineEditChanBitmessageAddress.text())[0] == "versiontoohigh":
                     QMessageBox.about(
                         self,
                         _translate("MainWindow", "Address too new"),
@@ -1406,9 +1296,7 @@ class MyForm(QtWidgets.QMainWindow):
                     (
                         "joinChan",
                         addBMIfNotPresent(self.newChanDialogInstance.ui.lineEditChanBitmessageAddress.text()),
-                        self.str_chan
-                        + " "
-                        + str(self.newChanDialogInstance.ui.lineEditChanNameJoin.text().encode("utf-8")),
+                        self.str_chan + " " + str(self.newChanDialogInstance.ui.lineEditChanNameJoin.text().encode("utf-8")),
                         self.newChanDialogInstance.ui.lineEditChanNameJoin.text().encode("utf-8"),
                     )
                 )
@@ -1428,15 +1316,11 @@ class MyForm(QtWidgets.QMainWindow):
                     QMessageBox.about(
                         self,
                         _translate("MainWindow", "Address already present"),
-                        _translate(
-                            "MainWindow", "Could not add chan because it appears to already be one of your identities."
-                        ),
+                        _translate("MainWindow", "Could not add chan because it appears to already be one of your identities."),
                     )
                     return
                 createdAddress = addressGeneratorReturnValue[0]
-                QMessageBox.about(
-                    self, _translate("MainWindow", "Success"), _translate("MainWindow", "Successfully joined chan. ")
-                )
+                QMessageBox.about(self, _translate("MainWindow", "Success"), _translate("MainWindow", "Successfully joined chan. "))
                 self.ui.tabWidget.setCurrentIndex(3)
 
     def showConnectDialog(self):
@@ -1477,23 +1361,13 @@ class MyForm(QtWidgets.QMainWindow):
             self.appIndicatorShowOrHideWindow()
 
     def updateNumberOfMessagesProcessed(self):
-        self.ui.labelMessageCount.setText(
-            _translate("MainWindow", "Processed %1 person-to-person messages.").replace(
-                "%1", str(shared.numberOfMessagesProcessed)
-            )
-        )
+        self.ui.labelMessageCount.setText(_translate("MainWindow", "Processed %1 person-to-person messages.").replace("%1", str(shared.numberOfMessagesProcessed)))
 
     def updateNumberOfBroadcastsProcessed(self):
-        self.ui.labelBroadcastCount.setText(
-            _translate("MainWindow", "Processed %1 broadcast messages.").replace(
-                "%1", str(shared.numberOfBroadcastsProcessed)
-            )
-        )
+        self.ui.labelBroadcastCount.setText(_translate("MainWindow", "Processed %1 broadcast messages.").replace("%1", str(shared.numberOfBroadcastsProcessed)))
 
     def updateNumberOfPubkeysProcessed(self):
-        self.ui.labelPubkeyCount.setText(
-            _translate("MainWindow", "Processed %1 public keys.").replace("%1", str(shared.numberOfPubkeysProcessed))
-        )
+        self.ui.labelPubkeyCount.setText(_translate("MainWindow", "Processed %1 public keys.").replace("%1", str(shared.numberOfPubkeysProcessed)))
 
     def formatBytes(self, num):
         for x in ["bytes", "KB", "MB", "GB"]:
@@ -1565,9 +1439,7 @@ class MyForm(QtWidgets.QMainWindow):
             newItem.setFlags( QtCore.Qt.ItemFlag.ItemIsSelectable |  QtCore.Qt.ItemFlag.ItemIsEnabled )
             self.ui.tableWidgetConnectionCount.setItem(0,1,newItem)
             totalNumberOfConnectionsFromAllStreams += connectionCount"""
-        self.ui.labelTotalConnections.setText(
-            _translate("MainWindow", "Total Connections: %1").replace("%1", str(len(shared.connectedHostsList)))
-        )
+        self.ui.labelTotalConnections.setText(_translate("MainWindow", "Total Connections: %1").replace("%1", str(len(shared.connectedHostsList))))
         if (
             len(shared.connectedHostsList) > 0 and shared.statusIconColor == "red"
         ):  # FYI: The 'singlelistener' thread sets the icon color to green when it receives an incoming connection, meaning that the user's firewall is configured correctly.
@@ -1577,11 +1449,7 @@ class MyForm(QtWidgets.QMainWindow):
 
     # timer driven
     def runEveryTwoSeconds(self):
-        self.ui.labelLookupsPerSecond.setText(
-            _translate("MainWindow", "Inventory lookups per second: %1").replace(
-                "%1", str(shared.numberOfInventoryLookupsPerformed / 2)
-            )
-        )
+        self.ui.labelLookupsPerSecond.setText(_translate("MainWindow", "Inventory lookups per second: %1").replace("%1", str(shared.numberOfInventoryLookupsPerformed / 2)))
         shared.numberOfInventoryLookupsPerformed = 0
         self.updateNumberOfBytes()
 
@@ -1617,9 +1485,7 @@ class MyForm(QtWidgets.QMainWindow):
             shared.statusIconColor = "yellow"
             # if a new connection has been established then show a notification
             if not self.connected:
-                self.notifierShow(
-                    "Bitmessage", str(_translate("MainWindow", "Connected").encode("utf-8")), self.SOUND_CONNECTED, None
-                )
+                self.notifierShow("Bitmessage", str(_translate("MainWindow", "Connected").encode("utf-8")), self.SOUND_CONNECTED, None)
             self.connected = True
 
             if self.actionStatus is not None:
@@ -1766,9 +1632,7 @@ class MyForm(QtWidgets.QMainWindow):
                     fromLabel = shared.config.get(addressToLookup, "label")
             if fromLabel == "":
                 fromLabel = addressToLookup
-            self.ui.tableWidgetInbox.item(i, 1).setText(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            self.ui.tableWidgetInbox.item(i, 1).setText(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             self.ui.tableWidgetInbox.item(i, 1).setIcon(avatarize(addressToLookup))
             # Set the color according to whether it is the address of a mailing
             # list or not.
@@ -1785,9 +1649,7 @@ class MyForm(QtWidgets.QMainWindow):
                 toLabel = shared.config.get(toAddress, "label")
             else:
                 toLabel = toAddress
-            self.ui.tableWidgetInbox.item(i, 0).setText(
-                toLabel.decode("utf-8") if isinstance(toLabel, bytes) else toLabel
-            )
+            self.ui.tableWidgetInbox.item(i, 0).setText(toLabel.decode("utf-8") if isinstance(toLabel, bytes) else toLabel)
             self.ui.tableWidgetInbox.item(i, 0).setIcon(avatarize(toAddress))
             # Set the color according to whether it is the address of a mailing
             # list, a chan or neither.
@@ -1806,9 +1668,7 @@ class MyForm(QtWidgets.QMainWindow):
                 fromLabel = shared.config.get(fromAddress, "label")
             else:
                 fromLabel = fromAddress
-            self.ui.tableWidgetSent.item(i, 1).setText(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            self.ui.tableWidgetSent.item(i, 1).setText(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             self.ui.tableWidgetSent.item(i, 1).setIcon(avatarize(fromAddress))
 
     def rerenderSentToLabels(self):
@@ -1826,9 +1686,7 @@ class MyForm(QtWidgets.QMainWindow):
                     toLabel = shared.config.get(addressToLookup, "label")
             if toLabel == "":
                 toLabel = addressToLookup
-            self.ui.tableWidgetSent.item(i, 0).setText(
-                toLabel.decode("utf-8") if isinstance(toLabel, bytes) else toLabel
-            )
+            self.ui.tableWidgetSent.item(i, 0).setText(toLabel.decode("utf-8") if isinstance(toLabel, bytes) else toLabel)
 
     def rerenderAddressBook(self):
         self.ui.tableWidgetAddressBook.setRowCount(0)
@@ -1879,11 +1737,7 @@ class MyForm(QtWidgets.QMainWindow):
                             print("Error: Could not decode", toAddress, ":", status)
 
                         if status == "missingbm":
-                            self.statusBar().showMessage(
-                                _translate(
-                                    "MainWindow", "Error: Bitmessage addresses start with BM-   Please check %1"
-                                ).replace("%1", toAddress)
-                            )
+                            self.statusBar().showMessage(_translate("MainWindow", "Error: Bitmessage addresses start with BM-   Please check %1").replace("%1", toAddress))
                         elif status == "checksumfailed":
                             self.statusBar().showMessage(
                                 _translate(
@@ -1892,11 +1746,7 @@ class MyForm(QtWidgets.QMainWindow):
                                 ).replace("%1", toAddress)
                             )
                         elif status == "invalidcharacters":
-                            self.statusBar().showMessage(
-                                _translate(
-                                    "MainWindow", "Error: The address %1 contains invalid characters. Please check it."
-                                ).replace("%1", toAddress)
-                            )
+                            self.statusBar().showMessage(_translate("MainWindow", "Error: The address %1 contains invalid characters. Please check it.").replace("%1", toAddress))
                         elif status == "versiontoohigh":
                             self.statusBar().showMessage(
                                 _translate(
@@ -1919,11 +1769,7 @@ class MyForm(QtWidgets.QMainWindow):
                                 ).replace("%1", toAddress)
                             )
                         else:
-                            self.statusBar().showMessage(
-                                _translate("MainWindow", "Error: Something is wrong with the address %1.").replace(
-                                    "%1", toAddress
-                                )
-                            )
+                            self.statusBar().showMessage(_translate("MainWindow", "Error: Something is wrong with the address %1.").replace("%1", toAddress))
                     elif fromAddress == "":
                         self.statusBar().showMessage(
                             _translate(
@@ -2124,9 +1970,7 @@ class MyForm(QtWidgets.QMainWindow):
         self.ui.tableWidgetSent.setSortingEnabled(False)
         self.ui.tableWidgetSent.insertRow(0)
         if toLabel == "":
-            newItem = QtWidgets.QTableWidgetItem(
-                toAddress.decode("utf-8") if isinstance(toAddress, bytes) else toAddress
-            )
+            newItem = QtWidgets.QTableWidgetItem(toAddress.decode("utf-8") if isinstance(toAddress, bytes) else toAddress)
             newItem.setToolTip(toAddress.decode("utf-8") if isinstance(toAddress, bytes) else toAddress)
         else:
             newItem = QtWidgets.QTableWidgetItem(toLabel.decode("utf-8") if isinstance(toLabel, bytes) else toLabel)
@@ -2135,14 +1979,10 @@ class MyForm(QtWidgets.QMainWindow):
         newItem.setIcon(avatarize(toAddress))
         self.ui.tableWidgetSent.setItem(0, 0, newItem)
         if fromLabel == "":
-            newItem = QtWidgets.QTableWidgetItem(
-                fromAddress.decode("utf-8") if isinstance(fromAddress, bytes) else fromAddress
-            )
+            newItem = QtWidgets.QTableWidgetItem(fromAddress.decode("utf-8") if isinstance(fromAddress, bytes) else fromAddress)
             newItem.setToolTip(fromAddress.decode("utf-8") if isinstance(fromAddress, bytes) else fromAddress)
         else:
-            newItem = QtWidgets.QTableWidgetItem(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            newItem = QtWidgets.QTableWidgetItem(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             newItem.setToolTip(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
         newItem.setData(Qt.UserRole, str(fromAddress))
         newItem.setIcon(avatarize(fromAddress))
@@ -2154,9 +1994,7 @@ class MyForm(QtWidgets.QMainWindow):
         # newItem =  QtWidgets.QTableWidgetItem('Doing work necessary to send
         # broadcast.'+
         # l10n.formatTimestamp())
-        newItem = myTableWidgetItem(
-            _translate("MainWindow", "Work is queued. %1").replace("%1", l10n.formatTimestamp())
-        )
+        newItem = myTableWidgetItem(_translate("MainWindow", "Work is queued. %1").replace("%1", l10n.formatTimestamp()))
         newItem.setToolTip(_translate("MainWindow", "Work is queued. %1").replace("%1", l10n.formatTimestamp()))
         newItem.setData(Qt.UserRole, QByteArray(ackdata))
         newItem.setData(33, int(time.time()))
@@ -2211,21 +2049,17 @@ class MyForm(QtWidgets.QMainWindow):
             if shared.config.getboolean("bitmessagesettings", "showtraynotifications"):
                 self.notifierShow(
                     _translate("MainWindow", "New Message"),
-                    _translate("MainWindow", "From ")
-                    + (fromAddress.decode("utf-8") if isinstance(fromAddress, bytes) else fromAddress),
+                    _translate("MainWindow", "From ") + (fromAddress.decode("utf-8") if isinstance(fromAddress, bytes) else fromAddress),
                     self.SOUND_UNKNOWN,
                     None,
                 )
         else:
-            newItem = QtWidgets.QTableWidgetItem(
-                fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel
-            )
+            newItem = QtWidgets.QTableWidgetItem(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             newItem.setToolTip(fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel)
             if shared.config.getboolean("bitmessagesettings", "showtraynotifications"):
                 self.notifierShow(
                     _translate("MainWindow", "New Message"),
-                    _translate("MainWindow", "From ")
-                    + (fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel),
+                    _translate("MainWindow", "From ") + (fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel),
                     self.SOUND_KNOWN,
                     (fromLabel.decode("utf-8") if isinstance(fromLabel, bytes) else fromLabel),
                 )
@@ -2250,9 +2084,7 @@ class MyForm(QtWidgets.QMainWindow):
     def click_pushButtonAddAddressBook(self):
         self.AddAddressDialogInstance = AddAddressDialog(self)
         if self.AddAddressDialogInstance.exec():
-            if self.AddAddressDialogInstance.ui.labelAddressCheck.text() == _translate(
-                "MainWindow", "Address is valid."
-            ):
+            if self.AddAddressDialogInstance.ui.labelAddressCheck.text() == _translate("MainWindow", "Address is valid."):
                 # First we must check to see if the address is already in the
                 # address book. The user cannot add it again or else it will
                 # cause problems when updating and deleting the entry.
@@ -2260,9 +2092,7 @@ class MyForm(QtWidgets.QMainWindow):
                 label = self.AddAddressDialogInstance.ui.newAddressLabel.text().toUtf8()
                 self.addEntryToAddressBook(address, label)
             else:
-                self.statusBar().showMessage(
-                    _translate("MainWindow", "The address you entered was invalid. Ignoring it.")
-                )
+                self.statusBar().showMessage(_translate("MainWindow", "The address you entered was invalid. Ignoring it."))
 
     def addEntryToAddressBook(self, address, label):
         queryreturn = sqlQuery("""select * from addressbook where address=?""", address)
@@ -2310,12 +2140,8 @@ class MyForm(QtWidgets.QMainWindow):
     def click_pushButtonAddSubscription(self):
         self.NewSubscriptionDialogInstance = NewSubscriptionDialog(self)
         if self.NewSubscriptionDialogInstance.exec():
-            if self.NewSubscriptionDialogInstance.ui.labelAddressCheck.text() != _translate(
-                "MainWindow", "Address is valid."
-            ):
-                self.statusBar().showMessage(
-                    _translate("MainWindow", "The address you entered was invalid. Ignoring it.")
-                )
+            if self.NewSubscriptionDialogInstance.ui.labelAddressCheck.text() != _translate("MainWindow", "Address is valid."):
+                self.statusBar().showMessage(_translate("MainWindow", "The address you entered was invalid. Ignoring it."))
                 return
             address = addBMIfNotPresent(str(self.NewSubscriptionDialogInstance.ui.lineEditSubscriptionAddress.text()))
             # We must check to see if the address is already in the subscriptions list. The user cannot add it again or else it will cause problems when updating and deleting the entry.
@@ -2334,9 +2160,7 @@ class MyForm(QtWidgets.QMainWindow):
             if self.NewSubscriptionDialogInstance.ui.checkBoxDisplayMessagesAlreadyInInventory.isChecked():
                 status, addressVersion, streamNumber, ripe = decodeAddress(address)
                 shared.flushInventory()
-                doubleHashOfAddressData = hashlib.sha512(
-                    hashlib.sha512(encodeVarint(addressVersion) + encodeVarint(streamNumber) + ripe).digest()
-                ).digest()
+                doubleHashOfAddressData = hashlib.sha512(hashlib.sha512(encodeVarint(addressVersion) + encodeVarint(streamNumber) + ripe).digest()).digest()
                 tag = doubleHashOfAddressData[32:]
                 queryreturn = sqlQuery("""select payload from inventory where objecttype='broadcast' and tag=?""", tag)
                 for row in queryreturn:
@@ -2399,9 +2223,7 @@ class MyForm(QtWidgets.QMainWindow):
                 "showtraynotifications",
                 str(self.settingsDialogInstance.ui.checkBoxShowTrayNotifications.isChecked()),
             )
-            shared.config.set(
-                "bitmessagesettings", "startintray", str(self.settingsDialogInstance.ui.checkBoxStartInTray.isChecked())
-            )
+            shared.config.set("bitmessagesettings", "startintray", str(self.settingsDialogInstance.ui.checkBoxStartInTray.isChecked()))
             shared.config.set(
                 "bitmessagesettings",
                 "willinglysendtomobile",
@@ -2412,34 +2234,23 @@ class MyForm(QtWidgets.QMainWindow):
                 "useidenticons",
                 str(self.settingsDialogInstance.ui.checkBoxUseIdenticons.isChecked()),
             )
-            shared.config.set(
-                "bitmessagesettings", "replybelow", str(self.settingsDialogInstance.ui.checkBoxReplyBelow.isChecked())
-            )
+            shared.config.set("bitmessagesettings", "replybelow", str(self.settingsDialogInstance.ui.checkBoxReplyBelow.isChecked()))
 
             lang_ind = int(self.settingsDialogInstance.ui.languageComboBox.currentIndex())
             if not languages[lang_ind] == "other":
                 shared.config.set("bitmessagesettings", "userlocale", languages[lang_ind])
 
-            if int(shared.config.get("bitmessagesettings", "port")) != int(
-                self.settingsDialogInstance.ui.lineEditTCPPort.text()
-            ):
+            if int(shared.config.get("bitmessagesettings", "port")) != int(self.settingsDialogInstance.ui.lineEditTCPPort.text()):
                 if not shared.safeConfigGetBoolean("bitmessagesettings", "dontconnect"):
                     QMessageBox.about(
                         self,
                         _translate("MainWindow", "Restart"),
-                        _translate(
-                            "MainWindow", "You must restart Bitmessage for the port number change to take effect."
-                        ),
+                        _translate("MainWindow", "You must restart Bitmessage for the port number change to take effect."),
                     )
-                shared.config.set(
-                    "bitmessagesettings", "port", str(self.settingsDialogInstance.ui.lineEditTCPPort.text())
-                )
+                shared.config.set("bitmessagesettings", "port", str(self.settingsDialogInstance.ui.lineEditTCPPort.text()))
             # print 'self.settingsDialogInstance.ui.comboBoxProxyType.currentText()', self.settingsDialogInstance.ui.comboBoxProxyType.currentText()
             # print 'self.settingsDialogInstance.ui.comboBoxProxyType.currentText())[0:5]', self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5]
-            if (
-                shared.config.get("bitmessagesettings", "socksproxytype") == "none"
-                and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] == "SOCKS"
-            ):
+            if shared.config.get("bitmessagesettings", "socksproxytype") == "none" and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] == "SOCKS":
                 if shared.statusIconColor != "red":
                     QMessageBox.about(
                         self,
@@ -2449,10 +2260,7 @@ class MyForm(QtWidgets.QMainWindow):
                             "Bitmessage will use your proxy from now on but you may want to manually restart Bitmessage now to close existing connections (if any).",
                         ),
                     )
-            if (
-                shared.config.get("bitmessagesettings", "socksproxytype")[0:5] == "SOCKS"
-                and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] != "SOCKS"
-            ):
+            if shared.config.get("bitmessagesettings", "socksproxytype")[0:5] == "SOCKS" and self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] != "SOCKS":
                 self.statusBar().showMessage("")
             if self.settingsDialogInstance.ui.comboBoxProxyType.currentText()[0:5] == "SOCKS":
                 shared.config.set(
@@ -2467,32 +2275,16 @@ class MyForm(QtWidgets.QMainWindow):
                 "socksauthentication",
                 str(self.settingsDialogInstance.ui.checkBoxAuthentication.isChecked()),
             )
-            shared.config.set(
-                "bitmessagesettings", "sockshostname", str(self.settingsDialogInstance.ui.lineEditSocksHostname.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "socksport", str(self.settingsDialogInstance.ui.lineEditSocksPort.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "socksusername", str(self.settingsDialogInstance.ui.lineEditSocksUsername.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "sockspassword", str(self.settingsDialogInstance.ui.lineEditSocksPassword.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "sockslisten", str(self.settingsDialogInstance.ui.checkBoxSocksListen.isChecked())
-            )
+            shared.config.set("bitmessagesettings", "sockshostname", str(self.settingsDialogInstance.ui.lineEditSocksHostname.text()))
+            shared.config.set("bitmessagesettings", "socksport", str(self.settingsDialogInstance.ui.lineEditSocksPort.text()))
+            shared.config.set("bitmessagesettings", "socksusername", str(self.settingsDialogInstance.ui.lineEditSocksUsername.text()))
+            shared.config.set("bitmessagesettings", "sockspassword", str(self.settingsDialogInstance.ui.lineEditSocksPassword.text()))
+            shared.config.set("bitmessagesettings", "sockslisten", str(self.settingsDialogInstance.ui.checkBoxSocksListen.isChecked()))
 
             shared.config.set("bitmessagesettings", "namecoinrpctype", self.settingsDialogInstance.getNamecoinType())
-            shared.config.set(
-                "bitmessagesettings", "namecoinrpchost", str(self.settingsDialogInstance.ui.lineEditNamecoinHost.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "namecoinrpcport", str(self.settingsDialogInstance.ui.lineEditNamecoinPort.text())
-            )
-            shared.config.set(
-                "bitmessagesettings", "namecoinrpcuser", str(self.settingsDialogInstance.ui.lineEditNamecoinUser.text())
-            )
+            shared.config.set("bitmessagesettings", "namecoinrpchost", str(self.settingsDialogInstance.ui.lineEditNamecoinHost.text()))
+            shared.config.set("bitmessagesettings", "namecoinrpcport", str(self.settingsDialogInstance.ui.lineEditNamecoinPort.text()))
+            shared.config.set("bitmessagesettings", "namecoinrpcuser", str(self.settingsDialogInstance.ui.lineEditNamecoinUser.text()))
             shared.config.set(
                 "bitmessagesettings",
                 "namecoinrpcpassword",
@@ -2503,23 +2295,13 @@ class MyForm(QtWidgets.QMainWindow):
                 shared.config.set(
                     "bitmessagesettings",
                     "defaultnoncetrialsperbyte",
-                    str(
-                        int(
-                            float(self.settingsDialogInstance.ui.lineEditTotalDifficulty.text())
-                            * shared.networkDefaultProofOfWorkNonceTrialsPerByte
-                        )
-                    ),
+                    str(int(float(self.settingsDialogInstance.ui.lineEditTotalDifficulty.text()) * shared.networkDefaultProofOfWorkNonceTrialsPerByte)),
                 )
             if float(self.settingsDialogInstance.ui.lineEditSmallMessageDifficulty.text()) >= 1:
                 shared.config.set(
                     "bitmessagesettings",
                     "defaultpayloadlengthextrabytes",
-                    str(
-                        int(
-                            float(self.settingsDialogInstance.ui.lineEditSmallMessageDifficulty.text())
-                            * shared.networkDefaultPayloadLengthExtraBytes
-                        )
-                    ),
+                    str(int(float(self.settingsDialogInstance.ui.lineEditSmallMessageDifficulty.text()) * shared.networkDefaultPayloadLengthExtraBytes)),
                 )
             if (
                 float(self.settingsDialogInstance.ui.lineEditMaxAcceptableTotalDifficulty.text()) >= 1
@@ -2528,12 +2310,7 @@ class MyForm(QtWidgets.QMainWindow):
                 shared.config.set(
                     "bitmessagesettings",
                     "maxacceptablenoncetrialsperbyte",
-                    str(
-                        int(
-                            float(self.settingsDialogInstance.ui.lineEditMaxAcceptableTotalDifficulty.text())
-                            * shared.networkDefaultProofOfWorkNonceTrialsPerByte
-                        )
-                    ),
+                    str(int(float(self.settingsDialogInstance.ui.lineEditMaxAcceptableTotalDifficulty.text()) * shared.networkDefaultProofOfWorkNonceTrialsPerByte)),
                 )
             if (
                 float(self.settingsDialogInstance.ui.lineEditMaxAcceptableSmallMessageDifficulty.text()) >= 1
@@ -2542,12 +2319,7 @@ class MyForm(QtWidgets.QMainWindow):
                 shared.config.set(
                     "bitmessagesettings",
                     "maxacceptablepayloadlengthextrabytes",
-                    str(
-                        int(
-                            float(self.settingsDialogInstance.ui.lineEditMaxAcceptableSmallMessageDifficulty.text())
-                            * shared.networkDefaultPayloadLengthExtraBytes
-                        )
-                    ),
+                    str(int(float(self.settingsDialogInstance.ui.lineEditMaxAcceptableSmallMessageDifficulty.text()) * shared.networkDefaultPayloadLengthExtraBytes)),
                 )
             # start:UI setting to stop trying to send messages after X days/months
             # I'm open to changing this UI to something else if someone has a better idea.
@@ -2572,13 +2344,10 @@ class MyForm(QtWidgets.QMainWindow):
             if lineEditMonthsIsValidFloat and not lineEditDaysIsValidFloat:
                 self.settingsDialogInstance.ui.lineEditDays.setText("0")
             if lineEditDaysIsValidFloat or lineEditMonthsIsValidFloat:
-                if (
-                    float(self.settingsDialogInstance.ui.lineEditDays.text()) >= 0
-                    and float(self.settingsDialogInstance.ui.lineEditMonths.text()) >= 0
-                ):
-                    shared.maximumLengthOfTimeToBotherResendingMessages = (
-                        float(str(self.settingsDialogInstance.ui.lineEditDays.text())) * 24 * 60 * 60
-                    ) + (float(str(self.settingsDialogInstance.ui.lineEditMonths.text())) * (60 * 60 * 24 * 365) / 12)
+                if float(self.settingsDialogInstance.ui.lineEditDays.text()) >= 0 and float(self.settingsDialogInstance.ui.lineEditMonths.text()) >= 0:
+                    shared.maximumLengthOfTimeToBotherResendingMessages = (float(str(self.settingsDialogInstance.ui.lineEditDays.text())) * 24 * 60 * 60) + (
+                        float(str(self.settingsDialogInstance.ui.lineEditMonths.text())) * (60 * 60 * 24 * 365) / 12
+                    )
                     if (
                         shared.maximumLengthOfTimeToBotherResendingMessages < 432000
                     ):  # If the time period is less than 5 hours, we give zero values to all fields. No message will be sent again.
@@ -2702,9 +2471,7 @@ class MyForm(QtWidgets.QMainWindow):
     def click_pushButtonAddBlacklist(self):
         self.NewBlacklistDialogInstance = AddAddressDialog(self)
         if self.NewBlacklistDialogInstance.exec():
-            if self.NewBlacklistDialogInstance.ui.labelAddressCheck.text() == _translate(
-                "MainWindow", "Address is valid."
-            ):
+            if self.NewBlacklistDialogInstance.ui.labelAddressCheck.text() == _translate("MainWindow", "Address is valid."):
                 address = addBMIfNotPresent(str(self.NewBlacklistDialogInstance.ui.lineEditAddress.text()))
                 # First we must check to see if the address is already in the
                 # address book. The user cannot add it again or else it will
@@ -2718,9 +2485,7 @@ class MyForm(QtWidgets.QMainWindow):
                 if queryreturn == []:
                     self.ui.tableWidgetBlacklist.setSortingEnabled(False)
                     self.ui.tableWidgetBlacklist.insertRow(0)
-                    newItem = QtWidgets.QTableWidgetItem(
-                        str(self.NewBlacklistDialogInstance.ui.newAddressLabel.text().toUtf8(), "utf-8")
-                    )
+                    newItem = QtWidgets.QTableWidgetItem(str(self.NewBlacklistDialogInstance.ui.newAddressLabel.text().toUtf8(), "utf-8"))
                     newItem.setIcon(avatarize(address))
                     self.ui.tableWidgetBlacklist.setItem(0, 0, newItem)
                     newItem = QtWidgets.QTableWidgetItem(address)
@@ -2741,9 +2506,7 @@ class MyForm(QtWidgets.QMainWindow):
                         )
                     )
             else:
-                self.statusBar().showMessage(
-                    _translate("MainWindow", "The address you entered was invalid. Ignoring it.")
-                )
+                self.statusBar().showMessage(_translate("MainWindow", "The address you entered was invalid. Ignoring it."))
 
     def on_action_SpecialAddressBehaviorDialog(self):
         self.dialog = SpecialAddressBehaviorDialog(self)
@@ -2757,9 +2520,7 @@ class MyForm(QtWidgets.QMainWindow):
                 shared.config.set(str(addressAtCurrentRow), "mailinglist", "false")
                 # Set the color to either black or grey
                 if shared.config.getboolean(addressAtCurrentRow, "enabled"):
-                    self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(
-                        QApplication.palette().text().color()
-                    )
+                    self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(QApplication.palette().text().color())
                 else:
                     self.ui.tableWidgetYourIdentities.item(currentRow, 1).setTextColor(QtGui.QColor(128, 128, 128))
             else:
@@ -2947,9 +2708,7 @@ class MyForm(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.information(
                 self,
                 _translate("MainWindow", "Address not found"),
-                _translate("MainWindow", "Bitmessage cannot find your address %1. Perhaps you removed it?").replace(
-                    "%1", toAddressAtCurrentInboxRow
-                ),
+                _translate("MainWindow", "Bitmessage cannot find your address %1. Perhaps you removed it?").replace("%1", toAddressAtCurrentInboxRow),
                 QMessageBox.Ok,
             )
             self.ui.labelFrom.setText("")
@@ -2976,20 +2735,14 @@ class MyForm(QtWidgets.QMainWindow):
                 print("original sent to a chan. Setting the to address in the reply to the chan address.")
                 self.ui.lineEditTo.setText(str(toAddressAtCurrentInboxRow))
 
-        listOfAddressesInComboBoxSendFrom = [
-            str(self.ui.comboBoxSendFrom.itemData(i)) for i in range(self.ui.comboBoxSendFrom.count())
-        ]
+        listOfAddressesInComboBoxSendFrom = [str(self.ui.comboBoxSendFrom.itemData(i)) for i in range(self.ui.comboBoxSendFrom.count())]
         if toAddressAtCurrentInboxRow in listOfAddressesInComboBoxSendFrom:
             currentIndex = listOfAddressesInComboBoxSendFrom.index(toAddressAtCurrentInboxRow)
             self.ui.comboBoxSendFrom.setCurrentIndex(currentIndex)
         else:
             self.ui.comboBoxSendFrom.setCurrentIndex(0)
 
-        msgStr = (
-            messageAtCurrentInboxRow.decode("utf-8", "ignore")
-            if isinstance(messageAtCurrentInboxRow, bytes)
-            else messageAtCurrentInboxRow
-        )
+        msgStr = messageAtCurrentInboxRow.decode("utf-8", "ignore") if isinstance(messageAtCurrentInboxRow, bytes) else messageAtCurrentInboxRow
         quotedText = self.quoted_text(msgStr)
         self.ui.textEditMessage.setText(quotedText)
         if self.ui.tableWidgetInbox.item(currentInboxRow, 2).text()[0:3] in ["Re:", "RE:"]:
@@ -3020,9 +2773,7 @@ class MyForm(QtWidgets.QMainWindow):
             )
             self.ui.tabWidget.setCurrentIndex(5)
             self.ui.tableWidgetAddressBook.setCurrentCell(0, 0)
-            self.statusBar().showMessage(
-                _translate("MainWindow", "Entry added to the Address Book. Edit the label to your liking.")
-            )
+            self.statusBar().showMessage(_translate("MainWindow", "Entry added to the Address Book. Edit the label to your liking."))
         else:
             self.statusBar().showMessage(
                 _translate(
@@ -3065,9 +2816,7 @@ class MyForm(QtWidgets.QMainWindow):
                 (message,) = row
 
         defaultFilename = "".join(x for x in subjectAtCurrentInboxRow if x.isalnum()) + ".txt"
-        filename = QFileDialog.getSaveFileName(
-            self, _translate("MainWindow", "Save As."), defaultFilename, "Text files (*.txt);;All files (*.*)"
-        )
+        filename = QFileDialog.getSaveFileName(self, _translate("MainWindow", "Save As."), defaultFilename, "Text files (*.txt);;All files (*.*)")
         if filename == "":
             return
         try:
@@ -3101,15 +2850,11 @@ class MyForm(QtWidgets.QMainWindow):
         currentRow = self.ui.tableWidgetSent.currentRow()
         addressAtCurrentRow = str(self.ui.tableWidgetSent.item(currentRow, 0).data(Qt.UserRole))
         toRipe = decodeAddress(addressAtCurrentRow)[3]
-        sqlExecute(
-            """UPDATE sent SET status='forcepow' WHERE toripe=? AND status='toodifficult' and folder='sent' """, toRipe
-        )
+        sqlExecute("""UPDATE sent SET status='forcepow' WHERE toripe=? AND status='toodifficult' and folder='sent' """, toRipe)
         queryreturn = sqlQuery("""select ackdata FROM sent WHERE status='forcepow' """)
         for row in queryreturn:
             (ackdata,) = row
-            shared.UISignalQueue.put(
-                ("updateSentItemStatusByAckdata", (ackdata, "Overriding maximum-difficulty setting. Work queued."))
-            )
+            shared.UISignalQueue.put(("updateSentItemStatusByAckdata", (ackdata, "Overriding maximum-difficulty setting. Work queued.")))
         shared.workerQueue.put(("sendmessage", ""))
 
     def on_action_SentClipboard(self):
@@ -3396,9 +3141,7 @@ class MyForm(QtWidgets.QMainWindow):
                 current_files += [upper]
         filters[0:0] = ["Image files (" + " ".join(all_images_filter) + ")"]
         filters[1:1] = ["All files (*.*)"]
-        sourcefile = QFileDialog.getOpenFileName(
-            self, _translate("MainWindow", "Set avatar."), filter=";;".join(filters)
-        )
+        sourcefile = QFileDialog.getOpenFileName(self, _translate("MainWindow", "Set avatar."), filter=";;".join(filters))
         # determine the correct filename (note that avatars don't use the suffix)
         destination = shared.appdata + "avatars/" + hash + "." + sourcefile.split(".")[-1]
         exists = QtCore.QFile.exists(destination)
@@ -3406,20 +3149,14 @@ class MyForm(QtWidgets.QMainWindow):
             # ask for removal of avatar
             if exists | (len(current_files) > 0):
                 displayMsg = _translate("MainWindow", "Do you really want to remove this avatar?")
-                overwrite = QtWidgets.QMessageBox.question(
-                    self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
-                )
+                overwrite = QtWidgets.QMessageBox.question(self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             else:
                 overwrite = QtWidgets.QMessageBox.No
         else:
             # ask whether to overwrite old avatar
             if exists | (len(current_files) > 0):
-                displayMsg = _translate(
-                    "MainWindow", "You have already set an avatar for this address. Do you really want to overwrite it?"
-                )
-                overwrite = QtWidgets.QMessageBox.question(
-                    self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
-                )
+                displayMsg = _translate("MainWindow", "You have already set an avatar for this address. Do you really want to overwrite it?")
+                overwrite = QtWidgets.QMessageBox.question(self, "Message", displayMsg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             else:
                 overwrite = QtWidgets.QMessageBox.No
 
@@ -3510,9 +3247,7 @@ class MyForm(QtWidgets.QMainWindow):
                 )
             # If we have received this message from either a broadcast address
             # or from someone in our address book, display as HTML
-            if decodeAddress(fromAddress)[
-                3
-            ] in shared.broadcastSendersForWhichImWatching or shared.isAddressInMyAddressBook(fromAddress):
+            if decodeAddress(fromAddress)[3] in shared.broadcastSendersForWhichImWatching or shared.isAddressInMyAddressBook(fromAddress):
                 self.ui.textEditInboxMessage.setText(messageText)
             else:
                 self.ui.textEditInboxMessage.setPlainText(messageText)
@@ -3656,13 +3391,9 @@ class settingsDialog(QtWidgets.QDialog):
         self.parent = parent
         self.ui.checkBoxStartOnLogon.setChecked(shared.config.getboolean("bitmessagesettings", "startonlogon"))
         self.ui.checkBoxMinimizeToTray.setChecked(shared.config.getboolean("bitmessagesettings", "minimizetotray"))
-        self.ui.checkBoxShowTrayNotifications.setChecked(
-            shared.config.getboolean("bitmessagesettings", "showtraynotifications")
-        )
+        self.ui.checkBoxShowTrayNotifications.setChecked(shared.config.getboolean("bitmessagesettings", "showtraynotifications"))
         self.ui.checkBoxStartInTray.setChecked(shared.config.getboolean("bitmessagesettings", "startintray"))
-        self.ui.checkBoxWillinglySendToMobile.setChecked(
-            shared.safeConfigGetBoolean("bitmessagesettings", "willinglysendtomobile")
-        )
+        self.ui.checkBoxWillinglySendToMobile.setChecked(shared.safeConfigGetBoolean("bitmessagesettings", "willinglysendtomobile"))
         self.ui.checkBoxUseIdenticons.setChecked(shared.safeConfigGetBoolean("bitmessagesettings", "useidenticons"))
         self.ui.checkBoxReplyBelow.setChecked(shared.safeConfigGetBoolean("bitmessagesettings", "replybelow"))
 
@@ -3694,26 +3425,16 @@ class settingsDialog(QtWidgets.QDialog):
             self.ui.checkBoxPortableMode.setChecked(True)
         if "darwin" in sys.platform:
             self.ui.checkBoxStartOnLogon.setDisabled(True)
-            self.ui.checkBoxStartOnLogon.setText(
-                _translate("MainWindow", "Start-on-login not yet supported on your OS.")
-            )
+            self.ui.checkBoxStartOnLogon.setText(_translate("MainWindow", "Start-on-login not yet supported on your OS."))
             self.ui.checkBoxMinimizeToTray.setDisabled(True)
-            self.ui.checkBoxMinimizeToTray.setText(
-                _translate("MainWindow", "Minimize-to-tray not yet supported on your OS.")
-            )
+            self.ui.checkBoxMinimizeToTray.setText(_translate("MainWindow", "Minimize-to-tray not yet supported on your OS."))
             self.ui.checkBoxShowTrayNotifications.setDisabled(True)
-            self.ui.checkBoxShowTrayNotifications.setText(
-                _translate("MainWindow", "Tray notifications not yet supported on your OS.")
-            )
+            self.ui.checkBoxShowTrayNotifications.setText(_translate("MainWindow", "Tray notifications not yet supported on your OS."))
         elif "linux" in sys.platform:
             self.ui.checkBoxStartOnLogon.setDisabled(True)
-            self.ui.checkBoxStartOnLogon.setText(
-                _translate("MainWindow", "Start-on-login not yet supported on your OS.")
-            )
+            self.ui.checkBoxStartOnLogon.setText(_translate("MainWindow", "Start-on-login not yet supported on your OS."))
             self.ui.checkBoxMinimizeToTray.setDisabled(True)
-            self.ui.checkBoxMinimizeToTray.setText(
-                _translate("MainWindow", "Minimize-to-tray not yet supported on your OS.")
-            )
+            self.ui.checkBoxMinimizeToTray.setText(_translate("MainWindow", "Minimize-to-tray not yet supported on your OS."))
         # On the Network settings tab:
         self.ui.lineEditTCPPort.setText(str(shared.config.get("bitmessagesettings", "port")))
         self.ui.checkBoxAuthentication.setChecked(shared.config.getboolean("bitmessagesettings", "socksauthentication"))
@@ -3740,38 +3461,18 @@ class settingsDialog(QtWidgets.QDialog):
         self.ui.comboBoxProxyType.currentIndexChanged.connect(self.comboBoxProxyTypeChanged)
 
         self.ui.lineEditTotalDifficulty.setText(
-            str(
-                (
-                    float(shared.config.getint("bitmessagesettings", "defaultnoncetrialsperbyte"))
-                    / shared.networkDefaultProofOfWorkNonceTrialsPerByte
-                )
-            )
+            str((float(shared.config.getint("bitmessagesettings", "defaultnoncetrialsperbyte")) / shared.networkDefaultProofOfWorkNonceTrialsPerByte))
         )
         self.ui.lineEditSmallMessageDifficulty.setText(
-            str(
-                (
-                    float(shared.config.getint("bitmessagesettings", "defaultpayloadlengthextrabytes"))
-                    / shared.networkDefaultPayloadLengthExtraBytes
-                )
-            )
+            str((float(shared.config.getint("bitmessagesettings", "defaultpayloadlengthextrabytes")) / shared.networkDefaultPayloadLengthExtraBytes))
         )
 
         # Max acceptable difficulty tab
         self.ui.lineEditMaxAcceptableTotalDifficulty.setText(
-            str(
-                (
-                    float(shared.config.getint("bitmessagesettings", "maxacceptablenoncetrialsperbyte"))
-                    / shared.networkDefaultProofOfWorkNonceTrialsPerByte
-                )
-            )
+            str((float(shared.config.getint("bitmessagesettings", "maxacceptablenoncetrialsperbyte")) / shared.networkDefaultProofOfWorkNonceTrialsPerByte))
         )
         self.ui.lineEditMaxAcceptableSmallMessageDifficulty.setText(
-            str(
-                (
-                    float(shared.config.getint("bitmessagesettings", "maxacceptablepayloadlengthextrabytes"))
-                    / shared.networkDefaultPayloadLengthExtraBytes
-                )
-            )
+            str((float(shared.config.getint("bitmessagesettings", "maxacceptablepayloadlengthextrabytes")) / shared.networkDefaultPayloadLengthExtraBytes))
         )
 
         # Namecoin integration tab
@@ -3900,14 +3601,10 @@ class SpecialAddressBehaviorDialog(QtWidgets.QDialog):
                 mailingListName = shared.config.get(addressAtCurrentRow, "mailinglistname")
             except:
                 mailingListName = ""
-            self.ui.lineEditMailingListName.setText(
-                mailingListName.decode("utf-8", "ignore") if isinstance(mailingListName, bytes) else mailingListName
-            )
+            self.ui.lineEditMailingListName.setText(mailingListName.decode("utf-8", "ignore") if isinstance(mailingListName, bytes) else mailingListName)
         else:  # if addressAtCurrentRow is a chan address
             self.ui.radioButtonBehaviorMailingList.setDisabled(True)
-            self.ui.lineEditMailingListName.setText(
-                _translate("MainWindow", "This is a chan address. You cannot use it as a pseudo-mailing list.")
-            )
+            self.ui.lineEditMailingListName.setText(_translate("MainWindow", "This is a chan address. You cannot use it as a pseudo-mailing list."))
 
         QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
@@ -3926,9 +3623,7 @@ class AddAddressDialog(QtWidgets.QDialog):
         if status == "missingbm":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address should start with ''BM-''"))
         elif status == "checksumfailed":
-            self.ui.labelAddressCheck.setText(
-                _translate("MainWindow", "The address is not typed or copied correctly (the checksum failed).")
-            )
+            self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address is not typed or copied correctly (the checksum failed)."))
         elif status == "versiontoohigh":
             self.ui.labelAddressCheck.setText(
                 _translate(
@@ -3939,9 +3634,7 @@ class AddAddressDialog(QtWidgets.QDialog):
         elif status == "invalidcharacters":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address contains invalid characters."))
         elif status == "ripetooshort":
-            self.ui.labelAddressCheck.setText(
-                _translate("MainWindow", "Some data encoded in the address is too short.")
-            )
+            self.ui.labelAddressCheck.setText(_translate("MainWindow", "Some data encoded in the address is too short."))
         elif status == "ripetoolong":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "Some data encoded in the address is too long."))
         elif status == "success":
@@ -3965,9 +3658,7 @@ class NewSubscriptionDialog(QtWidgets.QDialog):
         if status == "missingbm":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address should start with ''BM-''"))
         elif status == "checksumfailed":
-            self.ui.labelAddressCheck.setText(
-                _translate("MainWindow", "The address is not typed or copied correctly (the checksum failed).")
-            )
+            self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address is not typed or copied correctly (the checksum failed)."))
         elif status == "versiontoohigh":
             self.ui.labelAddressCheck.setText(
                 _translate(
@@ -3978,40 +3669,28 @@ class NewSubscriptionDialog(QtWidgets.QDialog):
         elif status == "invalidcharacters":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "The address contains invalid characters."))
         elif status == "ripetooshort":
-            self.ui.labelAddressCheck.setText(
-                _translate("MainWindow", "Some data encoded in the address is too short.")
-            )
+            self.ui.labelAddressCheck.setText(_translate("MainWindow", "Some data encoded in the address is too short."))
         elif status == "ripetoolong":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "Some data encoded in the address is too long."))
         elif status == "success":
             self.ui.labelAddressCheck.setText(_translate("MainWindow", "Address is valid."))
             if addressVersion <= 3:
-                self.ui.checkBoxDisplayMessagesAlreadyInInventory.setText(
-                    _translate("MainWindow", "Address is an old type. We cannot display its past broadcasts.")
-                )
+                self.ui.checkBoxDisplayMessagesAlreadyInInventory.setText(_translate("MainWindow", "Address is an old type. We cannot display its past broadcasts."))
             else:
                 shared.flushInventory()
-                doubleHashOfAddressData = hashlib.sha512(
-                    hashlib.sha512(encodeVarint(addressVersion) + encodeVarint(streamNumber) + ripe).digest()
-                ).digest()
+                doubleHashOfAddressData = hashlib.sha512(hashlib.sha512(encodeVarint(addressVersion) + encodeVarint(streamNumber) + ripe).digest()).digest()
                 tag = doubleHashOfAddressData[32:]
                 queryreturn = sqlQuery("""select hash from inventory where objecttype='broadcast' and tag=?""", tag)
                 if len(queryreturn) == 0:
-                    self.ui.checkBoxDisplayMessagesAlreadyInInventory.setText(
-                        _translate("MainWindow", "There are no recent broadcasts from this address to display.")
-                    )
+                    self.ui.checkBoxDisplayMessagesAlreadyInInventory.setText(_translate("MainWindow", "There are no recent broadcasts from this address to display."))
                 elif len(queryreturn) == 1:
                     self.ui.checkBoxDisplayMessagesAlreadyInInventory.setEnabled(True)
                     self.ui.tableWidgetSubscriptions.item(currentRow, 1).setToolTip(
-                        _translate("MainWindow", "Display the %1 recent broadcast from this address.").replace(
-                            "%1", str(len(queryreturn))
-                        )
+                        _translate("MainWindow", "Display the %1 recent broadcast from this address.").replace("%1", str(len(queryreturn)))
                     )
                 else:
                     self.ui.tableWidgetSubscriptions.item(currentRow, 1).setToolTip(
-                        _translate("MainWindow", "Display the %1 recent broadcasts from this address.").replace(
-                            "%1", str(len(queryreturn))
-                        )
+                        _translate("MainWindow", "Display the %1 recent broadcasts from this address.").replace("%1", str(len(queryreturn)))
                     )
 
 
@@ -4054,9 +3733,7 @@ class iconGlossaryDialog(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.parent = parent
         self.ui.labelTCPPort.setText(
-            _translate("MainWindow", "You are using TCP port %1. (This can be changed in the settings).").replace(
-                "%1", str(shared.config.getint("bitmessagesettings", "port"))
-            )
+            _translate("MainWindow", "You are using TCP port %1. (This can be changed in the settings).").replace("%1", str(shared.config.getint("bitmessagesettings", "port")))
         )
         QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
@@ -4149,9 +3826,7 @@ def run():
     app = QtWidgets.QApplication(sys.argv)
     translator = QtCore.QTranslator()
 
-    translationpath = os.path.join(
-        getattr(sys, "_MEIPASS", ""), "translations", "bitmessage_" + l10n.getTranslationLanguage()
-    )
+    translationpath = os.path.join(getattr(sys, "_MEIPASS", ""), "translations", "bitmessage_" + l10n.getTranslationLanguage())
     translator.load(translationpath)
 
     QtWidgets.QApplication.installTranslator(translator)

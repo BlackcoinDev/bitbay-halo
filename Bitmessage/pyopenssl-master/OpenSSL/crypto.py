@@ -1212,9 +1212,7 @@ def dump_privatekey(type, pkey, cipher=None, passphrase=None):
 
     helper = _PassphraseHelper(type, passphrase)
     if type == FILETYPE_PEM:
-        result_code = _lib.PEM_write_bio_PrivateKey(
-            bio, pkey._pkey, cipher_obj, _ffi.NULL, 0, helper.callback, helper.callback_args
-        )
+        result_code = _lib.PEM_write_bio_PrivateKey(bio, pkey._pkey, cipher_obj, _ffi.NULL, 0, helper.callback, helper.callback_args)
         helper.raise_if_problem()
     elif type == FILETYPE_ASN1:
         result_code = _lib.i2d_PrivateKey_bio(bio, pkey._pkey)

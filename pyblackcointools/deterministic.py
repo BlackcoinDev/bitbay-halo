@@ -74,11 +74,7 @@ def raw_bip32_ckd(rawtuple, i):
     if i >= 2**31:
         if vbytes == PUBLIC:
             raise Exception("Can't do private derivation on public key!")
-        I = (
-            hmac.new(to_bytes(chaincode), to_bytes("\x00" + priv[:32] + encode(i, 256, 4)), hashlib.sha512)
-            .digest()
-            .decode("latin1")
-        )
+        I = hmac.new(to_bytes(chaincode), to_bytes("\x00" + priv[:32] + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
     else:
         I = hmac.new(to_bytes(chaincode), to_bytes(pub + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
 

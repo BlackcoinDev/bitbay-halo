@@ -147,10 +147,7 @@ def getAPI(workingdir=None, silent=False):
 
             if len(bitmessagemain.shared.connectedHostsList) == 0:
                 networkStatus = "notConnected"
-            elif (
-                len(bitmessagemain.shared.connectedHostsList) > 0
-                and not bitmessagemain.shared.clientHasReceivedIncomingConnections
-            ):
+            elif len(bitmessagemain.shared.connectedHostsList) > 0 and not bitmessagemain.shared.clientHasReceivedIncomingConnections:
                 networkStatus = "connectedButHaveNotReceivedIncomingConnections"
             else:
                 networkStatus = "connectedAndReceivingIncomingConnections"
@@ -207,12 +204,8 @@ def getAPI(workingdir=None, silent=False):
 
             if isinstance(label, bytes):
                 label = label.decode("utf-8")
-            nonceTrialsPerByte = int(
-                bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty
-            )
-            payloadLengthExtraBytes = int(
-                bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty
-            )
+            nonceTrialsPerByte = int(bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty)
+            payloadLengthExtraBytes = int(bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty)
             bitmessagemain.shared.apiAddressGeneratorReturnQueue.queue.clear()
             bitmessagemain.shared.addressGeneratorQueue.put(
                 (
@@ -249,12 +242,8 @@ def getAPI(workingdir=None, silent=False):
 
             if isinstance(label, bytes):
                 label = label.decode("utf-8")
-            nonceTrialsPerByte = int(
-                bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty
-            )
-            payloadLengthExtraBytes = int(
-                bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty
-            )
+            nonceTrialsPerByte = int(bitmessagemain.shared.networkDefaultProofOfWorkNonceTrialsPerByte * totalDifficulty)
+            payloadLengthExtraBytes = int(bitmessagemain.shared.networkDefaultPayloadLengthExtraBytes * smallMessageDifficulty)
             bitmessagemain.shared.apiAddressGeneratorReturnQueue.queue.clear()
             bitmessagemain.shared.addressGeneratorQueue.put(
                 (
@@ -323,9 +312,7 @@ def getAPI(workingdir=None, silent=False):
             """Get a List of IDs of all Inbox Messages
             Usage: api.getAllInboxMessageIDs()"""
 
-            queryreturn = bitmessagemain.shared.sqlQuery(
-                """SELECT msgid FROM inbox where folder='inbox' ORDER BY received"""
-            )
+            queryreturn = bitmessagemain.shared.sqlQuery("""SELECT msgid FROM inbox where folder='inbox' ORDER BY received""")
             data = []
             for msgid in queryreturn:
                 data.append(msgid[0].hex())
@@ -370,9 +357,7 @@ def getAPI(workingdir=None, silent=False):
             """Get a List of IDs of all Outbox Messages
             Usage: getAllSentMessageIDs()"""
 
-            queryreturn = bitmessagemain.shared.sqlQuery(
-                """SELECT msgid FROM sent where folder='sent' ORDER BY lastactiontime"""
-            )
+            queryreturn = bitmessagemain.shared.sqlQuery("""SELECT msgid FROM sent where folder='sent' ORDER BY lastactiontime""")
             data = []
             for row in queryreturn:
                 msgid = row[0]
@@ -650,9 +635,7 @@ def getAPI(workingdir=None, silent=False):
             str_chan = "[chan]"
 
             # Precheck Address Book
-            queryreturn = bitmessagemain.shared.sqlQuery(
-                """select * from addressbook where label=?""", str_chan + " " + label
-            )
+            queryreturn = bitmessagemain.shared.sqlQuery("""select * from addressbook where label=?""", str_chan + " " + label)
             if queryreturn != []:
                 raise APIError("Channel already in Addressbook: %s" % label)
 
@@ -902,9 +885,7 @@ def getAPI(workingdir=None, silent=False):
                     raise APIError("Address version number too high (or zero) in address: " + address)
                 raise APIError("Could not decode address: " + address + " : " + status)
             if addressVersionNumber < 2 or addressVersionNumber > 4:
-                raise APIError(
-                    "The address version number currently must be 2, 3 or 4. Others aren't supported. Check the address."
-                )
+                raise APIError("The address version number currently must be 2, 3 or 4. Others aren't supported. Check the address.")
             if streamNumber != 1:
                 raise APIError("The stream number must be 1. Others aren't supported. Check the address.")
 

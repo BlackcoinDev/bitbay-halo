@@ -139,9 +139,7 @@ def signature_form(tx, i, script, hashcode=SIGHASH_ALL):
     elif hashcode == SIGHASH_SINGLE:
         setsequence = True
         if i >= len(newtx["outs"]):
-            raise Exception(
-                "You are trying to use SIGHASH_SINGLE to sign an input that does not have a corresponding output."
-            )
+            raise Exception("You are trying to use SIGHASH_SINGLE to sign an input that does not have a corresponding output.")
         else:
             newtx["outs"] = newtx["outs"][: i + 1]
             for out in newtx["outs"][:i]:
@@ -404,9 +402,7 @@ def mktx(tm=time.time(), *args):  # [in0, in1.],[out0, out1.] or in0, in1 . out0
         else:
             if isinstance(i, dict) and "output" in i:
                 i = i["output"]
-            txobj["ins"].append(
-                {"outpoint": {"hash": i[:64], "index": int(i[65:])}, "script": "", "sequence": 4294967295}
-            )
+            txobj["ins"].append({"outpoint": {"hash": i[:64], "index": int(i[65:])}, "script": "", "sequence": 4294967295})
     for o in outs:
         if isinstance(o, str):
             o = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}

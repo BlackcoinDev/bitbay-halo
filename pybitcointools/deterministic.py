@@ -27,13 +27,7 @@ def electrum_privkey(seed, n, for_change=0):
     if len(seed) == 32:
         seed = electrum_stretch(seed)
     mpk = electrum_mpk(seed)
-    offset = dbl_sha256(
-        from_int_representation_to_bytes(n)
-        + b":"
-        + from_int_representation_to_bytes(for_change)
-        + b":"
-        + binascii.unhexlify(mpk)
-    )
+    offset = dbl_sha256(from_int_representation_to_bytes(n) + b":" + from_int_representation_to_bytes(for_change) + b":" + binascii.unhexlify(mpk))
     return add_privkeys(seed, offset)
 
 
@@ -49,9 +43,7 @@ def electrum_pubkey(masterkey, n, for_change=0):
     else:
         mpk = masterkey
     bin_mpk = encode_pubkey(mpk, "bin_electrum")
-    offset = bin_dbl_sha256(
-        from_int_representation_to_bytes(n) + b":" + from_int_representation_to_bytes(for_change) + b":" + bin_mpk
-    )
+    offset = bin_dbl_sha256(from_int_representation_to_bytes(n) + b":" + from_int_representation_to_bytes(for_change) + b":" + bin_mpk)
     return add_pubkeys("04" + mpk, privtopub(offset))
 
 

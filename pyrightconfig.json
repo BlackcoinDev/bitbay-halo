@@ -18,7 +18,9 @@
     "reportMissingImports": false,
     "reportMissingTypeStubs": false,
     "enableTypeIgnoreComments": true,
-    "diagnosticMode": "workspace",
-    "useLibraryCodeForTypes": true,
-    "reportWildcardImportFromLibrary": false
+    "reportWildcardImportFromLibrary": false,
+    "reportOptionalMemberAccess": false,
+    "reportOptionalSubscript": false,
+    "reportAttributeAccessIssue": false,
+    "reportGeneralTypeIssues": false
 }

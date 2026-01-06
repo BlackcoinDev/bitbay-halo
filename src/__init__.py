@@ -203,16 +203,12 @@ class BlackHaloApplication:
     # Contract Operations
     # =========================================================================
 
-    def create_contract(
-        self, order_id: str, terms: Dict[str, Any], parties: Dict[str, Dict[str, Any]]
-    ) -> str:
+    def create_contract(self, order_id: str, terms: Dict[str, Any], parties: Dict[str, Dict[str, Any]]) -> str:
         """Create a new contract"""
         from .types import Contract, ContractTerms, ContractParty, CryptoType
 
         # Generate contract ID
-        contract_id = safe_hexlify(
-            self.state.get("U", "") + str(len(self.state.contracts))
-        )
+        contract_id = safe_hexlify(self.state.get("U", "") + str(len(self.state.contracts)))
 
         contract = Contract(
             contract_id=contract_id,
@@ -247,9 +243,7 @@ class BlackHaloApplication:
     # Address Operations
     # =========================================================================
 
-    def generate_address(
-        self, label: str = "", is_multisig: bool = False
-    ) -> Dict[str, Any]:
+    def generate_address(self, label: str = "", is_multisig: bool = False) -> Dict[str, Any]:
         """Generate a new receiving address"""
         if self.rpc_client is None:
             return {}
@@ -267,9 +261,7 @@ class BlackHaloApplication:
             logger.error(f"Error generating address: {e}")
             return {}
 
-    def import_private_key(
-        self, private_key: str, label: str = "", rescan: bool = True
-    ) -> bool:
+    def import_private_key(self, private_key: str, label: str = "", rescan: bool = True) -> bool:
         """Import a private key"""
         if self.rpc_client is None:
             return False

@@ -252,9 +252,7 @@ if __name__ == "__main__":
             sys.stderr.write(str("Closing Bitmessage."))
             sys.exit()
         time.sleep(0.23456)
-        ticker += (
-            1  # We dont check email messages as compulsively not do we try resending outbox messages as compulsively
-        )
+        ticker += 1  # We dont check email messages as compulsively not do we try resending outbox messages as compulsively
         ticker2 += 1
         ticker3 += 1
         if ticker3 > 1000:
@@ -319,11 +317,7 @@ if __name__ == "__main__":
                     except:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
-                        if "You have received a payment of " not in str(
-                            content
-                        ) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(
-                            content
-                        ):
+                        if "You have received a payment of " not in str(content) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(content):
                             content = "****" + str(content) + "****"
                             attach = 0
                         else:
@@ -358,9 +352,7 @@ if __name__ == "__main__":
                             else:
                                 b64 = base64.b64decode(content["b64img"])
                                 text_content = str(content["Data"])
-                                html_content = (
-                                    "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
-                                )
+                                html_content = "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
                                 payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
                                     (str(fromAddress), fromAddress),
                                     [(str(toAddress), toAddress)],
@@ -473,11 +465,7 @@ if __name__ == "__main__":
                     except:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
-                        if "You have received a payment of " not in str(
-                            content
-                        ) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(
-                            content
-                        ):
+                        if "You have received a payment of " not in str(content) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(content):
                             attach = 0
                             content = "****" + str(content) + "****"
                         else:
@@ -512,9 +500,7 @@ if __name__ == "__main__":
                             else:
                                 b64 = base64.b64decode(content["b64img"])
                                 text_content = str(content["Data"])
-                                html_content = (
-                                    "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
-                                )
+                                html_content = "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
                                 payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
                                     (str(fromAddress), fromAddress),
                                     [(str(toAddress), toAddress)],
@@ -548,9 +534,7 @@ if __name__ == "__main__":
                         except Exception as e:
                             sys.stderr.write(str("SEND ERROR: ") + str(e))
                             ret = False
-                        if (
-                            ret == False
-                        ):  # It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
+                        if ret == False:  # It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
                             outbox = []
                             try:
                                 with open(outpath, "r") as f:
@@ -619,11 +603,7 @@ if __name__ == "__main__":
                                         break
                                 if verified == 1:
                                     try:
-                                        if (
-                                            dat["Email Address"] != prevaccount
-                                            or ch == "Remove Order"
-                                            or ch == "Clean Inbox"
-                                        ):
+                                        if dat["Email Address"] != prevaccount or ch == "Remove Order" or ch == "Clean Inbox":
                                             readmessages = []  # reset on new accounts or maintenance
                                             # For now we maintain the record of read messages on the client side
                                         prevaccount = dat["Email Address"]
@@ -697,18 +677,10 @@ if __name__ == "__main__":
                                                     mymessage = {}
                                                     if msg_id in mailbox[str(dat["Email Address"])]:
                                                         try:
-                                                            mymessage["toAddress"] = mailbox[str(dat["Email Address"])][
-                                                                msg_id
-                                                            ]["toAddress"]
-                                                            mymessage["fromAddress"] = mailbox[
-                                                                str(dat["Email Address"])
-                                                            ][msg_id]["fromAddress"]
-                                                            mymessage["body"] = mailbox[str(dat["Email Address"])][
-                                                                msg_id
-                                                            ]["body"]
-                                                            mymessage["uid"] = mailbox[str(dat["Email Address"])][
-                                                                msg_id
-                                                            ]["uid"]
+                                                            mymessage["toAddress"] = mailbox[str(dat["Email Address"])][msg_id]["toAddress"]
+                                                            mymessage["fromAddress"] = mailbox[str(dat["Email Address"])][msg_id]["fromAddress"]
+                                                            mymessage["body"] = mailbox[str(dat["Email Address"])][msg_id]["body"]
+                                                            mymessage["uid"] = mailbox[str(dat["Email Address"])][msg_id]["uid"]
                                                             body = mymessage["body"]
                                                         except:
                                                             body = ""
@@ -759,15 +731,11 @@ if __name__ == "__main__":
                                                                 if isinstance(part, tuple):
                                                                     msg = email.message_from_string(part[1])
                                                                     try:
-                                                                        src = (
-                                                                            msg["from"].split("<")[1].split(">")[0]
-                                                                        ).strip()
+                                                                        src = (msg["from"].split("<")[1].split(">")[0]).strip()
                                                                     except:
                                                                         src = msg["from"].strip()
                                                                     try:
-                                                                        src1 = (
-                                                                            msg["to"].split("<")[1].split(">")[0]
-                                                                        ).strip()
+                                                                        src1 = (msg["to"].split("<")[1].split(">")[0]).strip()
                                                                     except:
                                                                         src1 = msg["to"].strip()
                                                                     try:
@@ -776,16 +744,12 @@ if __name__ == "__main__":
                                                                             for msub in msg.get_payload():
                                                                                 if msub.get_content_charset() != None:
                                                                                     charset = msub.get_content_charset()
-                                                                                body = msub.get_payload(
-                                                                                    decode=True
-                                                                                ).decode(msub.get_content_charset())
+                                                                                body = msub.get_payload(decode=True).decode(msub.get_content_charset())
                                                                                 break
                                                                         else:
                                                                             if msg.get_content_charset() != None:
                                                                                 charset = msg.get_content_charset()
-                                                                            body = msg.get_payload(decode=True).decode(
-                                                                                charset
-                                                                            )
+                                                                            body = msg.get_payload(decode=True).decode(charset)
                                                                     except:
                                                                         try:
                                                                             body = str(msg.encode("utf8"))
@@ -809,9 +773,7 @@ if __name__ == "__main__":
                                                                     test = test.split("TheirBMAddress")[1].split("}")[0]
                                                                 except:
                                                                     try:
-                                                                        test = test.split("ENCRYPTED:")[1].split(
-                                                                            "\r\n"
-                                                                        )[0]
+                                                                        test = test.split("ENCRYPTED:")[1].split("\r\n")[0]
                                                                     except:
                                                                         float("a")
                                                         except:
@@ -821,9 +783,7 @@ if __name__ == "__main__":
                                                                 else:
                                                                     # I'm hoping email providers will not change this as identifying the full base64 string would be challenging.
                                                                     # Any added padding gets changed when uploading the base64 image with the pyzmail library, although the bitmap is lossless
-                                                                    body = body.split(
-                                                                        "<doge>\nContent-Disposition: inline\n\n"
-                                                                    )[1].split("\n--=========")[0]
+                                                                    body = body.split("<doge>\nContent-Disposition: inline\n\n")[1].split("\n--=========")[0]
                                                                     body = "PAY TO EMAIL BASE64 IMAGE:" + body
                                                             except:  # Okay they changed it we can try something else
                                                                 try:
@@ -843,19 +803,14 @@ if __name__ == "__main__":
                                                                     sys.stderr.write(str("PARSE ERROR"))
                                                                     body = ""
                                                         if "fromAddress" in mymessage and body != "":  # decode emails
-                                                            if (
-                                                                "@aol" in mymessage["fromAddress"].lower()
-                                                                or "@mail" in mymessage["fromAddress"].lower()
-                                                            ):
+                                                            if "@aol" in mymessage["fromAddress"].lower() or "@mail" in mymessage["fromAddress"].lower():
                                                                 body = body.encode("utf8").replace("\r\n ", "")
                                                                 if "ENCRYPTED:" in body:
                                                                     body = body.replace(" ", "")
                                                         mymessage["body"] = str(body)
                                                         mymessage["uid"] = msg_id
                                                         if "fromAddress" in mymessage and "toAddress" in mymessage:
-                                                            mailbox[str(dat["Email Address"])][msg_id] = (
-                                                                ast.literal_eval(str(mymessage))
-                                                            )
+                                                            mailbox[str(dat["Email Address"])][msg_id] = ast.literal_eval(str(mymessage))
                                                     if "ordernumber" in dat:
                                                         if "ENCRYPTED:" in str(body):
                                                             try:
@@ -907,9 +862,7 @@ if __name__ == "__main__":
                                                                     try:
                                                                         mailbox[str(dat["Email Address"])].pop(msg_id)
                                                                     except:
-                                                                        sys.stderr.write(
-                                                                            str("\n\nNOT REMOVED FROM CACHE\n\n")
-                                                                        )
+                                                                        sys.stderr.write(str("\n\nNOT REMOVED FROM CACHE\n\n"))
                                                             except:
                                                                 sys.stderr.write(str("\n\nNOT REMOVED\n\n"))
                                                         else:
@@ -963,10 +916,7 @@ if __name__ == "__main__":
                                     for msg in Smsgids:
                                         message = api.getSentMessageByID(msg)
                                         if message[0]["fromAddress"] == dat["Bitmessage Address"]:
-                                            if (
-                                                "msgsent" in message[0]["status"]
-                                                or "ackreceived" in message[0]["status"]
-                                            ):
+                                            if "msgsent" in message[0]["status"] or "ackreceived" in message[0]["status"]:
                                                 api.trashSentMessage(msg)
                                 for msg in msgids:
                                     message = api.getInboxMessageByID(msg)

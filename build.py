@@ -36,9 +36,7 @@ def setup_uv_project():
 
     # Initialize UV project if not exists
     if not Path("pyproject.toml").exists():
-        subprocess.run(
-            ["uv", "init", "--python", "3.14", "--name", "blackhalo"], check=True
-        )
+        subprocess.run(["uv", "init", "--python", "3.14", "--name", "blackhalo"], check=True)
 
     # Install core dependencies
     deps = [
@@ -176,9 +174,7 @@ def main():
 
     # Check dependencies
     if not check_uv_available():
-        print(
-            "ERROR: UV is required. Install it with: curl -LsSf https://astral.sh/uv/install.sh | sh"
-        )
+        print("ERROR: UV is required. Install it with: curl -LsSf https://astral.sh/uv/install.sh | sh")
         sys.exit(1)
 
     if not check_python_version():

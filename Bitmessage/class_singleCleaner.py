@@ -36,9 +36,7 @@ class singleCleaner(threading.Thread):
     def run(self):
         timeWeLastClearedInventoryAndPubkeysTables = 0
         try:
-            shared.maximumLengthOfTimeToBotherResendingMessages = (
-                float(shared.config.get("bitmessagesettings", "stopresendingafterxdays")) * 24 * 60 * 60
-            ) + (
+            shared.maximumLengthOfTimeToBotherResendingMessages = (float(shared.config.get("bitmessagesettings", "stopresendingafterxdays")) * 24 * 60 * 60) + (
                 float(shared.config.get("bitmessagesettings", "stopresendingafterxmonths")) * (60 * 60 * 24 * 365) / 12
             )
         except:
@@ -47,9 +45,7 @@ class singleCleaner(threading.Thread):
 
         while True:
             shared.UISignalQueue.put(("updateStatusBar", "Doing housekeeping (Flushing inventory in memory to disk.)"))
-            with (
-                shared.inventoryLock
-            ):  # If you use both the inventoryLock and the sqlLock, always use the inventoryLock OUTSIDE of the sqlLock.
+            with shared.inventoryLock:  # If you use both the inventoryLock and the sqlLock, always use the inventoryLock OUTSIDE of the sqlLock.
                 with SqlBulkExecute() as sql:
                     for hash, storedValue in list(shared.inventory.items()):
                         objectType, streamNumber, payload, expiresTime, tag = storedValue
@@ -89,10 +85,7 @@ class singleCleaner(threading.Thread):
                 for row in queryreturn:
                     if len(row) < 5:
                         with shared.printLock:
-                            sys.stderr.write(
-                                "Something went wrong in the singleCleaner thread: a query did not return the requested fields. "
-                                + repr(row)
-                            )
+                            sys.stderr.write("Something went wrong in the singleCleaner thread: a query did not return the requested fields. " + repr(row))
                         time.sleep(3)
                         break
                     (
@@ -111,9 +104,7 @@ class singleCleaner(threading.Thread):
                         if (int(time.time()) - lastactiontime) > (
                             shared.maximumAgeOfAnObjectThatIAmWillingToAccept + 10800
                         ):  # * (2 ** (pubkeyretrynumber))#Instead of risking message loss, we wait 3 hours after expiry and send again
-                            if (
-                                pubkeyretrynumber < 60
-                            ):  # We will resubmit for up to 150 days in this customized Halo client
+                            if pubkeyretrynumber < 60:  # We will resubmit for up to 150 days in this customized Halo client
                                 resendPubkey(pubkeyretrynumber, toripe)
                     else:  # status == msgsent
                         if (int(time.time()) - lastactiontime) > (
@@ -145,9 +136,7 @@ class singleCleaner(threading.Thread):
                     output.close()
                 except Exception as err:
                     if "Errno 28" in str(err):
-                        logger.fatal(
-                            "(while receiveDataThread shared.needToWriteKnownNodesToDisk) Alert: Your disk or data storage volume is full. "
-                        )
+                        logger.fatal("(while receiveDataThread shared.needToWriteKnownNodesToDisk) Alert: Your disk or data storage volume is full. ")
                         shared.UISignalQueue.put(
                             (
                                 "alert",

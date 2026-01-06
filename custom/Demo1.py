@@ -8,9 +8,7 @@ except:
     pass
 try:
     x = showform + 1
-    QuestionBox(
-        "Here is where the coder can customize all of his forms for interacting with offers and contracts.", " OK "
-    )
+    QuestionBox("Here is where the coder can customize all of his forms for interacting with offers and contracts.", " OK ")
 except:
     pass
 try:

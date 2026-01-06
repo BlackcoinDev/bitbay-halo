@@ -199,11 +199,7 @@ bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pub
             other_group = OpenSSL.EC_KEY_get0_group(other_key)
             other_pub_key = OpenSSL.EC_POINT_new(other_group)
 
-            if (
-                OpenSSL.EC_POINT_set_affine_coordinates_GFp(
-                    other_group, other_pub_key, other_pub_key_x, other_pub_key_y, 0
-                )
-            ) == 0:
+            if (OpenSSL.EC_POINT_set_affine_coordinates_GFp(other_group, other_pub_key, other_pub_key_x, other_pub_key_y, 0)) == 0:
                 raise Exception("[OpenSSL] EC_POINT_set_affine_coordinates_GFp FAIL .")
             if (OpenSSL.EC_KEY_set_public_key(other_key, other_pub_key)) == 0:
                 raise Exception("[OpenSSL] EC_KEY_set_public_key FAIL .")

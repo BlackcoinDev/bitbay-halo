@@ -114,13 +114,7 @@ class bitcoinapi:
         currentdiff = self.get_difficulty()
         currentint = self.get_interval()
 
-        if (
-            nextretarget is None
-            or currentblock is None
-            or nextdiff is None
-            or currentdiff is None
-            or currentint is None
-        ):
+        if nextretarget is None or currentblock is None or nextdiff is None or currentdiff is None or currentint is None:
             return "There was an error, please try again later"
 
         nextin = nextretarget - currentblock

@@ -55,9 +55,7 @@ class Ui_AddAddressDialog(object):
         self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.labelAddressCheck)
         self.buttonBox = QtWidgets.QDialogButtonBox(AddAddressDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 

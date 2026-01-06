@@ -205,13 +205,7 @@ class socksocket(socket.socket):
         elif chosenauth[1:2] == chr(0x02).encode():
             # Okay, we need to perform a basic username/password
             # authentication.
-            self.sendall(
-                chr(0x01).encode()
-                + chr(len(self.__proxy[4]))
-                + self.__proxy[4]
-                + chr(len(self.__proxy[5]))
-                + self.__proxy[5]
-            )
+            self.sendall(chr(0x01).encode() + chr(len(self.__proxy[4])) + self.__proxy[4] + chr(len(self.__proxy[5])) + self.__proxy[5])
             authstat = self.__recvall(2)
             if authstat[0:1] != chr(0x01).encode():
                 # Bad response
@@ -352,9 +346,7 @@ class socksocket(socket.socket):
             addr = socket.gethostbyname(destaddr)
         else:
             addr = destaddr
-        self.sendall(
-            ("CONNECT " + addr + ":" + str(destport) + " HTTP/1.1\r\n" + "Host: " + destaddr + "\r\n\r\n").encode()
-        )
+        self.sendall(("CONNECT " + addr + ":" + str(destport) + " HTTP/1.1\r\n" + "Host: " + destaddr + "\r\n\r\n").encode())
         # We read the response until we get the string "\r\n\r\n"
         resp = self.recv(1)
         while resp.find("\r\n\r\n".encode()) == -1:
@@ -384,12 +376,7 @@ class socksocket(socket.socket):
         To select the proxy server use setproxy().
         """
         # Do a minimal input check first
-        if (
-            (not type(destpair) in (list, tuple))
-            or (len(destpair) < 2)
-            or (type(destpair[0]) != type(""))
-            or (type(destpair[1]) != int)
-        ):
+        if (not type(destpair) in (list, tuple)) or (len(destpair) < 2) or (type(destpair[0]) != type("")) or (type(destpair[1]) != int):
             raise GeneralProxyError((5, _generalerrors[5]))
         if self.__proxy[0] == PROXY_TYPE_SOCKS5:
             if self.__proxy[2] != None:

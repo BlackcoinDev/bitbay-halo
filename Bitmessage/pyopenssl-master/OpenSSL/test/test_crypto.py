@@ -447,9 +447,7 @@ class X509ExtTests(TestCase):
         # exercises the codepath that requires a non-NULL ctx to be passed to
         # X509V3_EXT_nconf.  It can't work now because we provide no
         # configuration database.  It might be made to work in the future.
-        self.assertRaises(
-            Error, X509Extension, b("proxyCertInfo"), True, b("language:id-ppl-anyLanguage,pathlen:1,policy:text:AB")
-        )
+        self.assertRaises(Error, X509Extension, b("proxyCertInfo"), True, b("language:id-ppl-anyLanguage,pathlen:1,policy:text:AB"))
 
     def test_get_critical(self):
         """
@@ -565,9 +563,7 @@ class X509ExtTests(TestCase):
         :py:class:`X509` instance, :py:exc:`TypeError` is raised.
         """
         for badObj in [True, object(), "hello", [], self]:
-            self.assertRaises(
-                TypeError, X509Extension, "authorityKeyIdentifier", False, "keyid:always,issuer:always", issuer=badObj
-            )
+            self.assertRaises(TypeError, X509Extension, "authorityKeyIdentifier", False, "keyid:always,issuer:always", issuer=badObj)
 
 
 class PKeyTests(TestCase):
@@ -731,9 +727,7 @@ class X509NameTests(TestCase):
         self.assertTrue(isinstance(X509NameType, type))
 
         name = self._x509name()
-        self.assertTrue(
-            isinstance(name, X509NameType), "%r is of type %r, should be %r" % (name, type(name), X509NameType)
-        )
+        self.assertTrue(isinstance(name, X509NameType), "%r is of type %r, should be %r" % (name, type(name), X509NameType))
 
     def test_onlyStringAttributes(self):
         """
@@ -1017,9 +1011,7 @@ class X509ReqTests(TestCase, _PKeyInteractionTestsMixin):
         :py:obj:`X509Req` takes no arguments and returns an :py:obj:`X509ReqType` instance.
         """
         request = X509Req()
-        self.assertTrue(
-            isinstance(request, X509ReqType), "%r is of type %r, should be %r" % (request, type(request), X509ReqType)
-        )
+        self.assertTrue(isinstance(request, X509ReqType), "%r is of type %r, should be %r" % (request, type(request), X509ReqType))
 
     def test_version(self):
         """
@@ -1055,9 +1047,7 @@ class X509ReqTests(TestCase, _PKeyInteractionTestsMixin):
         """
         request = X509Req()
         subject = request.get_subject()
-        self.assertTrue(
-            isinstance(subject, X509NameType), "%r is of type %r, should be %r" % (subject, type(subject), X509NameType)
-        )
+        self.assertTrue(isinstance(subject, X509NameType), "%r is of type %r, should be %r" % (subject, type(subject), X509NameType))
         subject.commonName = "foo"
         self.assertEqual(request.get_subject().commonName, "foo")
         del request
@@ -1854,19 +1844,13 @@ class PKCS12Tests(TestCase):
         PKCS12 string.
         """
         if key:
-            recovered_key = _runopenssl(
-                p12_str, b"pkcs12", b"-nocerts", b"-nodes", b"-passin", b"pass:" + passwd, *extra
-            )
+            recovered_key = _runopenssl(p12_str, b"pkcs12", b"-nocerts", b"-nodes", b"-passin", b"pass:" + passwd, *extra)
             self.assertEqual(recovered_key[-len(key) :], key)
         if cert:
-            recovered_cert = _runopenssl(
-                p12_str, b"pkcs12", b"-clcerts", b"-nodes", b"-passin", b"pass:" + passwd, b"-nokeys", *extra
-            )
+            recovered_cert = _runopenssl(p12_str, b"pkcs12", b"-clcerts", b"-nodes", b"-passin", b"pass:" + passwd, b"-nokeys", *extra)
             self.assertEqual(recovered_cert[-len(cert) :], cert)
         if ca:
-            recovered_cert = _runopenssl(
-                p12_str, b"pkcs12", b"-cacerts", b"-nodes", b"-passin", b"pass:" + passwd, b"-nokeys", *extra
-            )
+            recovered_cert = _runopenssl(p12_str, b"pkcs12", b"-cacerts", b"-nodes", b"-passin", b"pass:" + passwd, b"-nokeys", *extra)
             self.assertEqual(recovered_cert[-len(ca) :], ca)
 
     def test_load_pkcs12(self):

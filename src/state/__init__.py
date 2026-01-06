@@ -226,11 +226,7 @@ class StateManager:
     def get_active_contracts(self) -> List[Contract]:
         """Get all active contracts"""
         with self._lock:
-            return [
-                c
-                for c in self._contracts
-                if c.status in (ContractStatus.PENDING, ContractStatus.ACTIVE)
-            ]
+            return [c for c in self._contracts if c.status in (ContractStatus.PENDING, ContractStatus.ACTIVE)]
 
     # =========================================================================
     # Messages (BitMessage)
@@ -340,9 +336,7 @@ class StateManager:
     def get_total_spendable(self) -> Decimal:
         """Get total spendable amount"""
         with self._lock:
-            total = sum(
-                (u.amount for u in self._spendable if u.spendable), Decimal("0")
-            )
+            total = sum((u.amount for u in self._spendable if u.spendable), Decimal("0"))
             return Decimal(str(total))
 
     # =========================================================================
@@ -405,9 +399,7 @@ class StateManager:
                 "contracts": [c.__dict__ for c in self._contracts],
                 "messages": [m.__dict__ for m in self._messages],
                 "spendable": [u.__dict__ for u in self._spendable],
-                "bitmessage_addresses": [
-                    a.__dict__ for a in self._bitmessage_addresses
-                ],
+                "bitmessage_addresses": [a.__dict__ for a in self._bitmessage_addresses],
                 "outbox": self._outbox,
                 "markets": self._markets,
                 "saved_at": datetime.utcnow().isoformat(),
@@ -428,9 +420,7 @@ class StateManager:
                 self._contracts = [Contract(**c) for c in state.get("contracts", [])]
                 self._messages = [BMMessage(**m) for m in state.get("messages", [])]
                 self._spendable = [UTXO(**u) for u in state.get("spendable", [])]
-                self._bitmessage_addresses = [
-                    BMAddress(**a) for a in state.get("bitmessage_addresses", [])
-                ]
+                self._bitmessage_addresses = [BMAddress(**a) for a in state.get("bitmessage_addresses", [])]
                 self._outbox = state.get("outbox", [])
                 self._markets = state.get("markets", {})
 
@@ -443,9 +433,7 @@ class StateManager:
     # Logging
     # =========================================================================
 
-    def log(
-        self, level: LogLevel, message: str, module: str = "", **extra: Any
-    ) -> None:
+    def log(self, level: LogLevel, message: str, module: str = "", **extra: Any) -> None:
         """Log an entry"""
         entry = LogEntry(
             level=level,
@@ -461,9 +449,7 @@ class StateManager:
             if len(self._advance_array["logs"]) > 1000:
                 self._advance_array["logs"] = self._advance_array["logs"][-1000:]
 
-    def get_logs(
-        self, level: LogLevel | None = None, limit: int = 100
-    ) -> List[LogEntry]:
+    def get_logs(self, level: LogLevel | None = None, limit: int = 100) -> List[LogEntry]:
         """Get log entries"""
         with self._lock:
             logs = self._advance_array.get("logs", [])

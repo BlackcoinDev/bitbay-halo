@@ -19,11 +19,7 @@ class singleinstance:
         import sys
 
         self.initialized = False
-        basename = (
-            os.path.splitext(os.path.abspath(sys.argv[0]))[0].replace("/", "-").replace(":", "").replace("\\", "-")
-            + "-%s" % flavor_id
-            + ".lock"
-        )
+        basename = os.path.splitext(os.path.abspath(sys.argv[0]))[0].replace("/", "-").replace(":", "").replace("\\", "-") + "-%s" % flavor_id + ".lock"
         self.lockfile = os.path.normpath(tempfile.gettempdir() + "/" + basename)
 
         if sys.platform == "win32":

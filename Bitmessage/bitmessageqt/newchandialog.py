@@ -79,15 +79,11 @@ class Ui_newChanDialog(object):
         self.lineEditChanBitmessageAddress.setObjectName("lineEditChanBitmessageAddress")
         self.gridLayout_2.addWidget(self.lineEditChanBitmessageAddress, 4, 0, 1, 1)
         self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.groupBoxJoinChan)
-        spacerItem = QtWidgets.QSpacerItem(
-            389, 2, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(389, 2, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.formLayout.setItem(4, QtWidgets.QFormLayout.ItemRole.FieldRole, spacerItem)
         self.buttonBox = QtWidgets.QDialogButtonBox(newChanDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel | QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.FieldRole, self.buttonBox)
 

@@ -29,9 +29,7 @@ class Ui_helpDialog(object):
         self.label.setWordWrap(True)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.label)
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.formLayout.setItem(2, QtWidgets.QFormLayout.ItemRole.LabelRole, spacerItem)
         self.buttonBox = QtWidgets.QDialogButtonBox(helpDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
@@ -45,9 +43,7 @@ class Ui_helpDialog(object):
         QtCore.QMetaObject.connectSlotsByName(helpDialog)
 
     def retranslateUi(self, helpDialog):
-        helpDialog.setWindowTitle(
-            QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8)
-        )
+        helpDialog.setWindowTitle(QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8))
         self.labelHelpURI.setText(
             QtWidgets.QApplication.translate(
                 "helpDialog",

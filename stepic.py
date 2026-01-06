@@ -125,9 +125,7 @@ class Steganographer:
 
     def __init__(self, image):
         self.image = image
-        warnings.warn(
-            "Steganographer class is deprecated, and will be removed before 1.0", DeprecationWarning, stacklevel=2
-        )
+        warnings.warn("Steganographer class is deprecated, and will be removed before 1.0", DeprecationWarning, stacklevel=2)
 
     def encode(self, data):
         return encode(self.image, data)
