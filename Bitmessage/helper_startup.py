@@ -8,11 +8,6 @@ import sys
 
 from . import shared
 
-try:
-    from distutils.version import StrictVersion
-except ImportError:
-    StrictVersion = None
-
 from .namecoin import ensureNamecoinOptions
 
 storeConfigFilesInSameDirectoryAsProgramByDefault = (
@@ -142,6 +137,10 @@ def isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections():
     if sys.platform[0:3] != "win":
         return False
     try:
+        import importlib
+        distutils_version = importlib.import_module("distutils.version")
+        StrictVersion = distutils_version.StrictVersion
+
         VER_THIS = StrictVersion(platform.version())
         return StrictVersion("5.1.2600") <= VER_THIS and StrictVersion("6.0.6000") >= VER_THIS
     except Exception as err:

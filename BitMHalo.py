@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import time
+import importlib
 
 import Bitmessage.class_api as class_api
 import Bitmessage.parallelTestModule as parallelTestModule
@@ -29,16 +30,13 @@ import smtplib
 import traceback
 
 # Python 3 compatibility for xmlrpc
-try:
-    import xmlrpc.client as xmlrpc_client
-except ImportError:
-    import xmlrpclib as xmlrpc_client
+import xmlrpc.client
 
 from email.parser import HeaderParser
 from xmlrpc.server import SimpleXMLRPCRequestHandler, SimpleXMLRPCServer
 
-import pyzmail
-import stopit
+pyzmail = importlib.import_module("pyzmail")
+stopit = importlib.import_module("stopit")
 
 import password
 from highlevelcrypto import *
@@ -374,13 +372,15 @@ if __name__ == "__main__":
                                     smtp_login=fromAddress,
                                     smtp_password=EmailPassword,
                                 )
-                                if isinstance(ret, dict):
-                                    if ret:
-                                        float("A")
-                                    else:
-                                        pass
+                            if isinstance(ret, dict):
+                                if ret:
+                                    sys.stderr.write("Email delivery failed for some recipients: " + str(ret) + "\n")
+                                    ret = False
                                 else:
-                                    float("A")
+                                    pass
+                            else:
+                                sys.stderr.write("Email delivery returned unexpected value: " + str(ret) + "\n")
+                                ret = False
                         except Exception as e:
                             sys.stderr.write(str("OUTBOX SENDING ERROR: ") + str(e))
                             ret = False
@@ -525,11 +525,13 @@ if __name__ == "__main__":
                                 # For sending attachment: attachments=[(b64, 'image', 'bmp', 'image.bmp', None)
                                 if isinstance(ret, dict):
                                     if ret:
-                                        float("A")
+                                        sys.stderr.write("Email delivery failed for some recipients: " + str(ret) + "\n")
+                                        ret = False
                                     else:
                                         pass
                                 else:
-                                    float("A")
+                                    sys.stderr.write("Email delivery returned unexpected value: " + str(ret) + "\n")
+                                    ret = False
                                 ret = True
                         except Exception as e:
                             sys.stderr.write(str("SEND ERROR: ") + str(e))
@@ -617,7 +619,7 @@ if __name__ == "__main__":
                                                 f.close()
                                             mailbox = ast.literal_eval(mailbox)
                                             if mailbox == "":
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             if dat["Email Address"] not in mailbox:
                                                 mailbox[dat["Email Address"]] = {}
                                         except:
@@ -712,7 +714,7 @@ if __name__ == "__main__":
 
                                                             timethis(my_timeout=600)  # 10 minutes is very generous
                                                             if timeresult == False:
-                                                                float("A")
+                                                                raise Exception("Flow Control Jump")
                                                             try:  # Let Halo know through RPC we finished
                                                                 myrpc.MessageStatus("0", "password")
                                                             except Exception as e:
@@ -775,7 +777,7 @@ if __name__ == "__main__":
                                                                     try:
                                                                         test = test.split("ENCRYPTED:")[1].split("\r\n")[0]
                                                                     except:
-                                                                        float("a")
+                                                                        raise Exception("Flow Control Jump")
                                                         except:
                                                             try:
                                                                 if "You have received a payment of " not in str(body):
@@ -855,10 +857,10 @@ if __name__ == "__main__":
                                                                         "STORE",
                                                                         msg_id,
                                                                         "+FLAGS",
-                                                                        "(\Deleted)",
+                                                                        "(\\Deleted)",
                                                                     )  # The flags should always be in parenthesis
                                                                     connection.expunge()
-                                                                    sys.stderr.write(str("\n\n\REMOVED!!\n\n"))
+                                                                    sys.stderr.write(str("\\n\\n\\REMOVED!!\\n\\n"))
                                                                     try:
                                                                         mailbox[str(dat["Email Address"])].pop(msg_id)
                                                                     except:
@@ -892,7 +894,7 @@ if __name__ == "__main__":
                                             lockTHIS = 0
                                         except:
                                             lockTHIS = 0
-                                            sys.stderr.write(str("\n\Cache write error!\n\n"))
+                                            sys.stderr.write(str("\\n\\Cache write error!\\n\\n"))
                                     except Exception as e:
                                         if systemexit == 2:
                                             sys.exit()

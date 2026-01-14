@@ -70,7 +70,10 @@ if __name__ == "__main__":
     from os import environ, path
 
     if sys.platform == "darwin":
-        from AppKit import NSSearchPathForDirectoriesInDomains  # @UnresolvedImport
+        import importlib
+
+        AppKit = importlib.import_module("AppKit")
+        NSSearchPathForDirectoriesInDomains = AppKit.NSSearchPathForDirectoriesInDomains
 
         # http://developer.apple.com/DOCUMENTATION/Cocoa/Reference/Foundation/Miscellaneous/Foundation_Functions/Reference/reference.html#//apple_ref/c/func/NSSearchPathForDirectoriesInDomains
         # NSApplicationSupportDirectory = 14

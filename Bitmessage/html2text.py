@@ -32,9 +32,10 @@ except ImportError:  # Python3
     import html.parser as HTMLParser
     import urllib.parse as urlparse
 try:  # Python3
-    import urllib.request as urllib
-except:
-    import urllib.request, urllib.parse, urllib.error
+    import urllib.request
+    urllib_request = urllib.request
+except ImportError:
+    pass
 
 import codecs
 import optparse
@@ -192,7 +193,8 @@ def optwrap(text):
     if not BODY_WIDTH:
         return text
 
-    assert wrap, "Requires Python 2.3."
+    if not callable(wrap):
+        raise ImportError("Requires Python 2.3 for textwrap.wrap")
     result = ""
     newlines = 0
     for para in text.split("\n"):
@@ -810,12 +812,16 @@ def html2text(html, baseurl=""):
 
 
 class Storage:
-    pass
+    """Simple namespace for options."""
+    google_doc: bool = False
+    ul_item_mark: str = "*"
+    ul_style_dash: bool = False
+    body_width: int = 78
+    list_indent: int = 36
+    hide_strikethrough: bool = False
 
 
 options = Storage()
-options.google_doc = False
-options.ul_item_mark = "*"
 
 if __name__ == "__main__":
     baseurl = ""
@@ -863,10 +869,16 @@ if __name__ == "__main__":
         default=False,
         help="hide strike-through text. only relevent when -g is specified as well",
     )
-    (options, args) = p.parse_args()
+    (parsed_options, args) = p.parse_args()
+
+    # Copy parsed options to global options object
+    options.google_doc = parsed_options.google_doc
+    options.hide_strikethrough = parsed_options.hide_strikethrough
+    options.body_width = parsed_options.body_width
+    options.list_indent = parsed_options.list_indent
 
     # handle options
-    if options.ul_style_dash:
+    if parsed_options.ul_style_dash:
         options.ul_item_mark = "-"
     else:
         options.ul_item_mark = "*"
@@ -885,14 +897,18 @@ if __name__ == "__main__":
 
         if file_.startswith("http://") or file_.startswith("https://"):
             baseurl = file_
-            j = urllib.request.urlopen(baseurl)
+            j = urllib_request.urlopen(baseurl)
             text = j.read()
             if encoding is None:
+                def _get_encoding(headers, text):
+                    return ("utf-8", 1)
                 try:
-                    from feedparser import _getCharacterEncoding as enc
-                except ImportError:
-                    enc = lambda x, y: ("utf-8", 1)
-                encoding = enc(j.headers, text)[0]
+                    import importlib
+                    feedparser = importlib.import_module("feedparser")
+                    _get_encoding = feedparser._getCharacterEncoding
+                except (ImportError, AttributeError):
+                    pass
+                encoding = _get_encoding(j.headers, text)[0]
                 if encoding == "us-ascii":
                     encoding = "utf-8"
             data = text.decode(encoding)
@@ -900,11 +916,15 @@ if __name__ == "__main__":
         else:
             data = open(file_, "rb").read()
             if encoding is None:
+                def _detect_encoding(data):
+                    return {"encoding": "utf-8"}
                 try:
-                    from chardet import detect
-                except ImportError:
-                    detect = lambda x: {"encoding": "utf-8"}
-                encoding = detect(data)["encoding"]
+                    import importlib
+                    chardet = importlib.import_module("chardet")
+                    _detect_encoding = chardet.detect
+                except (ImportError, AttributeError):
+                    pass
+                encoding = _detect_encoding(data)["encoding"]
             data = data.decode(encoding)
     else:
         data = sys.stdin.read()

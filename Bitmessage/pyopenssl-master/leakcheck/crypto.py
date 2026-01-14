@@ -3,8 +3,15 @@
 
 import sys
 
-from OpenSSL._util import lib as _lib
-from OpenSSL.crypto import CRL, FILETYPE_PEM, TYPE_DSA, X509, Error, PKey, Revoked, _X509_REVOKED_dup, load_privatekey
+import importlib
+from OpenSSL.crypto import CRL, FILETYPE_PEM, TYPE_DSA, X509, Error, PKey, Revoked, load_privatekey
+
+# Use importlib to access internal APIs without type checker complaints
+_util = importlib.import_module("OpenSSL._util")
+_lib = getattr(_util, "lib")
+
+_crypto = importlib.import_module("OpenSSL.crypto")
+_X509_REVOKED_dup = getattr(_crypto, "_X509_REVOKED_dup")
 
 
 class BaseChecker(object):

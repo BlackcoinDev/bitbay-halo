@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 try:
     import urllib.request as urllib2
@@ -7,6 +7,7 @@ except ImportError:
 
 import re
 import sys
+from typing import Any
 
 debug = False
 
@@ -172,6 +173,7 @@ if __name__ == "__main__":
     ch = ""
     t = 0
     r = 0
+    m: Any
     try:
         import msvcrt as m
     except ImportError:
@@ -184,16 +186,19 @@ if __name__ == "__main__":
     try:
         timex = urllib.request.urlopen("http://just-the-time.appspot.com/").read().decode("utf-8")
         matchObj = re.match(r"(.*)-(.*?)-(.*?) (.*?):(.*?):(.*?) UTC", timex, re.M | re.I)
-        HaloTimeHour = datetime.datetime(
-            int(matchObj.group(1)),
-            int(matchObj.group(2)),
-            int(matchObj.group(3)),
-            int(matchObj.group(4)),
-            int(matchObj.group(5)),
-            int(matchObj.group(6)),
-        )
-        print(HaloTimeHour)
-        print(timex)
+        if matchObj:
+            HaloTimeHour = datetime.datetime(
+                int(matchObj.group(1)),
+                int(matchObj.group(2)),
+                int(matchObj.group(3)),
+                int(matchObj.group(4)),
+                int(matchObj.group(5)),
+                int(matchObj.group(6)),
+            )
+            print(HaloTimeHour)
+            print(timex)
+        else:
+            print("Time format not matched: " + timex)
     except Exception as e:
         print(("Time fetch failed:", e))
 

@@ -50,15 +50,17 @@ Return a PIL Image class instance which have generated identicon image.
 """
 
 # we probably don't need all of them, but i don't want to check now
+from typing import Any, List
+
 from PyQt6 import QtCore, QtGui
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
+from PyQt6.QtCore import QPointF, QSize
+from PyQt6.QtGui import QPainter, QPixmap, QPolygonF
 
 __all__ = ["render_identicon", "IdenticonRendererBase"]
 
 
 class IdenticonRendererBase(object):
-    PATH_SET = []
+    PATH_SET: List[Any] = []
 
     def __init__(self, code):
         """

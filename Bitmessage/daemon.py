@@ -11,6 +11,7 @@ import datetime
 import getopt
 import hashlib
 import xmlrpc.client as xmlrpclib
+from typing import Dict
 
 
 def imghdr_what(filename):
@@ -40,7 +41,7 @@ api = ""
 keysName = "keys.dat"
 keysPath = "keys.dat"
 usrPrompt = 0  # 0 = First Start, 1 = prompt, 2 = no prompt if the program is starting up
-knownAddresses = dict()
+knownAddresses: Dict[str, str] = dict()
 
 
 def userInput(message):  # Checks input for exit or quit. Also formats for input, etc

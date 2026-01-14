@@ -15,15 +15,15 @@ from OpenSSL.SSL import Context, TLSv1_METHOD
 
 k = PKey()
 k.generate_key(TYPE_RSA, 128)
-file("pkey.pem", "w").write(dump_privatekey(FILETYPE_PEM, k, "blowfish", "foobar"))
+open("pkey.pem", "wb").write(dump_privatekey(FILETYPE_PEM, k, "blowfish", b"foobar"))
 
-count = count()
+counter = count()
 
 
 def go():
     def cb(a, b, c):
-        print(next(count))
-        return "foobar"
+        print(next(counter))
+        return b"foobar"
 
     c = Context(TLSv1_METHOD)
     c.set_passwd_cb(cb)

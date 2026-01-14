@@ -461,7 +461,7 @@ except:
                 try:
                     from os import path
 
-                    lib_path = path.join(sys._MEIPASS, "libeay32.dll")
+                    lib_path = path.join(getattr(sys, '_MEIPASS', ''), "libeay32.dll")
                     OpenSSL = _OpenSSL(lib_path)
                 except:
                     if "linux" in sys.platform or "darwin" in sys.platform:

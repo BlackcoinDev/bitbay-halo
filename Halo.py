@@ -171,11 +171,12 @@ import random
 import subprocess
 import sys
 import time
+import importlib
 
 ###########################################################
 from threading import Thread
 
-import electrumaccessor as ea  # Electrum synchronization
+ea = importlib.import_module("electrumaccessor")  # Electrum synchronization
 import pybitcoincashtools as pybit2
 import pybitcointools as pybit
 import pyblackcointools
@@ -212,7 +213,8 @@ from decimal import *  # Useful for avoiding errors since floats are not accurat
 
 import Crypto  # Just in case we need more crypto functions
 import rpyc  # For communication between the server and BitMessage functions.
-from bitcoinrpc.authproxy import AuthServiceProxy  # Blackcoin stuff
+bitcoinrpc_authproxy = importlib.import_module("bitcoinrpc.authproxy")
+AuthServiceProxy = bitcoinrpc_authproxy.AuthServiceProxy
 from Crypto.Cipher import AES  # AES Encryption
 from Crypto.Hash import SHA256
 
@@ -270,7 +272,8 @@ try:
     try:
         from urllib3.poolmanager import PoolManager
     except ImportError:
-        from requests.packages.urllib3.poolmanager import PoolManager
+        requests_packages_urllib3_poolmanager = importlib.import_module("requests.packages.urllib3.poolmanager")
+        PoolManager = requests_packages_urllib3_poolmanager.PoolManager
 
     pass
 except:
@@ -313,7 +316,8 @@ try:
     try:
         from urllib3.poolmanager import PoolManager
     except ImportError:
-        from requests.packages.urllib3.poolmanager import PoolManager
+        requests_packages_urllib3_poolmanager = importlib.import_module("requests.packages.urllib3.poolmanager")
+        PoolManager = requests_packages_urllib3_poolmanager.PoolManager
 
     class MyAdapter(HTTPAdapter):
         def init_poolmanager(self, connections, maxsize, block=False):
@@ -2148,7 +2152,7 @@ class GarbageCollector(QtCore.QObject):
 # class DecimalEncoder(json.JSONEncoder):
 #    def default(self, o):
 #        if isinstance(o, Decimal):
-#            return float(o)
+#            return raise Exception("Flow Control Jump")
 #        return super(DecimalEncoder, self).default(o)
 # def json_numpy_obj_hook(dct):
 #    """Decodes a previously encoded numpy ndarray with proper shape and dtype.
@@ -2642,6 +2646,13 @@ def Loop():
     if skipBM != True:
         bitmessThread.start()
     blackcoindThread = BlackCoinThread("BlackCoin")
+    
+    # Handler for thread-safe dialogs - runs on main thread
+    def _handle_blackcoin_dialog(text, button1, button2, button3, notrans):
+        result = QuestionBox(text, button1, button2, button3, notrans)
+        blackcoindThread._handle_dialog_result(result)
+    
+    blackcoindThread.show_question_signal.connect(_handle_blackcoin_dialog, QtCore.Qt.ConnectionType.QueuedConnection)
     blackcoindThread.start()
     Select = GetfromCfg("#CoinSelect#")
     if Select == "BTC":
@@ -2837,7 +2848,7 @@ def Loop():
     if "InboxCleanTime" not in AdvanceArray:
         AdvanceArray["InboxCleanTime"] = time.time()
     if "MySettings" not in AdvanceArray:
-        AdvanceArray["MySettings"] = {  # type: ignore[index]
+        AdvanceArray["MySettings"] = {
             "Proxy": "",
             "AntiLogger": False,
             "ManualLogin": False,
@@ -2850,8 +2861,8 @@ def Loop():
             "Voting": [],
         }
     else:
-        if "EnableBridge" in AdvanceArray["MySettings"]:  # type: ignore[index]
-            if AdvanceArray["MySettings"]["EnableBridge"] == True:  # type: ignore[index]
+        if "EnableBridge" in AdvanceArray["MySettings"]:
+            if AdvanceArray["MySettings"]["EnableBridge"] == True:
                 try:
                     bitmessThread.amrunning = False
                 except:
@@ -3437,7 +3448,7 @@ class PegThread(QtCore.QThread):
                                                         )["message"]
                                                     )
                                                     if xpos == 4:  # message is too long
-                                                        float("a")
+                                                        raise Exception("Flow Control Jump")
                                                 meaning["message"] = meaning[
                                                     "message"
                                                 ].replace(remstr, "")
@@ -3541,7 +3552,7 @@ class PegThread(QtCore.QThread):
                                                         )["message"]
                                                     )
                                                     if xpos == 4:  # message is too long
-                                                        float("a")
+                                                        raise Exception("Flow Control Jump")
                                                 meaning["message"] = meaning[
                                                     "message"
                                                 ].replace(remstr, "")
@@ -3627,7 +3638,7 @@ class PegThread(QtCore.QThread):
                                                     and not isinstance(newlist[1], int)
                                                     and not isinstance(newlist[2], int)
                                                 ):
-                                                    float("a")
+                                                    raise Exception("Flow Control Jump")
                                                 if (
                                                     int(newlist[0]) >= 0
                                                     and int(newlist[1]) >= 0
@@ -3656,7 +3667,7 @@ class PegThread(QtCore.QThread):
                                                             ][meaning["message"][5]][0]
                                                             + 1
                                                         ):
-                                                            float("a")
+                                                            raise Exception("Flow Control Jump")
                                                         if (
                                                             newlist[1]
                                                             < self.Pegdatabase[
@@ -3669,7 +3680,7 @@ class PegThread(QtCore.QThread):
                                                             ][meaning["message"][5]][1]
                                                             + 1
                                                         ):
-                                                            float("a")
+                                                            raise Exception("Flow Control Jump")
                                                         if (
                                                             newlist[2]
                                                             < self.Pegdatabase[
@@ -3682,7 +3693,7 @@ class PegThread(QtCore.QThread):
                                                             ][meaning["message"][5]][2]
                                                             + 10
                                                         ):
-                                                            float("a")
+                                                            raise Exception("Flow Control Jump")
                                                         self.Pegdatabase["bridgedb"][
                                                             meaning["message"][5]
                                                         ] = deepcopy(newlist)
@@ -4216,7 +4227,7 @@ class PegThread(QtCore.QThread):
                         if "**Y**" in thescript["message"][:5]:
                             if not self.Pegdatabase["bridgeactive"]:
                                 print("Bridge is not currently active")
-                                float("a")
+                                raise Exception("Flow Control Jump")
                             message = thescript["message"][5:]
                             x = 1
                             while x < len(trans["outs"]):
@@ -4251,7 +4262,7 @@ class PegThread(QtCore.QThread):
                                 result == True
                             ):  # We construct the root TX that is used as the input and add it to the database
                                 if len(trans["ins"]) > 1:
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 recipientScript = deserialize_script(
                                     trans["ins"][0]["script"]
                                 )  # The new tx will match the spending inputs sig script
@@ -4260,14 +4271,14 @@ class PegThread(QtCore.QThread):
                                         scriptaddr(recipientScriptsafe_unhexlify([-1]))
                                         != message["a"]
                                     ):
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                 if message["a"][0] == "B":
                                     try:
                                         if (
                                             pubtoaddr(recipientScript[1], 25)
                                             != message["a"]
                                         ):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                     except:  # It's a public key
                                         # You could in theory do a public key recover and narrow it down to a few possibilities and see if it matches the address
                                         # However for this example it's best to say that any address that isn't P2SH or P2PKH should just pay itself
@@ -4285,7 +4296,7 @@ class PegThread(QtCore.QThread):
                                                     pubtoaddr(mypubkey, 25)
                                                     != message["a"]
                                                 ):
-                                                    float("a")
+                                                    raise Exception("Flow Control Jump")
                                                 else:
                                                     if verify_tx_input(
                                                         tx,
@@ -4299,9 +4310,9 @@ class PegThread(QtCore.QThread):
                                                     ):
                                                         break
                                                     else:
-                                                        float("a")
+                                                        raise Exception("Flow Control Jump")
                                         if found == 0:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                 mynewtotal = 0
                                 vpos = 0
                                 for val in message["r"]:
@@ -4309,9 +4320,9 @@ class PegThread(QtCore.QThread):
                                     mynewtotal += int(val)
                                     vpos += 1
                                 if len(message["r"]) != mysteps:
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 if mynewtotal > self.Pegdatabase["fundsout"][thename]:
-                                    float("a")  # Too many funds incoming
+                                    raise Exception("Flow Control Jump")  # Too many funds incoming
                                 self.Pegdatabase["fundsout"][thename] -= mynewtotal
                                 mydeductions = DecompressFractions(
                                     message["r"],
@@ -4321,14 +4332,14 @@ class PegThread(QtCore.QThread):
                                     self.Pegdatabase["netdata"][thename]["microsteps"],
                                 )
                                 if mydeductions == False:
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 xp = 0
                                 for val in mydeductions:
                                     if (
                                         val
                                         > self.Pegdatabase["bridgepool"][thename][xp]
                                     ):
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     self.Pegdatabase["bridgepool"][thename][xp] -= val
                                     xp += 1
                                 # The TXID generated from the message should be the TXID in the input that is spent. Also check for double spend.
@@ -4348,12 +4359,12 @@ class PegThread(QtCore.QThread):
                                 if (
                                     thetxid + ":0" in self.Pegdatabase["mints"]
                                 ):  # Already spent
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 if (
                                     trans["ins"][0]["outpoint"]["hash"] != thetxid
                                     or trans["ins"][0]["outpoint"]["index"] != 0
                                 ):
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 # During a lookup of the brand new TXID it is redirected to the minting transaction for reference
                                 self.Pegdatabase["mints"][thetxid + ":0"] = {
                                     "reserve": mydeductions,
@@ -4367,7 +4378,7 @@ class PegThread(QtCore.QThread):
                                 }  # Cross reference for reorgs. Actual tx to find virtual txid
                     except:
                         traceback.print_exc()
-                        float("a")
+                        raise Exception("Flow Control Jump")
                 pos = 0
                 for inp in trans["ins"]:
                     pool = {}
@@ -4382,7 +4393,7 @@ class PegThread(QtCore.QThread):
                         txin2 = BLK.getrawtransaction(inp["outpoint"]["hash"], 1)
                         if txin2["confirmations"] < 1:
                             self.valid = "Can not spend zero confirmations"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         address = txin2["vout"][inp["outpoint"]["index"]][
                             "scriptPubKey"
                         ]["hex"]
@@ -4596,7 +4607,7 @@ class PegThread(QtCore.QThread):
                                     ]
                                 ):
                                     self.valid = "Trying to take from liquidity pool out of order."
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 else:
                                     accountpools[newstuff["txin"][txid]["address"]] = {
                                         "locktime": trans["locktime"],
@@ -4675,11 +4686,11 @@ class PegThread(QtCore.QThread):
                                     if ":" in meaning["message"][5:]:
                                         inx3 = meaning["message"][5:].split(":")
                                         if len(inx3) < 2:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         inx1 = int(inx3[0])
                                         inx2 = int(inx3[1])
                                         if len(inx3) == 2 and inx1 == inx2:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         if (
                                             inx1 == pos
                                             or inx2 == pos
@@ -4688,7 +4699,7 @@ class PegThread(QtCore.QThread):
                                             or inx1 > len(trans["outs"]) - 1
                                             or inx2 > len(trans["outs"]) - 1
                                         ):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         frozenindex = inx1
                                     else:
                                         frozenindex = int(meaning["message"][5:])
@@ -4697,12 +4708,12 @@ class PegThread(QtCore.QThread):
                                         or frozenindex < 0
                                         or frozenindex > len(trans["outs"]) - 1
                                     ):
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     if frozenindex in frozenpool:
                                         if frozenpool[frozenindex]["ftype"] != meaning[
                                             "message"
                                         ][:5].replace("*", ""):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         if "shared" in frozenpool[frozenindex]:
                                             if (
                                                 ":" in meaning["message"][5:]
@@ -4712,7 +4723,7 @@ class PegThread(QtCore.QThread):
                                             ):
                                                 pass
                                             else:
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                     frozenpool[frozenindex] = {
                                         "amount": trans["outs"][frozenindex]["value"],
                                         "address": newstuff["txin"][txid]["address"],
@@ -4730,7 +4741,7 @@ class PegThread(QtCore.QThread):
                                             if frozenpool[inx2]["ftype"] != meaning[
                                                 "message"
                                             ][:5].replace("*", ""):
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             if "shared" in frozenpool[inx2]:
                                                 if (
                                                     ":" in meaning["message"][5:]
@@ -4740,7 +4751,7 @@ class PegThread(QtCore.QThread):
                                                 ):
                                                     pass
                                                 else:
-                                                    float("a")
+                                                    raise Exception("Flow Control Jump")
                                         frozenpool[inx2] = {
                                             "amount": trans["outs"][inx2]["value"],
                                             "address": newstuff["txin"][txid][
@@ -4757,7 +4768,7 @@ class PegThread(QtCore.QThread):
                                         frozenpool["freezeall"] = True
                                     if ":" in meaning["message"][5:] and len(inx3) > 2:
                                         if len(inx3) > 50:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         sharedfreeze = True
                                         frozenpool["freezeall"] = True
                                         for inxes in inx3:
@@ -4767,18 +4778,18 @@ class PegThread(QtCore.QThread):
                                                 or inxes > len(trans["outs"]) - 1
                                                 or inxes == pos
                                             ):
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             if inxes in frozenpool and frozenpool[
                                                 inxes
                                             ]["ftype"] != meaning["message"][
                                                 :5
                                             ].replace("*", ""):
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             if (
                                                 inxes in frozenpool
                                                 and "shared" in frozenpool[inxes]
                                             ):
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             frozenpool[inxes] = {
                                                 "amount": trans["outs"][inxes]["value"],
                                                 "address": newstuff["txin"][txid][
@@ -4810,7 +4821,7 @@ class PegThread(QtCore.QThread):
                                         < trans["outs"][frozenindex]["value"]
                                     ):
                                         self.valid = "Not enough liquidity"
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     if not sharedfreeze:
                                         # If the freeze output is equal or greater than the totals then the user wants this input to freeze to this output
                                         if pool != {} and empty != 1:
@@ -4960,7 +4971,7 @@ class PegThread(QtCore.QThread):
                         traceback.print_exc()
                         if self.valid == "1":
                             self.valid = "Frozen burn script was not valid"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                     # NOTE6
                     for i in pool:
                         if i == "total" or i == "frozen":
@@ -5047,10 +5058,10 @@ class PegThread(QtCore.QThread):
                             continue
                         if len(trans["ins"]) > 1:
                             self.valid = "Too many inputs to the stake"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         if len(trans["outs"]) > 8:
                             self.valid = "Too many outputs to the stake"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         stake = json_deep_copy(newstuff["txin"][txid2])
                         stake["txidin"] = txid2
                         stake["txid"] = tx
@@ -5105,10 +5116,10 @@ class PegThread(QtCore.QThread):
                         if "found" not in stake:
                             if stake["amount"] > out["value"]:
                                 self.valid = "Stakes must always return original funds to the staking address"
-                                float("a")
+                                raise Exception("Flow Control Jump")
                             if stake["address"] != address:
                                 self.valid = "Stakes must return to the staking address"
-                                float("a")
+                                raise Exception("Flow Control Jump")
                             if "frozen" in stake:
                                 newstuff["txout"][txid]["frozen"] = stake["frozen"]
                                 newstuff["txout"][txid]["ftype"] = stake["ftype"]
@@ -5182,7 +5193,7 @@ class PegThread(QtCore.QThread):
                             + str(self.pegfeeperinput)
                             + " satoshis per input/output minimum."
                         )
-                        float("a")
+                        raise Exception("Flow Control Jump")
             stakethis = 1
             if staketx == {}:
                 if newstuff["txin"] == {}:
@@ -5287,7 +5298,7 @@ class PegThread(QtCore.QThread):
                     pos += 1
                 if txfees["total"] != 0:
                     self.valid = "Some fees were not distributed."
-                    float("a")
+                    raise Exception("Flow Control Jump")
             # SUCCESS!
             print("TIME ELAPSED 4: ", str(txtime - time.time()))
             if checkonly == 0:
@@ -5324,7 +5335,7 @@ class PegThread(QtCore.QThread):
                 liquiditypool["frozen"] > locktime and stake == 0
             ):  # This doesn't apply to stake. New output should carry same properties
                 self.valid = "You can not send frozen funds before locktime"
-                float("a")
+                raise Exception("Flow Control Jump")
         if (
             "freezeall" in frozenpool and myoutput["index"] in frozenpool
         ):  # Either F or V, reserve/liquid funds will be shared
@@ -5458,7 +5469,7 @@ class PegThread(QtCore.QThread):
                             if meaning["message"][:5] == "**Z**":
                                 if self.Pegdatabase["bridgeactive"] == False:
                                     print("Bridge is not currently active")
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 foundthis = 0
                                 for bridged in self.Pegdatabase["bridgedb"]["bridges"]:
                                     if (
@@ -5470,7 +5481,7 @@ class PegThread(QtCore.QThread):
                                         break
                                 if foundthis == 0:
                                     print("Bridge not found")
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                     if myoutput["address"] in burnaddress or general6a:
                         # It's a burn so we can take from all pools
                         output = {"total": 0}
@@ -5546,13 +5557,13 @@ class PegThread(QtCore.QThread):
                 return liquidity, output
             else:
                 self.valid = "Not enough funds"
-                float("a")
+                raise Exception("Flow Control Jump")
         total = 0
         dliquid = liquidity.copy()
         if ltype == "Frozen":
             if reservetotal < amount and multipleout == 0:
                 self.valid = "Not enough funds in reserve"
-                float("a")
+                raise Exception("Flow Control Jump")
             if reservetotal < amount:
                 amount = reservetotal
             for i in dliquid:
@@ -5589,7 +5600,7 @@ class PegThread(QtCore.QThread):
                 print(str(liquidtotal))
                 print(str(amount))
                 self.valid = "Not enough liquid funds"
-                float("a")
+                raise Exception("Flow Control Jump")
             if liquidtotal < amount:
                 amount = liquidtotal
             for i in dliquid:
@@ -5624,7 +5635,7 @@ class PegThread(QtCore.QThread):
         if ltype == "Mixed":
             if liquidtotal + reservetotal < amount and multipleout == 0:
                 self.valid = "Not enough funds"
-                float("a")
+                raise Exception("Flow Control Jump")
             if liquidtotal + reservetotal < amount:
                 amount = liquidtotal + reservetotal
             for i in dliquid:
@@ -6118,7 +6129,7 @@ class PegThread(QtCore.QThread):
                                 data.pop(txid)
                         except:
                             traceback.print_exc()
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         break
                     if skip == 0:
                         data["lastfilehash"] = q[0]
@@ -6242,7 +6253,7 @@ class PegThread(QtCore.QThread):
                         except:
                             traceback.print_exc()
                             # If coded correctly, we should not see exceptions. Consider deleting database and trying again.
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         break
                     if skip == 0:
                         data["lastfilehash"] = q[0]
@@ -6263,7 +6274,7 @@ class PegThread(QtCore.QThread):
         except:
             traceback.print_exc()
             self.writing = 0
-            float("a")
+            raise Exception("Flow Control Jump")
         self.writing = 0
 
     def LoadDatabase(self):
@@ -6373,7 +6384,7 @@ class PegThread(QtCore.QThread):
             # However in production both will sync together
             if self.Pegdatabase["blockcount"] < blockheight - 1:
                 self.valid = "Peg database is not in sync."
-                float("a")
+                raise Exception("Flow Control Jump")
         try:  # Remove instances of block, staketx
             checkliquidity = 0
             newstuff = {"txin": {}, "txout": {}}
@@ -6502,7 +6513,7 @@ class PegThread(QtCore.QThread):
                     txin2 = BLK.getrawtransaction(inp["outpoint"]["hash"], 1)
                     if txin2["confirmations"] < 1:
                         self.valid = "Can not spend zero confirmations"
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     address = txin2["vout"][inp["outpoint"]["index"]]["scriptPubKey"][
                         "hex"
                     ]
@@ -6646,7 +6657,7 @@ class PegThread(QtCore.QThread):
                                         ]["locktime"][0]
                                     ):
                                         self.valid = "Trying to take from liquidity pool out of order."
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                 # We shouldn't take more than we need from a pool otherwise it can get confusing as to what to select and when
                 # We could let a user take liquid without touching reserve but he may want to use reserve for a specific reason
                 # The user may end up with mixed liquidity anyways because of the size of the input. Therefore this is a simple
@@ -6723,11 +6734,11 @@ class PegThread(QtCore.QThread):
                                 if ":" in meaning["message"][5:]:
                                     inx3 = meaning["message"][5:].split(":")
                                     if len(inx3) < 2:
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     inx1 = int(inx3[0])
                                     inx2 = int(inx3[1])
                                     if len(inx3) == 2 and inx1 == inx2:
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     if (
                                         inx1 == pos
                                         or inx2 == pos
@@ -6736,7 +6747,7 @@ class PegThread(QtCore.QThread):
                                         or inx1 > len(trans["outs"]) - 1
                                         or inx2 > len(trans["outs"]) - 1
                                     ):
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     frozenindex = inx1
                                 else:
                                     frozenindex = int(meaning["message"][5:])
@@ -6745,12 +6756,12 @@ class PegThread(QtCore.QThread):
                                     or frozenindex < 0
                                     or frozenindex > len(trans["outs"]) - 1
                                 ):
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 if frozenindex in frozenpool:
                                     if frozenpool[frozenindex]["ftype"] != meaning[
                                         "message"
                                     ][:5].replace("*", ""):
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     if "shared" in frozenpool[frozenindex]:
                                         if (
                                             ":" in meaning["message"][5:]
@@ -6760,7 +6771,7 @@ class PegThread(QtCore.QThread):
                                         ):
                                             pass
                                         else:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                 frozenpool[frozenindex] = {
                                     "amount": trans["outs"][frozenindex]["value"],
                                     "address": newstuff["txin"][txid]["address"],
@@ -6778,7 +6789,7 @@ class PegThread(QtCore.QThread):
                                         if frozenpool[inx2]["ftype"] != meaning[
                                             "message"
                                         ][:5].replace("*", ""):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         if "shared" in frozenpool[inx2]:
                                             if (
                                                 ":" in meaning["message"][5:]
@@ -6788,7 +6799,7 @@ class PegThread(QtCore.QThread):
                                             ):
                                                 pass
                                             else:
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                     frozenpool[inx2] = {
                                         "amount": trans["outs"][inx2]["value"],
                                         "address": newstuff["txin"][txid]["address"],
@@ -6803,7 +6814,7 @@ class PegThread(QtCore.QThread):
                                     frozenpool["freezeall"] = True
                                 if ":" in meaning["message"][5:] and len(inx3) > 2:
                                     if len(inx3) > 50:
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                     sharedfreeze = True
                                     frozenpool["freezeall"] = True
                                     for inxes in inx3:
@@ -6813,16 +6824,16 @@ class PegThread(QtCore.QThread):
                                             or inxes > len(trans["outs"]) - 1
                                             or inxes == pos
                                         ):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         if inxes in frozenpool and frozenpool[inxes][
                                             "ftype"
                                         ] != meaning["message"][:5].replace("*", ""):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         if (
                                             inxes in frozenpool
                                             and "shared" in frozenpool[inxes]
                                         ):
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         frozenpool[inxes] = {
                                             "amount": trans["outs"][inxes]["value"],
                                             "address": newstuff["txin"][txid][
@@ -6854,7 +6865,7 @@ class PegThread(QtCore.QThread):
                                     < trans["outs"][frozenindex]["value"]
                                 ):
                                     self.valid = "Not enough liquidity"
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 if not sharedfreeze:
                                     if pool != {} and empty != 1:
                                         if meaning["message"][:5] == "**F**":
@@ -6979,7 +6990,7 @@ class PegThread(QtCore.QThread):
                     traceback.print_exc()
                     if self.valid == "1":
                         self.valid = "Frozen burn script was not valid"
-                        float("a")
+                        raise Exception("Flow Control Jump")
                 for i in pool:
                     if i == "total" or i == "frozen":
                         continue
@@ -7071,10 +7082,10 @@ class PegThread(QtCore.QThread):
                         continue
                     if len(trans["ins"]) > 1:
                         self.valid = "Too many inputs to the stake"
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     if len(trans["outs"]) > 8:
                         self.valid = "Too many outputs to the stake"
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     stake = json_deep_copy(newstuff["txin"][txid2])
                     stake["txidin"] = txid2
                     stake["txid"] = tx
@@ -7129,10 +7140,10 @@ class PegThread(QtCore.QThread):
                     if "found" not in stake:
                         if stake["amount"] > out["value"]:
                             self.valid = "Stakes must always return original funds to the staking address"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         if stake["address"] != address:
                             self.valid = "Stakes must return to the staking address"
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         if "frozen" in stake:
                             newstuff["txout"][txid]["frozen"] = stake["frozen"]
                             newstuff["txout"][txid]["ftype"] = stake["ftype"]
@@ -7208,7 +7219,7 @@ class PegThread(QtCore.QThread):
                         + str(self.pegfeeperinput)
                         + " satoshis per input/output minimum."
                     )
-                    float("a")
+                    raise Exception("Flow Control Jump")
             # print("Fees total: ", str(txfees['total']))
             # We could add some extra fee calculations here
             # print("TIME ELAPSED 4: ", str(txtime-time.time()))
@@ -7969,7 +7980,7 @@ class PegThread(QtCore.QThread):
                             address = ""
                             try:
                                 if busy != 0:
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 res = BLK.importprivkey(q1["data"]["key"], "", False)
                                 address = privkey_to_address(q1["data"]["key"], 25)
                                 print("New key generated")
@@ -8020,7 +8031,7 @@ class PegThread(QtCore.QThread):
                                 )
                                 if not isinstance(deduction, dict):
                                     print(str(deduction))
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 for i in deduction:
                                     if i == "frozen" or i == "total":
                                         continue
@@ -8216,7 +8227,7 @@ class PegThread(QtCore.QThread):
                                             )
                                             if not isinstance(d1, dict):
                                                 print(str(d1))
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                         if d1 != "":
                                             for d in d1:
                                                 if d not in deduction:
@@ -8242,7 +8253,7 @@ class PegThread(QtCore.QThread):
                                             )
                                             if not isinstance(d1, dict):
                                                 print(str(d1))
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                         if d1 != "":
                                             for d in d1:
                                                 if d not in deduction:
@@ -8256,7 +8267,7 @@ class PegThread(QtCore.QThread):
                                     )
                                     if not isinstance(deduction, dict):
                                         print(str(deduction))
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                 for i in deduction:
                                     if i == "frozen" or i == "total":
                                         continue
@@ -8737,7 +8748,7 @@ class PegThread(QtCore.QThread):
                             ):
                                 complete = 1
                             else:
-                                float("a")
+                                raise Exception("Flow Control Jump")
                             if complete == 1:
                                 self.CleanWrite()
                                 withdraw["success"] = 2
@@ -10295,7 +10306,7 @@ class BridgeThread(QtCore.QThread):  # Safe File saving thread
                                             x += 1
                                         try:
                                             if name == "":
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             ThePeg.Pegdatabase["netdata"][name] = {
                                                 "pegsteps": result[0][x]["1"],
                                                 "microsteps": result[0][x]["2"],
@@ -11792,7 +11803,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                             if (
                                                 passw == "*"
                                             ):  # They want manual login, there is no saved password
-                                                float("A")
+                                                raise Exception("Flow Control Jump")
                                             BitQueue[0]["password"] = passw
                                             Encryptthis1 = "PASSWORD:" + passw
                                         except:
@@ -11850,7 +11861,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                             if (
                                                 passw == "*"
                                             ):  # They want manual login, there is no saved password
-                                                float("A")
+                                                raise Exception("Flow Control Jump")
                                             BitQueue[0]["password"] = passw
                                             Encryptthis1 = (
                                                 "PASSWORD:" + passw
@@ -11906,7 +11917,7 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
                                                                 + "###"
                                                             )
                                                         else:
-                                                            float("A")
+                                                            raise Exception("Flow Control Jump")
                                         mrand = safe_hexlify(os.urandom(16))
                                         if (
                                             BitQueue[0]["MyBMAddress"]
@@ -12001,13 +12012,39 @@ class BitMessageThread(QtCore.QThread):  # For sending messages and pre/post pro
 
 
 class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
+    # Signal for thread-safe dialog boxes: (text, button1, button2, button3, notrans)
+    show_question_signal = QtCore.pyqtSignal(str, str, str, str, int)
+    
     def __init__(self, url):
         QtCore.QThread.__init__(self)
         self.url = url
         self.amrunning = True
+        self._dialog_result = 0
+        self._dialog_event = None
 
     def stop(self):
         self.amrunning = False
+    
+    def show_question_box_thread_safe(self, text, button1, button2="", button3="", notrans=0):
+        """Thread-safe method to show a question box from a background thread.
+        
+        This uses Qt signals to invoke the dialog on the main thread,
+        which is required by macOS/PyQt6.
+        """
+        import threading
+        self._dialog_event = threading.Event()
+        self._dialog_result = 0
+        # Emit signal to main thread
+        self.show_question_signal.emit(str(text), str(button1), str(button2), str(button3), int(notrans))
+        # Wait for the dialog to be handled on main thread
+        self._dialog_event.wait(timeout=300)  # 5 minute timeout
+        return self._dialog_result
+    
+    def _handle_dialog_result(self, result):
+        """Called from main thread to set the dialog result."""
+        self._dialog_result = result
+        if self._dialog_event:
+            self._dialog_event.set()
 
     def stop_daemon(self):
         """Stop the blackmored daemon gracefully."""
@@ -12136,7 +12173,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                         )
                 if fail != 0:
                     count += maxConnectAttempts
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if BlackHalo != None:
                     BLK = AuthServiceProxy(BLKurl)
                     BLK.getblockcount()
@@ -12156,7 +12193,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                     res = 1
                 if fail == 0 and stayconnected == 0:
                     if BitHaloClient and "bitcoind" not in CoinSelect["daemon"]:
-                        res = QuestionBox(
+                        res = self.show_question_box_thread_safe(
                             Gtranslate("BitHalo is connecting however the subprocess")
                             + " "
                             + CoinSelect["daemon"]
@@ -12173,7 +12210,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                             1,
                         )
                     else:
-                        res = QuestionBox(
+                        res = self.show_question_box_thread_safe(
                             Gtranslate("The subprocess")
                             + " "
                             + CoinSelect["daemon"]
@@ -12196,7 +12233,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                             conn = True
                             break
                 if fail == 1:
-                    QuestionBox(
+                    self.show_question_box_thread_safe(
                         "Bitmessage subprocess did not load. Please make sure you have OpenSSL properly installed. Also make sure the program is not being blocked by antivirus and that the directory you installed to has administrator privileges. Halo will now exit and will also redirect you to the OpenSSL download page.",
                         "OK",
                     )
@@ -12210,7 +12247,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                         )
                 if fail == 2:
                     if BitHaloClient and "bitcoind" not in CoinSelect["daemon"]:
-                        res = QuestionBox(
+                        res = self.show_question_box_thread_safe(
                             Gtranslate("BitHalo is connecting however the subprocess")
                             + " "
                             + CoinSelect["daemon"]
@@ -12227,7 +12264,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                             1,
                         )
                     else:
-                        res = QuestionBox(
+                        res = self.show_question_box_thread_safe(
                             Gtranslate("The subprocess")
                             + " "
                             + CoinSelect["daemon"]
@@ -12240,7 +12277,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                             1,
                         )
                     if res == 1:
-                        res = QuestionBox(
+                        res = self.show_question_box_thread_safe(
                             "Reindex can fix the block database if corrupted. There are times where this will correct the problem but it is not guaranteed. On some computers this can take hours to complete. Proceed anyways?",
                             " No ",
                             " Yes ",
@@ -12505,7 +12542,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                             except:
                                                 traceback.print_exc()
                                             if bdb2 == False:
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             myBridges = []
                                             for key, val in bdb2.items():
                                                 myBridges.append(
@@ -12911,7 +12948,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                     qreview = str(review)
                                     result = BLK.getrawtransaction(txresult, 1)
                                     if result["vin"][0]["txid"] != tx3:
-                                        float("A")
+                                        raise Exception("Flow Control Jump")
                                     if "addresses" in result["vout"][0]["scriptPubKey"]:
                                         result = result["vout"][0]["scriptPubKey"][
                                             "addresses"
@@ -12961,7 +12998,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                     },
                                                 }
                                         else:
-                                            float("A")
+                                            raise Exception("Flow Control Jump")
                                     for rep in Markets["Reputation"]:
                                         found = 0
                                         foundself = 0
@@ -13506,7 +13543,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                             == False
                                                                         ):
                                                                             addthis = 0
-                                                                            float("a")
+                                                                            raise Exception("Flow Control Jump")
                                                                         NEWTxidLookup2[
                                                                             str(
                                                                                 Black[
@@ -13527,7 +13564,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                 except:
                                                                     traceback.print_exc()
                                                                     addthis = 0
-                                                                    float("a")
+                                                                    raise Exception("Flow Control Jump")
                                                                 if (
                                                                     myout["value"]
                                                                     == 5577
@@ -13930,7 +13967,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                         == False
                                                                     ):
                                                                         addthis = 0
-                                                                        float("a")
+                                                                        raise Exception("Flow Control Jump")
                                                                     NEWTxidLookup2[
                                                                         str(
                                                                             Black[
@@ -13951,7 +13988,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                             except:
                                                                 traceback.print_exc()
                                                                 addthis = 0
-                                                                float("a")
+                                                                raise Exception("Flow Control Jump")
                                                             if (
                                                                 myout["value"] == 5577
                                                             ):  # This might confuse things, just ignore the low value lock
@@ -13961,7 +13998,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                     foundme = 0
                                                     traceback.print_exc()
                                                     # if addthis==0:
-                                                    #    float('a')
+                                                    #    raise Exception("Flow Control Jump")
                                                 if foundme == 0:
                                                     NEWTxidLookup2[
                                                         str(Black["txid"])
@@ -14725,7 +14762,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                     # print(str(timestamp))
                                                     # If the kernel time is the same as timestamp then the block
                                                     # is too early. Will have to try again.
-                                                    float("a")
+                                                    raise Exception("Flow Control Jump")
                                                 avg = int(
                                                     abs(timestamp - loadtime) / 3600
                                                 )  # /86400
@@ -14897,7 +14934,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                         )
                                                         if res == False:
                                                             print(str(ThePeg.valid))
-                                                            float("a")
+                                                            raise Exception("Flow Control Jump")
                                                         if (
                                                             ThePeg.Pegdatabase[
                                                                 "blockcount"
@@ -15024,7 +15061,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                             )["height"]
                                                                             + 1
                                                                         ):
-                                                                            float("a")
+                                                                            raise Exception("Flow Control Jump")
                                                                     if TestnetPeg:
                                                                         (
                                                                             liquid,
@@ -15059,7 +15096,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                         combined
                                                                         == False
                                                                     ):
-                                                                        float("a")
+                                                                        raise Exception("Flow Control Jump")
                                                                     spn["liquidity"] = (
                                                                         combined
                                                                     )
@@ -15155,7 +15192,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                             combined
                                                                             == False
                                                                         ):
-                                                                            float("a")
+                                                                            raise Exception("Flow Control Jump")
                                                                         spn[
                                                                             "liquidity"
                                                                         ] = combined
@@ -15237,7 +15274,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                             )["height"]
                                                                             + 1
                                                                         ):
-                                                                            float("a")
+                                                                            raise Exception("Flow Control Jump")
                                                                     if TestnetPeg:
                                                                         (
                                                                             liquid,
@@ -15272,7 +15309,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                                         combined
                                                                         == False
                                                                     ):
-                                                                        float("a")
+                                                                        raise Exception("Flow Control Jump")
                                                                     spn["liquidity"] = (
                                                                         combined
                                                                     )
@@ -15306,7 +15343,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                                             if tx3cont > 7:
                                                                 tx3cont = 0
                                                             else:
-                                                                float("A")
+                                                                raise Exception("Flow Control Jump")
                                                             tx3cont += 1  # Code never gets here, but what is the logic?
                                                             t = 0
                                                         if "confirmations" not in rawx:
@@ -15481,7 +15518,7 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                                     if addrs:
                                         try:
                                             if waitlock() == False:
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             message = DecodeCipherOutputs(addrs)
                                             message = message.rstrip("*")
                                             if window.EnableEmail.isChecked():
@@ -15662,7 +15699,7 @@ class DownloadThread(
                                     try:
                                         ID = fpaste(uploadnew[newpaste]["image"])
                                         if ID == False:
-                                            float("A")
+                                            raise Exception("Flow Control Jump")
                                         uploadnew[newpaste]["result"] = ID
                                     except:
                                         uploadnew[newpaste]["result"] = "false"
@@ -15714,7 +15751,7 @@ class DownloadThread(
                                 if (
                                     hd > 86400
                                 ):  # Make sure UTC site didn't get hacked, better safe than sorry.
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                             except:
                                 HaloTime = datetime.datetime(
                                     1970, 1, 1, 0, 0, 0, 0
@@ -15799,7 +15836,7 @@ class DownloadThread(
                                     else:
                                         try:
                                             if CoinGecko == 1:
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                             try:
                                                 mycoin = requestURL(
                                                     "https://coinmarketcap.com/currencies/"
@@ -15821,7 +15858,7 @@ class DownloadThread(
                                                 )
                                             except:
                                                 CoinGecko = 1
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                         except:
                                             try:
                                                 mycoin = requestURL(
@@ -15853,7 +15890,7 @@ class DownloadThread(
                                                     )
                                             except:
                                                 CoinGecko = 0
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                         CoinMarketCap2 += (
                                             ' id="id-'
                                             + CoinSelect["name"].lower()
@@ -15869,11 +15906,11 @@ class DownloadThread(
                                     CoinSelect["name"], CoinMarketCap2, 0
                                 )
                                 if usd == "":
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 CoinMarketCap = CoinMarketCap2
                             except:
                                 if thecoins == "":
-                                    float("a")
+                                    raise Exception("Flow Control Jump")
                                 # print("Coinmarketcap exception: Using rate from github")
                                 CoinMarketCap = thecoins
                             # Need to grab a price history for price tracking
@@ -16429,7 +16466,7 @@ class DownloadThread(
                                         if Biteasy == {}:
                                             print("Electrum disabled")
                                             # The electrum nodes and process has changed so for now this section is disabled
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                             txdetails = ea.get_from_electrum(
                                                 [multisig], t="a"
                                             )
@@ -16480,7 +16517,7 @@ class DownloadThread(
                                                 foundtxid = {}  # This variable can be global so it doesnt keep repeating. It would have to store all the IDs in memory. For now, we just download it each time.
                                                 for d in Biteasy["history"]:
                                                     if NewUser != []:
-                                                        float("A")
+                                                        raise Exception("Flow Control Jump")
                                                         break
                                                     # tx=pybit.deserialize(d['result']) #the full tx from our electrum results
                                                     try:
@@ -16563,13 +16600,13 @@ class DownloadThread(
                                                                     # foundtxid[d['Txid']]=str(matchObj.group(3))
                                                                 except:
                                                                     traceback.print_exc()
-                                                                    float("a")
+                                                                    raise Exception("Flow Control Jump")
                                                                     # getaddy=json.loads(getaddress)
                                                                     # Biteasy['history'][i]['FROM']=str(getaddy['inputs'][0]['prev_out']['addr'])
                                                                     # foundtxid[d['Txid']]=str(getaddy['inputs'][0]['prev_out']['addr'])
                                                             except:
                                                                 traceback.print_exc()
-                                                                float("a")
+                                                                raise Exception("Flow Control Jump")
                                                                 raw = ea.get_from_electrum(
                                                                     [d["Txid"]], t="t"
                                                                 )
@@ -16672,7 +16709,7 @@ class DownloadThread(
                                                 v = 0
                                                 txs = 0
                                                 txdetails = 0
-                                                float("a")
+                                                raise Exception("Flow Control Jump")
                                                 txdetails = ea.get_from_electrum(
                                                     [multisig], t="a"
                                                 )
@@ -16870,7 +16907,7 @@ class DownloadThread(
                                                 if addrs:
                                                     try:
                                                         if waitlock() == False:
-                                                            float("a")
+                                                            raise Exception("Flow Control Jump")
                                                         message = DecodeCipherOutputs(
                                                             addrs
                                                         )
@@ -17866,7 +17903,7 @@ def Update():
                                             + "\n"
                                             + str(v)
                                         )
-                                        float("a")
+                                        raise Exception("Flow Control Jump")
                                 v = Decimal(dropzeros(Decimal(v), 1)) / Decimal(1e8)
                                 # v=dropzeros(Decimal(v))
                                 mystr = "Amount: " + str(v)
@@ -19825,7 +19862,7 @@ def requestURL(URL):
     try:
         if AdvanceArray["MySettings"]["Proxy"] != "":
             if URL[:15] in noproxy:
-                float("a")
+                raise Exception("Flow Control Jump")
             url, port = AdvanceArray["MySettings"]["Proxy"].split(":", 1)
             socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, url, int(port))
             socket.socket = socks.socksocket
@@ -19836,9 +19873,9 @@ def requestURL(URL):
                         text = rget(URL)
                     except:
                         print("Mechnize URL: ", str(URL))
-                        float("a")
+                        raise Exception("Flow Control Jump")
                 else:
-                    float("a")
+                    raise Exception("Flow Control Jump")
             except:
                 if URL[:15] not in mechurl:
                     mechurl[URL[:15]] = 1
@@ -19859,16 +19896,16 @@ def requestURL(URL):
                 except:
                     traceback.print_exc()
                     print("Loading of Mechanize failed")
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 text = mechbrowser.open(URL)
                 text = text.read()
             if "Completing the CAPTCHA proves" in text:
-                float("a")
+                raise Exception("Flow Control Jump")
             if "One more step" in text and "Please complete the security check" in text:
-                float("a")
+                raise Exception("Flow Control Jump")
             return text
         else:
-            float("a")
+            raise Exception("Flow Control Jump")
     except:
         if AdvanceArray["MySettings"]["Proxy"] != "":
             if URL[:15] not in noproxy:
@@ -19909,7 +19946,7 @@ def requestURL(URL):
 #        except:
 #            traceback.print_exc()
 #            print('Loading of Mechanize failed')
-#            float('a')
+#            raise Exception("Flow Control Jump")
 #        url='https://pastebin.com/'
 #        response = mechbrowser.open(url)
 #        x=response.read()      # the text of the page
@@ -19925,7 +19962,7 @@ def requestURL(URL):
 #            clipboard = app.clipboard()
 #            clipboard.setText(x)
 #            print(response.geturl())
-#            float('a')
+#            raise Exception("Flow Control Jump")
 #        return str({'paste_id_repr':response.geturl()})
 #    except:
 #        traceback.print_exc()
@@ -20128,7 +20165,7 @@ def CheckNotary(txid):
 
                             except:
                                 traceback.print_exc()
-                                float("a")
+                                raise Exception("Flow Control Jump")
                             mytime = ConvertDate(contract["billing"], 1)
                             if "Week" in contract["Market Data"]["Pay Frequency"]:
                                 NewTime = mytime + datetime.timedelta(hours=168)
@@ -20201,7 +20238,7 @@ def rpost(url, query, data=0):
         try:
             if AdvanceArray["MySettings"]["Proxy"] != "":
                 if url[:15] in noproxy:
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 url2, port = AdvanceArray["MySettings"]["Proxy"].split(":", 1)
                 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, url2, int(port))
                 socket.socket = socks.socksocket
@@ -20211,10 +20248,10 @@ def rpost(url, query, data=0):
                 else:
                     resp = requests.post(url, data=query)
                 if "captcha" in resp or "CAPTCHA" in resp or "security" in resp:
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 return resp
             else:
-                float("a")
+                raise Exception("Flow Control Jump")
         except:
             if AdvanceArray["MySettings"]["Proxy"] != "":
                 if url[:15] not in noproxy:
@@ -20244,7 +20281,7 @@ def rpost(url, query, data=0):
             else:
                 resp = reqsession.post(url, data=query)
         else:
-            float("a")
+            raise Exception("Flow Control Jump")
     return resp
 
 
@@ -20272,7 +20309,7 @@ def rget(url):
         else:
             print(stack, "\n")
             print(exc)
-            float("a")
+            raise Exception("Flow Control Jump")
     return resp
 
 
@@ -20329,7 +20366,7 @@ def GetMarketValue(thecoin, coins="", check=1):
                 else:
                     try:
                         if CoinGecko == 1:
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         try:
                             mycoin = requestURL(
                                 "https://coinmarketcap.com/currencies/" + thecoin
@@ -20350,7 +20387,7 @@ def GetMarketValue(thecoin, coins="", check=1):
                             )
                         except:
                             CoinGecko = 1
-                            float("a")
+                            raise Exception("Flow Control Jump")
                     except:
                         try:
                             mycoin = requestURL(
@@ -20375,7 +20412,7 @@ def GetMarketValue(thecoin, coins="", check=1):
                                 )
                         except:
                             CoinGecko = 0
-                            float("a")
+                            raise Exception("Flow Control Jump")
                     coins += (
                         ' id="id-'
                         + thecoin.lower()
@@ -20795,7 +20832,7 @@ def ScanMessages():
                         if body["ordernumber"] in DontRepopulate:
                             continue
                         if body["type"] != "CONTRACT":
-                            print(float("A"))
+                            raise Exception("Flow Control Jump")
                         test = body["ordernumber"] + "A"
                         test = json_deep_copy(body["sigs"], 1)
                         test = json_deep_copy(body["Order"], 1)
@@ -20836,7 +20873,7 @@ def ScanMessages():
                         if body["ordernumber"] in DontRepopulate:
                             continue
                         if body["type"] != "CONTRACT":
-                            print(float("A"))
+                            raise Exception("Flow Control Jump")
                         test = body["ordernumber"] + "A"
                         test = body["public"] + "A"
                         test = body["MyBMAddress"] + "A"
@@ -20862,7 +20899,7 @@ def ScanMessages():
                         if body["ordernumber"] in DontRepopulate:
                             continue
                         if body["type"] != "CONTRACT":
-                            print(float("A"))
+                            raise Exception("Flow Control Jump")
                         test = body["ordernumber"] + "A"
                         test = body["oldordernumber"] + "A"
                         test = body["public"] + "A"
@@ -21708,7 +21745,7 @@ def ScanMessages():
                                                             "Market Data"
                                                         ]["Pay Frequency"]
                                                     ):
-                                                        float("a")
+                                                        raise Exception("Flow Control Jump")
                                                     x = body["Message"] + "A"
                                                     if x != "":
                                                         MyContracts[pos][
@@ -23455,7 +23492,7 @@ def ScanMessages():
                                 tempord = False
                             if tempord == False:
                                 print("Reply verification error")
-                                float("A")
+                                raise Exception("Flow Control Jump")
                             accorder = FilterContract(body, accorder, 1)
                             if (
                                 "match" in tempord["Market Data"]["reply"]
@@ -24251,41 +24288,41 @@ def CheckValidity(contract, market=0):
     try:
         if contract["mydeposit"] == 0 or contract["theirdeposit"] == 0:
             if contract["mydeposit"] == 0 and "I pay" in contract["whopays"]:
-                float("A")
+                raise Exception("Flow Control Jump")
             if contract["theirdeposit"] == 0 and "The other" in contract["whopays"]:
-                float("A")
+                raise Exception("Flow Control Jump")
             if contract["instantamount"] != 0:
-                float("A")
+                raise Exception("Flow Control Jump")
         newcontract["mydeposit"] = contract["mydeposit"] + 1
         if newcontract["mydeposit"] < 1:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["theirdeposit"] = contract["theirdeposit"] + 1
         if newcontract["theirdeposit"] < 1:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["timestamp"] = contract["timestamp"] + 1
         if newcontract["timestamp"] < 1:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["amount"] = contract["amount"] + 1
         if newcontract["amount"] < 5500:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["whopays"] = contract["whopays"] + "A"
         newcontract["instantamount"] = contract["instantamount"] + 1
         if newcontract["instantamount"] < 1:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["instantwhopays"] = contract["instantwhopays"] + "A"
         newcontract["timeout"] = contract["timeout"] + 1
         newcontract["MyBMAddress"] = contract["MyBMAddress"] + "A"
         newcontract["fee"] = contract["fee"] + 1
         if newcontract["fee"] <= 5500:  # May want to calculate in future
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["TheirBMAddress"] = contract["TheirBMAddress"] + "A"
         newcontract["currentblock"] = contract["currentblock"] + 1
         if newcontract["currentblock"] < 1:
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["Process"] = contract["Process"] + "A"
         newcontract["status"] = contract["status"]
         if newcontract["status"] != "offer":
-            print(float("A"))
+            raise Exception("Flow Control Jump")
         newcontract["version"] = contract["version"] + "A"
         newcontract["Command"] = contract["Command"] + "A"
         newcontract["type"] = contract["type"] + "A"
@@ -24316,7 +24353,7 @@ def CheckValidity(contract, market=0):
                 and contract["Market Data"]["Template"] != "Python"
                 and contract["Market Data"]["Template"] != "Barter"
             ):
-                float("A")
+                raise Exception("Flow Control Jump")
             newcontract["Market Data"]["Payment Method"] = (
                 contract["Market Data"]["Payment Method"] + "A"
             )
@@ -24336,7 +24373,7 @@ def CheckValidity(contract, market=0):
                         contract["Market Data"]["style"].replace(", Instant Refund", "")
                         != "Double Deposit"
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 elif (
                     contract["amount"] == 10000
                     and contract["theirdeposit"] == contract["mydeposit"]
@@ -24345,7 +24382,7 @@ def CheckValidity(contract, market=0):
                         contract["Market Data"]["style"].replace(", Instant Refund", "")
                         != "Barter"
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 elif (
                     contract["amount"] == 10000
                     and contract["theirdeposit"] != contract["mydeposit"]
@@ -24354,16 +24391,16 @@ def CheckValidity(contract, market=0):
                         contract["Market Data"]["style"].replace(", Instant Refund", "")
                         != "Custom Barter"
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 else:
                     if (
                         contract["Market Data"]["style"].replace(", Instant Refund", "")
                         != "Custom Deposit"
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if contract["instantamount"] != 0:
                     if ", Instant Refund" not in contract["Market Data"]["style"]:
-                        float("A")
+                        raise Exception("Flow Control Jump")
             else:
                 tt = 0
                 if contract["amount"] > 0:
@@ -24374,7 +24411,7 @@ def CheckValidity(contract, market=0):
                     ):
                         tt = 1
                         if contract["Market Data"]["style"] != "Guarantor":
-                            float("A")
+                            raise Exception("Flow Control Jump")
                     if (
                         contract["mydeposit"] == 0
                         and "The other" in contract["whopays"]
@@ -24382,9 +24419,9 @@ def CheckValidity(contract, market=0):
                     ):
                         tt = 1
                         if contract["Market Data"]["style"] != "Guarantor":
-                            float("A")
+                            raise Exception("Flow Control Jump")
                 if tt != 1:
-                    float("A")
+                    raise Exception("Flow Control Jump")
             for type1 in contract["Market Data"]["Profiles"]:
                 if (
                     type1 != "Bank"
@@ -24396,7 +24433,7 @@ def CheckValidity(contract, market=0):
                     and type1 != "Mail"
                     and type1 != "Contact"
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 for k in contract["Market Data"]["Profiles"][type1]:
                     pass
             newcontract["Market Data"]["autoaccept"] = (
@@ -24441,7 +24478,7 @@ def CheckValidity(contract, market=0):
                             and type1 != "Mail"
                             and type1 != "Contact"
                         ):
-                            float("A")
+                            raise Exception("Flow Control Jump")
                         for k in contract["Market Data"]["reply"]["Profiles"][type1]:
                             pass
             if (
@@ -24459,7 +24496,7 @@ def CheckValidity(contract, market=0):
                             contract["Market Data"]["reply"]["rate"]
                         )
                         if newcontract["Market Data"]["reply"]["rate"] < 0:
-                            float("A")
+                            raise Exception("Flow Control Jump")
                     newcontract["Market Data"]["reply"]["timestamp"] = (
                         contract["Market Data"]["reply"]["timestamp"] + 1
                     )
@@ -24476,20 +24513,20 @@ def CheckValidity(contract, market=0):
                         Decimal(contract["Market Data"]["maxorder"]) > 1
                         or Decimal(contract["Market Data"]["maxorder"]) <= 0
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if (
                         Decimal(contract["Market Data"]["minorder"]) > 1
                         or Decimal(contract["Market Data"]["minorder"]) <= 0
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if Decimal(contract["Market Data"]["maxorder"]) < Decimal(
                         contract["Market Data"]["minorder"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if Decimal(contract["Market Data"]["maxincrease"]) < 1:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if Decimal(contract["Market Data"]["maxdecrease"]) <= 0:
-                        float("A")
+                        raise Exception("Flow Control Jump")
             if "notes" in contract["Market Data"]:
                 newcontract["Market Data"]["notes"] = (
                     contract["Market Data"]["notes"] + "A"
@@ -24511,7 +24548,7 @@ def CheckValidity(contract, market=0):
                     contract["Market Data"]["service"]
                 )
                 if Decimal(newcontract["Market Data"]["service"]) < 1:
-                    float("A")
+                    raise Exception("Flow Control Jump")
             if "mymailing" in contract["Market Data"]:
                 newcontract["Market Data"]["mymailing"] = (
                     contract["Market Data"]["mymailing"] + "A"
@@ -24521,7 +24558,7 @@ def CheckValidity(contract, market=0):
                     contract["Market Data"]["rate"]
                 )
                 if newcontract["Market Data"]["rate"] < 0:
-                    float("A")
+                    raise Exception("Flow Control Jump")
             if "description" in contract["Market Data"]:
                 newcontract["Market Data"]["description"] = (
                     contract["Market Data"]["description"] + "A"
@@ -24558,7 +24595,7 @@ def CheckValidity(contract, market=0):
             if "autopay" in contract["Market Data"]:
                 if "Find" in contract["Market Data"]["Template"]:
                     if contract["Market Data"]["autopay"] != 0:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 newcontract["Market Data"]["autopay"] = (
                     Decimal(contract["Market Data"]["autopay"]) + 1
                 )
@@ -24577,7 +24614,7 @@ def CheckValidity(contract, market=0):
                     and contract["Market Data"]["Pay Frequency"] != "Per Week"
                     and contract["Market Data"]["Pay Frequency"] != "Per Month"
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 newcontract["Market Data"]["Pay Frequency"] = (
                     contract["Market Data"]["Pay Frequency"] + "A"
                 )
@@ -24629,13 +24666,13 @@ def CheckValidity(contract, market=0):
             res = VerifyMarketData(contract)
             if res == False:
                 pass
-                print(float("A"))
+                raise Exception("Flow Control Jump")
         for k in (
             contract
         ):  # They may try to cram in extra information but we will not allow it!
             if k not in newcontract:
                 print(k, "Found! Please check order.")
-                print(float("A"))
+                raise Exception("Flow Control Jump")
         return 1
     except Exception as e:
         traceback.print_exc()
@@ -24706,7 +24743,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                     if (
                         contract["Market Data"]["Template"] != "Custom"
                     ):  # For now those are only custom settings
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if (
                     "Coins" in contract["Market Data"]["Template"]
                 ):  # All contracts that don't allow changing deposits and time
@@ -24730,7 +24767,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                     depchange = 0
                 if "Barter" in contract["Market Data"]["Template"]:
                     if contract["amount"] != 10000:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if contract["Market Data"]["tracking"] == 2:
                         barter = 0
                         if Decimal(contract["mydeposit"]) / Decimal(
@@ -24750,7 +24787,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                     if (
                         contract["amount"] == 10000
                     ):  # For now we limit this amount to Barter templates
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if depchange == 0:
                     mydepositprop = Decimal(contract["mydeposit"]) / Decimal(
                         contract["amount"]
@@ -24805,99 +24842,99 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                     contract["Market Data"]["autoaccept"]
                     != body["Market Data"]["autoaccept"]
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if (
                     contract["Market Data"]["allowcounters"]
                     != body["Market Data"]["allowcounters"]
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if (
                     contract["Market Data"]["allowchat"]
                     != body["Market Data"]["allowchat"]
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if (
                     contract["Market Data"]["tracking"]
                     != body["Market Data"]["tracking"]
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if contract["type"] != body["type"]:
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if contract["status"] != body["status"]:
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if contract["version"] != body["version"]:
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if (
                     contract["Market Data"]["Template"]
                     != body["Market Data"]["Template"]
                 ):
-                    float("A")
+                    raise Exception("Flow Control Jump")
                 if "shipping" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["shipping"]
                         != body["Market Data"]["shipping"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "weight" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["weight"]
                         != body["Market Data"]["weight"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "StartingBid" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["StartingBid"]
                         != body["Market Data"]["StartingBid"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "countries" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["countries"]
                         != body["Market Data"]["countries"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "keepratio" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["keepratio"]
                         != body["Market Data"]["keepratio"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "duration" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["duration"]
                         != body["Market Data"]["duration"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "title" in contract["Market Data"]:
                     if contract["Market Data"]["title"] != body["Market Data"]["title"]:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "autopay" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["autopay"]
                         != body["Market Data"]["autopay"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "Pay Frequency" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["Pay Frequency"]
                         != body["Market Data"]["Pay Frequency"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "interview" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["interview"]
                         != body["Market Data"]["interview"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "code1" in contract["Market Data"]:
                     if contract["Market Data"]["code1"] != body["Market Data"]["code1"]:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "code2" in contract["Market Data"]:
                     if contract["Market Data"]["code2"] != body["Market Data"]["code2"]:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "code3" in contract["Market Data"]:
                     if contract["Market Data"]["code3"] != body["Market Data"]["code3"]:
-                        float("A")
+                        raise Exception("Flow Control Jump")
 
                 # We check for the keys but we don't actually check all the barter data
                 # because the users should pay close attention to their offers anyways
@@ -24906,19 +24943,19 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                         contract["Market Data"]["buymultiple"]
                         != body["Market Data"]["buymultiple"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "offernotinlist" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["offernotinlist"]
                         != body["Market Data"]["offernotinlist"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 if "itemlimit" in contract["Market Data"]:
                     if (
                         contract["Market Data"]["itemlimit"]
                         != body["Market Data"]["itemlimit"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                 try:  # We run a try catch in case some of these keys don't exist
                     if body["whopays"] != contract["whopays"]:
                         newfound = 0
@@ -25018,7 +25055,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                         > Decimal(body["Market Data"]["service"])
                         or "Buy Coins" not in body["Market Data"]["Template"]
                     ):
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     if (
                         body["Market Data"]["reply"]["service"]
                         != body["Market Data"]["service"]
@@ -25174,7 +25211,7 @@ def FilterContract(mybody, mycontract, mode=0, check=0):
                             and type1 != "Mail"
                             and type1 != "Contact"
                         ):
-                            float("A")
+                            raise Exception("Flow Control Jump")
                         for k in body["Market Data"]["reply"]["Profiles"][type1]:
                             pass
                     for profile in body["Market Data"]["reply"]["Profiles"]:
@@ -25610,7 +25647,7 @@ def CheckEscrow():
                                                         "The history is not up to date"
                                                         in res
                                                     ):
-                                                        float("a")
+                                                        raise Exception("Flow Control Jump")
                                                     contract["payments"][
                                                         str(contract["billing"])
                                                     ] = rawtx
@@ -25625,7 +25662,7 @@ def CheckEscrow():
                                                     contract["Market Data"][
                                                         "autopay"
                                                     ] = 0
-                                                    float("a")
+                                                    raise Exception("Flow Control Jump")
                                                 rspns = 0
                                                 found = 0
                                                 ps1 = -1
@@ -29161,11 +29198,11 @@ def sendBTCtx(tx):
                 if "txid" in response:
                     rspns = str(response["txid"])
                 else:
-                    float("a")
+                    raise Exception("Flow Control Jump")
             except:
                 traceback.print_exc()
                 print(str(rspns.text))
-                float("a")
+                raise Exception("Flow Control Jump")
         else:
             # Manual submission
             # print(str(tx))
@@ -29173,7 +29210,7 @@ def sendBTCtx(tx):
             # if w=="d":
             #    print(str(txhash(str(tx))))
             # else:
-            #    float('a')
+            #    raise Exception("Flow Control Jump")
             # rspns = str(txhash(str(tx)))
             if True:
                 # Might need cloudflare-scrape to make blockexplorer api work
@@ -29880,7 +29917,7 @@ def translate_script(myscript):
             if str(scr[1]) == "169":  # Hash Puzzle
                 if str(scr[3]) != "136":  # Not scripted properly
                     print("Not 136")
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 meaning["hashbefore"] = scr[2]
                 offset += 3
             if (
@@ -29905,10 +29942,10 @@ def translate_script(myscript):
             else:
                 msigaddr = " (address type unsupported by Halo) "
                 print("address not right")
-                float("a")  # Why bother if it is not supported
+                raise Exception("Flow Control Jump")  # Why bother if it is not supported
             if str(scr[6 + offset]) != "103":  # Not for Halo
                 print("Not 103")
-                float("a")
+                raise Exception("Flow Control Jump")
             ExpectedLength += (
                 6  # It can't just be a hash puzzle, there also needs to be a recipient
             )
@@ -29918,7 +29955,7 @@ def translate_script(myscript):
                 and str(scr[ExpectedLength + offset + 2]) != "117"
             ):
                 print("Not 177")
-                float("a")
+                raise Exception("Flow Control Jump")
             ExpectedLength += 3
             meaning["before"] = msigaddr
             pw = 0
@@ -29979,12 +30016,12 @@ def translate_script(myscript):
                     ExpectedLength += 2
                 else:
                     print("Not 104")
-                    float("a")
+                    raise Exception("Flow Control Jump")
             else:
                 if str(scr[10 + offset]) == "169":
                     if str(scr[12 + offset]) != "136":  # Not scripted properly
                         print("not 2nd 136")
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     meaning["hashafter"] = scr[11 + offset]
                     offset += 3
                 if (
@@ -30011,7 +30048,7 @@ def translate_script(myscript):
                 else:
                     msigaddr = " (address type unsupported by Halo) "
                     print("not 2nd address")
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 ExpectedLength += 6  # It can't just be a hash puzzle, there also needs to be a recipient
                 meaning["destination"] = msigaddr
                 if CoinSelect["checksequenceverify"] == False:
@@ -30051,7 +30088,7 @@ def translate_script(myscript):
                 len(scr) != ExpectedLength + offset
             ):  # We cannot have them adding anything at the end of the script.
                 print("Not Expected ", ExpectedLength + offset)
-                float("a")
+                raise Exception("Flow Control Jump")
     except:
         meaning = {}
         traceback.print_exc()
@@ -30721,7 +30758,7 @@ def MakeChange(
                 length += 1
             if rtx == 0:
                 if length == 0:  # No more inputs
-                    float("a")
+                    raise Exception("Flow Control Jump")
             i = 0
             found = 0
             while (
@@ -30898,7 +30935,7 @@ def MakeChange(
                 if next1 != 1:
                     i = i + 1
             if found == 0 and rtx == 0:
-                float("a")
+                raise Exception("Flow Control Jump")
             if found == 0 and rtx == 1:
                 Total3 += remainder
                 rtx = 0
@@ -34428,7 +34465,7 @@ def translateInParts(txt, lang):
             break
         if x == 50:
             print("Iteration too long")
-            float("a")
+            raise Exception("Flow Control Jump")
     print(repr(txt2))
     return txt2
 
@@ -34535,7 +34572,7 @@ def CountVotes(addy, start, finish):
             fails = 0
             while start <= finish:
                 if fails > 10:
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 nextone = 1
                 if MySettings.stopcount == 1:
                     print("Voting Counting Stopped")
@@ -36485,7 +36522,7 @@ class TemplateWindow(QtWidgets.QWidget):
                             )
                         if Decimal(minval) > Decimal(highvalue1):
                             if highvalue != 0:
-                                float("a")
+                                raise Exception("Flow Control Jump")
                 except:
                     traceback.print_exc()
                     if ui == 1:
@@ -36913,9 +36950,9 @@ class TemplateWindow(QtWidgets.QWidget):
         else:
             self.Window.MaxItems.show()
             self.Window.MaxItemsBox.show()
-        setting = self.Window.SentToSelect.itemData(
+        setting = int(self.Window.SentToSelect.itemData(
             self.Window.SentToSelect.currentIndex()
-        ).toInt()[0]
+        ) or 0)
         if setting == 9999999:  # "Private Email/BitMessage/Coin Address..."
             self.Window.SendToAddress.show()
         else:
@@ -37027,7 +37064,7 @@ class TemplateWindow(QtWidgets.QWidget):
             exec(
                 "self.Window."
                 + re.sub(r"[^A-Za-z0-9_]+", "", h)
-                + ".setCheckState(QtCore.Qt.CheckState(2)\n"
+                + ".setCheckState(QtCore.Qt.CheckState(2))\n"
             )
         for obj1 in self.objlist:
             exec(
@@ -39859,9 +39896,9 @@ class TemplateWindow(QtWidgets.QWidget):
         self.Data["allowchat"] = 0
         self.Data["Private"] = 0
         text = str(self.Window.SentToSelect.currentText())
-        setting = self.Window.SentToSelect.itemData(
+        setting = int(self.Window.SentToSelect.itemData(
             self.Window.SentToSelect.currentIndex()
-        ).toInt()[0]
+        ) or 0)
         if setting == 9999999:  # "Private Email/BitMessage/Coin Address...":
             text = str(self.Window.SendToAddress.text())
             self.Data["Private"] = 1
@@ -40521,9 +40558,9 @@ class TemplateWindow(QtWidgets.QWidget):
             if self.readonly == 0:  # They decided to counter in the boxes
                 accept = 0
                 if str(self.Window.Box1.text()) != "":
-                    setting = self.Window.Drop1.itemData(
+                    setting = int(self.Window.Drop1.itemData(
                         self.Window.Drop1.currentIndex()
-                    ).toInt()[0]
+                    ) or 0)
                     if setting == 998:  # They want to order a higher quantity
                         try:
                             multiplier = abs(int(self.Window.Box1.text()))
@@ -40573,9 +40610,9 @@ class TemplateWindow(QtWidgets.QWidget):
                             QuestionBox("Invalid amount!", "OK")
                             return
                         if (
-                            self.Window.DepositSettings10.itemData(
+                            int(self.Window.DepositSettings10.itemData(
                                 self.Window.DepositSettings10.currentIndex()
-                            ).toInt()[0]
+                            ) or 0)
                             == 0
                         ):
                             if amount != orgamount:
@@ -40592,9 +40629,9 @@ class TemplateWindow(QtWidgets.QWidget):
                                 theirdeposit = int(
                                     Decimal(theirdeposit) * Decimal(ratio)
                                 )
-                setting = self.Window.DepositSettings10.itemData(
+                setting = int(self.Window.DepositSettings10.itemData(
                     self.Window.DepositSettings10.currentIndex()
-                ).toInt()[0]
+                ) or 0)
                 if setting == 999:
                     notifymultiplier = 0
                     thesame = 0
@@ -41023,9 +41060,9 @@ class TemplateWindow(QtWidgets.QWidget):
         self.Window.SelectContact.blockSignals(True)
         multisig, mscript = create_multisig_address(PrivKeyFilename1)
         if index == 9:
-            setting = self.Window.SelectContact.itemData(
+            setting = int(self.Window.SelectContact.itemData(
                 self.Window.SelectContact.currentIndex()
-            ).toInt()[0]
+            ) or 0)
             if setting == 9999999:  # "Add/Edit profiles..."
                 Templates.Window.Pages.setCurrentIndex(8)
                 Templates.LoadProfiles()
@@ -41121,9 +41158,7 @@ class TemplateWindow(QtWidgets.QWidget):
                                 )
                     except:
                         traceback.print_exc()
-        setting = self.Window.Drop1.itemData(self.Window.Drop1.currentIndex()).toInt()[
-            0
-        ]
+        setting = int(self.Window.Drop1.itemData(self.Window.Drop1.currentIndex()) or 0)
         if setting == 999 or setting == 998:
             if "Coins" not in self.order["Market Data"]["Template"]:
                 self.readonly = 0
@@ -41133,9 +41168,9 @@ class TemplateWindow(QtWidgets.QWidget):
                 if setting == 998:
                     self.Window.Box1.clear()
                     self.Window.USD1.hide()
-        setting = self.Window.DepositSettings10.itemData(
+        setting = int(self.Window.DepositSettings10.itemData(
             self.Window.DepositSettings10.currentIndex()
-        ).toInt()[0]
+        ) or 0)
         if setting == 999:
             if "Coins" not in self.order["Market Data"]["Template"]:
                 self.readonly = 0
@@ -41218,9 +41253,9 @@ class TemplateWindow(QtWidgets.QWidget):
             self.Window.MyDepositBox10.setReadOnly(False)
             self.Window.TheirDepositBox10.setReadOnly(False)
             self.Window.TimeLimitBox10.setReadOnly(False)
-            setting = self.Window.DepositSettings10.itemData(
+            setting = int(self.Window.DepositSettings10.itemData(
                 self.Window.DepositSettings10.currentIndex()
-            ).toInt()[0]
+            ) or 0)
             if "Something" in self.order["Market Data"]["Template"]:
                 if setting != 999:  # They must request to edit the deposits
                     self.Window.MyDepositBox10.setReadOnly(True)
@@ -43228,7 +43263,7 @@ def shippingcalculator(clientinfo="", manualoffer=0):
                 return ""
             rate = Decimal(str(text))
             if rate < Decimal(0):
-                float("a")
+                raise Exception("Flow Control Jump")
         except:
             QuestionBox("Not a valid amount!", " OK ")
             rate = ""
@@ -43373,7 +43408,7 @@ class CalcManager(QNetworkAccessManager):
         content_type = headers.get("Content-Type")
         url = reply.url().toString()
         status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-        status, ok = status.toInt()
+        status = int(status) if status is not None else 0
         self.table.update([url, str(status), content_type])
 
 
@@ -43924,7 +43959,7 @@ class Settings(QtWidgets.QWidget):
                             " OK ",
                         )
                     if res != True:
-                        float("a")
+                        raise Exception("Flow Control Jump")
                 except:
                     traceback.print_exc()
                     AdvanceArray["MySettings"]["ColdStake"] = ""
@@ -44583,7 +44618,7 @@ class Settings(QtWidgets.QWidget):
             try:
                 text2 = int(text2)
                 if text2 == 0:
-                    float("a")
+                    raise Exception("Flow Control Jump")
             except:
                 QuestionBox(
                     "You did not enter a valid quantity for the amount of votes to cast. Please try again.",
@@ -44688,9 +44723,9 @@ class Settings(QtWidgets.QWidget):
                 start = int(StartBlock.toPlainText())
                 finish = int(FinishBlock.toPlainText())
                 if start > finish:
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 if start == 0 or finish == 0:
-                    float("a")
+                    raise Exception("Flow Control Jump")
             except:
                 QuestionBox("Not a valid amount for the start and finish blocks.", "OK")
                 return
@@ -48143,7 +48178,7 @@ class WContracts(QtWidgets.QWidget):
     def showme(self, tip=0):
         global timestamp, ContractSelected, MyContracts
         self.makeComboBox()
-        setting = self.comboBox.itemData(1).toInt()[0]
+        setting = int(self.comboBox.itemData(1) or 0)
         contract = ContractSelected
         if "Market Data" not in contract:
             self.checkMessages()
@@ -49447,7 +49482,7 @@ class WContracts(QtWidgets.QWidget):
         global AdvanceArray, ContractSelected, MyContracts
         contract = ContractSelected
         index = self.comboBox.currentIndex()
-        combo = self.comboBox.itemData(index).toInt()[0]
+        combo = int(self.comboBox.itemData(index) or 0)
         multisig, multiscript = create_multisig_address(PrivKeyFilename1)
         Reply = {}
         if combo == 7:
@@ -49581,7 +49616,7 @@ class WContracts(QtWidgets.QWidget):
             if c["ordernumber"] == contract["ordernumber"]:
                 break
         index = self.comboBox.currentIndex()
-        combo = self.comboBox.itemData(index).toInt()[0]
+        combo = int(self.comboBox.itemData(index) or 0)
         if mess != "":
             combo = 1
         if combo == 0:
@@ -50697,7 +50732,7 @@ class WSend(QtWidgets.QWidget):
                         if PendingSelected["Details"]["image"] != "":
                             ID = fpaste(PendingSelected["Details"]["image"])
                             if ID == False:
-                                float("A")
+                                raise Exception("Flow Control Jump")
                             pos = 0
                             for c in MyContracts:
                                 if (
@@ -53166,11 +53201,11 @@ class MyApp(
                 if interneton == 1:
                     ID = fpaste(mybytes)
                     if ID == False:
-                        float("A")
+                        raise Exception("Flow Control Jump")
                     GlobalID = str(ID)
                     print(GlobalID)
                 else:
-                    float("A")
+                    raise Exception("Flow Control Jump")
             except:
                 GlobalID = ""
                 QuestionBox(
@@ -54054,7 +54089,7 @@ class MyApp(
                         return False
                     combined = ThePeg.checkliquidity(liquid, reserve)
                     if combined == False:
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     liq = json_deep_copy(combined)
                     NetSplash(0)
                 except:
@@ -54803,7 +54838,7 @@ class MyApp(
                             return False
                         combined = ThePeg.checkliquidity(liquid, reserve)
                         if combined == False:
-                            float("a")
+                            raise Exception("Flow Control Jump")
                         liq = json_deep_copy(combined)
                         NetSplash(0)
                     except:
@@ -57702,7 +57737,7 @@ class MyApp(
                                             liquid, reserve
                                         )
                                         if combined == False:
-                                            float("a")
+                                            raise Exception("Flow Control Jump")
                                         liq = json_deep_copy(combined)
                                         NetSplash(0)
                                     except:
@@ -57830,7 +57865,7 @@ class MyApp(
                                     rspns = "TX rejected"
                             if "TX rejected" in str(rspns):
                                 QuestionBox(str(rspns), "OK")
-                                print(float("A"))
+                                raise Exception("Flow Control Jump")
                                 return
                             QuestionBox(
                                 str(txhash(tx))
@@ -58157,7 +58192,7 @@ class MyApp(
                     )  # We can't afford to miscommunicate the script
                     testme = DecodeScriptFromOuts(testme)
                     if testme["script"] != address:
-                        float("a")
+                        raise Exception("Flow Control Jump")
                     if meaning["type"] == "Freeze":
                         if "by Halo" not in meaning["destination"]:
                             NotifyTHIS.append(meaning["destination"])
@@ -58171,7 +58206,7 @@ class MyApp(
                         if notify != "":
                             NotifyTHIS.append(notify)
                     else:
-                        float("a")
+                        raise Exception("Flow Control Jump")
             except:
                 QuestionBox("Script is not valid!", "OK")
                 return False, "Script is not valid!"
@@ -58403,7 +58438,7 @@ class MyApp(
                     amount += 5777
                     fee -= 5777
                 if amt2 < 5000 or fee < 5000:
-                    float("a")
+                    raise Exception("Flow Control Jump")
                 outputs.insert(0, {"value": amt2, "address": address})
                 found = 0
                 for bridged in ThePeg.Pegdatabase["bridgedb"]["bridges"]:

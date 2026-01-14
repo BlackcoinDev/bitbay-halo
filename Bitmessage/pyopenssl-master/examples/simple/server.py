@@ -44,8 +44,8 @@ server.bind(("", int(sys.argv[1])))
 server.listen(3)
 server.setblocking(0)
 
-clients = {}
-writers = {}
+clients: dict = {}
+writers: dict = {}
 
 
 def dropClient(cli, errors=None):

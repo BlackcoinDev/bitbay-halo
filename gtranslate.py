@@ -55,7 +55,7 @@ class GoogleTrans(object):
                 return 0
 
         class Undefined:
-            def __init__():
+            def __init__(self):
                 pass
 
         class js_array:

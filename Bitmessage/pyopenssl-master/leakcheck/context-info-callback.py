@@ -52,7 +52,7 @@ cleartextCertificatePEM = (
     "-----END CERTIFICATE-----\n"
 )
 
-count = count()
+counter = count()
 
 
 def go():
@@ -63,7 +63,7 @@ def go():
     called = []
 
     def info(conn, where, ret):
-        print(next(count))
+        print(next(counter))
         called.append(None)
 
     context = Context(TLSv1_METHOD)

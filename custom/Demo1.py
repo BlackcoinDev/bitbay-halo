@@ -1,3 +1,14 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    firstform = 1
+    showform = 1
+    acceptform = 1
+
+    def QuestionBox(msg, btn):
+        pass
+
+
 try:
     x = firstform + 1
     QuestionBox(

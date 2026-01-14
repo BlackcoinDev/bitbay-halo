@@ -20,7 +20,7 @@ print("Let's list our addresses:")
 print(api.listAddresses())
 
 print("Let's list our address again, but this time let's parse the json data into a Python data structure:")
-jsonAddresses = json.loads(api.listAddresses())
+jsonAddresses = json.loads(str(api.listAddresses()))
 print(jsonAddresses)
 print("Now that we have our address data in a nice Python data structure, let's look at the first address (index 0) and print its label:")
 print(jsonAddresses["addresses"][0]["label"])
@@ -46,7 +46,7 @@ print("Uncomment these next four lines to create new deterministic addresses.")
 
 print("Let's now print all of our inbox messages:")
 print(api.getAllInboxMessages())
-inboxMessages = json.loads(api.getAllInboxMessages())
+inboxMessages = json.loads(str(api.getAllInboxMessages()))
 print(inboxMessages)
 
 print("Uncomment this next line to decode the actual message data in the first message:")

@@ -47,7 +47,7 @@ while 1:
         break
     try:
         sock.send(line)
-        sys.stdout.write(sock.recv(1024))
+        sys.stdout.write(sock.recv(1024).decode())
         sys.stdout.flush()
     except SSL.Error:
         print("Connection died unexpectedly")
