@@ -1391,7 +1391,7 @@ def DataDirectory():
             f.write(
                 "rpcuser=" + CoinSelect["rpcuser"] + "\n"
             )  # The second line is for commands and lines
-            CoinSelect["rpcpassword"] = txhash(os.urandom(16))
+            CoinSelect["rpcpassword"] = hashlib.sha256(os.urandom(16)).hexdigest()
             f.write("rpcpassword=" + CoinSelect["rpcpassword"] + "\n")
             f.write("rpcport=" + CoinSelect["rpcport"])
             f.write(
@@ -1693,6 +1693,9 @@ if os.name == "nt":
 else:
     # The frozen package can have issues finding the requests certificates so just fix it this way
     os.environ["REQUESTS_CA_BUNDLE"] = application_path + "/cacert.pem"
+    
+    # Try to start the coin daemon
+    BlackHalo = None
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         result = sock.connect_ex(("127.0.0.1", int(CoinSelect["port"])))
@@ -1712,7 +1715,33 @@ else:
             )
         else:
             BlackHalo = None
-        if skipBM != True:
+    except Exception as e:
+        traceback.print_exc()
+        daemon_path = application_path + "/" + CoinSelect["daemon"]
+        warning_msg = (
+            f"Warning: Could not start {CoinSelect['daemon']}.\n\n"
+            f"Path: {daemon_path}\n"
+            f"Error: {str(e)}\n\n"
+            "The application will continue without the daemon.\n"
+            "Some features may not be available."
+        )
+        print(warning_msg)
+        # Show a non-blocking warning dialog
+        try:
+            msbx = QtWidgets.QWidget()
+            QtWidgets.QMessageBox.warning(
+                msbx,
+                CoinSelect["HaloName"] + " - Daemon Warning",
+                warning_msg
+            )
+        except:
+            pass  # If dialog fails, we already printed to console
+        BlackHalo = None
+    
+    # Try to start Bitmessage
+    BitMHalo = None
+    if skipBM != True:
+        try:
             env = os.environ.copy()
             env["QT_QPA_PLATFORM"] = "offscreen"
             # Add project root to PYTHONPATH so Bitmessage module can be found
@@ -1728,11 +1757,26 @@ else:
                 ],
                 env=env,
             )
-    except:
-        traceback.print_exc()
-        print("Could not find necessary executables.")
-        print(application_path + "/" + CoinSelect["daemon"], "\n", "BitMHalo")
-        sys.exit(1)
+        except Exception as e:
+            traceback.print_exc()
+            warning_msg = (
+                f"Warning: Could not start Bitmessage.\n\n"
+                f"Error: {str(e)}\n\n"
+                "The application will continue without Bitmessage.\n"
+                "Messaging features may not be available."
+            )
+            print(warning_msg)
+            # Show a non-blocking warning dialog
+            try:
+                msbx = QtWidgets.QWidget()
+                QtWidgets.QMessageBox.warning(
+                    msbx,
+                    CoinSelect["HaloName"] + " - Bitmessage Warning",
+                    warning_msg
+                )
+            except:
+                pass  # If dialog fails, we already printed to console
+            BitMHalo = None
 if skipBM:
     procs.append(None)
 else:
