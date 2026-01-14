@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This script demostrates how one can use pyOpenSSL to speak SSL over an HTTP
 # proxy

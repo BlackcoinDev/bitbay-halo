@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import cmd
 import datetime
+import locale
 import logging
 import os
 import signal
@@ -29,7 +30,7 @@ try:
     import readline
 
     try:
-        if sysinfo["system"] == "windows":
+        if sys.platform.startswith("win"):
             readline.rl.mode.show_all_if_ambiguous = "on"  # config pyreadline on windows
     except:
         pass

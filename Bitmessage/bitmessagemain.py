@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Copyright (c) 2012 Jonathan Warren
 # Copyright (c) 2012 The Bitmessage developers
 # Distributed under the MIT/X11 software license. See the accompanying

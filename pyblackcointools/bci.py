@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.14
+#!/usr/bin/env python3
 try:
     from urllib.request import build_opener
 except:

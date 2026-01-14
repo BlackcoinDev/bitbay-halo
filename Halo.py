@@ -2529,10 +2529,15 @@ def ResetBitMHalo():
         else:
             env = os.environ.copy()
             env["QT_QPA_PLATFORM"] = "offscreen"
+            # Add project root to PYTHONPATH so Bitmessage module can be found
+            env["PYTHONPATH"] = application_path + (
+                os.pathsep + env.get("PYTHONPATH", "") if env.get("PYTHONPATH") else ""
+            )
             BitMHalo = subprocess.Popen(
                 [
                     sys.executable,
-                    application_path + "/Bitmessage/bitmessagemain.py",
+                    "-m",
+                    "Bitmessage.bitmessagemain",
                     "path=" + application_path,
                 ],
                 env=env,
