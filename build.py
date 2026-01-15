@@ -24,7 +24,7 @@ def check_uv_available():
 def check_python_version():
     """Check if Python version is compatible"""
     version = sys.version_info
-    if version.major < 3 or (version.major == 3 and version.minor < 8):
+    if version.major < 3 or (version.major == 3 and version.minor < 10):
         print("ERROR: Python 3.8+ required. Current version:", sys.version)
         return False
     return True
