@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWebEngineCore, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWebEngineCore, QtWebEngineWidgets, QtWidgets
 
 
 def _fromUtf8(s):
@@ -5875,11 +5875,8 @@ class MyForm(QtWidgets.QDialog):
             self.reply = {}
             self.Data = {}
             self.order = {}
-        except:
+        except Exception:
             pass
-
-
-from PyQt6 import QtWebEngineWidgets
 
 
 class MyApplication(QtWidgets.QApplication):

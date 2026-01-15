@@ -1112,7 +1112,7 @@ class MyForm(QtWidgets.QMainWindow):
                 pass
             return
         else:
-            self.tray.showMessage(title, subtitle, 1, 2000)
+            self.tray.showMessage(title, subtitle, QtWidgets.QSystemTrayIcon.MessageIcon.Information, 2000)
 
     def tableWidgetInboxKeyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key.Key_Delete:

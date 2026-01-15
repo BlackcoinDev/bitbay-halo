@@ -37354,7 +37354,7 @@ class TemplateWindow(QtWidgets.QWidget):
                     exec(
                         "self.Window."
                         + re.sub(r"[^A-Za-z0-9_]+", "", self.savevar)
-                        + ".setCheckState(QtCore.Qt.CheckState(0)\n"
+                        + ".setCheckState(QtCore.Qt.CheckState(0))\n"
                     )
                 else:
                     exec(
@@ -37415,7 +37415,7 @@ class TemplateWindow(QtWidgets.QWidget):
             exec(
                 "self.Window.SaveFuture"
                 + re.sub(r"[^A-Za-z0-9_]+", "", str(pg))
-                + ".setCheckState(QtCore.Qt.CheckState(2)\n"
+                + ".setCheckState(QtCore.Qt.CheckState(2))\n"
             )
             # Different defaults
             if clear == 1:
@@ -37438,7 +37438,7 @@ class TemplateWindow(QtWidgets.QWidget):
             exec(
                 "self.Window.SaveFuture"
                 + re.sub(r"[^A-Za-z0-9_]+", "", str(pg))
-                + ".setCheckState(QtCore.Qt.CheckState(0)\n"
+                + ".setCheckState(QtCore.Qt.CheckState(0))\n"
             )
         if self.rate == "":
             self.Window.RateBox.setCurrentIndex(1)
@@ -37474,13 +37474,13 @@ class TemplateWindow(QtWidgets.QWidget):
             exec(
                 "self.Window."
                 + re.sub(r"[^A-Za-z0-9_]+", "", h)
-                + ".setCheckState(QtCore.Qt.CheckState(2)\n"
+                + ".setCheckState(QtCore.Qt.CheckState(2))\n"
             )
         if save == 1:
             exec(
                 "self.Window.SaveFuture"
                 + re.sub(r"[^A-Za-z0-9_]+", "", str(orgpos))
-                + ".setCheckState(QtCore.Qt.CheckState(0)\n"
+                + ".setCheckState(QtCore.Qt.CheckState(0))\n"
             )
 
     def ChangeIndex(self, obj):
