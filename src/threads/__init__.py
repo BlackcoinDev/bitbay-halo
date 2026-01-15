@@ -85,13 +85,24 @@ class IWorker(Protocol):
     """Protocol for worker thread interface"""
 
     @property
-    def name(self) -> str: ...
+    def name(self) -> str:
+        ...
+
     @property
-    def state(self) -> ThreadState: ...
-    def start(self) -> None: ...
-    def stop(self) -> None: ...
-    def is_running(self) -> bool: ...
-    def join(self, timeout: Optional[float] = None) -> None: ...
+    def state(self) -> ThreadState:
+        ...
+
+    def start(self) -> None:
+        ...
+
+    def stop(self) -> None:
+        ...
+
+    def is_running(self) -> bool:
+        ...
+
+    def join(self, timeout: Optional[float] = None) -> None:
+        ...
 
 
 class WorkerThread(Thread):
@@ -124,11 +135,6 @@ class WorkerThread(Thread):
         self._start_time: Optional[datetime] = None
         self._last_activity: Optional[datetime] = None
         self._iterations = 0
-
-    @property
-    def name(self) -> str:
-        """Get thread name"""
-        return self._name
 
     @property
     def state(self) -> ThreadState:
