@@ -3091,7 +3091,6 @@ class PegThread(QtCore.QThread):
                         self.SaveExchange("exchange")
                         self.exchangebusy = 0
                         self.exchangeready = 1
-                        firstrun = 0
                         while self.amrunning:
                             time.sleep(0.5)
                             if self.stopexchange == 1:
@@ -7801,7 +7800,6 @@ class PegThread(QtCore.QThread):
                 traceback.print_exc()
         self.Spendable = self.GetSpendable(Unspent, self.Spendable)
         for s in self.Spendable:
-            check = 0
             if "change" in self.Spendable[s]:
                 if s not in self.accounts["txids"]:
                     self.accounts["txids"][s] = {"name": "exchange", "registered": 1}
