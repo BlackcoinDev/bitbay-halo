@@ -5178,10 +5178,18 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Please fill out the form below. Any bank in the world that accepts international or local wires is supported. Direct deposit may be an option as well for the buyer. This information is confidential, and not shared with the buyer until the deal funds. This is one of the most secure and private ways to buy.</span></p>\n'
-                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11px;"><br /></p>\n'
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Please Note:</span></p>\n'
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Every bank has a different policy. Please check and see what information is needed for international wires, local wires and direct deposit. If you do large volumes of transactions we recommend checking with your branch about all applicable rules and policies.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Please fill out the form below. Any bank in the world that accepts international or local wires is supported. '
+                "Direct deposit may be an option as well for the buyer. This information is confidential, and not shared with the buyer until the deal funds. "
+                'This is one of the most secure and private ways to buy.</span></p>\n'
+                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11px;">'
+                '<br /></p>\n'
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Please Note:</span></p>\n'
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Every bank has a different policy. Please check and see what information is needed for international wires, '
+                "local wires and direct deposit. If you do large volumes of transactions we recommend checking with your branch about all applicable rules and policies.</span>"
+                "</p></body></html>",
                 None,
             )
         )
@@ -5211,7 +5219,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Please fill out the form below. In order to redeem a Western Union, you should have an office in your country where you can pick up the cash near you. Please make sure you are familiar with the process and their local policies. This is the first time in history that Western Union can be sent in exchange for goods securely thanks to double deposit.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Please fill out the form below. In order to redeem a Western Union, you should have an office in your '
+                "country where you can pick up the cash near you. Please make sure you are familiar with the process and their local policies. "
+                'This is the first time in history that Western Union can be sent in exchange for goods securely thanks to double deposit.</span></p></body></html>',
                 None,
             )
         )
@@ -5230,7 +5241,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Please fill out the form below. In order to redeem a Money Gram, you should have an office in your country where you can pick up the cash near you. Please make sure you are familiar with the process and their local policies. Please make sure your name matches exactly what is written on your identification.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Please fill out the form below. In order to redeem a Money Gram, you should have an office in your '
+                "country where you can pick up the cash near you. Please make sure you are familiar with the process and their local policies. "
+                'Please make sure your name matches exactly what is written on your identification.</span></p></body></html>',
                 None,
             )
         )
@@ -5251,7 +5265,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Every prepaid debit card has different methods of funding. Please explain how this card can be funded in the box below. Make sure you have as many options to fund as you know to be available such as locations that will fund it, online services for funding and so forth. Make sure that the funding method carries no risk of chargebacks for your own protection.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Every prepaid debit card has different methods of funding. Please explain how this card can be funded '
+                "in the box below. Make sure you have as many options to fund as you know to be available such as locations that will fund it, "
+                'online services for funding and so forth. Make sure that the funding method carries no risk of chargebacks for your own protection.</span></p></body></html>',
                 None,
             )
         )
@@ -5265,7 +5282,14 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">There are other methods of funding such as Money Order, Bank Draft, Cashiers Check, PayPal, Payza, Credit Card Payments and so forth. For your protection we recommend proceeding with extreme caution if you choose to use any of these funding methods. Double Deposit eliminates a lot of the risk but can not protect you from charge backs after the deal completes, fake checks, or attempts to reveal personal information. The trusted methods were recommended because they are secure, protect your privacy and do not allow chargebacks. Your counter-party will also be warned if they choose this route. Please make sure you know, prescreen and trust your customer before proceeding.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">There are other methods of funding such as Money Order, Bank Draft, Cashiers Check, PayPal, Payza, '
+                "Credit Card Payments and so forth. For your protection we recommend proceeding with extreme caution if you choose to use any of these funding methods. "
+                "Double Deposit eliminates a lot of the risk but can not protect you from charge backs after the deal completes, fake checks, or "
+                "attempts to reveal personal information. "
+                "The trusted methods were recommended because they are secure, protect your privacy and do not allow chargebacks. Your counter-party will "
+                "also be warned if they choose this route. "
+                'Please make sure you know, prescreen and trust your customer before proceeding.</span></p></body></html>',
                 None,
             )
         )
@@ -5286,7 +5310,11 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">It is perfectly secure to receive Cash In The Mail thanks to the nature of the double deposits. However, we highly recommend requiring that your buyers insure any packages. Not every country has a secure mail system and packages have known to get lost in the mail. Please consider leaving contact information so the party can contact you in any case.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">It is perfectly secure to receive Cash In The Mail thanks to the nature of the double deposits. '
+                "However, we highly recommend requiring that your buyers insure any packages. Not every country has a secure mail system and packages "
+                "have known to get lost in the mail. "
+                'Please consider leaving contact information so the party can contact you in any case.</span></p></body></html>',
                 None,
             )
         )
@@ -5311,7 +5339,9 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">The mailing address is only used if you are purchasing items through the mail, receiving packages or if it is required for a business transaction. All personal information is kept private, and is only stored here on your computer.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">The mailing address is only used if you are purchasing items through the mail, receiving packages or '
+                'if it is required for a business transaction. All personal information is kept private, and is only stored here on your computer.</span></p></body></html>',
                 None,
             )
         )
@@ -5329,7 +5359,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">In case you need to supply other contact information for your transactions, you can supply all of that here. This is only shared upon request and if needed for the contract itself. All of this information is optional and it is kept private, only being saved locally on your computer.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">In case you need to supply other contact information for your transactions, you can supply all of that here. '
+                'This is only shared upon request and if needed for the contract itself. All of this information is optional and it is kept private, '
+                'only being saved locally on your computer.</span></p></body></html>',
                 None,
             )
         )
@@ -5606,7 +5639,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">In the description, explain the commodity or service you have to trade. When estimating the value, please remember to describe how the value was determined. Include possible shipping cost, local or international, service charges or daily rates. For more help please click the &quot;?&quot; on the previous page.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">In the description, explain the commodity or service you have to trade. When estimating the value, '
+                "please remember to describe how the value was determined. Include possible shipping cost, local or international, service charges or daily rates. "
+                'For more help please click the &quot;?&quot; on the previous page.</span></p></body></html>',
                 None,
             )
         )
@@ -5729,11 +5765,23 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Only approved code will be listed in the contract selection box. If you feel like your code is secure and creative, you may submit it to the lead developer for approval. Custom contracts are possible for experimentation and fun. Because it uses the internal Python interpreter in a P2P way, there is absolutely no limit to the amount of control you have with these contracts. Please click the &quot;?&quot; box for more explanation. You should have a good understanding of Halo\'s source code before proceeding.</span></p>\n'
-                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11px;"><br /></p>\n'
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">WARNING:</span></p>\n'
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">Do not create or accept custom contracts unless you have an intimate understanding of programming, cryptocurrency, Python and Halo. Custom code can be used to completely control and compromise a computer. Anyone who tries to accept a custom contract will be warned. If you feel like your code is secure, you can have it reviewed for official approval and inclusion in the client.</span></p>\n'
-                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11px;"><br /></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Only approved code will be listed in the contract selection box. If you feel like your code is secure and creative, '
+                "you may submit it to the lead developer for approval. Custom contracts are possible for experimentation and fun. Because it uses the internal Python "
+                "interpreter in a P2P way, there is absolutely no limit to the amount of control you have with these contracts. Please click the &quot;?&quot; "
+                "box for more explanation. "
+                'You should have a good understanding of Halo\'s source code before proceeding.</span></p>\n'
+                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; '
+                'font-size:11px;"><br /></p>\n'
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">WARNING:</span></p>\n'
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">Do not create or accept custom contracts unless you have an intimate understanding of programming, '
+                'cryptocurrency, Python and Halo. '
+                "Custom code can be used to completely control and compromise a computer. Anyone who tries to accept a custom contract will be warned. "
+                'If you feel like your code is secure, you can have it reviewed for official approval and inclusion in the client.</span></p>\n'
+                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; '
+                'font-size:11px;"><br /></p></body></html>',
                 None,
             )
         )
@@ -5760,7 +5808,10 @@ class MyForm(QtWidgets.QDialog):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">All sensitive information is encrypted and only shared with your counterparty once the contract is live. If the time limit expires, you both lose your deposits and escrow. This makes them unbreakable in theory. So please make sure you have enough time for your contract to complete.</span></p></body></html>',
+                '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
+                '<span style=" font-size:11px;">All sensitive information is encrypted and only shared with your counterparty once the contract is live. '
+                "If the time limit expires, you both lose your deposits and escrow. This makes them unbreakable in theory. "
+                'So please make sure you have enough time for your contract to complete.</span></p></body></html>',
                 None,
             )
         )
