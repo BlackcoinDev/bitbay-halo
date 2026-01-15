@@ -7209,9 +7209,9 @@ class PegThread(QtCore.QThread):
                 f.close()
         if c == 2:
             with open(os.path.join(pegdir + fd + "exchange", "status.dat"), "r") as f:
-                l = f.readline().strip()
+                status = f.readline().strip()
                 f.close()
-            if int(l) == 1:
+            if int(status) == 1:
                 return False
         return True
 
@@ -8247,9 +8247,9 @@ class PegThread(QtCore.QThread):
                             self.accounts["users"][account]["liquid"] += self.accounts["balances"][str(x)][account]
                             myliquid -= self.accounts["balances"][str(x)][account]
                     else:  # Last key
-                        l = myliquid
+                        remaining = myliquid
                         myliquid = 0
-                        ratio = float(l) / float(tot)
+                        ratio = float(remaining) / float(tot)
                         for account in self.accounts["balances"][str(x)]:
                             if account == "total" or account == "frozen":
                                 continue
@@ -11911,8 +11911,8 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                         ensure_legacy_wallet()
                         if WatchlistQueue != []:  # I have noticed timeouts on importaddress... so we have a queue for this
                             pos = 0
-                            l = len(WatchlistQueue)
-                            while pos < l:
+                            wq_len = len(WatchlistQueue)
+                            while pos < wq_len:
                                 watch = WatchlistQueue[pos]
                                 try:
                                     if watch[:1] == "0":
@@ -12999,9 +12999,9 @@ def Update():
             for addy in AdvanceArray["StakedOrders"]:
                 if addy == "checktime":
                     continue
-                l = len(AdvanceArray["StakedOrders"][addy])
+                orders_len = len(AdvanceArray["StakedOrders"][addy])
                 pos = 0
-                while pos < l:
+                while pos < orders_len:
                     next1 = 1
                     if AdvanceArray["StakedOrders"][addy][pos]["currentblock"] == 0:
                         if AdvanceArray["StakedOrders"][addy][pos]["timestamp"] + 7200 < timestamp:
@@ -13012,7 +13012,7 @@ def Update():
                     if next1 == 1:
                         pos += 1
                     else:
-                        l -= 1
+                        orders_len -= 1
                         AdvanceArray["StakedOrders"][addy].pop(pos)
         if AdvanceArray["InboxCleanTime"] + 172800 < timestamp and BitAddr != " ":
             AdvanceArray["InboxCleanTime"] = timestamp
@@ -16936,16 +16936,16 @@ def ScanMessages():
                                         next1 = 1
                                         if MyContracts[i]["Process"] == "Market Order":
                                             if MyContracts[i]["ordernumber"] == accorder["oldordernumber"]:
-                                                l = 0
+                                                order_idx = 0
                                                 for o in OnOrders:
                                                     if "ordernumber" in o:
                                                         if o["ordernumber"] == MyContracts[i]["ordernumber"]:
                                                             if cnt != 0:  # They accepted the parent offer
-                                                                OnOrders.pop(l)
+                                                                OnOrders.pop(order_idx)
                                                             else:
-                                                                OnOrders[l]["ordernumber"] = body["ordernumber"]
+                                                                OnOrders[order_idx]["ordernumber"] = body["ordernumber"]
                                                             break
-                                                    l += 1
+                                                    order_idx += 1
                                                 RemoveFromMarket(MyContracts[i], body["ordernumber"])
                                                 next1 = 0
                                         if MyContracts[i]["Process"] == "Market Offer" or "MCount" in MyContracts[i]["Process"]:
@@ -22197,22 +22197,22 @@ def MakeChange(inputs, purchaseamount, myaddress, MAXINPUTS=25, mybuffer=0, spec
     lead = 0
     for i in SpendDenom:  # I was getting errors in len so I just calculate it manually
         pos += 1
-        l = 0 + lead
+        count = 0 + lead
         lead = 0
         keep = 0
         for j in i:
-            l += 1
-            if l > 4:  # We can break for change
+            count += 1
+            if count > 4:  # We can break for change
                 keep = 1
         if keep == 0:
             SpendDenom[pos] = []
             TempTotal[pos] = 0
         else:
-            lead = int(l / 5)
-    l = 0
+            lead = int(count / 5)
+    count = 0
     for leng in Spendthis:
-        l += 1
-    if l < 3:  # For now, we will make change pretty frequently. This function maintains the health of the account too since many satoshis cant clog up the account.
+        count += 1
+    if count < 3:  # For now, we will make change pretty frequently. This function maintains the health of the account too since many satoshis cant clog up the account.
         Spendthis = []
         Total = 0
     pos = -1
@@ -25370,9 +25370,9 @@ def ChangeLanguage(init=0):
             mylang = "DEFAULT"
         else:
             cur = str(langselect.LangSelect.currentText())
-            for l in langlist:
-                if langlist[l] == cur:
-                    mylang = l
+            for lang in langlist:
+                if langlist[lang] == cur:
+                    mylang = lang
                     break
         UpdateCfg("#language#", mylang, str(init))
         try:
@@ -25386,17 +25386,17 @@ def ChangeLanguage(init=0):
     langselect.LangSelect.currentIndexChanged.connect(Langchg)
     langl = []
     current = ""
-    for l in langlist:
-        langl.append(langlist[l])
-        if l == mylang:
-            current = langlist[l]
+    for lang in langlist:
+        langl.append(langlist[lang])
+        if lang == mylang:
+            current = langlist[lang]
     langl.sort()
     i = 2
     j = 0
-    for l in langl:
+    for lang in langl:
         if langl == current:
             j = i
-        langselect.LangSelect.addItem(_fromUtf8(l))
+        langselect.LangSelect.addItem(_fromUtf8(lang))
         i += 1
     if mylang == "0":
         mylang = "DEFAULT"
@@ -26724,17 +26724,17 @@ class TemplateWindow(QtWidgets.QWidget):
             for item in self.barteritems["supply"]:
                 lst.append(item)
             lst.sort()
-            for l in lst:
+            for item_name in lst:
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.SupplyBox.addItem(newitem)
             lst = []
             for item in self.barteritems["demand"]:
                 lst.append(item)
             lst.sort()
-            for l in lst:
+            for item_name in lst:
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.DemandBox.addItem(newitem)
             if thewindow == 2:
                 self.originwindow = 1
@@ -26776,8 +26776,8 @@ class TemplateWindow(QtWidgets.QWidget):
                     for item in self.barteritems["supply"]:
                         lst.append(item)
                     lst.sort()
-                    for l in lst:
-                        item = self.barteritems["supply"][l]
+                    for item_name in lst:
+                        item = self.barteritems["supply"][item_name]
                         if item["EstValueSelect"] != 1:
                             item = self.CalculateBarter(item, item["quantityusd"])
                         else:
@@ -26787,9 +26787,9 @@ class TemplateWindow(QtWidgets.QWidget):
                             amt = " - Coins: " + str((Decimal(int(item["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
                         else:
                             amt = " - USD: " + str(((Decimal(int(item["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
-                        summary.append(l + " " + item["quantitytext"] + amt)
+                        summary.append(item_name + " " + item["quantitytext"] + amt)
                         newitem = QtGui.QListWidgetItem()
-                        newitem.setText(l)
+                        newitem.setText(item_name)
                         self.Window.SupplyBox.addItem(newitem)
                     if lst != []:
                         newitem = QtGui.QListWidgetItem()
@@ -26815,8 +26815,8 @@ class TemplateWindow(QtWidgets.QWidget):
                     for item in self.barteritems["demand"]:
                         lst.append(item)
                     lst.sort()
-                    for l in lst:
-                        item = self.barteritems["demand"][l]
+                    for item_name in lst:
+                        item = self.barteritems["demand"][item_name]
                         if item["EstValueSelect"] != 1:
                             item = self.CalculateBarter(item, item["quantityusd"])
                         else:
@@ -26826,9 +26826,9 @@ class TemplateWindow(QtWidgets.QWidget):
                             amt = " - Coins: " + str((Decimal(int(item["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
                         else:
                             amt = " - USD: " + str(((Decimal(int(item["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
-                        summary.append(l + " " + item["quantitytext"] + amt)
+                        summary.append(item_name + " " + item["quantitytext"] + amt)
                         newitem = QtGui.QListWidgetItem()
-                        newitem.setText(l)
+                        newitem.setText(item_name)
                         self.Window.DemandBox.addItem(newitem)
                     if lst != []:
                         newitem = QtGui.QListWidgetItem()
@@ -26870,21 +26870,21 @@ class TemplateWindow(QtWidgets.QWidget):
                     lst.append(item)
             lst.sort()
             lst2.sort()
-            for l in lst:
+            for item_name in lst:
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.TheirSupplyBox.addItem(newitem)
             summary = []
             total = 0
-            for l in lst2:
-                total += int(self.barteritems2["supply"][l]["amount"])
+            for item_name in lst2:
+                total += int(self.barteritems2["supply"][item_name]["amount"])
                 if self.rate == "":
-                    amt = " - Coins: " + str((Decimal(int(self.barteritems2["supply"][l]["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
+                    amt = " - Coins: " + str((Decimal(int(self.barteritems2["supply"][item_name]["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
                 else:
-                    amt = " - USD: " + str(((Decimal(int(self.barteritems2["supply"][l]["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
-                summary.append(l + " " + self.barteritems2["supply"][l]["quantitytext"] + amt)
+                    amt = " - USD: " + str(((Decimal(int(self.barteritems2["supply"][item_name]["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
+                summary.append(item_name + " " + self.barteritems2["supply"][item_name]["quantitytext"] + amt)
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.MyDemandBox.addItem(newitem)
             if lst2 != []:
                 newitem = QtGui.QListWidgetItem()
@@ -26912,21 +26912,21 @@ class TemplateWindow(QtWidgets.QWidget):
                     lst.append(item)
             lst.sort()
             lst2.sort()
-            for l in lst:
+            for item_name in lst:
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.TheirDemandBox.addItem(newitem)
             summary = []
             total2 = 0
-            for l in lst2:
-                total2 += int(self.barteritems2["demand"][l]["amount"])
+            for item_name in lst2:
+                total2 += int(self.barteritems2["demand"][item_name]["amount"])
                 if self.rate == "":
-                    amt = " - Coins: " + str((Decimal(int(self.barteritems2["demand"][l]["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
+                    amt = " - Coins: " + str((Decimal(int(self.barteritems2["demand"][item_name]["amount"]) / Decimal(1e8)).quantize(Decimal("0.00000001"))))
                 else:
-                    amt = " - USD: " + str(((Decimal(int(self.barteritems2["demand"][l]["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
-                summary.append(l + " " + self.barteritems2["demand"][l]["quantitytext"] + amt)
+                    amt = " - USD: " + str(((Decimal(int(self.barteritems2["demand"][item_name]["amount"]) / Decimal(1e8)) * Decimal(self.rate)).quantize(Decimal("0.01"))))
+                summary.append(item_name + " " + self.barteritems2["demand"][item_name]["quantitytext"] + amt)
                 newitem = QtGui.QListWidgetItem()
-                newitem.setText(l)
+                newitem.setText(item_name)
                 self.Window.MySupplyBox.addItem(newitem)
             if lst2 != []:
                 newitem = QtGui.QListWidgetItem()
@@ -30633,13 +30633,13 @@ class TemplateWindow(QtWidgets.QWidget):
                     next1 = 1
                     if MyContracts[i]["Process"] == "Market Order":
                         if MyContracts[i]["ordernumber"] == self.order["oldordernumber"]:
-                            l = 0
+                            order_idx = 0
                             for o in OnOrders:
                                 if "ordernumber" in o:
                                     if o["ordernumber"] == MyContracts[i]["ordernumber"]:
-                                        OnOrders[l]["ordernumber"] = self.order["ordernumber"]
+                                        OnOrders[order_idx]["ordernumber"] = self.order["ordernumber"]
                                         break
-                                l += 1
+                                order_idx += 1
                             RemoveFromMarket(MyContracts[i], self.order["ordernumber"])
                             next1 = 0
                     if MyContracts[i]["Process"] == "Market Offer" or "MCount" in MyContracts[i]["Process"]:
@@ -34527,13 +34527,13 @@ class WMarket(QtWidgets.QWidget):
                     next1 = 1
                     if MyContracts[i]["Process"] == "Market Order":
                         if MyContracts[i]["ordernumber"] == self.order["oldordernumber"]:
-                            l = 0
+                            order_idx = 0
                             for o in OnOrders:
                                 if "ordernumber" in o:
                                     if o["ordernumber"] == MyContracts[i]["ordernumber"]:
-                                        OnOrders[l]["ordernumber"] = self.order["ordernumber"]
+                                        OnOrders[order_idx]["ordernumber"] = self.order["ordernumber"]
                                         break
-                                l += 1
+                                order_idx += 1
                             RemoveFromMarket(MyContracts[i], self.order["ordernumber"])
                             next1 = 0
                     if MyContracts[i]["Process"] == "Market Offer" or "MCount" in MyContracts[i]["Process"]:
@@ -36775,11 +36775,11 @@ class WContracts(QtWidgets.QWidget):
         # Check unread messages
         if "MyMessages" not in ContractSelected:
             ContractSelected["MyMessages"] = []
-        l = len(ContractSelected["MyMessages"])
+        msg_count = len(ContractSelected["MyMessages"])
         ps = 0
         mk = 0
         for message in ContractSelected["MyMessages"]:
-            if ps + 1 == l:
+            if ps + 1 == msg_count:
                 tex = "OK"
             else:
                 tex = "Next Message"
@@ -42518,16 +42518,16 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             txidlist[i["output"]] = 1
         for i in BlackUnspent:
             if i["txid"] + ":" + str(i["vout"]) in txidlist:
-                for l in i["liquidity"]:
-                    if len(str(l)) > 20:
-                        a = l
+                for liq_key in i["liquidity"]:
+                    if len(str(liq_key)) > 20:
+                        a = liq_key
                         break
-                for l in i["liquidity"][a]:
-                    if len(str(l)) < 5:
-                        if str(l) not in liq:
-                            liq[str(l)] = i["liquidity"][a][str(l)]
+                for liq_key in i["liquidity"][a]:
+                    if len(str(liq_key)) < 5:
+                        if str(liq_key) not in liq:
+                            liq[str(liq_key)] = i["liquidity"][a][str(liq_key)]
                         else:
-                            liq[str(l)] += i["liquidity"][a][str(l)]
+                            liq[str(liq_key)] += i["liquidity"][a][str(liq_key)]
         rating = ThePeg.rateliquidity(liq)
         print("Liquidity: " + str(rating))
         return rating[0]
