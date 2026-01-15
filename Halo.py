@@ -1610,8 +1610,8 @@ if notifybuild != 0 and CoinSelect["name"] != "BitBay":
             if not os.path.isfile(os.path.join(application_path, CoinSelect["daemon"] + ".exe")):
                 if not os.path.isfile(os.path.join(application_path, CoinSelect["daemon"])):
                     res = messagebox(
-                        CoinSelect["daemon"] +
-                        " was not included with Halo so it must be downloaded manually. Please visit https://github.com/CoinBlack/blackcoin-more/releases to get the most recent build and place it in the same directory as your Halo install. Then please restart the software.",
+                        CoinSelect["daemon"]
+                        + " was not included with Halo so it must be downloaded manually. Please visit https://github.com/CoinBlack/blackcoin-more/releases to get the most recent build and place it in the same directory as your Halo install. Then please restart the software.",
                         "Copy to clipboard and visit link",
                         "Exit Halo",
                     )
@@ -1623,11 +1623,11 @@ if notifybuild != 0 and CoinSelect["name"] != "BitBay":
                     clipboard.setText("https://github.com/CoinBlack/blackcoin-more/releases")
         if pendingInstall == 0:
             res = messagebox(
-                CoinSelect["daemon"] +
-                " was not built by the Halo dev. Instead, it was taken from the official project release page. For the best security you can build the software yourself. Would you like to launch " +
-                CoinSelect["name"] +
-                "?" +
-                " If you cancel, you can compile your own build and restart the software.",
+                CoinSelect["daemon"]
+                + " was not built by the Halo dev. Instead, it was taken from the official project release page. For the best security you can build the software yourself. Would you like to launch "
+                + CoinSelect["name"]
+                + "?"
+                + " If you cancel, you can compile your own build and restart the software.",
                 "Proceed",
                 "Cancel",
             )
@@ -2774,12 +2774,12 @@ def Loop():
                 if "BM-" in c["MyBMAddress"] and BitAddr != c["MyBMAddress"]:
                     res = QuestionBox(
                         Gtranslate(
-                            "Your current Bitmessage address is different from the one listed in one of your contracts. Please make sure the correct address is listed/loaded. Is it possible that your address changes depending on the order in which you load your keys because it was set up as a joint account. Joint and Two Step accounts sometimes use different Bitmessage addresses for the same keypair. Normal accounts use the same address regardless of which key is loaded. If you are involved in any open contracts, please alert your effected counter-parties so you both can manually import/export messages.\n\n" +
-                            "Bitmessage listed: ") +
-                        c["MyBMAddress"] +
-                        "\n" +
-                        Gtranslate("Current Bitmessage: ") +
-                        BitAddr,
+                            "Your current Bitmessage address is different from the one listed in one of your contracts. Please make sure the correct address is listed/loaded. Is it possible that your address changes depending on the order in which you load your keys because it was set up as a joint account. Joint and Two Step accounts sometimes use different Bitmessage addresses for the same keypair. Normal accounts use the same address regardless of which key is loaded. If you are involved in any open contracts, please alert your effected counter-parties so you both can manually import/export messages.\n\n"
+                            + "Bitmessage listed: ")
+                        + c["MyBMAddress"]
+                        + "\n"
+                        + Gtranslate("Current Bitmessage: ")
+                        + BitAddr,
                         Gtranslate("Change the order of loaded keys(may not fix the issue)"),
                         Gtranslate("Update Later"),
                         1,
@@ -2790,12 +2790,12 @@ def Loop():
                     if showonce == 0:
                         res = QuestionBox(
                             Gtranslate(
-                                "Your current email is different from the one listed in one of your contracts. Please make sure the email address is listed/loaded. It's recommended you don't change emails during negotiations so your parties can contact you.\n\n" +
-                                "Email listed: ") +
-                            c["MyBMAddress"] +
-                            "\n" +
-                            Gtranslate("Current Email: ") +
-                            MyEmail,
+                                "Your current email is different from the one listed in one of your contracts. Please make sure the email address is listed/loaded. It's recommended you don't change emails during negotiations so your parties can contact you.\n\n"
+                                + "Email listed: ")
+                            + c["MyBMAddress"]
+                            + "\n"
+                            + Gtranslate("Current Email: ")
+                            + MyEmail,
                             Gtranslate("Update Email"),
                             Gtranslate("Update Later"),
                             1,
@@ -10187,15 +10187,15 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                 if fail == 0 and stayconnected == 0:
                     if BitHaloClient and "bitcoind" not in CoinSelect["daemon"]:
                         res = self.show_question_box_thread_safe(
-                            Gtranslate("BitHalo is connecting however the subprocess") +
-                            " " +
-                            CoinSelect["daemon"] +
-                            " " +
-                            Gtranslate("for") +
-                            " " +
-                            CoinSelect["HaloName"] +
-                            " " +
-                            Gtranslate(
+                            Gtranslate("BitHalo is connecting however the subprocess")
+                            + " "
+                            + CoinSelect["daemon"]
+                            + " "
+                            + Gtranslate("for")
+                            + " "
+                            + CoinSelect["HaloName"]
+                            + " "
+                            + Gtranslate(
                                 "tried multiple times to connect to the network but failed. Perhaps the daemon was busy or is improperly configured. Please check your configuration and try again or proceed to only use BitHalo."),
                             Gtranslate("Exit Halo"),
                             Gtranslate("Continue connecting"),
@@ -10203,11 +10203,11 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                         )
                     else:
                         res = self.show_question_box_thread_safe(
-                            Gtranslate("The subprocess") +
-                            " " +
-                            CoinSelect["daemon"] +
-                            " " +
-                            Gtranslate(
+                            Gtranslate("The subprocess")
+                            + " "
+                            + CoinSelect["daemon"]
+                            + " "
+                            + Gtranslate(
                                 "tried multiple times to connect to the network but failed. Perhaps the daemon was busy or is improperly configured. Please check your configuration and try again. Halo will now exit."),
                             Gtranslate("Exit Halo"),
                             Gtranslate("Continue trying to connect"),
@@ -10233,26 +10233,26 @@ class BlackCoinThread(QtCore.QThread):  # For any Halo that uses daemon.
                 if fail == 2:
                     if BitHaloClient and "bitcoind" not in CoinSelect["daemon"]:
                         res = self.show_question_box_thread_safe(
-                            Gtranslate("BitHalo is connecting however the subprocess") +
-                            " " +
-                            CoinSelect["daemon"] +
-                            " " +
-                            Gtranslate("for") +
-                            " " +
-                            CoinSelect["HaloName"] +
-                            " " +
-                            Gtranslate("failed to load. Please make sure you are not running another QT wallet that shares the same port. Also make sure it was not interfered with by antivirus or administrator privileges in your computer. If the program was installed to program files that could be one reason as well. Please try troubleshooting the issue. You can choose to use BitHalo only and reindex or exit the program."),
+                            Gtranslate("BitHalo is connecting however the subprocess")
+                            + " "
+                            + CoinSelect["daemon"]
+                            + " "
+                            + Gtranslate("for")
+                            + " "
+                            + CoinSelect["HaloName"]
+                            + " "
+                            + Gtranslate("failed to load. Please make sure you are not running another QT wallet that shares the same port. Also make sure it was not interfered with by antivirus or administrator privileges in your computer. If the program was installed to program files that could be one reason as well. Please try troubleshooting the issue. You can choose to use BitHalo only and reindex or exit the program."),
                             Gtranslate("Exit Halo"),
                             Gtranslate("Try to reindex blockchain"),
                             1,
                         )
                     else:
                         res = self.show_question_box_thread_safe(
-                            Gtranslate("The subprocess") +
-                            " " +
-                            CoinSelect["daemon"] +
-                            " " +
-                            Gtranslate("failed to load. Please make sure you are not running another QT wallet that shares the same port. Also make sure it was not interfered with by antivirus or administrator privileges in your computer. If the program was installed to program files that could be one reason as well. Please try troubleshooting the issue. Halo will now exit."),
+                            Gtranslate("The subprocess")
+                            + " "
+                            + CoinSelect["daemon"]
+                            + " "
+                            + Gtranslate("failed to load. Please make sure you are not running another QT wallet that shares the same port. Also make sure it was not interfered with by antivirus or administrator privileges in your computer. If the program was installed to program files that could be one reason as well. Please try troubleshooting the issue. Halo will now exit."),
                             Gtranslate("Exit Halo"),
                             Gtranslate("Try to reindex blockchain"),
                             1,
@@ -20706,8 +20706,8 @@ def GetEmailPassword():
                 if not ret:
                     print(error_msg)
                     QuestionBox(
-                        Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail. If you have changed IP addresses or your location recently please check to see if your email provider denied the login.\n\nReply from server:\n") +
-                        error_msg,
+                        Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail. If you have changed IP addresses or your location recently please check to see if your email provider denied the login.\n\nReply from server:\n")
+                        + error_msg,
                         Gtranslate("OK"),
                         1,
                     )
@@ -29669,13 +29669,13 @@ class TemplateWindow(QtWidgets.QWidget):
             print("POS " + str(pos - 1))
             if exchangeratenotify == 1:
                 QuestionBox(
-                    Gtranslate("Please confirm the exchange rate online:\n") +
-                    "USD:" +
-                    self.rate +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."),
+                    Gtranslate("Please confirm the exchange rate online:\n")
+                    + "USD:"
+                    + self.rate
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -30497,13 +30497,13 @@ class TemplateWindow(QtWidgets.QWidget):
                             return
         if exchangeratenotify == 1:
             QuestionBox(
-                Gtranslate("Please confirm the exchange rate online:\n") +
-                "USD:" +
-                self.rate +
-                "->" +
-                CoinSelect["name"] +
-                "\n\n\n" +
-                Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."),
+                Gtranslate("Please confirm the exchange rate online:\n")
+                + "USD:"
+                + self.rate
+                + "->"
+                + CoinSelect["name"]
+                + "\n\n\n"
+                + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."),
                 Gtranslate("OK"),
                 1,
             )
@@ -31694,9 +31694,9 @@ class TemplateWindow(QtWidgets.QWidget):
                 thehash = txhash(order["Market Data"]["code1"] + order["Market Data"]["code2"] + order["Market Data"]["code3"])
                 if thehash not in ApprovedContracts and mode != 2:
                     res = QuestionBox(
-                        Gtranslate("WARNING! This contract is not in the list of audited custom Python contract templates. Therefore if you choose to proceed without auditing the code yourself you run the risk of the counter-party completely hijacking your computer. Therefore do this with EXTREME CAUTION as we are not responsible if you or your counter-party are experimenting with customized contracts. If you are familiar with the contract hash make sure it matches exactly with your records.") +
-                        "\n\nContract hash: \n" +
-                        thehash,
+                        Gtranslate("WARNING! This contract is not in the list of audited custom Python contract templates. Therefore if you choose to proceed without auditing the code yourself you run the risk of the counter-party completely hijacking your computer. Therefore do this with EXTREME CAUTION as we are not responsible if you or your counter-party are experimenting with customized contracts. If you are familiar with the contract hash make sure it matches exactly with your records.")
+                        + "\n\nContract hash: \n"
+                        + thehash,
                         Gtranslate(" OK "),
                         Gtranslate(" Let me audit the code first "),
                         Gtranslate(" Save the code "),
@@ -32398,20 +32398,20 @@ def shippingcalculator(clientinfo="", manualoffer=0):
             if usd != "":
                 rate = (Decimal(rate) / Decimal(usd)).quantize(Decimal(".00000001"))
                 QuestionBox(
-                    Gtranslate("Please confirm the converted shipping rate from dollars to coins and please confirm the exchange rate online:\n") +
-                    "USD:" +
-                    usd +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\nBTC:" +
-                    btc +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate(
-                        "Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this." +
-                        "\n\n\nTotal amount to be paid for shipping(in coins): \n" +
-                        str(rate)),
+                    Gtranslate("Please confirm the converted shipping rate from dollars to coins and please confirm the exchange rate online:\n")
+                    + "USD:"
+                    + usd
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\nBTC:"
+                    + btc
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate(
+                        "Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this."
+                        + "\n\n\nTotal amount to be paid for shipping(in coins): \n"
+                        + str(rate)),
                     Gtranslate("OK"),
                     1,
                 )
@@ -33051,9 +33051,9 @@ class Settings(QtWidgets.QWidget):
                     traceback.print_exc()
                     AdvanceArray["MySettings"]["ColdStake"] = ""
                     QuestionBox(
-                        Gtranslate("Your cold stake IP address did not respond. If you are trying to communicate over the local network, please use the local IP address of the computer you are communicating with and make sure there is no firewall restrictions. If you are trying to communicate to another computer over the internet, that is a more demanding challenge. You might have to open port 55779 and also investigate any firewall or ISP issues. Some ISPs do not allow port forwarding. We do not diagnose networking, port forwarding or router problems. So please make sure the IP address entered is correct. Make sure the other computer is running ") +
-                        CoinSelect["HaloName"] +
-                        Gtranslate(" at the same time you add the IP address."),
+                        Gtranslate("Your cold stake IP address did not respond. If you are trying to communicate over the local network, please use the local IP address of the computer you are communicating with and make sure there is no firewall restrictions. If you are trying to communicate to another computer over the internet, that is a more demanding challenge. You might have to open port 55779 and also investigate any firewall or ISP issues. Some ISPs do not allow port forwarding. We do not diagnose networking, port forwarding or router problems. So please make sure the IP address entered is correct. Make sure the other computer is running ")
+                        + CoinSelect["HaloName"]
+                        + Gtranslate(" at the same time you add the IP address."),
                         " OK ",
                     )
                     return
@@ -34042,18 +34042,18 @@ class CustomTemplate(QtWidgets.QWidget):
                     btc = " Not Found "
             else:
                 QuestionBox(
-                    Gtranslate("Please confirm the exchange rate online:") +
-                    "\n" +
-                    "USD:" +
-                    usd +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\nBTC:" +
-                    btc +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
+                    Gtranslate("Please confirm the exchange rate online:")
+                    + "\n"
+                    + "USD:"
+                    + usd
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\nBTC:"
+                    + btc
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -34931,12 +34931,12 @@ class AdvancedSettings(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12px;">'
+            + _translate(
                 "",
                 "If you want an ultra high security account, you can use two different computers to send your transactions. This makes it impossible for hackers to get into your account since the keys can be in two totally different locations. If it's a joint account, you can use this option to automatically approve the expenses of your partner without reviewing them.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.ForwardExplain.setHtml(
             '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
@@ -35945,54 +35945,54 @@ class Wizard(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">'
+            + _translate(
                 "",
-                "Create your account") +
-            "</span></p>\n"
+                "Create your account")
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:16px; font-weight:600;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "Your account is made up of 2 keys, stored in two files. You must guard those keys. You will be the only person in the world who can access the funds in your account.",
-            ) +
-            "</span></p>\n"
+            )
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "The keys are used to make an address such as... bMDqFjNxhLNgE63F7F5ixDSRyMP7xwWL8K",
-            ) +
-            "</span></p>\n"
+            )
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
-                "Send that address to anyone to receive payments.") +
-            "</span></p>\n"
+                "Send that address to anyone to receive payments.")
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "Please create your account, name your two keys, choose a location to save them and proceed to the next step.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.PasswordText.setHtml(
             '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">'
+            + _translate(
                 "",
-                "Password Protect Your Keys") +
-            "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+                "Password Protect Your Keys")
+            + "</span></p>\n"
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "Now we encourage you to put a password on your keys. Although it is not required, anyone who finds both of the keys can access your account. You can choose the same password for both keys or a different password for each key. You can have a password on one key or both. Its up to you. If you forget your passwords, you will not be able to get into your account. If you want to backup your keys first and protect later, you may want to skip this step.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.Skip2.setText(_translate("Form", "Skip", None))
         self.PasswordKeys.setText(_translate("Form", "Password Protect My Keys", None))
         self.PhotoText.setHtml(
@@ -36000,29 +36000,29 @@ class Wizard(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">'
+            + _translate(
                 "",
-                "Hide keys in a photo/picture") +
-            "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+                "Hide keys in a photo/picture")
+            + "</span></p>\n"
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "If you want maximum security, you can also hide each key inside a photo. Perhaps you wish to use a picture of your dog or family. This makes them impossible for hackers to find them. We have some default photos located in the Halo directory if you decide to use them.",
-            ) +
-            "</span></p>\n"
+            )
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
-                "Important:") +
-            "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+                "Important:")
+            + "</span></p>\n"
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "If you do this, keep a copy of the original files. Never edit the photos or save them with a photo editor or recompress them since that could change the data and thus make the key invalid.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.KeysToPhotos.setText(_translate("Form", "Hide My Keys In Two Photos", None))
         self.Skip3.setText(_translate("Form", "Skip", None))
         self.BackupText.setHtml(
@@ -36030,24 +36030,24 @@ class Wizard(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">'
+            + _translate(
                 "",
-                "Backup Your Keys") +
-            "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+                "Backup Your Keys")
+            + "</span></p>\n"
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "Now that you have your keys protected, we recommend you backup your keys. You may also want to email your keys to yourself. If they are hidden in images, it will be indistinguishable from a normal email. Also we recommend optical drives over flash drives for backup. So if you have a CD or DVD, those backups last longer. Flash drives have been known to expire after a few years. Another way is to print the contents of the original keyfile out on a piece of paper so it never expires.",
-            ) +
-            "</span></p>\n"
+            )
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "So please insert a flash drive into your computer and proceed with backup.",
-            ) +
-            "</span></p>\n"
+            )
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13px;"><br /></p></body></html>')
         self.BackupKeys.setText(_translate("Form", "Backup My Keys", None))
         self.Skip4.setText(_translate("Form", "Skip", None))
@@ -36136,36 +36136,36 @@ class Wizard(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px; font-weight:600;">'
+            + _translate(
                 "",
-                "Backup Contracts Automatically") +
-            "</span></p>\n"
+                "Backup Contracts Automatically")
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:16px; font-weight:600;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "This part is highly recommended because if you are in negotiations with someone and your computer fails you want to always make sure you have a backup of your contracts. This file backs up with every change. We recommend using a flash drive. However, even a secondary backup on your computer is also sufficient. Some people also like to use cloud based backup systems.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.BackupContracts.setText(_translate("Form", "Backup Contracts", None))
         self.CongratsText.setHtml(
             '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:16px;">'
+            + _translate(
                 "",
-                "Congratulations! You are ready to use Halo.") +
-            "</span></p>\n"
+                "Congratulations! You are ready to use Halo.")
+            + "</span></p>\n"
             '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:16px;"><br /></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:13px;">'
+            + _translate(
                 "",
                 "If you wish to receive any more support you can check the documentation. Also, you may find other users to help you over IRC chat. There is also forums on reddit where people are happy to answer more questions. We hope you love the software and hope that it enlightens you to the future of trade.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
         self.ReturnHalo.setText(_translate("Form", "Return To Halo", None))
         self.setWindowIcon(QtGui.QIcon(application_path + "/images/" + CoinSelect["HaloName"] + ".png"))
         Form.setWindowTitle(_translate(CoinSelect["HaloName"], CoinSelect["HaloName"], None))
@@ -36797,9 +36797,9 @@ class WContracts(QtWidgets.QWidget):
                                 rateusd = str((Decimal(amt) * Decimal(usd)).quantize(Decimal(".01")))
                                 amt += "\nAmount in USD:\n" + rateusd
                             res2 = QuestionBox(
-                                Gtranslate("Your counter-party has requested funds for shipping based on the destination. Please review the amount and then decide if you want to accept now or review and negotiate within the escrow panel.") +
-                                "\n\nCoins Requested:\n" +
-                                amt,
+                                Gtranslate("Your counter-party has requested funds for shipping based on the destination. Please review the amount and then decide if you want to accept now or review and negotiate within the escrow panel.")
+                                + "\n\nCoins Requested:\n"
+                                + amt,
                                 Gtranslate(" Accept request for funds "),
                                 Gtranslate(" Review in escrow panel "),
                                 "",
@@ -36961,8 +36961,8 @@ class WContracts(QtWidgets.QWidget):
                             ContractSelected["paytip"] = 1
                 if "autopayoff" in contract:
                     QuestionBox(
-                        Gtranslate("Automated payments have failed. This can happen for a variety of reasons for your protection. It is recommended you pay this invoice manually and if you want to enable autopay after a successful payment you may do so.\n\nReason for failed payment:\n") +
-                        contract["autopayoff"],
+                        Gtranslate("Automated payments have failed. This can happen for a variety of reasons for your protection. It is recommended you pay this invoice manually and if you want to enable autopay after a successful payment you may do so.\n\nReason for failed payment:\n")
+                        + contract["autopayoff"],
                         Gtranslate(" OK "),
                         1,
                     )
@@ -38257,9 +38257,9 @@ class WContracts(QtWidgets.QWidget):
                         rateusd = str((Decimal(amt) * Decimal(usd)).quantize(Decimal(".01")))
                         amt += "\nAmount in USD:\n" + rateusd
                     res2 = QuestionBox(
-                        Gtranslate("Your counter-party has requested funds for shipping based on the destination. Please review the amount and then decide if you want to accept or cancel and negotiate.") +
-                        "\n\nCoins Requested:\n" +
-                        amt,
+                        Gtranslate("Your counter-party has requested funds for shipping based on the destination. Please review the amount and then decide if you want to accept or cancel and negotiate.")
+                        + "\n\nCoins Requested:\n"
+                        + amt,
                         Gtranslate(" Accept request for funds "),
                         Gtranslate(" Cancel "),
                         "",
@@ -38463,31 +38463,31 @@ class WContracts(QtWidgets.QWidget):
             else:
                 if btc != "":
                     QuestionBox(
-                        Gtranslate("Please confirm the exchange rate online:") +
-                        "\n" +
-                        "USD:" +
-                        usd +
-                        "->" +
-                        CoinSelect["name"] +
-                        "\nBTC:" +
-                        btc +
-                        "->" +
-                        CoinSelect["name"] +
-                        "\n\n\n" +
-                        Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
+                        Gtranslate("Please confirm the exchange rate online:")
+                        + "\n"
+                        + "USD:"
+                        + usd
+                        + "->"
+                        + CoinSelect["name"]
+                        + "\nBTC:"
+                        + btc
+                        + "->"
+                        + CoinSelect["name"]
+                        + "\n\n\n"
+                        + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
                         Gtranslate("OK"),
                         1,
                     )
                 else:
                     QuestionBox(
-                        Gtranslate("Please confirm the exchange rate online:") +
-                        "\n" +
-                        "USD:" +
-                        usd +
-                        "->" +
-                        CoinSelect["name"] +
-                        "\n\n\n" +
-                        Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
+                        Gtranslate("Please confirm the exchange rate online:")
+                        + "\n"
+                        + "USD:"
+                        + usd
+                        + "->"
+                        + CoinSelect["name"]
+                        + "\n\n\n"
+                        + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
                         Gtranslate("OK"),
                         1,
                     )
@@ -39012,12 +39012,12 @@ class WSend(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">'
+            + _translate(
                 "",
                 "You have sent an offer! Give the counter-party time to review the offer. If they accept, your computer will attempt to automatically finalize all of the steps necessary for escrow. The moment they accept, the timer starts so check periodically to see how your offers are doing. You can always try sending it again as well. Canceling will free up the inputs set aside for the deal. If you cancel the offer, that action can not be reversed.",
-            ) +
-            "</span></p></body></html>")
+            )
+            + "</span></p></body></html>")
 
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
@@ -39119,14 +39119,14 @@ class Handshake(QtWidgets.QWidget):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:11px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">' +
-            _translate(
+            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:11px;">'
+            + _translate(
                 "",
-                "Somebody is trying to contact you using " +
-                CoinSelect["name"] +
-                "! Your client is asking for the contract details. If you do not get a response you can always try to send the handshake request again. Be patient, it may take them a moment to get the message. If you wish to cancel it, you will not be able to undo the action.",
-            ) +
-            "</span></p></body></html>")
+                "Somebody is trying to contact you using "
+                + CoinSelect["name"]
+                + "! Your client is asking for the contract details. If you do not get a response you can always try to send the handshake request again. Be patient, it may take them a moment to get the message. If you wish to cancel it, you will not be able to undo the action.",
+            )
+            + "</span></p></body></html>")
 
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
@@ -41054,11 +41054,11 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 f.close()
             if notifybuild != 0:
                 res = QuestionBox(
-                    CoinSelect["daemon"] +
-                    " was not built by the Halo dev. Instead, it was taken from the official project release page. For the best security you can build the software yourself. Would you like to launch " +
-                    CoinSelect["daemon"] +
-                    "?" +
-                    " If you cancel, you can compile your own build and restart the software.",
+                    CoinSelect["daemon"]
+                    + " was not built by the Halo dev. Instead, it was taken from the official project release page. For the best security you can build the software yourself. Would you like to launch "
+                    + CoinSelect["daemon"]
+                    + "?"
+                    + " If you cancel, you can compile your own build and restart the software.",
                     "Proceed",
                     "Cancel",
                 )
@@ -41270,8 +41270,8 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
         if not ret:
             print(str(e))
             QuestionBox(
-                Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail.\n\nReply from server:\n") +
-                str(e),
+                Gtranslate("Authentication failed. Please check your password and also please make sure your email is in the list of providers. Also you may need to enable imap/smtp/applications in your email. We recommend using gmail.\n\nReply from server:\n")
+                + str(e),
                 Gtranslate("OK"),
                 1,
             )
@@ -41627,10 +41627,9 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                             return
                     else:
                         QuestionBox(
-                            str(
-                                PendingSelected["cancel"]) +
-                            "\n\n" +
-                            Gtranslate(
+                            str(PendingSelected["cancel"])
+                            + "\n\n"
+                            + Gtranslate(
                                 "The above transaction ID can be checked on https://chainz.cryptoid.info/. If it shows in your account proceed and clear the order. You can also check back later to see if it confirms."),
                             Gtranslate("OK"),
                             1,
@@ -41822,10 +41821,9 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 pass
             else:
                 QuestionBox(
-                    str(
-                        txhash(tx)) +
-                    "\n" +
-                    Gtranslate("If the transaction goes through, it will reflect in your balance. Otherwise it will show up in the 'Open Contracts' tab. You can check back here later for a status update."),
+                    str(txhash(tx))
+                    + "\n"
+                    + Gtranslate("If the transaction goes through, it will reflect in your balance. Otherwise it will show up in the 'Open Contracts' tab. You can check back here later for a status update."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -42051,11 +42049,11 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             PendingSelected = GetCurrentOrder(current)
             current = PendingSelected
             mbox = QuestionBox(
-                Gtranslate("You sent the counter-party a") +
-                " " +
-                CoinSelect["name"] +
-                " " +
-                Gtranslate("encrypted message. Your only option at this point is to cancel the request or wait for the response. Be patient their client will have to be open and see the request before you get a reply."),
+                Gtranslate("You sent the counter-party a")
+                + " "
+                + CoinSelect["name"]
+                + " "
+                + Gtranslate("encrypted message. Your only option at this point is to cancel the request or wait for the response. Be patient their client will have to be open and see the request before you get a reply."),
                 Gtranslate(" Okay, Thanks "),
                 Gtranslate(" Cancel Order "),
                 1,
@@ -42418,9 +42416,9 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 if current["currentblock"] + 18 > CurrentBlock:  # They may have sent it last minute. For now, we can have the protocol remove the order
                     pass
                 mbox = QuestionBox(
-                    Gtranslate("The transaction was rejected! Its possible the order expired or the counter-party canceled or the TXID changed and they will have to redeem it. Do you want to clear the offer from this computers history?\n") +
-                    "\nOrder # " +
-                    current["ordernumber"],
+                    Gtranslate("The transaction was rejected! Its possible the order expired or the counter-party canceled or the TXID changed and they will have to redeem it. Do you want to clear the offer from this computers history?\n")
+                    + "\nOrder # "
+                    + current["ordernumber"],
                     Gtranslate(" Yes "),
                     Gtranslate(" No "),
                     1,
@@ -42876,18 +42874,18 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 return False
             else:
                 QuestionBox(
-                    Gtranslate("Please confirm the exchange rate online:") +
-                    "\n" +
-                    "USD:" +
-                    usd +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\nBTC:" +
-                    btc +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
+                    Gtranslate("Please confirm the exchange rate online:")
+                    + "\n"
+                    + "USD:"
+                    + usd
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\nBTC:"
+                    + btc
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins without denominating in dollars. If you are price tracking and do not agree with the rate posted, you might want to try again later."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -43480,14 +43478,12 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             if int(fee) / int(mybytes2) < int(btcfeekb):
                 recommended = str(((Decimal(btcfeekb) * Decimal(mybytes2)) + 10000) / Decimal(1e8))
                 res = QuestionBox(
-                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n") +
-                    str(
-                        int(fee) /
-                        int(mybytes2)) +
-                    Gtranslate("\n\nRecommended Satoshis/KB:\n") +
-                    str(btcfeekb) +
-                    Gtranslate("\n\nRecommended minimum fee:\n") +
-                    recommended,
+                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n")
+                    + str(int(fee) / int(mybytes2))
+                    + Gtranslate("\n\nRecommended Satoshis/KB:\n")
+                    + str(btcfeekb)
+                    + Gtranslate("\n\nRecommended minimum fee:\n")
+                    + recommended,
                     Gtranslate("OK"),
                     1,
                 )
@@ -44363,14 +44359,12 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             if int(fee) / int(mybytes2) < int(btcfeekb):
                 recommended = str(((Decimal(btcfeekb) * Decimal(mybytes2)) + 10000) / Decimal(1e8))
                 res = QuestionBox(
-                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n") +
-                    str(
-                        int(fee) /
-                        int(mybytes2)) +
-                    Gtranslate("\n\nRecommended Satoshis/KB:\n") +
-                    str(btcfeekb) +
-                    Gtranslate("\n\nRecommended minimum fee:\n") +
-                    recommended,
+                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n")
+                    + str(int(fee) / int(mybytes2))
+                    + Gtranslate("\n\nRecommended Satoshis/KB:\n")
+                    + str(btcfeekb)
+                    + Gtranslate("\n\nRecommended minimum fee:\n")
+                    + recommended,
                     Gtranslate("OK"),
                     1,
                 )
@@ -44585,11 +44579,11 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             if mbox == 0:
                 return
             mbox = QuestionBox(
-                Gtranslate("Warning! This is usually not a good idea and can result in future transactions being declined forcing a rescan. This will clear the following inputs from this computers history. The only reason you would do this is if the order never confirmed. It can also happen if the TXID gets changed in the mining process. It is recommended you wait for it to clear automatically.") +
-                "\nOrder # " +
-                ordernumber +
-                "\nTXID: " +
-                txid,
+                Gtranslate("Warning! This is usually not a good idea and can result in future transactions being declined forcing a rescan. This will clear the following inputs from this computers history. The only reason you would do this is if the order never confirmed. It can also happen if the TXID gets changed in the mining process. It is recommended you wait for it to clear automatically.")
+                + "\nOrder # "
+                + ordernumber
+                + "\nTXID: "
+                + txid,
                 Gtranslate(" Clear from history "),
                 Gtranslate(" Okay, I will wait "),
                 1,
@@ -44682,11 +44676,11 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             elif "(click here to investigate)" in t:
                 txid2, vout = txid.split(":")
                 mbox = QuestionBox(
-                    Gtranslate("You can check the Transaction ID of this specific input by looking at the 'Output Index Number' to see if it has been spent. You can check using online block explorers such as https://chainz.cryptoid.info/\n\n") +
-                    "Transaction ID:\n" +
-                    txid2 +
-                    "\n\nOutput Index Number:\n" +
-                    vout,
+                    Gtranslate("You can check the Transaction ID of this specific input by looking at the 'Output Index Number' to see if it has been spent. You can check using online block explorers such as https://chainz.cryptoid.info/\n\n")
+                    + "Transaction ID:\n"
+                    + txid2
+                    + "\n\nOutput Index Number:\n"
+                    + vout,
                     " Copy Transaction ID ",
                     " I have made my conclusion ",
                     " Cancel ",
@@ -45029,17 +45023,17 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 )
             else:
                 QuestionBox(
-                    Gtranslate("Please confirm the exchange rate online:\n") +
-                    "USD:" +
-                    usd +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\nBTC:" +
-                    btc +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins normally."),
+                    Gtranslate("Please confirm the exchange rate online:\n")
+                    + "USD:"
+                    + usd
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\nBTC:"
+                    + btc
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins normally."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -45715,14 +45709,12 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             if int(fee) / int(mybytes2) < int(btcfeekb):
                 recommended = str(((Decimal(btcfeekb) * Decimal(mybytes2)) + 10000) / Decimal(1e8))
                 res = QuestionBox(
-                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n") +
-                    str(
-                        int(fee) /
-                        int(mybytes2)) +
-                    Gtranslate("\n\nRecommended Satoshis/KB:\n") +
-                    str(btcfeekb) +
-                    Gtranslate("\n\nRecommended minimum fee:\n") +
-                    recommended,
+                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n")
+                    + str(int(fee) / int(mybytes2))
+                    + Gtranslate("\n\nRecommended Satoshis/KB:\n")
+                    + str(btcfeekb)
+                    + Gtranslate("\n\nRecommended minimum fee:\n")
+                    + recommended,
                     Gtranslate("OK"),
                     1,
                 )
@@ -45844,19 +45836,17 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 nm = CoinSelect["name"]
                 if CoinSelect["name"] != "BitBay":
                     nm += "s"
-                content = (message +
-                           "You have received a payment of " +
-                           str(dropzeros((Decimal(amount) /
-                                          Decimal(1e8)) -
-                               (Decimal(fee) /
-                               Decimal(1e8)), 1, )) +
-                           " " +
-                           nm +
-                           "! Please do not delete this email.<br />If you are new to Cryptocurrency, somebody may have sent you these coins as a 'Tip'. If you were expecting a payment then please open " +
-                           CoinSelect["HaloName"] +
-                           ".<br />Make sure you have this specific email account loaded into Halo to redeem the coins. If the coins are password protected, please ask the counter-party<br />for the password. If you have not yet downloaded " +
-                           CoinSelect["HaloName"] +
-                           " then please do so here...<br /><br />")
+                content = (
+                    message
+                    + "You have received a payment of "
+                    + str(dropzeros((Decimal(amount) / Decimal(1e8)) - (Decimal(fee) / Decimal(1e8)), 1, ))
+                    + " "
+                    + nm
+                    + "! Please do not delete this email.<br />If you are new to Cryptocurrency, somebody may have sent you these coins as a 'Tip'. If you were expecting a payment then please open "
+                    + CoinSelect["HaloName"]
+                    + ".<br />Make sure you have this specific email account loaded into Halo to redeem the coins. If the coins are password protected, please ask the counter-party<br />for the password. If you have not yet downloaded "
+                    + CoinSelect["HaloName"]
+                    + " then please do so here...<br /><br />")
                 content += "<a href='" + CoinSelect["website"] + "'>" + CoinSelect["website"] + "</a><br /><br />"
                 ordernumber = safe_hexlify(os.urandom(16))
             else:
@@ -46301,17 +46291,17 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
                 return False
             else:
                 QuestionBox(
-                    Gtranslate("Please confirm the exchange rate online:\n") +
-                    "USD:" +
-                    usd +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\nBTC:" +
-                    btc +
-                    "->" +
-                    CoinSelect["name"] +
-                    "\n\n\n" +
-                    Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins normally."),
+                    Gtranslate("Please confirm the exchange rate online:\n")
+                    + "USD:"
+                    + usd
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\nBTC:"
+                    + btc
+                    + "->"
+                    + CoinSelect["name"]
+                    + "\n\n\n"
+                    + Gtranslate("Halo calculates the exchange rate for you online. However, rates can change and certain sites may not always be accurate or reliable. Make sure you independently confirm this. Otherwise, you may simply send the coins normally."),
                     Gtranslate("OK"),
                     1,
                 )
@@ -46686,14 +46676,12 @@ class MyApp(QtWidgets.QMainWindow, SKIN):  # Ui_MainWindow is the one in this fi
             if int(fee) / int(mybytes2) < int(btcfeekb):
                 recommended = str(((Decimal(btcfeekb) * Decimal(mybytes2)) + 10000) / Decimal(1e8))
                 res = QuestionBox(
-                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n") +
-                    str(
-                        int(fee) /
-                        int(mybytes2)) +
-                    Gtranslate("\n\nRecommended Satoshis/KB:\n") +
-                    str(btcfeekb) +
-                    Gtranslate("\n\nRecommended minimum fee:\n") +
-                    recommended,
+                    Gtranslate("The fee is not high enough for a fast confirmation in the Bitcoin network. It's possible you have many small inputs or that the network is experiencing high traffic. Please raise the fee to the recommended amount of satoshis per kilobyte.\n\nCurrent Satoshis/KB:\n")
+                    + str(int(fee) / int(mybytes2))
+                    + Gtranslate("\n\nRecommended Satoshis/KB:\n")
+                    + str(btcfeekb)
+                    + Gtranslate("\n\nRecommended minimum fee:\n")
+                    + recommended,
                     Gtranslate("OK"),
                     1,
                 )
