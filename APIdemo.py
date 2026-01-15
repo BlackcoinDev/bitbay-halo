@@ -1,7 +1,9 @@
-try:
+import sys
+
+if sys.version_info.major >= 3:
     import xmlrpc.client as xmlrpclib
-except ImportError:
-    import xmlrpclib
+else:
+    xmlrpclib = __import__("xmlrpclib")
 
 from pyblackcointools import *
 

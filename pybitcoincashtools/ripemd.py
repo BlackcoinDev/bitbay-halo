@@ -37,24 +37,25 @@
 ## * ftp://ftp.rsasecurity.com/pub/cryptobytes/crypto3n2.pdf
 ## */
 
-try:
-    import psyco
-
-    psyco.full()
-except ImportError:
-    pass
 
 import sys
 
 is_python2 = sys.version_info.major == 2
+
+try:
+    if is_python2:
+        builtins = __import__("__builtin__")
+    else:
+        import builtins
+except ImportError:
+    pass
+
+if hasattr(builtins, "xrange"):
+    range = builtins.xrange
+
 # block_size = 1
 digest_size = 20
 digestsize = 20
-
-try:
-    range = xrange
-except:
-    pass
 
 
 class RIPEMD160:

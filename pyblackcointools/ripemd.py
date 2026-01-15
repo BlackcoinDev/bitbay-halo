@@ -37,18 +37,9 @@
 ## * ftp://ftp.rsasecurity.com/pub/cryptobytes/crypto3n2.pdf
 ## */
 
-try:
-    import psyco
 
-    psyco.full()
-except ImportError:
-    pass
+import sys
 
-# Python 2/3 compatibility
-try:
-    xrange
-except NameError:
-    xrange = range
 
 # block_size = 1
 digest_size = 20

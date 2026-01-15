@@ -2157,7 +2157,7 @@ def mnemonic_to_seed(mnemonic_phrase, passphrase=""):
 
                 import hmac
 
-                from pbkdf2 import PBKDF2
+                PBKDF2 = __import__("pbkdf2").PBKDF2
 
                 def pbkdf2_hmac_sha256(password, salt, iters=2048):
                     return PBKDF2(password, salt, iterations=iters, macmodule=hmac, digestmodule=hashlib.sha512).read(64)

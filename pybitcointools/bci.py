@@ -364,8 +364,8 @@ def helloblock_fetchtx(txhash, network="btc"):
         )
     for outp in data["outputs"]:
         o["outs"].append({"value": outp["value"], "script": outp["scriptPubKey"]})
-    from bitcoin.transaction import serialize
-    from bitcoin.transaction import txhash as TXHASH
+    from .transaction import serialize
+    from .transaction import txhash as TXHASH
 
     tx = serialize(o)
     assert TXHASH(tx) == txhash

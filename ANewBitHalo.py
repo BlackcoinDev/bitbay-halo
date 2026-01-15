@@ -19,7 +19,7 @@ import ast
 # import goslate
 import traceback
 
-from yandex_translate import YandexTranslate
+YandexTranslate = __import__("yandex_translate").YandexTranslate
 
 # gstrans = goslate.Goslate()
 ytrans = YandexTranslate("trnsl.1.1.20170227T075822Z.710cc070687ef49d.4773b96b2fa3e9cea7df423e9ab798c58d504036")

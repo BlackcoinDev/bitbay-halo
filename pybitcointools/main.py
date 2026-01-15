@@ -9,8 +9,7 @@ import re
 import sys
 import time
 
-from .py2specials import *
-from .py3specials import *
+from .specials import *
 from .ripemd import *
 
 # Hashing transactions for signing
@@ -436,11 +435,6 @@ def bin_ripemd160(string):
 
 def ripemd160(string):
     return safe_hexlify(bin_ripemd160(string))
-
-
-def bin_dbl_sha256(s):
-    bytes_to_hash = from_string_to_bytes(s)
-    return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
 
 
 def dbl_sha256(string):

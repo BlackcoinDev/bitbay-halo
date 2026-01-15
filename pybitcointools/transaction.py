@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import copy
 
-from _functools import reduce
+from functools import reduce
 
 from .main import *
 
