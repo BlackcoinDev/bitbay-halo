@@ -6,7 +6,7 @@ import hmac
 import os
 import random
 import re
-import sys
+
 import time
 
 from . import ripemd
@@ -31,7 +31,7 @@ def safe_unhexlify(s):
     return binascii.unhexlify(s).decode("latin1")
 
 
-### Elliptic curve parameters (secp256k1)
+# Elliptic curve parameters (secp256k1)
 
 P = 2**256 - 2**32 - 2**9 - 2**8 - 2**7 - 2**6 - 2**4 - 1
 N = 115792089237316195423570985008687907852837564279074904382605163141518161494337
@@ -52,7 +52,7 @@ def getG():
     return G
 
 
-### Extended Euclidean Algorithm
+# Extended Euclidean Algorithm
 
 
 def inv(a, n):
@@ -65,7 +65,7 @@ def inv(a, n):
     return lm % n
 
 
-### Base switching
+# Base switching
 
 
 def get_code_string(base):
@@ -116,11 +116,11 @@ def decode(string, base):
 
 def changebase(string, frm, to, minlen=0):
     if frm == to:
-        return lpad(string, minlen)
+        return lpad(string, "0", minlen)  # Added default symbol for lpad
     return encode(decode(string, frm), to, minlen)
 
 
-### JSON access (for pybtctool convenience)
+# Serializers (for pybtctool convenience)
 
 
 def access(obj, prop):
@@ -140,7 +140,7 @@ def multiaccess(obj, prop):
 
 
 def slice(obj, start=0, end=2**200):
-    return obj[int(start) : int(end)]
+    return obj[int(start):int(end)]
 
 
 def count(obj):
@@ -154,7 +154,7 @@ def sum(obj):
     return _sum(obj)
 
 
-### Elliptic Curve functions
+# Elliptic Curve functions
 
 
 def isinf(p):
@@ -420,15 +420,15 @@ def subtract_privkeys(p1, p2):
     return encode_privkey((decode_privkey(p1, f1) - k2) % N, f1)
 
 
-### Hashes
+# Hashes
 
 
 def bin_hash160(string):
     intermed = hashlib.sha256(to_bytes(string)).digest()
-    digest = ""
+    digest = b""
     try:
         digest = hashlib.new("ripemd160", intermed).digest()
-    except:
+    except ValueError:  # Catch specific exception
         digest = ripemd.RIPEMD160(intermed).digest()
     return digest
 
@@ -501,7 +501,7 @@ def random_electrum_seed():
     return sha256(entropy)[:32]
 
 
-### Encodings
+# Encodings
 
 
 def bin_to_b58check(inp, magicbyte=0):
@@ -545,7 +545,7 @@ def pubkey_to_address(pubkey, magicbyte=BLACKCOIN_ADDRESS_MAGICBYTE):
 
 pubtoaddr = pubkey_to_address
 
-### EDCSA
+# Basic ECDSA
 
 
 def encode_sig(v, r, s):
@@ -623,3 +623,85 @@ def ecdsa_raw_recover(msghash, vrs):
 
 def ecdsa_recover(msg, sig):
     return encode_pubkey(ecdsa_raw_recover(electrum_sig_hash(msg), decode_sig(sig)), "hex")
+
+
+__all__ = [
+    "A",
+    "B",
+    "BITCOIN_ADDRESS_MAGICBYTE",
+    "BLACKCOIN_ADDRESS_MAGICBYTE",
+    "G",
+    "Gx",
+    "Gy",
+    "N",
+    "P",
+    "access",
+    "add_privkeys",
+    "add_pubkeys",
+    "b58check_to_bin",
+    "b58check_to_hex",
+    "base10_add",
+    "base10_double",
+    "base10_multiply",
+    "bin_dbl_sha256",
+    "bin_hash160",
+    "bin_sha256",
+    "bin_slowsha",
+    "bin_to_b58check",
+    "change_curve",
+    "changebase",
+    "compress",
+    "count",
+    "dbl_sha256",
+    "decode",
+    "decode_privkey",
+    "decode_pubkey",
+    "decode_sig",
+    "decompress",
+    "deterministic_generate_k",
+    "divide",
+    "ecdsa_raw_recover",
+    "ecdsa_raw_sign",
+    "ecdsa_raw_verify",
+    "ecdsa_recover",
+    "ecdsa_sign",
+    "ecdsa_verify",
+    "electrum_sig_hash",
+    "encode",
+    "encode_privkey",
+    "encode_pubkey",
+    "encode_sig",
+    "getG",
+    "get_code_string",
+    "get_privkey_format",
+    "get_pubkey_format",
+    "get_version_byte",
+    "hash160",
+    "hash_to_int",
+    "hex_to_b58check",
+    "inv",
+    "isinf",
+    "lpad",
+    "multiaccess",
+    "multiply",
+    "neg_privkey",
+    "neg_pubkey",
+    "num_to_var_int",
+    "privkey_to_address",
+    "privkey_to_pubkey",
+    "privtoaddr",
+    "privtopub",
+    "pubkey_to_address",
+    "pubtoaddr",
+    "random_electrum_seed",
+    "random_key",
+    "safe_hexlify",
+    "safe_unhexlify",
+    "sha256",
+    "slice",
+    "slowsha",
+    "subtract_privkeys",
+    "subtract_pubkeys",
+    "sum",
+    "to_bytes",
+]

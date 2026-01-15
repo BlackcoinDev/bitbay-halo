@@ -30,9 +30,11 @@ __version__ = "0.3"
 import warnings
 
 try:
-    from PIL import Image
-except:
+    import PIL
+except ImportError:
     warnings.warn("Could not find PIL. Only encode_imdata and decode_imdata will work.", ImportWarning, stacklevel=2)
+else:
+    del PIL
 
 
 __all__ = ("encode_imdata", "encode_inplace", "encode", "decode_imdata", "decode", "Steganographer")

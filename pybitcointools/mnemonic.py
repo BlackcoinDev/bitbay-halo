@@ -1,6 +1,6 @@
 import binascii
 import hashlib
-import os.path
+
 import random
 from bisect import bisect_left
 
@@ -2112,7 +2112,7 @@ def words_split(wordstr, wordlist=wordlist_english):
 
 
 def words_to_mnemonic_int(words, wordlist=wordlist_english):
-    if instance(words, str):
+    if isinstance(words, str):
         words = words_split(words, wordlist)
     return sum([wordlist.index(w) << (11 * x) for x, w in enumerate(words[::-1])])
 
@@ -2127,7 +2127,7 @@ def words_verify(words, wordlist=wordlist_english):
     entropy_bits = mint_bits - cs_bits
     eint = mint >> cs_bits
     csint = mint & ((1 << cs_bits) - 1)
-    ebytes = _eint_to_bytes(eint, entropy_bits)
+    ebytes = eint_to_bytes(eint, entropy_bits)
     return csint == entropy_cs(ebytes)
 
 
@@ -2138,7 +2138,7 @@ def mnemonic_to_seed(mnemonic_phrase, passphrase=""):
         def pbkdf2_hmac_sha256(password, salt, iters=2048):
             return pbkdf2_hmac(hash_name="sha512", password=password, salt=salt, iterations=iters)
 
-    except:
+    except ImportError:
         try:
             from Crypto.Hash import HMAC, SHA512
             from Crypto.Protocol.KDF import PBKDF2
@@ -2152,7 +2152,7 @@ def mnemonic_to_seed(mnemonic_phrase, passphrase=""):
                     prf=lambda p, s: HMAC.new(p, s, SHA512).digest(),
                 )
 
-        except:
+        except ImportError:
             try:
 
                 import hmac
@@ -2162,7 +2162,7 @@ def mnemonic_to_seed(mnemonic_phrase, passphrase=""):
                 def pbkdf2_hmac_sha256(password, salt, iters=2048):
                     return PBKDF2(password, salt, iterations=iters, macmodule=hmac, digestmodule=hashlib.sha512).read(64)
 
-            except:
+            except Exception:
                 raise RuntimeError("No implementation of pbkdf2 was found!")
 
     return pbkdf2_hmac_sha256(password=mnemonic_phrase, salt="mnemonic" + passphrase)

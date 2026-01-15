@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 try:
     from urllib.request import build_opener
-except:
+except ImportError:
     from urllib.request import build_opener
 
 import json
@@ -21,7 +21,7 @@ def make_request(*args):
     except Exception as e:
         try:
             p = e.read().strip()
-        except:
+        except Exception:
             p = e
         raise Exception(p)
 
@@ -51,7 +51,7 @@ def unspent(*args):
             for o in jsonobj["unspent_outputs"]:
                 h = safe_hexlify(safe_unhexlify(o["tx_hash"])[::-1])
                 u.append({"output": h + ":" + str(o["tx_output_n"]), "value": o["value"]})
-        except:
+        except Exception:
             raise Exception("Failed to decode data: " + data)
     return u
 
@@ -95,7 +95,7 @@ def history(*args):
             data = make_request("https://blockchain.info/address/%s?format=json&offset=%s" % (addr, offset))
             try:
                 jsonobj = json.loads(data)
-            except:
+            except Exception:
                 raise Exception("Failed to decode data: " + data)
             txs.extend(jsonobj["txs"])
             if len(jsonobj["txs"]) < 50:
@@ -170,7 +170,7 @@ def blockr_fetchtx(txhash):
 def fetchtx(txhash):
     try:
         return bci_fetchtx(txhash)
-    except:
+    except Exception:
         return blockr_fetchtx(txhash)
 
 

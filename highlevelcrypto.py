@@ -63,7 +63,7 @@ def sign(msg, hexPrivkey):
     # Upgrading from SHA1 to SHA256
     try:
         return makeCryptor(hexPrivkey).sign(msg, digest_alg=OpenSSL.EVP_sha256)
-    except:
+    except Exception:
         return makeCryptor(hexPrivkey).sign(msg, digest_alg=OpenSSL.digest_ecdsa_sha1)
 
 
@@ -72,7 +72,7 @@ def verify(msg, sig, hexPubkey):
     try:
         if makePubCryptor(hexPubkey).verify(sig, msg, digest_alg=OpenSSL.EVP_sha256):
             return True
-    except Exception as e:
+    except Exception:
         # print(f"Verify SHA256 failed: {e}")
         pass
 
@@ -80,7 +80,7 @@ def verify(msg, sig, hexPubkey):
         # print("Trying SHA1 verify.")
         if makePubCryptor(hexPubkey).verify(sig, msg, digest_alg=OpenSSL.digest_ecdsa_sha1):
             return True
-    except Exception as e2:
+    except Exception:
         # print(f"Verify SHA1 failed: {e2}")
         pass
 
@@ -108,7 +108,7 @@ def pointMult(secret):
         OpenSSL.EC_KEY_free(k)
         return mb.raw
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

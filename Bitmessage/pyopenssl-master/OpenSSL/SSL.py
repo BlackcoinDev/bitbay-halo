@@ -9,33 +9,14 @@ from OpenSSL._util import ffi as _ffi
 from OpenSSL._util import lib as _lib
 from OpenSSL._util import native as _native
 from OpenSSL.crypto import FILETYPE_PEM, X509, PKey, X509Name, X509Store, _PassphraseHelper
-from six import integer_types as integer_types
-from six import text_type as _text_type
 
 _unspecified = object()
 
-try:
-    _memoryview = memoryview
-except NameError:
 
-    class _memoryview(object):
-        pass
-
-
-try:
-    _buffer = buffer
-except NameError:
-
-    class _buffer(object):
-        pass
 
 
 OPENSSL_VERSION_NUMBER = _lib.OPENSSL_VERSION_NUMBER
-SSLEAY_VERSION = _lib.SSLEAY_VERSION
-SSLEAY_CFLAGS = _lib.SSLEAY_CFLAGS
-SSLEAY_PLATFORM = _lib.SSLEAY_PLATFORM
-SSLEAY_DIR = _lib.SSLEAY_DIR
-SSLEAY_BUILT_ON = _lib.SSLEAY_BUILT_ON
+
 
 SENT_SHUTDOWN = _lib.SSL_SENT_SHUTDOWN
 RECEIVED_SHUTDOWN = _lib.SSL_RECEIVED_SHUTDOWN
@@ -108,13 +89,6 @@ SESS_CACHE_NO_INTERNAL_LOOKUP = _lib.SSL_SESS_CACHE_NO_INTERNAL_LOOKUP
 SESS_CACHE_NO_INTERNAL_STORE = _lib.SSL_SESS_CACHE_NO_INTERNAL_STORE
 SESS_CACHE_NO_INTERNAL = _lib.SSL_SESS_CACHE_NO_INTERNAL
 
-SSL_ST_CONNECT = _lib.SSL_ST_CONNECT
-SSL_ST_ACCEPT = _lib.SSL_ST_ACCEPT
-SSL_ST_MASK = _lib.SSL_ST_MASK
-SSL_ST_INIT = _lib.SSL_ST_INIT
-SSL_ST_BEFORE = _lib.SSL_ST_BEFORE
-SSL_ST_OK = _lib.SSL_ST_OK
-SSL_ST_RENEGOTIATE = _lib.SSL_ST_RENEGOTIATE
 
 SSL_CB_LOOP = _lib.SSL_CB_LOOP
 SSL_CB_EXIT = _lib.SSL_CB_EXIT
@@ -196,15 +170,15 @@ class _VerifyHelper(object):
 
 def _asFileDescriptor(obj):
     fd = None
-    if not isinstance(obj, integer_types):
+    if not isinstance(obj, int):
         meth = getattr(obj, "fileno", None)
         if meth is not None:
             obj = meth()
 
-    if isinstance(obj, integer_types):
+    if isinstance(obj, int):
         fd = obj
 
-    if not isinstance(fd, integer_types):
+    if not isinstance(fd, int):
         raise TypeError("argument must be an int, or have a fileno() method.")
     elif fd < 0:
         raise ValueError("file descriptor cannot be a negative integer (%i)" % (fd,))
@@ -246,7 +220,7 @@ class Context(object):
         :param method: One of SSLv2_METHOD, SSLv3_METHOD, SSLv23_METHOD, or
             TLSv1_METHOD.
         """
-        if not isinstance(method, integer_types):
+        if not isinstance(method, int):
             raise TypeError("method must be an integer")
 
         try:
@@ -346,7 +320,7 @@ class Context(object):
         :param certfile: The name of the certificate chain file
         :return: None
         """
-        if isinstance(certfile, _text_type):
+        if isinstance(certfile, str):
             # Perhaps sys.getfilesystemencoding() could be better?
             certfile = certfile.encode("utf-8")
 
@@ -365,12 +339,12 @@ class Context(object):
         :param filetype: (optional) The encoding of the file, default is PEM
         :return: None
         """
-        if isinstance(certfile, _text_type):
+        if isinstance(certfile, str):
             # Perhaps sys.getfilesystemencoding() could be better?
             certfile = certfile.encode("utf-8")
         if not isinstance(certfile, bytes):
             raise TypeError("certfile must be bytes or unicode")
-        if not isinstance(filetype, integer_types):
+        if not isinstance(filetype, int):
             raise TypeError("filetype must be an integer")
 
         use_result = _lib.SSL_CTX_use_certificate_file(self._context, certfile, filetype)
@@ -423,7 +397,7 @@ class Context(object):
         :param filetype: (optional) The encoding of the file, default is PEM
         :return: None
         """
-        if isinstance(keyfile, _text_type):
+        if isinstance(keyfile, str):
             # Perhaps sys.getfilesystemencoding() could be better?
             keyfile = keyfile.encode("utf-8")
 
@@ -432,7 +406,7 @@ class Context(object):
 
         if filetype is _unspecified:
             filetype = FILETYPE_PEM
-        elif not isinstance(filetype, integer_types):
+        elif not isinstance(filetype, int):
             raise TypeError("filetype must be an integer")
 
         use_result = _lib.SSL_CTX_use_PrivateKey_file(self._context, keyfile, filetype)
@@ -488,7 +462,7 @@ class Context(object):
             bitwise or)
         :returns: The previously set caching mode.
         """
-        if not isinstance(mode, integer_types):
+        if not isinstance(mode, int):
             raise TypeError("mode must be an integer")
 
         return _lib.SSL_CTX_set_session_cache_mode(self._context, mode)
@@ -510,7 +484,7 @@ class Context(object):
 
         See SSL_CTX_set_verify(3SSL) for further details.
         """
-        if not isinstance(mode, integer_types):
+        if not isinstance(mode, int):
             raise TypeError("mode must be an integer")
 
         if not callable(callback):
@@ -527,7 +501,7 @@ class Context(object):
         :param depth: An integer specifying the verify depth
         :return: None
         """
-        if not isinstance(depth, integer_types):
+        if not isinstance(depth, int):
             raise TypeError("depth must be an integer")
 
         _lib.SSL_CTX_set_verify_depth(self._context, depth)
@@ -574,7 +548,7 @@ class Context(object):
         :param cipher_list: A cipher list, see ciphers(1)
         :return: None
         """
-        if isinstance(cipher_list, _text_type):
+        if isinstance(cipher_list, str):
             cipher_list = cipher_list.encode("ascii")
 
         if not isinstance(cipher_list, bytes):
@@ -611,7 +585,7 @@ class Context(object):
                 if not push_result:
                     _lib.X509_NAME_free(copy)
                     _raise_current_error()
-        except:
+        except Exception:
             _lib.sk_X509_NAME_free(name_stack)
             raise
 
@@ -642,7 +616,7 @@ class Context(object):
         :param timeout: The timeout in seconds
         :return: The previous session timeout
         """
-        if not isinstance(timeout, integer_types):
+        if not isinstance(timeout, int):
             raise TypeError("timeout must be an integer")
 
         return _lib.SSL_CTX_set_timeout(self._context, timeout)
@@ -709,7 +683,7 @@ class Context(object):
         :param options: The options to add.
         :return: The new option bitmask.
         """
-        if not isinstance(options, integer_types):
+        if not isinstance(options, int):
             raise TypeError("options must be an integer")
 
         return _lib.SSL_CTX_set_options(self._context, options)
@@ -721,7 +695,7 @@ class Context(object):
         :param mode: The mode to add.
         :return: The new mode bitmask.
         """
-        if not isinstance(mode, integer_types):
+        if not isinstance(mode, int):
             raise TypeError("mode must be an integer")
 
         return _lib.SSL_CTX_set_mode(self._context, mode)
@@ -892,10 +866,8 @@ class Connection(object):
                       API, the value is ignored
         :return: The number of bytes written
         """
-        if isinstance(buf, _memoryview):
+        if isinstance(buf, memoryview):
             buf = buf.tobytes()
-        if isinstance(buf, _buffer):
-            buf = str(buf)
         if not isinstance(buf, bytes):
             raise TypeError("data must be a memoryview, buffer or byte string")
 
@@ -916,10 +888,8 @@ class Connection(object):
                       API, the value is ignored
         :return: The number of bytes written
         """
-        if isinstance(buf, _memoryview):
+        if isinstance(buf, memoryview):
             buf = buf.tobytes()
-        if isinstance(buf, _buffer):
-            buf = str(buf)
         if not isinstance(buf, bytes):
             raise TypeError("buf must be a memoryview, buffer or byte string")
 
@@ -980,7 +950,7 @@ class Connection(object):
         if self._from_ssl is None:
             raise TypeError("Connection sock was not None")
 
-        if not isinstance(bufsiz, integer_types):
+        if not isinstance(bufsiz, int):
             raise TypeError("bufsiz must be an integer")
 
         buf = _ffi.new("char[]", bufsiz)
@@ -1188,7 +1158,7 @@ class Connection(object):
         :param state - bitvector of SENT_SHUTDOWN, RECEIVED_SHUTDOWN.
         :return: None
         """
-        if not isinstance(state, integer_types):
+        if not isinstance(state, int):
             raise TypeError("state must be an integer")
 
         _lib.SSL_set_shutdown(self._ssl, state)
@@ -1439,4 +1409,4 @@ ConnectionType = Connection
 
 # This is similar to the initialization calls at the end of OpenSSL/crypto.py
 # but is exercised mostly by the Context initializer.
-_lib.SSL_library_init()
+

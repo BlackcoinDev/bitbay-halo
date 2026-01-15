@@ -9,7 +9,6 @@ from functools import partial
 from OpenSSL._util import exception_from_error_queue as _exception_from_error_queue
 from OpenSSL._util import ffi as _ffi
 from OpenSSL._util import lib as _lib
-from six import integer_types as _integer_types
 
 
 class Error(Exception):
@@ -32,7 +31,7 @@ def bytes(num_bytes):
     :param num_bytes: The number of bytes to fetch
     :return: A string of random bytes
     """
-    if not isinstance(num_bytes, _integer_types):
+    if not isinstance(num_bytes, int):
         raise TypeError("num_bytes must be an integer")
 
     if num_bytes < 0:
@@ -171,4 +170,4 @@ if getattr(_lib, "RAND_screen", None) is None:
 
 # TODO There are no tests for the RAND strings being loaded, whatever that
 # means.
-_lib.ERR_load_RAND_strings()
+

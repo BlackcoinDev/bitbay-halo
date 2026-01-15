@@ -7,6 +7,7 @@ from .transaction import mksend, select, signall
 def send(frm, to, value, fee=1000):
     u = unspent(privtoaddr(frm))
     u2 = select(u, value + fee)
-    tx = mksend(to + ":" + str(value), privtoaddr(to), fee)
-    tx2 = signall(tx, privtoaddr(to))
-    pushtx(tx)
+    argz = u2 + [to + ":" + str(value)] + [privtoaddr(frm), fee]
+    tx = mksend(*argz)
+    tx2 = signall(tx, frm)
+    return pushtx(tx2)

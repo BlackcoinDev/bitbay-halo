@@ -1,12 +1,9 @@
 #! /usr/bin/env python3
 
-try:
-    import urllib.request as urllib2
-except ImportError:
-    import urllib.request, urllib.error, urllib.parse
+import urllib.request
 
 import re
-import sys
+
 from typing import Any
 
 debug = False
@@ -15,7 +12,7 @@ debug = False
 class bitcoinapi:
 
     def _debug(self, message):
-        if debug == True:
+        if debug:
             print(message)
 
     def _grabapi(self, apipaths):
@@ -215,7 +212,7 @@ if __name__ == "__main__":
         # Compatibility for Linux
         try:
             eval(input("Press Enter to continue."))
-        except:
+        except Exception:
             pass
 
     print(("block:", btcapi.get_currentblock(), "  interval:", r))

@@ -1,9 +1,14 @@
 import hashlib
 import hmac
 
-from .main import *
+from .main import (
+    add_privkeys, add_pubkeys, bin_dbl_sha256, bin_hash160, changebase,
+    compress, dbl_sha256, decode, encode, encode_pubkey, hash_to_int,
+    privkey_to_pubkey, privtopub, pubkey_to_address, safe_hexlify,
+    safe_unhexlify, slowsha, subtract_privkeys, to_bytes,
+)
 
-### Electrum wallets
+# Electrum wallets
 
 
 def electrum_stretch(seed):
@@ -74,18 +79,18 @@ def raw_bip32_ckd(rawtuple, i):
     if i >= 2**31:
         if vbytes == PUBLIC:
             raise Exception("Can't do private derivation on public key!")
-        I = hmac.new(to_bytes(chaincode), to_bytes("\x00" + priv[:32] + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
+        I_hmac = hmac.new(to_bytes(chaincode), to_bytes("\x00" + priv[:32] + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
     else:
-        I = hmac.new(to_bytes(chaincode), to_bytes(pub + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
+        I_hmac = hmac.new(to_bytes(chaincode), to_bytes(pub + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
 
     if vbytes == PRIVATE:
-        newkey = add_privkeys(I[:32] + "\x01", priv)
+        newkey = add_privkeys(I_hmac[:32] + "\x01", priv)
         fingerprint = bin_hash160(privtopub(key))[:4]
     if vbytes == PUBLIC:
-        newkey = add_pubkeys(compress(privtopub(I[:32])), key)
+        newkey = add_pubkeys(compress(privtopub(I_hmac[:32])), key)
         fingerprint = bin_hash160(key)[:4]
 
-    return (vbytes, depth + 1, fingerprint, i, I[32:], newkey)
+    return (vbytes, depth + 1, fingerprint, i, I_hmac[32:], newkey)
 
 
 def bip32_serialize(rawtuple):
@@ -125,8 +130,8 @@ def bip32_ckd(data, i):
 
 
 def bip32_master_key(seed):
-    I = hmac.new(to_bytes("Bitcoin seed"), to_bytes(seed), hashlib.sha512).digest().decode("latin1")
-    return bip32_serialize((PRIVATE, 0, "\x00" * 4, 0, I[32:], I[:32] + "\x01"))
+    I_hmac = hmac.new(to_bytes("Bitcoin seed"), to_bytes(seed), hashlib.sha512).digest().decode("latin1")
+    return bip32_serialize((PRIVATE, 0, "\x00" * 4, 0, I_hmac[32:], I_hmac[:32] + "\x01"))
 
 
 def bip32_bin_extract_key(data):
@@ -148,9 +153,9 @@ def raw_crack_bip32_privkey(parent_pub, priv):
     if i >= 2**31:
         raise Exception("Can't crack private derivation!")
 
-    I = hmac.new(to_bytes(pchaincode), to_bytes(pkey + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
+    I_hmac = hmac.new(to_bytes(pchaincode), to_bytes(pkey + encode(i, 256, 4)), hashlib.sha512).digest().decode("latin1")
 
-    pprivkey = subtract_privkeys(key, I[:32] + "\x01")
+    pprivkey = subtract_privkeys(key, I_hmac[:32] + "\x01")
 
     return (PRIVATE, pdepth, pfingerprint, pi, pchaincode, pprivkey)
 

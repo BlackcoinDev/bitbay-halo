@@ -1,5 +1,7 @@
+from PyQt6.QtCore import QThread
+from highlevelcrypto import decrypt
+import password
 import ast
-import inspect
 import os
 import re
 import sys
@@ -7,7 +9,6 @@ import time
 import importlib
 
 import Bitmessage.class_api as class_api
-import Bitmessage.parallelTestModule as parallelTestModule
 
 # Cross-platform compatibility for terminal input
 if os.name == "nt":
@@ -17,29 +18,23 @@ else:
         import curses as m
     except ImportError:
         # Fallback for systems without curses
-        import sys
-
         m = None
 
 import base64
 import email
 import imaplib
 import quopri
-import re
 import smtplib
 import traceback
 
 # Python 3 compatibility for xmlrpc
 import xmlrpc.client
 
-from email.parser import HeaderParser
 from xmlrpc.server import SimpleXMLRPCRequestHandler, SimpleXMLRPCServer
 
 pyzmail = importlib.import_module("pyzmail")
 stopit = importlib.import_module("stopit")
 
-import password
-from highlevelcrypto import *
 
 #########################################
 providers = [
@@ -94,11 +89,9 @@ global systemexit
 systemexit = 0
 global lockTHIS
 lockTHIS = 0
-import threading
 
 # print txhash(open("blackhalo2.py", 'rb').read())
 #########################################
-from PyQt6.QtCore import QThread
 
 os.environ["no_proxy"] = "127.0.0.1,localhost"
 
@@ -121,7 +114,7 @@ class RPCThread(QThread):  # threading.Thread
             # if passw=='password'
             try:
                 api.stop()
-            except:
+            except BaseException:
                 traceback.print_exc()
             systemexit = 1
             return True
@@ -266,7 +259,7 @@ if __name__ == "__main__":
                 pos = 0
                 try:
                     outbox = ast.literal_eval(outbox)
-                except:
+                except BaseException:
                     sys.stderr.write(str("OUTBOX ERROR"))
                     outbox = []
                 for data1 in outbox:  # Lets try sending some of these messages again
@@ -295,7 +288,7 @@ if __name__ == "__main__":
                             if "password" in content:
                                 EmailPassword = content["password"]
                                 content.pop("password", None)
-                        except:
+                        except BaseException:
                             sys.stderr.write(str("OUTBOX PARSE ERROR"))
                             toAddress = "####"
                     verified = 0
@@ -312,7 +305,7 @@ if __name__ == "__main__":
                     ret = True
                     try:
                         EmailPassword = password.DecryptWithAES("Halo Master", EmailPassword)
-                    except:
+                    except BaseException:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
                         if "You have received a payment of " not in str(content) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(content):
@@ -324,7 +317,7 @@ if __name__ == "__main__":
                             try:
                                 connection = imaplib.IMAP4_SSL(imapname)
                                 connection.login(fromAddress, EmailPassword)
-                            except:
+                            except BaseException:
                                 sys.stderr.write(str("OUTBOX AUTHENTICATION ERROR"))
                                 ret = False
                         try:
@@ -384,7 +377,7 @@ if __name__ == "__main__":
                         except Exception as e:
                             sys.stderr.write(str("OUTBOX SENDING ERROR: ") + str(e))
                             ret = False
-                    if ret != False or toAddress == "####":  # We are not resending bitmessage at the moment
+                    if ret or toAddress == "####":  # We are not resending bitmessage at the moment
                         outbox.pop(pos)
                         next = 0
                         with open(outpath, "w") as f:
@@ -394,7 +387,7 @@ if __name__ == "__main__":
                             f.close()
                     if next == 1:
                         pos += 1
-            except Exception as e:
+            except Exception:
                 traceback.print_exc()
         try:
             with open(path, "r") as f:
@@ -402,14 +395,14 @@ if __name__ == "__main__":
                 data[1] = f.readline().strip()
                 try:
                     data[2] = f.readline().strip()
-                except:
+                except BaseException:
                     sys.stderr.write(str("File error"))
                 try:
                     data[3] = f.readline().strip()
-                except:
+                except BaseException:
                     pass
                 f.close()
-        except Exception as e:
+        except Exception:
             traceback.print_exc()
         if data[0] == "0":
             time.sleep(0.23456)
@@ -434,7 +427,7 @@ if __name__ == "__main__":
                             content = matchObj.group(5) + matchObj.group(6)
                             fromAddress = matchObj.group(2)
                             toAddress = matchObj.group(4)
-                        except:
+                        except BaseException:
                             sys.stderr.write(str("ENCRYPTION ERROR"))
                     else:
                         try:
@@ -444,7 +437,7 @@ if __name__ == "__main__":
                             if "password" in content:
                                 EmailPassword = content["password"]
                                 content.pop("password", None)
-                        except:
+                        except BaseException:
                             sys.stderr.write(str("PARSE ERROR"))
                             toAddress = ""
                             content = "####"
@@ -462,7 +455,7 @@ if __name__ == "__main__":
                     ret = True
                     try:
                         EmailPassword = password.DecryptWithAES("Halo Master", EmailPassword)
-                    except:
+                    except BaseException:
                         sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                     if "@" in toAddress and verified == 1:
                         if "You have received a payment of " not in str(content) and "If you are new to Cryptocurrency, somebody may have sent you these coins" not in str(content):
@@ -474,7 +467,7 @@ if __name__ == "__main__":
                             try:
                                 connection = imaplib.IMAP4_SSL(imapname)
                                 connection.login(fromAddress, EmailPassword)
-                            except:
+                            except BaseException:
                                 sys.stderr.write(str("AUTHENTICATION ERROR"))
                                 ret = False
                         try:
@@ -536,14 +529,14 @@ if __name__ == "__main__":
                         except Exception as e:
                             sys.stderr.write(str("SEND ERROR: ") + str(e))
                             ret = False
-                        if ret == False:  # It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
+                        if not ret:  # It failed lets write it to an outbox. We could also try repeating until solved. Reporting an email fail via api.
                             outbox = []
                             try:
                                 with open(outpath, "r") as f:
                                     outbox = f.readline().strip()
                                     outbox = ast.literal_eval(outbox)
                                     f.close()
-                            except Exception as e:
+                            except Exception:
                                 pass
                             try:
                                 if str(original) not in outbox:
@@ -553,13 +546,13 @@ if __name__ == "__main__":
                                     f.flush()
                                     os.fsync(f)
                                     f.close()
-                            except:
+                            except BaseException:
                                 sys.stderr.write(str("File Error"))
                             ret = "False" + str(data[2])
                     else:
                         try:
                             ret = api.sendMessage(fromAddress, toAddress, "BitHalo", str(content))
-                        except Exception as e:
+                        except Exception:
                             ret = "False" + str(content)
                     try:
                         waitlock()
@@ -573,7 +566,7 @@ if __name__ == "__main__":
                             os.fsync(f)
                             f.close()
                         lockTHIS = 0
-                    except:
+                    except BaseException:
                         lockTHIS = 0
                         sys.stderr.write(str("File Error"))
                 if ch == "GetMessages" or ch == "Remove Order" or ch == "Clean Inbox":
@@ -590,7 +583,7 @@ if __name__ == "__main__":
                                     dat["Password"] = mypassword
                                 try:
                                     dat["Password"] = password.DecryptWithAES("Halo Master", dat["Password"])
-                                except:
+                                except BaseException:
                                     sys.stderr.write(str("PASSWORD DECRYPTION ERROR"))
                                 verified = 0
                                 for prov in providers:
@@ -622,7 +615,7 @@ if __name__ == "__main__":
                                                 raise Exception("Flow Control Jump")
                                             if dat["Email Address"] not in mailbox:
                                                 mailbox[dat["Email Address"]] = {}
-                                        except:
+                                        except BaseException:
                                             mailbox = {str(dat["Email Address"]): {}}
                                         for line in mailbox_data:
                                             try:
@@ -652,7 +645,7 @@ if __name__ == "__main__":
                                                 msg_ids = msg_ids1[0]
                                                 try:
                                                     msg_ids = msg_ids.split()
-                                                except:
+                                                except BaseException:
                                                     sys.stderr.write(str("Split Error"))
                                                 src = ""
                                                 src1 = ""
@@ -663,7 +656,7 @@ if __name__ == "__main__":
                                                             ordnum = elem.split("#")[1]
                                                             orduid = elem.split("#")[0]
                                                             mydict2[orduid] = ordnum
-                                                        except:
+                                                        except BaseException:
                                                             mydict2[elem] = ""
                                                 for msg_id in msg_ids:
                                                     if "uids" in dat:  # If they ask to skip any messages we do so
@@ -684,7 +677,7 @@ if __name__ == "__main__":
                                                             mymessage["body"] = mailbox[str(dat["Email Address"])][msg_id]["body"]
                                                             mymessage["uid"] = mailbox[str(dat["Email Address"])][msg_id]["uid"]
                                                             body = mymessage["body"]
-                                                        except:
+                                                        except BaseException:
                                                             body = ""
                                                             mymessage = {}
                                                             sys.stderr.write("\n\nMessage reading error!\n\n")
@@ -699,12 +692,12 @@ if __name__ == "__main__":
                                                             timeresult = False
                                                             try:  # Let Halo know through RPC we started to download
                                                                 myrpc.MessageStatus("1", "password")
-                                                            except Exception as e:
+                                                            except Exception:
                                                                 pass
 
                                                             @stopit.threading_timeoutable(timeout_param="my_timeout")
                                                             def timethis():  # If we get dropped, we can time out
-                                                                global timeresult, typ, msg_data, connection
+                                                                global timeresult, typ, msg_data
                                                                 typ, msg_data = connection.uid(
                                                                     "fetch",
                                                                     msg_id,
@@ -713,15 +706,15 @@ if __name__ == "__main__":
                                                                 timeresult = True
 
                                                             timethis(my_timeout=600)  # 10 minutes is very generous
-                                                            if timeresult == False:
+                                                            if not timeresult:
                                                                 raise Exception("Flow Control Jump")
                                                             try:  # Let Halo know through RPC we finished
                                                                 myrpc.MessageStatus("0", "password")
-                                                            except Exception as e:
+                                                            except Exception:
                                                                 pass
                                                             sys.stderr.write(str("\n\nFETCHED!!\n\n"))
                                                             # readmessages.append(msg_id)
-                                                        except:
+                                                        except BaseException:
                                                             connection.close()
                                                             sys.stderr.write(str("FETCH ERROR"))
                                                             if systemexit == 2:
@@ -734,28 +727,28 @@ if __name__ == "__main__":
                                                                     msg = email.message_from_string(part[1])
                                                                     try:
                                                                         src = (msg["from"].split("<")[1].split(">")[0]).strip()
-                                                                    except:
+                                                                    except BaseException:
                                                                         src = msg["from"].strip()
                                                                     try:
                                                                         src1 = (msg["to"].split("<")[1].split(">")[0]).strip()
-                                                                    except:
+                                                                    except BaseException:
                                                                         src1 = msg["to"].strip()
                                                                     try:
                                                                         charset = "utf8"
                                                                         if msg.is_multipart():
                                                                             for msub in msg.get_payload():
-                                                                                if msub.get_content_charset() != None:
+                                                                                if msub.get_content_charset() is not None:
                                                                                     charset = msub.get_content_charset()
                                                                                 body = msub.get_payload(decode=True).decode(msub.get_content_charset())
                                                                                 break
                                                                         else:
-                                                                            if msg.get_content_charset() != None:
+                                                                            if msg.get_content_charset() is not None:
                                                                                 charset = msg.get_content_charset()
                                                                             body = msg.get_payload(decode=True).decode(charset)
-                                                                    except:
+                                                                    except BaseException:
                                                                         try:
                                                                             body = str(msg.encode("utf8"))
-                                                                        except:
+                                                                        except BaseException:
                                                                             body = str(msg)
                                                         except Exception as e:
                                                             sys.stderr.write(str("MESSAGE ERROR "))
@@ -764,30 +757,33 @@ if __name__ == "__main__":
                                                         mymessage["fromAddress"] = str(src)
                                                         try:
                                                             body = str(body.encode("utf8"))
-                                                        except:
+                                                        except BaseException:
                                                             sys.stderr.write(str("Not encoded"))
                                                         try:
                                                             try:
                                                                 body = body.split("****")[1].split("****")[0]
-                                                            except:  # Gmail has been breaking things by removing the stars for no reason, so we look for other signs of an important email
+                                                            except BaseException:
+                                                                # Gmail has been breaking things by removing the stars
+                                                                # for no reason, so we look for other signs of an important email
                                                                 test = body
                                                                 try:
                                                                     test = test.split("TheirBMAddress")[1].split("}")[0]
-                                                                except:
+                                                                except BaseException:
                                                                     try:
                                                                         test = test.split("ENCRYPTED:")[1].split("\r\n")[0]
-                                                                    except:
+                                                                    except BaseException:
                                                                         raise Exception("Flow Control Jump")
-                                                        except:
+                                                        except BaseException:
                                                             try:
                                                                 if "You have received a payment of " not in str(body):
                                                                     body = ""
                                                                 else:
                                                                     # I'm hoping email providers will not change this as identifying the full base64 string would be challenging.
-                                                                    # Any added padding gets changed when uploading the base64 image with the pyzmail library, although the bitmap is lossless
+                                                                    # Any added padding gets changed when uploading the base64 image with the
+                                                                    # pyzmail library, although the bitmap is lossless
                                                                     body = body.split("<doge>\nContent-Disposition: inline\n\n")[1].split("\n--=========")[0]
                                                                     body = "PAY TO EMAIL BASE64 IMAGE:" + body
-                                                            except:  # Okay they changed it we can try something else
+                                                            except BaseException:  # Okay they changed it we can try something else
                                                                 try:
                                                                     bodymsg = email.message_from_string(str(body))
                                                                     x = 0
@@ -801,7 +797,7 @@ if __name__ == "__main__":
                                                                     img = attachment.get_payload(decode=False)
                                                                     body = img
                                                                     body = "PAY TO EMAIL BASE64 IMAGE:" + body
-                                                                except:
+                                                                except BaseException:
                                                                     sys.stderr.write(str("PARSE ERROR"))
                                                                     body = ""
                                                         if "fromAddress" in mymessage and body != "":  # decode emails
@@ -823,7 +819,7 @@ if __name__ == "__main__":
                                                                     dat["Private Key"],
                                                                 )
                                                                 body = MyCipher
-                                                            except Exception as e:
+                                                            except Exception:
                                                                 try:
                                                                     body = body.replace("=\r\n", "")
                                                                     body = body.replace("\r\n", "")
@@ -831,11 +827,11 @@ if __name__ == "__main__":
                                                                     body = body.replace("****", "")
                                                                     try:
                                                                         body = body.encode("utf8")
-                                                                    except:
+                                                                    except BaseException:
                                                                         pass
                                                                     try:
                                                                         MyCipher = quopri.decodestring(body)
-                                                                    except:
+                                                                    except BaseException:
                                                                         MyCipher = body
                                                                     MyCipher = MyCipher.replace("ENCRYPTED:", "")
                                                                     missing_padding = len(MyCipher) % 4
@@ -847,7 +843,7 @@ if __name__ == "__main__":
                                                                         dat["Private Key"],
                                                                     )
                                                                     body = MyCipher
-                                                                except:
+                                                                except BaseException:
                                                                     pass
                                                         if dat["ordernumber"] in str(body):
                                                             try:
@@ -863,9 +859,9 @@ if __name__ == "__main__":
                                                                     sys.stderr.write(str("\\n\\n\\REMOVED!!\\n\\n"))
                                                                     try:
                                                                         mailbox[str(dat["Email Address"])].pop(msg_id)
-                                                                    except:
+                                                                    except BaseException:
                                                                         sys.stderr.write(str("\n\nNOT REMOVED FROM CACHE\n\n"))
-                                                            except:
+                                                            except BaseException:
                                                                 sys.stderr.write(str("\n\nNOT REMOVED\n\n"))
                                                         else:
                                                             sys.stderr.write(str("\n\nNOT REMOVED\n\n"))
@@ -874,7 +870,7 @@ if __name__ == "__main__":
                                                 # To save time and to avoid duplicates, i used to break at INBOX but we should also check Junk folder
                                                 # if str(mailbox_name)=="INBOX":
                                                 #   break
-                                            except:  # Mailbox error
+                                            except BaseException:  # Mailbox error
                                                 traceback.print_exc()
                                                 sys.stderr.write(str("INBOX ERROR"))
                                                 if systemexit == 2:
@@ -892,16 +888,16 @@ if __name__ == "__main__":
                                                 os.fsync(f)
                                                 f.close()
                                             lockTHIS = 0
-                                        except:
+                                        except BaseException:
                                             lockTHIS = 0
                                             sys.stderr.write(str("\\n\\Cache write error!\\n\\n"))
-                                    except Exception as e:
+                                    except Exception:
                                         if systemexit == 2:
                                             sys.exit()
                                         sys.stderr.write(str("\n\n\nException with inbox\n\n\n"))
                                         ret = False
                                         traceback.print_exc()
-                        except Exception as e:
+                        except Exception:
                             if systemexit == 2:
                                 sys.exit()
                             traceback.print_exc()
@@ -926,7 +922,7 @@ if __name__ == "__main__":
                                         api.trashInboxMessage(msg)
                                     if message[0]["toAddress"] in dat["MyMarkets"]:  # Market orders are more expendable
                                         api.trashInboxMessage(msg)
-                        except:
+                        except BaseException:
                             a = api.getAllInboxMessages()
                             sentmessages = "False"
                             sys.stderr.write(str("Inbox Clean Error"))
@@ -935,13 +931,13 @@ if __name__ == "__main__":
                         try:
                             if ch != "Clean Inbox":
                                 sentmessages = api.getSentMessagesBySender(dat["Address"])
-                        except:
+                        except BaseException:
                             sentmessages = "False"
                         for inmessage in inbox:
                             a.append(inmessage)
                         try:
                             status = api.clientStatus()
-                        except:
+                        except BaseException:
                             sys.stderr.write(str("Status Error"))
                             status = ""
                         sys.stderr.write(str("\n\n\nInbox Checked\n\n\n"))
@@ -951,7 +947,7 @@ if __name__ == "__main__":
                             with open(path, "w") as f:
                                 f.write("1" + "\n")
                                 if ch == "GetMessages" or ch == "Clean Inbox":
-                                    if ret == False:
+                                    if not ret:
                                         f.write(ch + "1:False:" + str(status) + "\n")
                                     else:
                                         f.write(ch + "1:" + str(status) + "\n")
@@ -965,7 +961,7 @@ if __name__ == "__main__":
                                 os.fsync(f)
                                 f.close()
                             lockTHIS = 0
-                        except Exception as e:
+                        except Exception:
                             lockTHIS = 0
                             traceback.print_exc()
                             pass
@@ -984,10 +980,10 @@ if __name__ == "__main__":
                                 addr = api.createDeterministicAddresses(str(key[:14] + key2[-14:]), "BitHalo")
                                 try:
                                     addr = addr[0]
-                                except:
+                                except BaseException:
                                     try:
                                         addr = api.getDeterministicAddress(str(key[:14] + key2[-14:]))
-                                    except:
+                                    except BaseException:
                                         addr = " "
                                 addr2 = api.createDeterministicAddresses(str(key2[:14] + key[-14:]), "BitHalo")
                                 sys.stderr.write(str("\n\n\n"))
@@ -1000,7 +996,7 @@ if __name__ == "__main__":
                             os.fsync(f)
                             f.close()
                         lockTHIS = 0
-                    except:
+                    except BaseException:
                         lockTHIS = 0
                         traceback.print_exc()
                         sys.stderr.write(str("New Address Error"))
@@ -1016,14 +1012,14 @@ if __name__ == "__main__":
                             # api.addSubscription(dat['Address'], addr)
                             try:
                                 addr = api.joinChannel(dat["Address"])
-                            except:
+                            except BaseException:
                                 try:
                                     addrdata = api.listAddressBook()
                                     for add in addrdata:
                                         if add["label"] == "[chan] " + dat["Address"]:
                                             addr = add["address"]
                                             break
-                                except:
+                                except BaseException:
                                     addr = "Exception"
                             f.write("1" + "\n")
                             f.write("chan1" + "\n")
@@ -1033,7 +1029,7 @@ if __name__ == "__main__":
                             os.fsync(f)
                             f.close()
                         lockTHIS = 0
-                    except:
+                    except BaseException:
                         lockTHIS = 0
                         sys.stderr.write(str("New Address Error"))
                 if ch == "Remove Channel":
@@ -1051,7 +1047,7 @@ if __name__ == "__main__":
                                     addr = "Success"
                                 else:
                                     addr = "Failed"
-                            except:
+                            except BaseException:
                                 traceback.print_exc()
                                 addr = "Exception"
                             f.write("1" + "\n")
@@ -1062,11 +1058,11 @@ if __name__ == "__main__":
                             os.fsync(f)
                             f.close()
                         lockTHIS = 0
-                    except:
+                    except BaseException:
                         lockTHIS = 0
                         traceback.print_exc()
                         sys.stderr.write(str("New Address Error"))
-            except:
+            except BaseException:
                 if systemexit == 2:
                     sys.exit()
                 sys.stderr.write(str("Checking/Thread Error"))

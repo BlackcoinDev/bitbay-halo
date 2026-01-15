@@ -33,6 +33,7 @@ except ImportError:  # Python3
     import urllib.parse as urlparse
 try:  # Python3
     import urllib.request
+
     urllib_request = urllib.request
 except ImportError:
     pass
@@ -813,6 +814,7 @@ def html2text(html, baseurl=""):
 
 class Storage:
     """Simple namespace for options."""
+
     google_doc: bool = False
     ul_item_mark: str = "*"
     ul_style_dash: bool = False
@@ -900,10 +902,13 @@ if __name__ == "__main__":
             j = urllib_request.urlopen(baseurl)
             text = j.read()
             if encoding is None:
+
                 def _get_encoding(headers, text):
                     return ("utf-8", 1)
+
                 try:
                     import importlib
+
                     feedparser = importlib.import_module("feedparser")
                     _get_encoding = feedparser._getCharacterEncoding
                 except (ImportError, AttributeError):
@@ -916,10 +921,13 @@ if __name__ == "__main__":
         else:
             data = open(file_, "rb").read()
             if encoding is None:
+
                 def _detect_encoding(data):
                     return {"encoding": "utf-8"}
+
                 try:
                     import importlib
+
                     chardet = importlib.import_module("chardet")
                     _detect_encoding = chardet.detect
                 except (ImportError, AttributeError):

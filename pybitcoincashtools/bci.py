@@ -5,11 +5,11 @@ import random
 import re
 import sys
 
-from .main import safe_hexlify
+from .main import bin_dbl_sha256, safe_hexlify
 
 try:
     from urllib.request import build_opener
-except:
+except ImportError:
     from urllib.request import build_opener
 
 
@@ -22,7 +22,7 @@ def make_request(*args):
     except Exception as e:
         try:
             p = e.read().strip()
-        except:
+        except Exception:
             p = e
         raise Exception(p)
 
@@ -37,7 +37,7 @@ def is_testnet(inp):
     if not inp or (inp.lower() in ("btc", "testnet")):
         pass
 
-    ## ADDRESSES
+    # ADDRESSES
     if inp[0] in "123mn":
         if re.match("^[2mn][a-km-zA-HJ-NP-Z0-9]{26,33}$", inp):
             return True
@@ -47,14 +47,14 @@ def is_testnet(inp):
             # sys.stderr.write("Bad address format %s")
             return None
 
-    ## TXID
+    # TXID
     elif re.match("^[0-9a-fA-F]{64}$", inp):
         base_url = "http://api.blockcypher.com/v1/btc/{network}/txs/{txid}?includesHex=false"
         try:
             # try testnet fetchtx
             make_request(base_url.format(network="test3", txid=inp.lower()))
             return True
-        except:
+        except Exception:
             # try mainnet fetchtx
             make_request(base_url.format(network="main", txid=inp.lower()))
             return False
@@ -143,7 +143,7 @@ def blockr_unspent(*args):
     res = make_request(blockr_url + ",".join(addrs))
     try:
         data = json.loads(res.decode("utf-8"))["data"]
-    except:
+    except Exception:
         data = json.loads(res)["data"]
 
     o = []
@@ -212,12 +212,12 @@ def history(*args):
                 except Exception as e:
                     try:
                         sys.stderr.write(e.read().strip())
-                    except:
+                    except Exception:
                         sys.stderr.write(str(e))
                     gathered = False
             try:
                 jsonobj = json.loads(data.decode("utf-8"))
-            except:
+            except Exception:
                 raise Exception("Failed to decode data: " + data)
             txs.extend(jsonobj["txs"])
             if len(jsonobj["txs"]) < 50:
@@ -483,7 +483,9 @@ def get_tx_composite(inputs, outputs, output_value, change_address=None, network
     outputs = [outputs] if not isinstance(outputs, list) else outputs
     network = set_network(change_address or inputs) if not network else network.lower()
     url = "http://api.blockcypher.com/v1/btc/{network}/txs/new?includeToSignTx=true".format(network=("test3" if network == "testnet" else "main"))
-    is_address = lambda a: bool(re.match("^[123mn][a-km-zA-HJ-NP-Z0-9]{26,33}$", a))
+
+    def is_address(a):
+        return bool(re.match("^[123mn][a-km-zA-HJ-NP-Z0-9]{26,33}$", a))
     if any([is_address(x) for x in inputs]):
         inputs_type = "addresses"  # also accepts UTXOs, only addresses supported presently
     if any([is_address(x) for x in outputs]):

@@ -1,1 +1,0 @@
-blackcoind.exe -rescan -datadir=%CD%\data

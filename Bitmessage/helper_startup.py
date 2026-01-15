@@ -138,6 +138,7 @@ def isOurOperatingSystemLimitedToHavingVeryFewHalfOpenConnections():
         return False
     try:
         import importlib
+
         distutils_version = importlib.import_module("distutils.version")
         StrictVersion = distutils_version.StrictVersion
 

@@ -1,11 +1,7 @@
-import datetime
 import hashlib
-import os
 from base64 import b64decode, b64encode
-from re import sub
 
 from Crypto.Cipher import AES
-from Crypto.Hash import MD4
 
 # I kept the original notes since they are useful
 

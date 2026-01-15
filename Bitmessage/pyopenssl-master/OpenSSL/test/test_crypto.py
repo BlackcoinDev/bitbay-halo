@@ -51,7 +51,6 @@ from OpenSSL.crypto import (
     verify,
 )
 from OpenSSL.test.util import TestCase, b
-from six import binary_type
 
 
 def normalize_certificate_pem(pem):
@@ -2209,7 +2208,7 @@ class FunctionTests(TestCase):
         passphrase = b("foo")
         key = load_privatekey(FILETYPE_PEM, cleartextPrivateKeyPEM)
         pem = dump_privatekey(FILETYPE_PEM, key, GOOD_CIPHER, passphrase)
-        self.assertTrue(isinstance(pem, binary_type))
+        self.assertTrue(isinstance(pem, bytes))
         loadedKey = load_privatekey(FILETYPE_PEM, pem, passphrase)
         self.assertTrue(isinstance(loadedKey, PKeyType))
         self.assertEqual(loadedKey.type(), key.type())
@@ -2309,7 +2308,7 @@ class FunctionTests(TestCase):
 
         key = load_privatekey(FILETYPE_PEM, cleartextPrivateKeyPEM)
         pem = dump_privatekey(FILETYPE_PEM, key, GOOD_CIPHER, cb)
-        self.assertTrue(isinstance(pem, binary_type))
+        self.assertTrue(isinstance(pem, bytes))
         self.assertEqual(called, [True])
         loadedKey = load_privatekey(FILETYPE_PEM, pem, passphrase)
         self.assertTrue(isinstance(loadedKey, PKeyType))
@@ -2515,7 +2514,7 @@ class NetscapeSPKITests(TestCase, _PKeyInteractionTestsMixin):
         """
         nspki = NetscapeSPKI()
         blob = nspki.b64_encode()
-        self.assertTrue(isinstance(blob, binary_type))
+        self.assertTrue(isinstance(blob, bytes))
 
 
 class RevokedTests(TestCase):

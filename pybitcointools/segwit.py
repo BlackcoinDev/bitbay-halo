@@ -134,7 +134,7 @@ def segwit_signature_form(tx, i, script, amount, hashcode=SIGHASH_ALL, fork_id=N
     hash_outputs = hashlib.sha256(hashlib.sha256(b"".join(outputs)).digest()).digest() if outputs_to_sign else b"\x00" * 32
     hash_sequences = hashlib.sha256(hashlib.sha256(b"".join(sequences)).digest()).digest() if sequences else b"\x00" * 32
     hash_outpoints = hashlib.sha256(hashlib.sha256(b"".join(outpoints)).digest()).digest() if outpoints else b"\x00" * 32
-    hashcode = fork_id != None and (int(fork_id) | hashcode) or hashcode
+    hashcode = fork_id is not None and (int(fork_id) | hashcode) or hashcode
     preimage = [
         struct.pack("<I", d["version"]),
         hash_outpoints,
@@ -223,7 +223,7 @@ def apply_segwit_multisignatures(tx, i, witness_program, signatures, dummy=True,
 
 
 def segwit_strip_script_separator(script, index=0):
-    if index == None:
+    if index is None:
         return script
     OP_CODESEPARATOR = 171
 

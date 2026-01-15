@@ -6,11 +6,17 @@ import hmac
 import os
 import random
 import re
-import sys
+
 import time
 
-from .specials import *
-from .ripemd import *
+from .ripemd import RIPEMD160
+from .specials import (
+    bin_dbl_sha256, bin_to_b58check, bytes_to_hex_string, changebase, decode,
+    encode, from_byte_to_int, from_int_to_byte, from_string_to_bytes,
+    get_code_string, int_types, is_hexilified, is_python2, lpad,
+    random_string, safe_from_hex, safe_hexlify, string_or_bytes_types,
+    string_types,
+)
 
 # Hashing transactions for signing
 
@@ -81,7 +87,7 @@ def multiaccess(obj, prop):
 
 
 def slice(obj, start=0, end=2**200):
-    return obj[int(start) : int(end)]
+    return obj[int(start):int(end)]
 
 
 def count(obj):
@@ -407,7 +413,7 @@ def bin_hash160(string):
     digest = ""
     try:
         digest = hashlib.new("ripemd160", intermed).digest()
-    except:
+    except Exception:
         digest = RIPEMD160(intermed).digest()
     return digest
 
@@ -428,7 +434,7 @@ def sha256(string):
 def bin_ripemd160(string):
     try:
         digest = hashlib.new("ripemd160", string).digest()
-    except:
+    except Exception:
         digest = RIPEMD160(string).digest()
     return digest
 
@@ -528,7 +534,7 @@ def is_privkey(priv):
     try:
         get_privkey_format(priv)
         return True
-    except:
+    except Exception:
         return False
 
 
@@ -536,7 +542,7 @@ def is_pubkey(pubkey):
     try:
         get_pubkey_format(pubkey)
         return True
-    except:
+    except Exception:
         return False
 
 
@@ -594,6 +600,109 @@ def ecdsa_sign(msg, priv):
     sig = encode_sig(v, r, s)
     assert ecdsa_verify(msg, sig, privtopub(priv)), "Bad Sig!\t %s\nv = %d\n,r = %d\ns = %d" % (sig, v, r, s)
     return sig
+
+
+__all__ = [
+    "bin_dbl_sha256",
+    "bin_to_b58check",
+    "bytes_to_hex_string",
+    "changebase",
+    "decode",
+    "encode",
+    "from_byte_to_int",
+    "from_int_to_byte",
+    "from_string_to_bytes",
+    "get_code_string",
+    "int_types",
+    "is_hexilified",
+    "is_python2",
+    "lpad",
+    "random_string",
+    "safe_from_hex",
+    "safe_hexlify",
+    "string_or_bytes_types",
+    "string_types",
+    "RIPEMD160",
+    "SIGHASH_ALL",
+    "SIGHASH_NONE",
+    "SIGHASH_SINGLE",
+    "SIGHASH_ANYONECANPAY",
+    "SIGHASH_FORKID",
+    "P",
+    "N",
+    "A",
+    "B",
+    "Gx",
+    "Gy",
+    "G",
+    "change_curve",
+    "getG",
+    "inv",
+    "access",
+    "multiaccess",
+    "slice",
+    "count",
+    "sum",
+    "isinf",
+    "to_jacobian",
+    "jacobian_double",
+    "jacobian_add",
+    "from_jacobian",
+    "jacobian_multiply",
+    "fast_multiply",
+    "fast_add",
+    "get_pubkey_format",
+    "encode_pubkey",
+    "decode_pubkey",
+    "get_privkey_format",
+    "encode_privkey",
+    "decode_privkey",
+    "add_pubkeys",
+    "add_privkeys",
+    "mul_privkeys",
+    "multiply",
+    "divide",
+    "compress",
+    "decompress",
+    "privkey_to_pubkey",
+    "privkey_to_address",
+    "neg_pubkey",
+    "neg_privkey",
+    "subtract_pubkeys",
+    "subtract_privkeys",
+    "bin_hash160",
+    "hash160",
+    "bin_sha256",
+    "sha256",
+    "bin_ripemd160",
+    "ripemd160",
+    "dbl_sha256",
+    "bin_slowsha",
+    "slowsha",
+    "hash_to_int",
+    "num_to_var_int",
+    "electrum_sig_hash",
+    "random_key",
+    "random_electrum_seed",
+    "b58check_to_bin",
+    "get_version_byte",
+    "hex_to_b58check",
+    "b58check_to_hex",
+    "pubkey_to_address",
+    "is_privkey",
+    "is_pubkey",
+    "is_address",
+    "encode_sig",
+    "decode_sig",
+    "deterministic_generate_k",
+    "ecdsa_raw_sign",
+    "ecdsa_sign",
+    "ecdsa_raw_verify",
+    "ecdsa_verify_addr",
+    "ecdsa_verify",
+    "ecdsa_raw_recover",
+    "ecdsa_recover",
+]
 
 
 def ecdsa_raw_verify(msghash, vrs, pub):

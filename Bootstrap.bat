@@ -1,1 +1,0 @@
-blackcoind.exe -datadir=%CD%\data -loadblock=%CD%\bootstrap.dat

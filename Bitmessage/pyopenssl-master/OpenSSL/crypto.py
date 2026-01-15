@@ -8,8 +8,6 @@ from OpenSSL._util import exception_from_error_queue as _exception_from_error_qu
 from OpenSSL._util import ffi as _ffi
 from OpenSSL._util import lib as _lib
 from OpenSSL._util import native as _native
-from six import integer_types as _integer_types
-from six import text_type as _text_type
 
 FILETYPE_PEM = _lib.SSL_FILETYPE_PEM
 FILETYPE_ASN1 = _lib.SSL_FILETYPE_ASN1
@@ -250,6 +248,16 @@ class PKey(object):
 PKeyType = PKey
 
 
+def _cmp_func(op):
+    def f(self, other):
+        if not isinstance(other, X509Name):
+            return NotImplemented
+        result = _lib.X509_NAME_cmp(self._name, other._name)
+        return op(result, 0)
+
+    return f
+
+
 class X509Name(object):
     def __init__(self, name):
         """
@@ -287,7 +295,7 @@ class X509Name(object):
                 _lib.X509_NAME_ENTRY_free(ent)
                 break
 
-        if isinstance(value, _text_type):
+        if isinstance(value, str):
             value = value.encode("utf-8")
 
         add_result = _lib.X509_NAME_add_entry_by_NID(self._name, nid, _lib.MBSTRING_UTF8, value, -1, -1, 0)
@@ -334,23 +342,14 @@ class X509Name(object):
             _lib.OPENSSL_free(result_buffer[0])
         return result
 
-    def _cmp(op):
-        def f(self, other):
-            if not isinstance(other, X509Name):
-                return NotImplemented
-            result = _lib.X509_NAME_cmp(self._name, other._name)
-            return op(result, 0)
+    __eq__ = _cmp_func(__eq__)
+    __ne__ = _cmp_func(__ne__)
 
-        return f
+    __lt__ = _cmp_func(__lt__)
+    __le__ = _cmp_func(__le__)
 
-    __eq__ = _cmp(__eq__)
-    __ne__ = _cmp(__ne__)
-
-    __lt__ = _cmp(__lt__)
-    __le__ = _cmp(__le__)
-
-    __gt__ = _cmp(__gt__)
-    __ge__ = _cmp(__ge__)
+    __gt__ = _cmp_func(__gt__)
+    __ge__ = _cmp_func(__ge__)
 
     def __repr__(self):
         """
@@ -857,7 +856,7 @@ class X509(object):
 
         :return: None
         """
-        if not isinstance(serial, _integer_types):
+        if not isinstance(serial, int):
             raise TypeError("serial must be an integer")
 
         hex_serial = hex(serial)[2:]
@@ -1141,7 +1140,7 @@ def load_certificate(type, buffer):
 
     :return: The X509 object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -1149,7 +1148,8 @@ def load_certificate(type, buffer):
     if type == FILETYPE_PEM:
         x509 = _lib.PEM_read_bio_X509(bio, _ffi.NULL, _ffi.NULL, _ffi.NULL)
     elif type == FILETYPE_ASN1:
-        x509 = _lib.d2i_X509_bio(bio, _ffi.NULL)
+        # p12 = _lib.d2i_PKCS12_bio(bio, _ffi.NULL)
+        raise NotImplementedError("d2i_PKCS12_bio not available")
     else:
         raise ValueError("type argument must be FILETYPE_PEM or FILETYPE_ASN1")
 
@@ -1173,11 +1173,11 @@ def dump_certificate(type, cert):
     bio = _new_mem_buf()
 
     if type == FILETYPE_PEM:
-        result_code = _lib.PEM_write_bio_X509(bio, cert._x509)
+        _ = _lib.PEM_write_bio_X509(bio, cert._x509)
     elif type == FILETYPE_ASN1:
-        result_code = _lib.i2d_X509_bio(bio, cert._x509)
+        _ = _lib.i2d_X509_bio(bio, cert._x509)
     elif type == FILETYPE_TEXT:
-        result_code = _lib.X509_print_ex(bio, cert._x509, 0, 0)
+        _ = _lib.X509_print_ex(bio, cert._x509, 0, 0)
     else:
         raise ValueError("type argument must be FILETYPE_PEM, FILETYPE_ASN1, or " "FILETYPE_TEXT")
 
@@ -1872,7 +1872,7 @@ class _PassphraseHelper(object):
                 else:
                     raise ValueError("passphrase returned by callback is too long")
             for i in range(len(result)):
-                buf[i] = result[i : i + 1]
+                buf[i] = result[i:i + 1]
             return len(result)
         except Exception as e:
             self._problems.append(e)
@@ -1891,7 +1891,7 @@ def load_privatekey(type, buffer, passphrase=None):
 
     :return: The PKey object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -1947,7 +1947,7 @@ def load_certificate_request(type, buffer):
     :param buffer: The buffer the certificate request is stored in
     :return: The X509Req object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -2039,7 +2039,7 @@ def load_crl(type, buffer):
 
     :return: The PKey object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -2067,7 +2067,7 @@ def load_pkcs7_data(type, buffer):
     :param buffer: The buffer with the pkcs7 data.
     :return: The PKCS7 object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -2097,7 +2097,7 @@ def load_pkcs12(buffer, passphrase):
     :param passphrase: (Optional) The password to decrypt the PKCS12 lump
     :returns: The PKCS12 object
     """
-    if isinstance(buffer, _text_type):
+    if isinstance(buffer, str):
         buffer = buffer.encode("ascii")
 
     bio = _new_mem_buf(buffer)
@@ -2161,8 +2161,6 @@ def load_pkcs12(buffer, passphrase):
 
 
 def _initialize_openssl_threads(get_ident, Lock):
-    import _ssl
-
     return
 
     locks = list(Lock() for n in range(_lib.CRYPTO_num_locks()))
@@ -2191,13 +2189,3 @@ else:
 # indirectly since it is necessary for functions like dump_privatekey when
 # using encryption.
 #
-# Thus OpenSSL.test.test_crypto.FunctionTests.test_dump_privatekey_passphrase
-# and some other similar tests may fail without this (though they may not if
-# the Python runtime has already done some initialization of the underlying
-# OpenSSL library (and is linked against the same one that cryptography is
-# using)).
-_lib.OpenSSL_add_all_algorithms()
-
-# This is similar but exercised mainly by exception_from_error_queue.  It calls
-# both ERR_load_crypto_strings() and ERR_load_SSL_strings().
-_lib.SSL_load_error_strings()

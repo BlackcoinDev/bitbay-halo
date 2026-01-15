@@ -54,7 +54,7 @@ def sign(msg, hexPrivkey):
 def verify(msg, sig, hexPubkey):
     try:
         return makePubCryptor(hexPubkey).verify(sig, msg)
-    except:
+    except Exception:
         return False
 
 

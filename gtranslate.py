@@ -24,7 +24,8 @@ class GoogleTrans(object):
         self.header = {
             "accept": "*/*",
             "accept-language": "zh-CN,zh;q=0.9",
-            "cookie": "NID=188=M1p_rBfweeI_Z02d1MOSQ5abYsPfZogDrFjKwIUbmAr584bc9GBZkfDwKQ80cQCQC34zwD4ZYHFMUf4F59aDQLSc79_LcmsAihnW0Rsb1MjlzLNElWihv-8KByeDBblR2V1kjTSC8KnVMe32PNSJBQbvBKvgl4CTfzvaIEgkqss",
+            "cookie": "NID=188=M1p_rBfweeI_Z02d1MOSQ5abYsPfZogDrFjKwIUbmAr584bc9GBZkfDwKQ80cQCQC34zwD4ZYHFMUf4F59aDQLSc79_"
+                      "LcmsAihnW0Rsb1MjlzLNElWihv-8KByeDBblR2V1kjTSC8KnVMe32PNSJBQbvBKvgl4CTfzvaIEgkqss",
             "referer": "https://translate.google.cn/",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36",
             "x-client-data": "CJK2yQEIpLbJAQjEtskBCKmdygEIqKPKAQi5pcoBCLGnygEI4qjKAQjxqcoBCJetygEIza3KAQ==",
@@ -51,7 +52,7 @@ class GoogleTrans(object):
         def Number(self, val):
             try:
                 return eval(val, {}, {})
-            except:
+            except Exception:
                 return 0
 
         class Undefined:
@@ -69,7 +70,7 @@ class GoogleTrans(object):
                         return 0
                     try:
                         key = int(key)
-                    except:
+                    except ValueError:
                         return 0
                 if len(self.storage) <= key or key < 0:
                     return 0
@@ -81,7 +82,7 @@ class GoogleTrans(object):
                         return 0
                     try:
                         key = int(key)
-                    except:
+                    except ValueError:
                         return 0
                 if key < 0:
                     return 0
@@ -184,7 +185,7 @@ class GoogleTrans(object):
     def query(self, q, lang_to=""):
         try:
             self.data["q"] = urllib.request.pathname2url(q)
-        except:
+        except Exception:
             self.data["q"] = urllib.parse.quote(q)
         self.data["tk"] = self.JSHackToken().wo(q, self.TKK)
         self.data["tl"] = lang_to
