@@ -1,6 +1,6 @@
-from . import pyelliptic
-from .pyelliptic import OpenSSL
-from .pyelliptic import arithmetic as a
+from Bitmessage import pyelliptic
+from Bitmessage.pyelliptic import OpenSSL
+from Bitmessage.pyelliptic import arithmetic as a
 
 
 def makeCryptor(privkey):
