@@ -431,7 +431,7 @@ class StateManager:
 
             self._ensure_defaults()
             return True
-        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+        except (FileNotFoundError, json.JSONDecodeError, KeyError):
             return False
 
     # =========================================================================
@@ -459,8 +459,8 @@ class StateManager:
         with self._lock:
             logs = self._advance_array.get("logs", [])
             if level:
-                logs = [l for l in logs if l["level"] == level.value]
-            return [LogEntry(**l) for l in logs[-limit:]]
+                logs = [entry for entry in logs if entry["level"] == level.value]
+            return [LogEntry(**entry) for entry in logs[-limit:]]
 
 
 # Global state instance

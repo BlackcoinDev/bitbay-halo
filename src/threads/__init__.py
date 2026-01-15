@@ -457,7 +457,7 @@ class BackgroundTaskManager:
         if on_progress is not None:
             self._progress_callbacks[task_id] = on_progress
 
-        future = self._pool.submit_task(func, *args, **kwargs)
+        _ = self._pool.submit_task(func, *args, **kwargs)
         self._tasks[task_id].state = ThreadState.RUNNING
         return task_id
 
