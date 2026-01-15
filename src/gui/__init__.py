@@ -5,7 +5,7 @@ Type-safe PyQt6 interface components
 
 from typing import Any, Dict, Optional, Protocol, runtime_checkable
 from dataclasses import dataclass, field
-from enum import Enum, auto
+from enum import Enum
 from datetime import datetime
 import logging
 

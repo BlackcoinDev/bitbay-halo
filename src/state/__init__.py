@@ -3,7 +3,7 @@ State management for BlackHalo 2.0
 Type-safe global state with proper encapsulation
 """
 
-from typing import Any, Dict, List, Optional, Protocol, runtime_checkable
+from typing import Any, Dict, List, Protocol
 from decimal import Decimal
 from datetime import datetime
 from dataclasses import dataclass, field
@@ -11,19 +11,13 @@ import threading
 import json
 
 from ..types import (
-    CryptoType,
     Contract,
     Order,
-    Market,
     UTXO,
     BMAddress,
     BMMessage,
-    BridgeState,
-    AppConfig,
     LogLevel,
     LogEntry,
-    ThreadState,
-    BalanceInfo,
     ContractStatus,
     MessageStatus,
 )

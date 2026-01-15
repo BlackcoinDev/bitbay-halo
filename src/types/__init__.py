@@ -3,10 +3,10 @@ Type definitions for BlackHalo 2.0
 Comprehensive type annotations for type-safe cryptocurrency exchange platform
 """
 
-from typing import TypeAlias, TypedDict, Literal, NotRequired
+from typing import TypeAlias, Literal
 from decimal import Decimal
 from datetime import datetime
-from enum import Enum, auto
+from enum import Enum
 from dataclasses import dataclass, field
 import json
 

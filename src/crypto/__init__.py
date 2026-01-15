@@ -4,13 +4,10 @@ Type-safe cryptographic operations
 """
 
 from typing import Any, Tuple, Optional
-from decimal import Decimal
 from dataclasses import dataclass
 import hashlib
 import secrets
 import struct
-
-from ..types import Address, TxHash, HexString, PrivateKey, PublicKey
 
 
 def sha256(data: bytes) -> bytes:
@@ -330,7 +327,6 @@ def var_int_to_bytes(n: int) -> bytes:
 
 
 # Import base58 for address encoding
-import base58  # noqa: F401
 
 
 @dataclass

@@ -3,12 +3,10 @@ BitMessage client module for BlackHalo 2.0
 Type-safe PyBitmessage API integration
 """
 
-from typing import Any, Dict, List, Optional, Protocol, runtime_checkable
+from typing import Any, Dict, List, Optional, Protocol
 from dataclasses import dataclass, field
 from datetime import datetime
-from decimal import Decimal
 import logging
-import json
 
 
 logger = logging.getLogger(__name__)

@@ -3,7 +3,7 @@ Qt6 GUI implementation for BlackHalo 2.0
 Real PyQt6 widgets and application startup
 """
 
-from typing import Any, Dict, Optional, Callable
+from typing import Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -35,7 +35,7 @@ class BlackHaloQt6App:
     @classmethod
     def is_qt6_available(cls) -> bool:
         try:
-            from PyQt6 import QtCore, QtWidgets, QtGui
+            import PyQt6.QtCore  # noqa: F401
 
             return True
         except ImportError:
@@ -47,7 +47,7 @@ class BlackHaloQt6App:
             return True
 
         try:
-            from PyQt6 import QtCore, QtWidgets, QtGui
+            from PyQt6 import QtWidgets, QtGui
 
             if BlackHaloQt6App._app is None:
                 BlackHaloQt6App._app = QtWidgets.QApplication([])
@@ -71,7 +71,7 @@ class BlackHaloQt6App:
 
     def create_window(self, title: str = "BlackHalo", width: int = 1024, height: int = 768) -> Any:
         try:
-            from PyQt6 import QtCore, QtWidgets, QtGui
+            from PyQt6 import QtWidgets
 
             window = QtWidgets.QMainWindow()
             window.setWindowTitle(title)
@@ -102,7 +102,7 @@ class BlackHaloQt6App:
 
     def create_notification(self, title: str, message: str, level: str = "info") -> None:
         try:
-            from PyQt6 import QtWidgets, QtCore
+            from PyQt6 import QtWidgets
 
             icon = QtWidgets.QMessageBox.Icon.Information
             if level == "warning":
@@ -122,7 +122,7 @@ class BlackHaloQt6App:
 
     def run_event_loop(self) -> int:
         try:
-            from PyQt6 import QtWidgets
+            import PyQt6.QtWidgets  # noqa: F401
 
             if self._app is None:
                 return 1
@@ -132,7 +132,7 @@ class BlackHaloQt6App:
 
     def quit(self) -> None:
         try:
-            from PyQt6 import QtWidgets
+            import PyQt6.QtWidgets  # noqa: F401
 
             if self._app is not None:
                 self._app.quit()

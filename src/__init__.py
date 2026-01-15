@@ -11,24 +11,16 @@ from datetime import datetime
 from pathlib import Path
 
 from .types import (
-    CryptoType,
     AppConfig,
     BalanceInfo,
     BlockInfo,
     ContractStatus,
-    OrderType,
+    CryptoType,
     UTXO,
 )
-from .state import StateManager, get_state_manager
+from .state import get_state_manager
 from .rpc import RPCClient, BlackCoinClient, create_rpc_client
-from .crypto import (
-    safe_hexlify,
-    safe_unhexlify,
-    txhash,
-    public_key_to_address,
-    private_key_to_wif,
-    generate_private_key,
-)
+from .crypto import safe_hexlify
 
 
 logging.basicConfig(
@@ -205,7 +197,7 @@ class BlackHaloApplication:
 
     def create_contract(self, order_id: str, terms: Dict[str, Any], parties: Dict[str, Dict[str, Any]]) -> str:
         """Create a new contract"""
-        from .types import Contract, ContractTerms, ContractParty, CryptoType
+        from .types import Contract, ContractTerms, ContractParty
 
         # Generate contract ID
         contract_id = safe_hexlify(self.state.get("U", "") + str(len(self.state.contracts)))

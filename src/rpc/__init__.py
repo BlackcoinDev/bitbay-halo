@@ -3,9 +3,9 @@ RPC client for BlackCoin and other cryptocurrencies
 Type-safe RPC communication
 """
 
-from typing import Any, Dict, List, Optional, Protocol, Union
+from typing import Any, Dict, List, Optional, Union
 from decimal import Decimal
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import base64
 import json
 import logging
