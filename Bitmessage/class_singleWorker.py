@@ -142,7 +142,7 @@ class singleWorker(threading.Thread):
             shared.config.set(myAddress, "lastpubkeysendtime", str(int(time.time())))
             with open(shared.appdata + "keys.dat", "wb") as configfile:
                 shared.config.write(configfile)
-        except:
+        except Exception:
             # The user deleted the address out of the keys.dat file before this
             # finished.
             pass
@@ -154,7 +154,7 @@ class singleWorker(threading.Thread):
     def sendOutOrStoreMyV3Pubkey(self, hash):
         try:
             myAddress = shared.myAddressesByHash[hash]
-        except:
+        except Exception:
             # The address has been deleted.
             return
         if shared.safeConfigGetBoolean(myAddress, "chan"):
@@ -235,7 +235,7 @@ class singleWorker(threading.Thread):
             shared.config.set(myAddress, "lastpubkeysendtime", str(int(time.time())))
             with open(shared.appdata + "keys.dat", "wb") as configfile:
                 shared.config.write(configfile)
-        except:
+        except Exception:
             # The user deleted the address out of the keys.dat file before this
             # finished.
             pass
@@ -362,7 +362,7 @@ class singleWorker(threading.Thread):
             try:
                 privSigningKeyBase58 = shared.config.get(fromaddress, "privsigningkey")
                 privEncryptionKeyBase58 = shared.config.get(fromaddress, "privencryptionkey")
-            except:
+            except Exception:
                 shared.UISignalQueue.put(
                     (
                         "updateSentItemStatusByAckdata",
@@ -695,7 +695,7 @@ class singleWorker(threading.Thread):
                 # pubkeyPayload[readPosition:readPosition+64] #We don't use this
                 # key for anything here.
                 readPosition += 64
-                pubEncryptionKeyBase256 = pubkeyPayload[readPosition : readPosition + 64]
+                pubEncryptionKeyBase256 = pubkeyPayload[readPosition: readPosition + 64]
                 readPosition += 64
 
                 # Let us fetch the amount of work required by the recipient.
@@ -957,7 +957,7 @@ class singleWorker(threading.Thread):
             # We have assembled the data that will be encrypted.
             try:
                 encrypted = highlevelcrypto.encrypt(payload, "04" + pubEncryptionKeyBase256.hex())
-            except:
+            except Exception:
                 sqlExecute("""UPDATE sent SET status='badkey' WHERE ackdata=?""", ackdata)
                 shared.UISignalQueue.put(
                     (
@@ -1007,7 +1007,7 @@ class singleWorker(threading.Thread):
                             "nonce trials per second.",
                         )
                     )
-                except:
+                except Exception:
                     pass
 
             encryptedPayload = pack(">Q", nonce) + encryptedPayload
@@ -1069,7 +1069,7 @@ class singleWorker(threading.Thread):
                 if shared.safeConfigGetBoolean("bitmessagesettings", "apienabled"):
                     try:
                         apiNotifyPath = shared.config.get("bitmessagesettings", "apinotifypath")
-                    except:
+                    except Exception:
                         apiNotifyPath = ""
                     if apiNotifyPath != "":
                         call([apiNotifyPath, "newMessage"])
@@ -1193,7 +1193,7 @@ class singleWorker(threading.Thread):
                         "nonce trials per second.",
                     )
                 )
-            except:
+            except Exception:
                 pass
 
         payload = pack(">Q", nonce) + payload
