@@ -9,7 +9,6 @@
 
 import configparser
 import curses
-import io
 import os
 import sys
 import time
