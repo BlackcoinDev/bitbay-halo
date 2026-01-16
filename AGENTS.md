@@ -10,8 +10,7 @@
 | Main app | `./Halo.py` (1570 lines) |
 | Build | `./build.py` |
 | Tests | `./tests/` |
-| GUI | `./gui/` |
-| BitMessage legacy | `./Bitmessage-BitMHalo-v0.6/src/` |
+| GUI | `./gui/` ||
 
 ## Conventions
 
@@ -42,4 +41,3 @@ uv run --active pyinstaller Halo.py       # Build
 - **Dual build system:** Modern (UV/PyInstaller) + Legacy (2014 C++ daemons)
 - **Cross-compilation:** Windows/macOS/Linux/ARM64 via PyInstaller
 - **Crypto priority:** BlackCoin → BitBay → Bitcoin (legacy)
-- **Legacy code:** Bitmessage-BitMHalo-v0.6 excluded from linting

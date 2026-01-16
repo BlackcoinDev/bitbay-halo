@@ -187,18 +187,21 @@ python src/bitmessagemain.py
 ## Use Cases
 
 ### Business Applications
+
 - International wire transfers without intermediaries
 - Employment contracts with guaranteed performance
 - Supply chain verification and automation
 - Decentralized freelancer marketplace
 
 ### Financial Services
+
 - Peer-to-peer currency exchange
 - Collateralized lending with smart contracts
 - Automated market making
 - Cross-chain atomic swaps
 
 ### Social Applications
+
 - Community cooperative management
 - Reputation-based social networks
 - Decentralized voting systems
