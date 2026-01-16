@@ -12,7 +12,7 @@ import l10n
 import proofofwork
 import shared
 import tr
-from addresses import decodeAddress, decodeVarint, encodeVarint
+from addresses import calculateInventoryHash, decodeAddress, decodeVarint, encodeVarint
 from debug import logger
 from helper_sql import sqlExecute, sqlQuery
 
@@ -128,7 +128,7 @@ class singleWorker(threading.Thread):
         print(("(For pubkey message) Found proof of work", trialValue, "Nonce:", nonce))
         payload = pack(">Q", nonce) + payload
 
-        inventoryHash = highlevelcrypto.calculateInventoryHash(payload)
+        inventoryHash = calculateInventoryHash(payload)
         objectType = 1
         shared.inventory[inventoryHash] = (objectType, streamNumber, payload, embeddedTime, "")
         shared.inventorySets[streamNumber].add(inventoryHash)
