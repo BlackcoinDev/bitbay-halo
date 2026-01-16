@@ -168,7 +168,7 @@ class singleWorker(threading.Thread):
         signedTimeForProtocolV2 = embeddedTime - TTL
         """
         According to the protocol specification, the expiresTime along with the pubkey information is
-        signed. But to be backwards compatible during the upgrade period, we shall sign not the 
+        signed. But to be backwards compatible during the upgrade period, we shall sign not the
         expiresTime but rather the current time. There must be precisely a 28 day difference
         between the two. After the upgrade period we'll switch to signing the whole payload with the
         expiresTime time.
@@ -290,10 +290,10 @@ class singleWorker(threading.Thread):
 
         """
         According to the protocol specification, the expiresTime along with the pubkey information is
-        signed. But to be backwards compatible during the upgrade period, we shall sign not the 
+        signed. But to be backwards compatible during the upgrade period, we shall sign not the
         expiresTime but rather the current time. There must be precisely a 28 day difference
         between the two. After the upgrade period we'll switch to signing the whole payload from
-        above appended with dataToEncrypt. 
+        above appended with dataToEncrypt.
         """
         if int(time.time()) < 1416175200:  # Sun, 16 Nov 2014 22:00:00 GMT
             dataToSign = pack(">Q", (embeddedTime - TTL))
