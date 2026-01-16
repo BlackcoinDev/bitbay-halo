@@ -1,15 +1,20 @@
+import hashlib
 import random
 import sys
 import threading
 import time
+from struct import pack
 from subprocess import call  # used when the API must execute an outside program
-from time import gmtime, localtime, strftime
 
-from . import helper_inbox, highlevelcrypto, l10n, proofofwork, shared, tr
-from .addresses import *
-from .debug import logger
-from .helper_generic import addDataPadding
-from .helper_sql import *
+import helper_inbox
+import highlevelcrypto
+import l10n
+import proofofwork
+import shared
+import tr
+from addresses import decodeAddress, decodeVarint, encodeVarint
+from debug import logger
+from helper_sql import sqlExecute, sqlQuery
 
 # This thread, of which there is only one, does the heavy lifting:
 # calculating POWs.
@@ -123,7 +128,7 @@ class singleWorker(threading.Thread):
         print(("(For pubkey message) Found proof of work", trialValue, "Nonce:", nonce))
         payload = pack(">Q", nonce) + payload
 
-        inventoryHash = calculateInventoryHash(payload)
+        inventoryHash = highlevelcrypto.calculateInventoryHash(payload)
         objectType = 1
         shared.inventory[inventoryHash] = (objectType, streamNumber, payload, embeddedTime, "")
         shared.inventorySets[streamNumber].add(inventoryHash)
