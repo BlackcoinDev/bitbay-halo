@@ -1,4 +1,4 @@
 [flake8]
 max-line-length = 180
-exclude = venv,.venv,__pycache__,BUILD SCRIPTS ETC,.git,bridge,data,agent,BitMData,images,custom,Bitmessage/pyopenssl-master
+exclude = venv,.venv,__pycache__,BUILD SCRIPTS ETC,.git,bridge,data,agent,BitMData,images
 # We try NOT to use ignore list.
