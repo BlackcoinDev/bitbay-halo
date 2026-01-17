@@ -1,5 +1,4 @@
 import hashlib
-import re
 
 P = 2**256 - 2**32 - 2**9 - 2**8 - 2**7 - 2**6 - 2**4 - 1
 A = 0
@@ -61,9 +60,9 @@ def changebase(string, frm, to, minlen=0):
 
 
 def base10_add(a, b):
-    if a == None:
+    if a is None:
         return b[0], b[1]
-    if b == None:
+    if b is None:
         return a[0], a[1]
     if a[0] == b[0]:
         if a[1] == b[1]:
@@ -77,7 +76,7 @@ def base10_add(a, b):
 
 
 def base10_double(a):
-    if a == None:
+    if a is None:
         return None
     m = ((3 * a[0] * a[0] + A) * inv(2 * a[1], P)) % P
     x = (m * m - 2 * a[0]) % P

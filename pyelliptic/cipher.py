@@ -58,14 +58,14 @@ class Cipher:
         inp = OpenSSL.malloc(input, len(input))
         if OpenSSL.EVP_CipherUpdate(self.ctx, OpenSSL.byref(buffer), OpenSSL.byref(i), inp, len(input)) == 0:
             raise Exception("[OpenSSL] EVP_CipherUpdate FAIL .")
-        return buffer.raw[0 : i.value]
+        return buffer.raw[0: i.value]
 
     def final(self):
         i = OpenSSL.c_int(0)
         buffer = OpenSSL.malloc(b"", self.cipher.get_blocksize())
         if (OpenSSL.EVP_CipherFinal_ex(self.ctx, OpenSSL.byref(buffer), OpenSSL.byref(i))) == 0:
             raise Exception("[OpenSSL] EVP_CipherFinal_ex FAIL .")
-        return buffer.raw[0 : i.value]
+        return buffer.raw[0: i.value]
 
     def ciphering(self, input):
         """

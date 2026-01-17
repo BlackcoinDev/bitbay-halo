@@ -47,7 +47,7 @@ bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pub
         For a normal and High level use, specifie pubkey,
         privkey (if you need) and the curve
         """
-        if type(curve) == str:
+        if isinstance(curve, str):
             self.curve = OpenSSL.get_curve(curve)
         else:
             self.curve = curve
@@ -251,7 +251,7 @@ bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pub
     def raw_check_key(self, privkey, pubkey_x, pubkey_y, curve=None):
         if curve is None:
             curve = self.curve
-        elif type(curve) == str:
+        elif isinstance(curve, str):
             curve = OpenSSL.get_curve(curve)
         else:
             curve = curve

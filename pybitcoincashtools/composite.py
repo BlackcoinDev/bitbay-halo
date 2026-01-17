@@ -77,7 +77,7 @@ def bip32_hdm_script(*args):
             keys.append(args[i])
             i += 1
         req = int(args[i])
-        path = list(map(int, args[i + 1 :]))
+        path = list(map(int, args[i + 1:]))
     pubs = sorted([bip32_descend(x, path) for x in keys])
     return mk_multisig_script(pubs, req)
 
