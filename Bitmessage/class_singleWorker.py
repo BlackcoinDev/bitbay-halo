@@ -507,7 +507,7 @@ class singleWorker(threading.Thread):
             queryreturn = sqlQuery(
                 "SELECT toaddress, toripe, fromaddress, subject, message, ackdata, status "
                 "FROM sent WHERE (status='msgqueued' or status='doingmsgpow' or status='forcepow') "
-                "and folder='sent' LIMIT 1"  # noqa: E501
+                "and folder='sent' LIMIT 1"
             )
             if len(queryreturn) == 0:  # if there is no work to do then
                 break  # break out of this sendMsg loop and
