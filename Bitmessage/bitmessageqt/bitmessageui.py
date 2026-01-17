@@ -675,4 +675,4 @@ class Ui_MainWindow(object):
         self.actionJoinChan.setText(_translate("MainWindow", "Join / Create chan", None))
 
 
-from . import bitmessage_icons_rc  # noqa: E402,F401
+from . import bitmessage_icons_rc

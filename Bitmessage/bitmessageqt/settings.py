@@ -537,4 +537,4 @@ class Ui_settingsDialog(object):
         )
 
 
-from . import bitmessage_icons_rc  # noqa: E402,F401
+from . import bitmessage_icons_rc
