@@ -38,76 +38,21 @@
 # */
 
 import struct
-import sys
+from typing import List, Optional, Union, Tuple, Callable
 
 # block_size = 1
 digest_size = 20
 digestsize = 20
 
 
-class RIPEMD160:
-    """Return a new RIPEMD160 object. An optional string argument
-    may be provided; if present, this string will be automatically
-    hashed."""
-
-    def __init__(self, arg=None):
-        self.ctx = RMDContext()
-        if arg:
-            self.update(arg)
-        self.dig = None
-
-    def update(self, arg):
-        """update(arg)"""
-        RMD160Update(self.ctx, arg, len(arg))
-        self.dig = None
-
-    def digest(self):
-        """digest()"""
-        if self.dig:
-            return self.dig
-        ctx = self.ctx.copy()
-        self.dig = RMD160Final(self.ctx)
-        self.ctx = ctx
-        return self.dig
-
-    def hexdigest(self):
-        """hexdigest()"""
-        dig = self.digest()
-        hex_digest = ""
-        for d in dig:
-            # Python 3: bytes iteration yields ints, Python 2: needs ord()
-            if isinstance(d, int):
-                hex_digest += "%02x" % d
-            else:
-                hex_digest += "%02x" % ord(d)
-        return hex_digest
-
-    def copy(self):
-        """copy()"""
-        import copy
-
-        return copy.deepcopy(self)
-
-
-def new(arg=None):
-    """Return a new RIPEMD160 object. An optional string argument
-    may be provided; if present, this string will be automatically
-    hashed."""
-    return RIPEMD160(arg)
-
-
-#
-# Private.
-#
-
-
 class RMDContext:
-    def __init__(self):
-        self.state = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]  # uint32
-        self.count = 0  # uint64
-        self.buffer = [0] * 64  # uchar
+    def __init__(self) -> None:
+        super().__init__()
+        self.state: List[int] = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]  # uint32
+        self.count: int = 0  # uint64
+        self.buffer: List[int] = [0] * 64  # uchar
 
-    def copy(self):
+    def copy(self) -> "RMDContext":
         ctx = RMDContext()
         ctx.state = self.state[:]
         ctx.count = self.count
@@ -128,50 +73,69 @@ KK3 = 0x7A6D76E9
 KK4 = 0x00000000
 
 
-def ROL(n, x):
+def ROL(n: int, x: int) -> int:
     return ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
 
 
-def F0(x, y, z):
+def F0(x: int, y: int, z: int) -> int:
     return x ^ y ^ z
 
 
-def F1(x, y, z):
+def F1(x: int, y: int, z: int) -> int:
     return (x & y) | (((~x) % 0x100000000) & z)
 
 
-def F2(x, y, z):
+def F2(x: int, y: int, z: int) -> int:
     return (x | ((~y) % 0x100000000)) ^ z
 
 
-def F3(x, y, z):
+def F3(x: int, y: int, z: int) -> int:
     return (x & z) | (((~z) % 0x100000000) & y)
 
 
-def F4(x, y, z):
+def F4(x: int, y: int, z: int) -> int:
     return x ^ (y | ((~z) % 0x100000000))
 
 
-def R(a, b, c, d, e, Fj, Kj, sj, rj, X):
+def R(
+    a: int,
+    b: int,
+    c: int,
+    d: int,
+    e: int,
+    Fj: Callable[[int, int, int], int],
+    Kj: int,
+    sj: int,
+    rj: int,
+    X: List[int],
+) -> Tuple[int, int]:
     a = ROL(sj, (a + Fj(b, c, d) + X[rj] + Kj) % 0x100000000) + e
     c = ROL(10, c)
     return a % 0x100000000, c
 
 
-PADDING = [0x80] + [0] * 63
+PADDING: List[int] = [0x80] + [0] * 63
 
 
-def RMD160Transform(state, block):  # uint32 state[5], uchar block[64]
-    x = [0] * 16
-    if sys.byteorder == "little":
-        x = struct.unpack("<16L", bytes(block[0:64]))
+def RMD160Transform(state: List[int], block: Union[List[int], bytes]) -> None:
+    # uint32 state[5], uchar block[64]
+
+    # Ensure block is bytes for unpack
+    if isinstance(block, list):
+        block_bytes = bytes(block[0:64])
     else:
-        raise Exception("Error!!")
-    a = state[0]
-    b = state[1]
-    c = state[2]
-    d = state[3]
-    e = state[4]
+        block_bytes = bytes(block[0:64])
+
+    # unpack returns a tuple, convert to list for x
+    # struct.unpack with '<' enforces little-endian regardless of system endianness
+    x_tuple = struct.unpack("<16L", block_bytes)
+    x: List[int] = [int(val) for val in x_tuple]
+
+    a: int = state[0]
+    b: int = state[1]
+    c: int = state[2]
+    d: int = state[3]
+    e: int = state[4]
 
     # /* Round 1 */
     a, c = R(a, b, c, d, e, F0, K0, 11, 0, x)
@@ -369,12 +333,19 @@ def RMD160Transform(state, block):  # uint32 state[5], uchar block[64]
     state[4] = (state[0] + bb + c) % 0x100000000
     state[0] = t % 0x100000000
 
-    pass
 
-
-def RMD160Update(ctx, inp, inplen):
+def RMD160Update(ctx: RMDContext, inp: Union[bytes, str, List[int]], inplen: int) -> None:
+    # Handle inp: it can be bytes, list of ints, or str (legacy)
+    # We standardize on list of ints for the buffer logic if needed,
+    # or keep it as sequenceable.
+    input_data: Union[List[int], bytes]
     if isinstance(inp, str):
-        inp = [ord(i) & 0xFF for i in inp]
+        input_data = [ord(i) & 0xFF for i in inp]
+    elif isinstance(inp, list):
+        input_data = inp
+    else:
+        # assume bytes or bytearray
+        input_data = inp
 
     have = (ctx.count // 8) % 64
     need = 64 - have
