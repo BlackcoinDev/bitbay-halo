@@ -33,12 +33,9 @@ class BlackHaloQt6App:
 
     @classmethod
     def is_qt6_available(cls) -> bool:
-        try:
-            import PyQt6.QtCore
+        import importlib.util
 
-            return True
-        except ImportError:
-            return False
+        return importlib.util.find_spec("PyQt6") is not None
 
     def start(self, headless: bool = False) -> bool:
         if headless:
@@ -120,23 +117,13 @@ class BlackHaloQt6App:
             logger.info(f"Notification: {title} - {message}")
 
     def run_event_loop(self) -> int:
-        try:
-            import PyQt6.QtWidgets
-
-            if self._app is None:
-                return 1
-            return self._app.exec()
-        except ImportError:
+        if self._app is None:
             return 1
+        return self._app.exec()
 
     def quit(self) -> None:
-        try:
-            import PyQt6.QtWidgets
-
-            if self._app is not None:
-                self._app.quit()
-        except ImportError:
-            pass
+        if self._app is not None:
+            self._app.quit()
 
 
 def create_qt6_app(title: str = "BlackHalo", width: int = 1024, height: int = 768) -> Optional[BlackHaloQt6App]:

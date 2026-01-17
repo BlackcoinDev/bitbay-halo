@@ -2,8 +2,6 @@
 Tests for cryptographic operations (highlevelcrypto, pyelliptic).
 """
 
-import pytest
-
 
 class TestPointMult:
     """Tests for EC point multiplication."""

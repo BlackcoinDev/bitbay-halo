@@ -85,11 +85,17 @@ def var_int_to_num(data: bytes, offset: int = 0) -> Tuple[int, int]:
     if data[offset] < 0xFD:
         return data[offset], offset + 1
     elif data[offset] == 0xFD:
-        return struct.unpack("<H", data[offset + 1 : offset + 3])[0], offset + 3
+        start_idx = offset + 1
+        end_idx = offset + 3
+        return struct.unpack("<H", data[start_idx:end_idx])[0], offset + 3
     elif data[offset] == 0xFE:
-        return struct.unpack("<L", data[offset + 1 : offset + 5])[0], offset + 5
+        start_idx = offset + 1
+        end_idx = offset + 5
+        return struct.unpack("<L", data[start_idx:end_idx])[0], offset + 5
     else:
-        return struct.unpack("<Q", data[offset + 1 : offset + 9])[0], offset + 9
+        start_idx = offset + 1
+        end_idx = offset + 9
+        return struct.unpack("<Q", data[start_idx:end_idx])[0], offset + 9
 
 
 @dataclass

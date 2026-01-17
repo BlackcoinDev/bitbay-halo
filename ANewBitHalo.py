@@ -7,21 +7,17 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWebEngineCore, QtWidgets
+import ast
+import traceback
+
+from yandex_translate import YandexTranslate
+from PyQt6 import QtCore, QtGui, QtWebEngineWidgets, QtWidgets
 
 
 def _fromUtf8(s):
     return s
 
 
-import ast
-
-# import goslate
-import traceback
-
-YandexTranslate = __import__("yandex_translate").YandexTranslate
-
-# gstrans = goslate.Goslate()
 ytrans = YandexTranslate("trnsl.1.1.20170227T075822Z.710cc070687ef49d.4773b96b2fa3e9cea7df423e9ab798c58d504036")
 
 
@@ -38,7 +34,7 @@ def compareFont(Label1, Label2):
             Label1.setFont(Label2.font())
         else:
             Label2.setFont(Label1.font())
-    except:
+    except Exception:
         traceback.print_exc()
     return True
 
@@ -103,7 +99,7 @@ class Ui_MainWindow(object):
                 try:
                     translateThis = ast.literal_eval(self.translations[self.language][text])
                     return translateThis
-                except:
+                except Exception:
                     return ""
         return QtCore.QCoreApplication.translate(context, text, disambig)
 
@@ -150,12 +146,12 @@ class Ui_MainWindow(object):
                 langtext.setText(trans)
                 x = langtext.text()
                 st = repr(x)
-                translateThis = ast.literal_eval(st)
+                ast.literal_eval(st)
                 self.translations[self.language][self.translist[pos]] = st
                 pos += 1
             self.translist = []
             return True
-        except:
+        except Exception:
             traceback.print_exc()
             return False
 
@@ -5269,13 +5265,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         self.retranslateUi2(MainWindow)
         res = self.GTranslate()  # Check to see if we have translations
-        if res == True:
+        if res:
             self.retranslateUi2(MainWindow)
         # self.resize(self.Tabs.minimumSizeHint())
         self.adjustSize()
 
     def retranslateUi2(self, MainWindow):
-        m = self._translate("MainWindow", "Not connected to internet!", None)
+        # m = self._translate("MainWindow", "Not connected to internet!", None)
         MainWindow.setWindowTitle(self._translate("MainWindow", "BitHalo", None))
         self.label_2.setText(self._translate("MainWindow", "Welcome to BitHalo", None))
         self.label_3.setText(self._translate("MainWindow", "Multi-Signature Wallet, Decentralized Smart Contracting & Exchange", None))
@@ -5571,20 +5567,45 @@ class Ui_MainWindow(object):
             '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             "p, li { white-space: pre-wrap; }\n"
             "</style></head><body style=\" font-family:'Arial'; font-size:16px; font-weight:400; font-style:normal;\">\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:15px; font-weight:600;">Links/Misc</span></p>\n'
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="www.Blackhalo.info"><span style=" font-size:15px; text-decoration: underline; color:#0000ff;">www.Blackhalo.info</span></a><span style=" font-size:15px;">  '
+            '<p style=" margin-top:0px; margin-bottom:0px; '
+            'margin-left:0px; margin-right:0px; -qt-block-indent:0; '
+            'text-indent:0px;"><span style=" font-size:15px; '
+            'font-weight:600;">Links/Misc</span></p>\n'
+            '<p style=" margin-top:0px; margin-bottom:0px; '
+            'margin-left:0px; margin-right:0px; -qt-block-indent:0; '
+            'text-indent:0px;"><a href="www.Blackhalo.info">'
+            '<span style=" font-size:15px; text-decoration: underline; '
+            'color:#0000ff;">www.Blackhalo.info</span></a>'
+            '<span style=" font-size:15px;">  '
             + self._translate("MainWindow", "BlackHalo, the worlds first contracting software", None)
             + "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="www.BitHalo.org"><span style=" font-size:15px; text-decoration: underline; color:#0000ff;">www.BitHalo.org</span></a><span style=" font-size:15px;">  '
+            '<p style=" margin-top:0px; margin-bottom:0px; '
+            'margin-left:0px; margin-right:0px; -qt-block-indent:0; '
+            'text-indent:0px;"><a href="www.BitHalo.org"><span style=" '
+            'font-size:15px; text-decoration: underline; '
+            'color:#0000ff;">www.BitHalo.org</span></a>'
+            '<span style=" font-size:15px;">  '
             + self._translate("MainWindow", "The original BitHalo Website", None)
             + "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="www.NightTrader.org"><span style=" font-size:15px; text-decoration: underline; color:#0000ff;">www.NightTrader.org</span></a><span style=" font-size:15px;">  '
+            '<p style=" margin-top:0px; margin-bottom:0px; '
+            'margin-left:0px; margin-right:0px; -qt-block-indent:0; '
+            'text-indent:0px;"><a href="www.NightTrader.org"><span style=" '
+            'font-size:15px; text-decoration: underline; '
+            'color:#0000ff;">www.NightTrader.org</span></a>'
+            '<span style=" font-size:15px;">  '
             + self._translate("MainWindow", "NightTrader decentralized exchange", None)
             + "</span></p>\n"
-            '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><a href="http://www.reddit.com/r/blackcoin/"><span style=" font-size:15px; text-decoration: underline; color:#0000ff;">http://www.reddit.com/r/blackcoin/</span></a><span style=" font-size:15px;">  '
+            '<p style=" margin-top:0px; margin-bottom:0px; '
+            'margin-left:0px; margin-right:0px; -qt-block-indent:0; '
+            'text-indent:0px;"><a href="http://www.reddit.com/r/blackcoin/">'
+            '<span style=" font-size:15px; text-decoration: underline; '
+            'color:#0000ff;">http://www.reddit.com/r/blackcoin/</span></a>'
+            '<span style=" font-size:15px;">  '
             + self._translate("MainWindow", "Blackcoin community subreddit", None)
             + "</span></p>\n"
-            '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:15px;"><br /></p>\n'
+            '<p style="-qt-paragraph-type:empty; margin-top:0px; '
+            'margin-bottom:0px; margin-left:0px; margin-right:0px; '
+            '-qt-block-indent:0; text-indent:0px; font-size:15px;"><br /></p>\n'
             '<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:15px;"><br />'
             + self._translate(
                 "MainWindow",
@@ -7694,8 +7715,6 @@ class Ui_MainWindow(object):
 
         self.label_27.setText(self._translate("MainWindow", "Add contacts to your " + self.NewCoin["name"] + " Address Book", None))
 
-
-from PyQt6 import QtWebEngineCore, QtWebEngineWidgets
 
 if __name__ == "__main__":
     import sys

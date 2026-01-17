@@ -2,8 +2,6 @@
 Tests for Bitmessage protocol serialization.
 """
 
-import pytest
-
 
 class TestVarint:
     """Extended tests for varint encoding/decoding."""
