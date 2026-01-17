@@ -1,9 +1,7 @@
 #! /usr/bin/env python3
 
-import urllib.request
-
 import re
-
+import urllib.request
 from typing import Any
 
 debug = False

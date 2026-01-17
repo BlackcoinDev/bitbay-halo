@@ -3,12 +3,12 @@ Type definitions for BlackHalo 2.0
 Comprehensive type annotations for type-safe cryptocurrency exchange platform
 """
 
-from typing import TypeAlias, Literal
-from decimal import Decimal
-from datetime import datetime
-from enum import Enum
-from dataclasses import dataclass, field
 import json
+from dataclasses import dataclass, field
+from datetime import datetime
+from decimal import Decimal
+from enum import Enum
+from typing import Literal, TypeAlias
 
 
 class CryptoType(Enum):

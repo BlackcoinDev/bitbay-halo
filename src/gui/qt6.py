@@ -3,11 +3,10 @@ Qt6 GUI implementation for BlackHalo 2.0
 Real PyQt6 widgets and application startup
 """
 
-from typing import Any, Optional
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import logging
-
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +46,7 @@ class BlackHaloQt6App:
             return True
 
         try:
-            from PyQt6 import QtWidgets, QtGui
+            from PyQt6 import QtGui, QtWidgets
 
             if BlackHaloQt6App._app is None:
                 BlackHaloQt6App._app = QtWidgets.QApplication([])
@@ -157,7 +156,7 @@ if __name__ == "__main__":
         window = app.create_window("BlackHalo 2.0", 1200, 800)
 
         try:
-            from PyQt6 import QtWidgets, QtCore, QtGui
+            from PyQt6 import QtCore, QtGui, QtWidgets
 
             central = window.centralWidget()
             layout = central.layout()

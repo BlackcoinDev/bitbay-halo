@@ -1,18 +1,41 @@
 #!/usr/bin/env python3
-import copy
-
-import re
-
 import binascii
+import copy
+import re
 import struct
+
 from .main import (
-    SIGHASH_ALL, SIGHASH_ANYONECANPAY, SIGHASH_NONE, SIGHASH_SINGLE,
-    b58check_to_hex, bin_dbl_sha256, bin_to_b58check, changebase, dbl_sha256,
-    decode, ecdsa_raw_recover, ecdsa_raw_sign, ecdsa_raw_verify, encode,
-    encode_pubkey, from_byte_to_int, from_int_to_byte, from_string_to_bytes,
-    get_code_string, hash160, hex_to_b58check, int_types, is_hexilified,
-    is_python2, num_to_var_int, privkey_to_pubkey, pubkey_to_address,
-    safe_from_hex, safe_hexlify, string_or_bytes_types, string_types,
+    SIGHASH_ALL,
+    SIGHASH_ANYONECANPAY,
+    SIGHASH_NONE,
+    SIGHASH_SINGLE,
+    b58check_to_hex,
+    bin_dbl_sha256,
+    bin_to_b58check,
+    changebase,
+    dbl_sha256,
+    decode,
+    ecdsa_raw_recover,
+    ecdsa_raw_sign,
+    ecdsa_raw_verify,
+    encode,
+    encode_pubkey,
+    from_byte_to_int,
+    from_int_to_byte,
+    from_string_to_bytes,
+    get_code_string,
+    hash160,
+    hex_to_b58check,
+    int_types,
+    is_hexilified,
+    is_python2,
+    num_to_var_int,
+    privkey_to_pubkey,
+    pubkey_to_address,
+    safe_from_hex,
+    safe_hexlify,
+    string_or_bytes_types,
+    string_types,
 )
 
 # Hex to bin converter and vice versa for objects
@@ -66,7 +89,7 @@ def deserialize(tx):
 
     def read_as_int(bytez):
         pos[0] += bytez
-        return decode(tx[pos[0] - bytez:pos[0]][::-1], 256)
+        return decode(tx[pos[0] - bytez : pos[0]][::-1], 256)
 
     def read_var_int():
         pos[0] += 1
@@ -78,7 +101,7 @@ def deserialize(tx):
 
     def read_bytes(bytez):
         pos[0] += bytez
-        return tx[pos[0] - bytez:pos[0]]
+        return tx[pos[0] - bytez : pos[0]]
 
     def read_var_string():
         size = read_var_int()
@@ -211,10 +234,10 @@ def der_encode_sig(v, r, s):
 def der_decode_sig(sig):
     leftlenbytes = decode(sig[6:8], 16)
     leftlen = leftlenbytes * 2
-    left = sig[8:8 + leftlen]
-    rightlenbytes = decode(sig[10 + leftlen:12 + leftlen], 16)
+    left = sig[8 : 8 + leftlen]
+    rightlenbytes = decode(sig[10 + leftlen : 12 + leftlen], 16)
     rightlen = rightlenbytes * 2
-    right = sig[12 + leftlen:12 + leftlen + rightlen]
+    right = sig[12 + leftlen : 12 + leftlen + rightlen]
     return (leftlenbytes, decode(left, 16), rightlenbytes, decode(right, 16))
 
 
@@ -354,12 +377,12 @@ def deserialize_script(script):
             out.append(None)
             pos += 1
         elif code <= 75:
-            out.append(script[pos + 1:pos + 1 + code])
+            out.append(script[pos + 1 : pos + 1 + code])
             pos += 1 + code
         elif code <= 78:
             szsz = pow(2, code - 76)
-            sz = decode(script[pos + szsz:pos:-1], 256)
-            out.append(script[pos + 1 + szsz:pos + 1 + szsz + sz])
+            sz = decode(script[pos + szsz : pos : -1], 256)
+            out.append(script[pos + 1 + szsz : pos + 1 + szsz + sz])
             pos += 1 + szsz + sz
         elif code <= 96:
             out.append(code - 80)
@@ -593,7 +616,7 @@ def mktx(*args, **kwargs):
     for o in outs:
         if isinstance(o, string_or_bytes_types):
             addr = o[: o.find(":")]
-            val = int(o[o.find(":") + 1:])
+            val = int(o[o.find(":") + 1 :])
             o = {}
             if re.match("^[0-9a-fA-F]*$", addr):
                 o["script"] = addr
@@ -646,7 +669,7 @@ def mksend(*args, **kwargs):
     osum, outputs2 = 0, []
     for o in outs:
         if isinstance(o, string_types):
-            o2 = {"address": o[:o.find(":")], "value": int(o[o.find(":") + 1:])}
+            o2 = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}
         else:
             o2 = o
         outputs2.append(o2)

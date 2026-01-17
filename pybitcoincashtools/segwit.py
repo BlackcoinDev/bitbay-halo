@@ -6,9 +6,9 @@ import struct
 from .main import (
     SIGHASH_ALL,
     SIGHASH_ANYONECANPAY,
+    SIGHASH_FORKID,
     SIGHASH_NONE,
     SIGHASH_SINGLE,
-    SIGHASH_FORKID,
     changebase,
     ecdsa_raw_sign,
     encode,
@@ -17,7 +17,6 @@ from .main import (
     pubkey_to_address,
 )
 from .transaction import (
-
     decode,
     der_decode_sig,
     der_encode_sig,

@@ -3,11 +3,10 @@ BitMessage client module for BlackHalo 2.0
 Type-safe PyBitmessage API integration
 """
 
-from typing import Any, Dict, List, Optional, Protocol
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-import logging
-
+from typing import Any, Dict, List, Optional, Protocol
 
 logger = logging.getLogger(__name__)
 
@@ -212,10 +211,10 @@ class PyBitmessageClient:
 
     def _make_request(self, method: str, params: Optional[List[Any]] = None) -> Dict[str, Any]:
         """Make JSON-RPC request to BitMessage API"""
-        import urllib.request
-        import urllib.error
         import base64
         import json as json_lib
+        import urllib.error
+        import urllib.request
 
         url = f"http://{self.host}:{self.port}"
         headers: Dict[str, str] = {

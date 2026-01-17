@@ -2,10 +2,25 @@ import hashlib
 import hmac
 
 from .main import (
-    add_privkeys, add_pubkeys, bin_dbl_sha256, bin_hash160, changebase,
-    compress, dbl_sha256, decode, encode, encode_pubkey, hash_to_int,
-    privkey_to_pubkey, privtopub, pubkey_to_address, safe_hexlify,
-    safe_unhexlify, slowsha, subtract_privkeys, to_bytes,
+    add_privkeys,
+    add_pubkeys,
+    bin_dbl_sha256,
+    bin_hash160,
+    changebase,
+    compress,
+    dbl_sha256,
+    decode,
+    encode,
+    encode_pubkey,
+    hash_to_int,
+    privkey_to_pubkey,
+    privtopub,
+    pubkey_to_address,
+    safe_hexlify,
+    safe_unhexlify,
+    slowsha,
+    subtract_privkeys,
+    to_bytes,
 )
 
 # Electrum wallets

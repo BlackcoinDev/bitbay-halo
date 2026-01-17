@@ -3,16 +3,14 @@ RPC client for BlackCoin and other cryptocurrencies
 Type-safe RPC communication
 """
 
-from typing import Any, Dict, List, Optional, Union
-from decimal import Decimal
-from dataclasses import dataclass
 import base64
 import json
 import logging
-
-import urllib.request
 import urllib.error
-
+import urllib.request
+from dataclasses import dataclass
+from decimal import Decimal
+from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 

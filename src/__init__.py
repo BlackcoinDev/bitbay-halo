@@ -3,25 +3,24 @@ BlackHalo 2.0 - Main Application
 Type-safe cryptocurrency exchange platform
 """
 
-import sys
 import logging
-from typing import Any, Dict, Optional, Union
-from decimal import Decimal
+import sys
 from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
+from typing import Any, Dict, Optional, Union
 
+from .crypto import safe_hexlify
+from .rpc import BlackCoinClient, RPCClient, create_rpc_client
+from .state import get_state_manager
 from .types import (
+    UTXO,
     AppConfig,
     BalanceInfo,
     BlockInfo,
     ContractStatus,
     CryptoType,
-    UTXO,
 )
-from .state import get_state_manager
-from .rpc import RPCClient, BlackCoinClient, create_rpc_client
-from .crypto import safe_hexlify
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -197,7 +196,7 @@ class BlackHaloApplication:
 
     def create_contract(self, order_id: str, terms: Dict[str, Any], parties: Dict[str, Dict[str, Any]]) -> str:
         """Create a new contract"""
-        from .types import Contract, ContractTerms, ContractParty
+        from .types import Contract, ContractParty, ContractTerms
 
         # Generate contract ID
         contract_id = safe_hexlify(self.state.get("U", "") + str(len(self.state.contracts)))

@@ -1,6 +1,5 @@
 from typing import Any
 
-
 class YandexTranslate:
     def __init__(self, key: str) -> None: ...
     def translate(self, text: str, lang: str) -> dict[str, Any]: ...

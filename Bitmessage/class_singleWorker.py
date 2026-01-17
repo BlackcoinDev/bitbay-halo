@@ -7,7 +7,6 @@ from struct import pack, unpack
 from subprocess import call  # used when the API must execute an outside program
 
 import helper_inbox
-import highlevelcrypto
 import l10n
 import proofofwork
 import shared
@@ -15,6 +14,8 @@ import tr
 from addresses import calculateInventoryHash, decodeAddress, decodeVarint, encodeVarint
 from debug import logger
 from helper_sql import sqlExecute, sqlQuery
+
+import highlevelcrypto
 
 # This thread, of which there is only one, does the heavy lifting:
 # calculating POWs.
@@ -611,7 +612,7 @@ class singleWorker(threading.Thread):
                                                     "UPDATE sent SET status='doingmsgpow' "
                                                     "WHERE toaddress=? AND (status='msgqueued' or status='awaitingpubkey' or status='doingpubkeypow')",
                                                     toaddress,
-                                                    )
+                                                )
                                                 del shared.neededPubkeys[tag]
                                                 continue  # We'll start back at the beginning, pick up this msg, mark the pubkey as 'usedpersonally', and then send the msg.
                         if needToRequestPubkey:
@@ -661,18 +662,18 @@ class singleWorker(threading.Thread):
                     readPosition = 8  # to bypass the nonce
                 elif toAddressVersionNumber >= 4:
                     readPosition = 0  # the nonce is not included here so we don't need to skip over it.
-                (pubkeyEmbeddedTime,) = unpack(">I", pubkeyPayload[readPosition: readPosition + 4])
+                (pubkeyEmbeddedTime,) = unpack(">I", pubkeyPayload[readPosition : readPosition + 4])
                 # This section is used for the transition from 32 bit time to 64
                 # bit time in the protocol.
                 if pubkeyEmbeddedTime == 0:
-                    (pubkeyEmbeddedTime,) = unpack(">Q", pubkeyPayload[readPosition: readPosition + 8])
+                    (pubkeyEmbeddedTime,) = unpack(">Q", pubkeyPayload[readPosition : readPosition + 8])
                     readPosition += 8
                 else:
                     readPosition += 4
                 readPosition += 1  # to bypass the address version whose length is definitely 1
-                streamNumber, streamNumberLength = decodeVarint(pubkeyPayload[readPosition: readPosition + 10])
+                streamNumber, streamNumberLength = decodeVarint(pubkeyPayload[readPosition : readPosition + 10])
                 readPosition += streamNumberLength
-                behaviorBitfield = pubkeyPayload[readPosition: readPosition + 4]
+                behaviorBitfield = pubkeyPayload[readPosition : readPosition + 4]
                 # Mobile users may ask us to include their address's RIPE hash on a message
                 # unencrypted. Before we actually do it the sending human must check a box
                 # in the settings menu to allow it.
@@ -701,7 +702,7 @@ class singleWorker(threading.Thread):
                 # pubkeyPayload[readPosition:readPosition+64] #We don't use this
                 # key for anything here.
                 readPosition += 64
-                pubEncryptionKeyBase256 = pubkeyPayload[readPosition: readPosition + 64]
+                pubEncryptionKeyBase256 = pubkeyPayload[readPosition : readPosition + 64]
                 readPosition += 64
 
                 # Let us fetch the amount of work required by the recipient.
@@ -721,9 +722,9 @@ class singleWorker(threading.Thread):
                         )
                     )
                 elif toAddressVersionNumber >= 3:
-                    requiredAverageProofOfWorkNonceTrialsPerByte, varintLength = decodeVarint(pubkeyPayload[readPosition: readPosition + 10])
+                    requiredAverageProofOfWorkNonceTrialsPerByte, varintLength = decodeVarint(pubkeyPayload[readPosition : readPosition + 10])
                     readPosition += varintLength
-                    requiredPayloadLengthExtraBytes, varintLength = decodeVarint(pubkeyPayload[readPosition: readPosition + 10])
+                    requiredPayloadLengthExtraBytes, varintLength = decodeVarint(pubkeyPayload[readPosition : readPosition + 10])
                     readPosition += varintLength
                     if (
                         requiredAverageProofOfWorkNonceTrialsPerByte < shared.networkDefaultProofOfWorkNonceTrialsPerByte

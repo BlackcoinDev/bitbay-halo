@@ -3,12 +3,11 @@ GUI module for BlackHalo 2.0
 Type-safe PyQt6 interface components
 """
 
-from typing import Any, Dict, Optional, Protocol, runtime_checkable
-from dataclasses import dataclass, field
-from enum import Enum
-from datetime import datetime
 import logging
-
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, Optional, Protocol, runtime_checkable
 
 logger = logging.getLogger(__name__)
 

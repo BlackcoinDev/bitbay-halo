@@ -7,7 +7,6 @@ import string
 import sys
 
 from . import shared
-
 from .namecoin import ensureNamecoinOptions
 
 storeConfigFilesInSameDirectoryAsProgramByDefault = (

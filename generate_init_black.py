@@ -2,7 +2,12 @@ import ast
 import os
 
 modules = [
-    "bci", "composite", "deterministic", "main", "ripemd", "transaction",
+    "bci",
+    "composite",
+    "deterministic",
+    "main",
+    "ripemd",
+    "transaction",
 ]
 
 base_path = "pyblackcointools"

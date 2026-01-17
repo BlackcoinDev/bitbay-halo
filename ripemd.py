@@ -40,7 +40,6 @@
 import struct
 import sys
 
-
 # block_size = 1
 digest_size = 20
 digestsize = 20

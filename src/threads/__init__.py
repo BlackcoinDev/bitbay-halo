@@ -3,16 +3,15 @@ Threading module for BlackHalo 2.0
 Type-safe background worker threads and thread pool management
 """
 
-from typing import Any, Callable, Dict, List, Optional, Protocol
+import logging
+import time
+import uuid
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, Future
-from threading import Thread, Lock, Event
-import logging
-import uuid
-import time
-
+from threading import Event, Lock, Thread
+from typing import Any, Callable, Dict, List, Optional, Protocol
 
 logger = logging.getLogger(__name__)
 

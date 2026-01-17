@@ -1,24 +1,16 @@
-from PyQt6.QtCore import QThread
-from highlevelcrypto import decrypt
-import password
 import ast
+from typing import Any
+import importlib
 import os
 import re
 import sys
 import time
-import importlib
+
+from PyQt6.QtCore import QThread
 
 import Bitmessage.class_api as class_api
-
-# Cross-platform compatibility for terminal input
-if os.name == "nt":
-    import msvcrt as m
-else:
-    try:
-        import curses as m
-    except ImportError:
-        # Fallback for systems without curses
-        m = None
+import password
+from highlevelcrypto import decrypt
 
 import base64
 import email
@@ -29,11 +21,22 @@ import traceback
 
 # Python 3 compatibility for xmlrpc
 import xmlrpc.client
-
 from xmlrpc.server import SimpleXMLRPCRequestHandler, SimpleXMLRPCServer
 
 pyzmail = importlib.import_module("pyzmail")
 stopit = importlib.import_module("stopit")
+
+# Cross-platform compatibility for terminal input
+m: Any = None
+if os.name == "nt":
+    import msvcrt
+    m = msvcrt
+else:
+    try:
+        import curses
+        m = curses
+    except ImportError:
+        pass
 
 
 #########################################
@@ -77,12 +80,12 @@ port = 587
 isSSL = 0
 username = ""
 EmailPassword = ""
-readmessages = []
+readmessages: list[str] = []
 prevaccount = ""
 timeresult = False
 typ = ""
 msg_data = ""
-connection = ""
+connection: Any = None
 global mypassword
 mypassword = ""
 global systemexit
@@ -253,12 +256,12 @@ if __name__ == "__main__":
             ticker = 0
             try:
                 with open(outpath, "r") as f:
-                    outbox = f.readline()
+                    outbox_str = f.readline()
                     f.close()
                 # Sends a message
                 pos = 0
                 try:
-                    outbox = ast.literal_eval(outbox)
+                    outbox = ast.literal_eval(outbox_str)
                 except BaseException:
                     sys.stderr.write(str("OUTBOX ERROR"))
                     outbox = []
@@ -270,16 +273,18 @@ if __name__ == "__main__":
                     if "ENCRYPTED:" in data1:
                         if "PASSWORD:" in data1:
                             matchObj = re.match(r"(PASSWORD:)(.*?)(MY:)", data1, re.M | re.I)
-                            EmailPassword = matchObj.group(2)
-                            data1 = data1.replace("PASSWORD:" + EmailPassword, "")
+                            if matchObj:
+                                EmailPassword = matchObj.group(2)
+                                data1 = data1.replace("PASSWORD:" + EmailPassword, "")
                         matchObj = re.match(
                             r"(MY:)(.*?)(THEIR:)(.*?)(ENCRYPTED:)(.*?)(###)",
                             data1,
                             re.M | re.I,
                         )
-                        content = matchObj.group(5) + matchObj.group(6)
-                        fromAddress = matchObj.group(2)
-                        toAddress = matchObj.group(4)
+                        if matchObj:
+                            content = matchObj.group(5) + matchObj.group(6)
+                            fromAddress = matchObj.group(2)
+                            toAddress = matchObj.group(4)
                     else:
                         try:
                             content = ast.literal_eval(data1)
@@ -297,12 +302,12 @@ if __name__ == "__main__":
                             pass
                         if key in fromAddress.lower():
                             verified = 1
-                            imapname = prov[key]["imap"]
-                            smtpname = prov[key]["smtp"]
-                            port = prov[key]["port"]
-                            isSSL = prov[key]["SSL"]
+                            imapname = str(prov[key]["imap"])
+                            smtpname = str(prov[key]["smtp"])
+                            port = int(str(prov[key]["port"]))
+                            isSSL = int(str(prov[key]["SSL"]))
                             break
-                    ret = True
+                    ret: Any = True
                     try:
                         EmailPassword = password.DecryptWithAES("Halo Master", EmailPassword)
                     except BaseException:
@@ -325,46 +330,51 @@ if __name__ == "__main__":
                                 connection = smtplib.SMTP(smtpname, port)
                                 connection.ehlo()
                                 connection.starttls()
-                                headers = [
+                                headers_list = [
                                     "from: " + fromAddress,
                                     "subject: " + "Halo",
                                     "to: " + toAddress,
                                     "mime-version: 1.0",
                                     "content-type: text/html",
                                 ]
-                                headers = "\r\n".join(headers)
+                                headers_str = "\r\n".join(headers_list)
                                 connection.login(fromAddress, EmailPassword)
                                 connection.sendmail(
                                     fromAddress,
                                     toAddress,
-                                    headers + "\r\n\r\n" + str(content),
+                                    headers_str + "\r\n\r\n" + str(content),
                                 )
                                 connection.close()
                             else:
-                                b64 = base64.b64decode(content["b64img"])
-                                text_content = str(content["Data"])
-                                html_content = "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
-                                payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
-                                    (str(fromAddress), fromAddress),
-                                    [(str(toAddress), toAddress)],
-                                    "Halo",
-                                    "iso-8859-1",
-                                    (text_content, "iso-8859-1"),
-                                    (html_content, "iso-8859-1"),
-                                    embeddeds=[
-                                        (b64, "image", "bmp", "doge", None),
-                                    ],
-                                )
-                                ret = pyzmail.send_mail(
-                                    payload,
-                                    fromAddress,
-                                    toAddress,
-                                    smtpname,
-                                    smtp_port=port,
-                                    smtp_mode="tls",
-                                    smtp_login=fromAddress,
-                                    smtp_password=EmailPassword,
-                                )
+                                if isinstance(content, dict):
+                                    b64 = base64.b64decode(content["b64img"])
+                                    text_content = str(content["Data"])
+                                    html_content = "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
+                                    payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
+                                        (str(fromAddress), fromAddress),
+                                        [(str(toAddress), toAddress)],
+                                        "Halo",
+                                        "iso-8859-1",
+                                        (text_content, "iso-8859-1"),
+                                        (html_content, "iso-8859-1"),
+                                        embeddeds=[
+                                            (b64, "image", "bmp", "doge", None),
+                                        ],
+                                    )
+                                    ret = pyzmail.send_mail(
+                                        payload,
+                                        fromAddress,
+                                        toAddress,
+                                        smtpname,
+                                        smtp_port=port,
+                                        smtp_mode="tls",
+                                        smtp_login=fromAddress,
+                                        smtp_password=EmailPassword,
+                                    )
+                                else:
+                                    # Fallback or error if content is not dict
+                                    payload = None
+                                    ret = False
                             if isinstance(ret, dict):
                                 if ret:
                                     sys.stderr.write("Email delivery failed for some recipients: " + str(ret) + "\n")
@@ -417,16 +427,18 @@ if __name__ == "__main__":
                         try:
                             if "PASSWORD:" in data[2]:
                                 matchObj = re.match(r"(PASSWORD:)(.*?)(MY:)", data[2], re.M | re.I)
-                                EmailPassword = matchObj.group(2)
-                                data[2] = data[2].replace("PASSWORD:" + EmailPassword, "")
+                                if matchObj:
+                                    EmailPassword = matchObj.group(2)
+                                    data[2] = data[2].replace("PASSWORD:" + EmailPassword, "")
                             matchObj = re.match(
                                 r"(MY:)(.*?)(THEIR:)(.*?)(ENCRYPTED:)(.*?)(###)",
                                 data[2],
                                 re.M | re.I,
                             )
-                            content = matchObj.group(5) + matchObj.group(6)
-                            fromAddress = matchObj.group(2)
-                            toAddress = matchObj.group(4)
+                            if matchObj:
+                                content = matchObj.group(5) + matchObj.group(6)
+                                fromAddress = matchObj.group(2)
+                                toAddress = matchObj.group(4)
                         except BaseException:
                             sys.stderr.write(str("ENCRYPTION ERROR"))
                     else:
@@ -447,10 +459,10 @@ if __name__ == "__main__":
                             pass
                         if key in fromAddress.lower():
                             verified = 1
-                            imapname = prov[key]["imap"]
-                            smtpname = prov[key]["smtp"]
-                            port = prov[key]["port"]
-                            isSSL = prov[key]["SSL"]
+                            imapname = str(prov[key]["imap"])
+                            smtpname = str(prov[key]["smtp"])
+                            port = int(str(prov[key]["port"]))
+                            isSSL = int(str(prov[key]["SSL"]))
                             break
                     ret = True
                     try:
@@ -475,25 +487,26 @@ if __name__ == "__main__":
                                 connection = smtplib.SMTP(smtpname, port)
                                 connection.ehlo()
                                 connection.starttls()
-                                headers = [
+                                headers_list = [
                                     "from: " + fromAddress,
                                     "subject: " + "Halo",
                                     "to: " + toAddress,
                                     "mime-version: 1.0",
                                     "content-type: text/html",
                                 ]
-                                headers = "\r\n".join(headers)
+                                headers_str = "\r\n".join(headers_list)
                                 connection.login(fromAddress, EmailPassword)
                                 connection.sendmail(
                                     fromAddress,
                                     toAddress,
-                                    headers + "\r\n\r\n" + str(content),
+                                    headers_str + "\r\n\r\n" + str(content),
                                 )
                                 connection.close()
                             else:
-                                b64 = base64.b64decode(content["b64img"])
-                                text_content = str(content["Data"])
-                                html_content = "<html><body>" + content["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
+                                content_dict: dict[str, Any] = content  # type: ignore
+                                b64 = base64.b64decode(content_dict["b64img"])
+                                text_content = str(content_dict["Data"])
+                                html_content = "<html><body>" + content_dict["Data"] + '<img src="cid:doge" />.\n' "</body></html>"
                                 payload, mail_from, rcpt_to, msg_id = pyzmail.compose_mail(
                                     (str(fromAddress), fromAddress),
                                     [(str(toAddress), toAddress)],
@@ -533,8 +546,8 @@ if __name__ == "__main__":
                             outbox = []
                             try:
                                 with open(outpath, "r") as f:
-                                    outbox = f.readline().strip()
-                                    outbox = ast.literal_eval(outbox)
+                                    outbox_str = f.readline().strip()
+                                    outbox = ast.literal_eval(outbox_str)
                                     f.close()
                             except Exception:
                                 pass
@@ -574,7 +587,7 @@ if __name__ == "__main__":
                         sys.stderr.write(str("\n\n\nChecking Inbox.\n\n\n"))
                         ticker2 = 0
                         # Gets messages
-                        inbox = []
+                        inbox: list[dict[str, Any]] = []
                         ret = ""
                         try:
                             dat = ast.literal_eval(data[2])
@@ -591,10 +604,10 @@ if __name__ == "__main__":
                                         pass
                                     if key in dat["Email Address"].lower():
                                         verified = 1
-                                        imapname = prov[key]["imap"]
-                                        smtpname = prov[key]["smtp"]
-                                        port = prov[key]["port"]
-                                        isSSL = prov[key]["SSL"]
+                                        imapname = str(prov[key]["imap"])
+                                        smtpname = str(prov[key]["smtp"])
+                                        port = int(str(prov[key]["port"]))
+                                        isSSL = int(str(prov[key]["SSL"]))
                                         break
                                 if verified == 1:
                                     try:
@@ -608,9 +621,9 @@ if __name__ == "__main__":
                                         inbox = []
                                         try:
                                             with open(mailpath, "r") as f:
-                                                mailbox = f.readline()
+                                                mailbox_str = f.readline()
                                                 f.close()
-                                            mailbox = ast.literal_eval(mailbox)
+                                            mailbox = ast.literal_eval(mailbox_str)
                                             if mailbox == "":
                                                 raise Exception("Flow Control Jump")
                                             if dat["Email Address"] not in mailbox:
@@ -632,11 +645,11 @@ if __name__ == "__main__":
                                                     connection.select(mailbox_name)
                                                 else:
                                                     connection.select(mailbox_name, readonly=True)
-                                                msg_ids1 = set([])
+                                                msg_ids1: Any = []
                                                 try:
                                                     typ, msg_ids1 = connection.uid(
                                                         "search",
-                                                        None,
+                                                        "UTF-8",
                                                         '(SUBJECT "Halo")',
                                                     )  # connection.search(None, '(SUBJECT "Halo")')
                                                 except Exception as e:
@@ -786,14 +799,28 @@ if __name__ == "__main__":
                                                             except BaseException:  # Okay they changed it we can try something else
                                                                 try:
                                                                     bodymsg = email.message_from_string(str(body))
-                                                                    x = 0
                                                                     posx = 0
-                                                                    while x < len(bodymsg.get_payload()):
-                                                                        attachment = bodymsg.get_payload()[x]
-                                                                        if "bmp" in attachment.get_content_type():
-                                                                            posx = x
-                                                                        x += 1
-                                                                    attachment = msg.get_payload()[posx]
+                                                                    if bodymsg.is_multipart():
+                                                                        payload = bodymsg.get_payload()
+                                                                        if isinstance(payload, list):
+                                                                            for i, attachment in enumerate(payload):
+                                                                                if "bmp" in attachment.get_content_type():
+                                                                                    posx = i
+                                                                            attachment = payload[posx]
+                                                                        else:
+                                                                            # Should not happen if is_multipart is true usually, but defensive
+                                                                            raise Exception("Multipart payload is not list")
+                                                                    else:
+                                                                        # Not multipart, treat whole body as attachment?
+                                                                        attachment = bodymsg
+                                                                    # We used bodymsg to find the bmp, now use it to extract
+                                                                    # The original code used 'msg' at line 803, but 'bodymsg' seems intended here
+                                                                    # or 'msg' if referencing original. Assuming bodymsg for consistency with loop logic.
+                                                                    # However, if posx was deriving index from bodymsg loop, using it on msg is unsafe unless identical structure.
+                                                                    # Code at 803 was: attachment = msg.get_payload()[posx]
+                                                                    # But loop iterated bodymsg.
+                                                                    # Let's trust bodymsg since we just parsed it from 'body'
+                                                                    # attachment is already set correctly above from bodymsg or payload
                                                                     img = attachment.get_payload(decode=False)
                                                                     body = img
                                                                     body = "PAY TO EMAIL BASE64 IMAGE:" + body
@@ -802,7 +829,7 @@ if __name__ == "__main__":
                                                                     body = ""
                                                         if "fromAddress" in mymessage and body != "":  # decode emails
                                                             if "@aol" in mymessage["fromAddress"].lower() or "@mail" in mymessage["fromAddress"].lower():
-                                                                body = body.encode("utf8").replace("\r\n ", "")
+                                                                body = body.encode("utf8").replace(b"\r\n ", b"")
                                                                 if "ENCRYPTED:" in body:
                                                                     body = body.replace(" ", "")
                                                         mymessage["body"] = str(body)
@@ -812,39 +839,39 @@ if __name__ == "__main__":
                                                     if "ordernumber" in dat:
                                                         if "ENCRYPTED:" in str(body):
                                                             try:
-                                                                MyCipher = body.replace("ENCRYPTED:", "")
-                                                                MyCipher = base64.b64decode(MyCipher)
-                                                                MyCipher = decrypt(
-                                                                    MyCipher,
+                                                                cipher_str = str(body).replace("ENCRYPTED:", "")
+                                                                cipher_bytes = base64.b64decode(cipher_str)
+                                                                decrypted_content = decrypt(
+                                                                    cipher_bytes,
                                                                     dat["Private Key"],
                                                                 )
-                                                                body = MyCipher
+                                                                body = decrypted_content.decode("utf-8")
                                                             except Exception:
                                                                 try:
-                                                                    body = body.replace("=\r\n", "")
-                                                                    body = body.replace("\r\n", "")
-                                                                    body = body.replace(" ", "")
-                                                                    body = body.replace("****", "")
+                                                                    temp_body = str(body).replace("=\r\n", "")
+                                                                    temp_body = temp_body.replace("\r\n", "")
+                                                                    temp_body = temp_body.replace(" ", "")
+                                                                    temp_body = temp_body.replace("****", "")
+                                                                    # Try distinct paths for decoding
+                                                                    cipher_bytes_candidate: bytes = b""
                                                                     try:
-                                                                        body = body.encode("utf8")
+                                                                        cipher_bytes_candidate = quopri.decodestring(temp_body.encode("utf-8"))
                                                                     except BaseException:
-                                                                        pass
-                                                                    try:
-                                                                        MyCipher = quopri.decodestring(body)
-                                                                    except BaseException:
-                                                                        MyCipher = body
-                                                                    MyCipher = MyCipher.replace("ENCRYPTED:", "")
-                                                                    missing_padding = len(MyCipher) % 4
+                                                                        cipher_bytes_candidate = temp_body.encode("utf-8")
+                                                                    cipher_bytes_candidate = cipher_bytes_candidate.replace(b"ENCRYPTED:", b"")
+                                                                    missing_padding = len(cipher_bytes_candidate) % 4
                                                                     if missing_padding != 0:
-                                                                        MyCipher += b"=" * (4 - missing_padding)
-                                                                    MyCipher = base64.b64decode(MyCipher)
-                                                                    MyCipher = decrypt(
-                                                                        MyCipher,
+                                                                        cipher_bytes_candidate += b"=" * (4 - missing_padding)
+                                                                    decoded_cipher = base64.b64decode(cipher_bytes_candidate)
+                                                                    decrypted_content_bytes = decrypt(
+                                                                        decoded_cipher,
                                                                         dat["Private Key"],
                                                                     )
-                                                                    body = MyCipher
+                                                                    # Decode bytes back to string for the body
+                                                                    body = decrypted_content_bytes.decode("utf-8")
                                                                 except BaseException:
                                                                     pass
+
                                                         if dat["ordernumber"] in str(body):
                                                             try:
                                                                 body = ast.literal_eval(body)

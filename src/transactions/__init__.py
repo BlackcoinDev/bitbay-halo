@@ -3,13 +3,12 @@ Transaction builder module for BlackHalo 2.0
 Type-safe cryptocurrency transaction construction and signing
 """
 
-from typing import Any, Dict, List, Optional, Protocol
-from dataclasses import dataclass, field
-from decimal import Decimal
-from datetime import datetime
-from enum import Enum
 import logging
-
+from dataclasses import dataclass, field
+from datetime import datetime
+from decimal import Decimal
+from enum import Enum
+from typing import Any, Dict, List, Optional, Protocol
 
 logger = logging.getLogger(__name__)
 

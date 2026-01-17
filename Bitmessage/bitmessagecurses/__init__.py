@@ -25,6 +25,8 @@ from helper_sql import *
 
 from pyelliptic.openssl import OpenSSL
 
+from typing import Any
+
 quit = False
 menutab = 1
 menu = ["Inbox", "Send", "Sent", "Your Identities", "Subscriptions", "Address Book", "Blacklist", "Network Status"]
@@ -34,18 +36,18 @@ logpad = None
 inventorydata = 0
 startuptime = time.time()
 
-inbox = []
+inbox: list[Any] = []
 inboxcur = 0
-sentbox = []
+sentbox: list[Any] = []
 sentcur = 0
-addresses = []
+addresses: list[Any] = []
 addrcur = 0
 addrcopy = 0
-subscriptions = []
+subscriptions: list[Any] = []
 subcur = 0
-addrbook = []
+addrbook: list[Any] = []
 abookcur = 0
-blacklist = []
+blacklist: list[Any] = []
 blackcur = 0
 bwtype = "black"
 

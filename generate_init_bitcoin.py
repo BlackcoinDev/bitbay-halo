@@ -2,8 +2,17 @@ import ast
 import os
 
 modules = [
-    "bci", "blocks", "composite", "deterministic", "main",
-    "mnemonic", "ripemd", "segwit", "specials", "stealth", "transaction",
+    "bci",
+    "blocks",
+    "composite",
+    "deterministic",
+    "main",
+    "mnemonic",
+    "ripemd",
+    "segwit",
+    "specials",
+    "stealth",
+    "transaction",
 ]
 
 base_path = "pybitcointools"

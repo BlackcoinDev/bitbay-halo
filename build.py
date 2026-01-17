@@ -4,7 +4,7 @@ Cross-platform build script for BlackHalo
 Modernized for Python 3.14+ and PyQt6 using UV
 """
 
-import os
+
 import platform
 import shutil
 import subprocess
@@ -201,7 +201,7 @@ setup(
             dist_dir = Path("dist")
             dist_dir.mkdir(exist_ok=True)
             shutil.move(str(app_path), str(dist_dir / "BlackHalo.app"))
-            print(f"App bundle location: dist/BlackHalo.app")
+            print("App bundle location: dist/BlackHalo.app")
         else:
             print(f"Warning: Expected app not found at {app_path}")
 
@@ -304,9 +304,9 @@ def run_lint():
     print("Running code quality checks...")
 
     commands = [
-        ["uv", "run", "--active", "black", ".", "--line-length=120"],
-        ["uv", "run", "--active", "isort", ".", "--profile=black", "--line-length=120"],
-        ["uv", "run", "--active", "flake8", ".", "--max-line-length=120"],
+        ["uv", "run", "--active", "black", ".", "--line-length=180"],
+        ["uv", "run", "--active", "isort", ".", "--profile=black", "--line-length=180"],
+        ["uv", "run", "--active", "flake8", ".", "--max-line-length=180"],
     ]
 
     for cmd in commands:

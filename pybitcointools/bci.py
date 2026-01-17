@@ -5,7 +5,7 @@ import random
 import re
 import sys
 
-from .main import safe_hexlify, bin_dbl_sha256
+from .main import bin_dbl_sha256, safe_hexlify
 
 try:
     from urllib.request import build_opener
@@ -486,6 +486,7 @@ def get_tx_composite(inputs, outputs, output_value, change_address=None, network
 
     def is_address(a):
         return bool(re.match("^[123mn][a-km-zA-HJ-NP-Z0-9]{26,33}$", a))
+
     if any([is_address(x) for x in inputs]):
         inputs_type = "addresses"  # also accepts UTXOs, only addresses supported presently
     if any([is_address(x) for x in outputs]):

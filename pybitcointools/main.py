@@ -6,15 +6,28 @@ import hmac
 import os
 import random
 import re
-
 import time
 
 from .ripemd import RIPEMD160
 from .specials import (
-    bin_dbl_sha256, bin_to_b58check, bytes_to_hex_string, changebase, decode,
-    encode, from_byte_to_int, from_int_to_byte, from_string_to_bytes,
-    get_code_string, int_types, is_hexilified, is_python2, lpad,
-    random_string, safe_from_hex, safe_hexlify, string_or_bytes_types,
+    bin_dbl_sha256,
+    bin_to_b58check,
+    bytes_to_hex_string,
+    changebase,
+    decode,
+    encode,
+    from_byte_to_int,
+    from_int_to_byte,
+    from_string_to_bytes,
+    get_code_string,
+    int_types,
+    is_hexilified,
+    is_python2,
+    lpad,
+    random_string,
+    safe_from_hex,
+    safe_hexlify,
+    string_or_bytes_types,
     string_types,
 )
 
@@ -87,7 +100,7 @@ def multiaccess(obj, prop):
 
 
 def slice(obj, start=0, end=2**200):
-    return obj[int(start):int(end)]
+    return obj[int(start) : int(end)]
 
 
 def count(obj):

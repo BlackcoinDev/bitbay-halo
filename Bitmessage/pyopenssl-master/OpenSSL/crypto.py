@@ -1872,7 +1872,7 @@ class _PassphraseHelper(object):
                 else:
                     raise ValueError("passphrase returned by callback is too long")
             for i in range(len(result)):
-                buf[i] = result[i:i + 1]
+                buf[i] = result[i : i + 1]
             return len(result)
         except Exception as e:
             self._problems.append(e)

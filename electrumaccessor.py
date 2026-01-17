@@ -3,15 +3,10 @@ import binascii
 import errno
 import hashlib
 import json
-import os
 import random
-import re
 import socket
-import string
 import struct
-import sys
 import time
-import types
 
 DEFAULT_PORTS = {"t": "50001", "s": "50002", "h": "8081", "g": "8082"}
 DEFAULT_SERVERS = {
@@ -55,7 +50,7 @@ def connect_electrum():
 
         try:
             s.connect((host, int(port)))
-        except:
+        except Exception:
             print(("failed to connect to:", host, str(port)))
             continue  # try the next server
 
@@ -67,8 +62,7 @@ def connect_electrum():
 
 
 def send_tx(raw_tx):
-    global s
-    global is_connected
+
     if not connect_electrum():
         print("error, failed to connect to ANY electrum server")
         socketstop()
@@ -78,7 +72,6 @@ def send_tx(raw_tx):
 
 # the second argument is the type of operation you're requesting
 def get_from_electrum(inputs, t="a"):
-    global s
     global is_connected
 
     if not connect_electrum():
@@ -95,7 +88,6 @@ def get_from_electrum(inputs, t="a"):
         # todo:
         exit(1)
 
-    tcp_requests = []
     reqreturns = []
 
     for input in inputs:
@@ -150,7 +142,7 @@ def get_from_electrum(inputs, t="a"):
                     # don't ask me why json.loads() doesn't work, but right now it doesn't
                     try:
                         reqreturns.append(ast.literal_eval(c.decode("utf-8")))
-                    except:
+                    except Exception:
                         print("JSON decode error")
                 break
 
@@ -158,7 +150,7 @@ def get_from_electrum(inputs, t="a"):
 
 
 def send_tcp(messages):
-    global s
+
     out = b""
     message_id = 1
 
@@ -188,7 +180,7 @@ def send_tcp(messages):
 
 def socketstop():
     global is_connected
-    global s
+
     is_connected = False
     if s:
         s.shutdown(socket.SHUT_RDWR)
@@ -462,7 +454,7 @@ def script_GetOp(byte_data):
 def get_address_from_input_script(byte_data):
     try:
         decoded = [x for x in script_GetOp(byte_data)]
-    except:
+    except Exception:
         # coinbase transactions raise an exception
         # print "cannot find address in input script", bytes.encode('hex')
         return [], [], "(None)"
@@ -487,7 +479,7 @@ def get_address_from_input_script(byte_data):
     if match_decoded(decoded, match):
 
         redeemScript = decoded[-1][1]
-        num = len(match) - 2
+
         signatures = [binascii.hexlify(x[1][:-1]).decode() for x in decoded[1:-1]]
 
         dec2 = [x for x in script_GetOp(redeemScript)]
@@ -524,7 +516,7 @@ def hash_160(public_key):
         md = hashlib.new("ripemd160")
         md.update(hashlib.sha256(public_key).digest())
         return md.digest()
-    except:
+    except Exception:
         import ripemd
 
         md = ripemd.new(hashlib.sha256(public_key).digest())

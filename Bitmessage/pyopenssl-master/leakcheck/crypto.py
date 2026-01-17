@@ -1,9 +1,9 @@
 # Copyright (C) Jean-Paul Calderone
 # See LICENSE for details.
 
+import importlib
 import sys
 
-import importlib
 from OpenSSL.crypto import CRL, FILETYPE_PEM, TYPE_DSA, X509, Error, PKey, Revoked, load_privatekey
 
 # Use importlib to access internal APIs without type checker complaints

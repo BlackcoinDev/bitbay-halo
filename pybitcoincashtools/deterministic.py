@@ -1,16 +1,30 @@
+import binascii
 import hashlib
 import hmac
 
-import binascii
 from .main import (
-    add_privkeys, add_pubkeys, bin_hash160,
-    compress, dbl_sha256, encode_pubkey,
-    hash_to_int, privkey_to_pubkey, privtopub, pubkey_to_address,
-    slowsha, subtract_privkeys,
+    add_privkeys,
+    add_pubkeys,
+    bin_hash160,
+    compress,
+    dbl_sha256,
+    encode_pubkey,
+    hash_to_int,
+    privkey_to_pubkey,
+    privtopub,
+    pubkey_to_address,
+    slowsha,
+    subtract_privkeys,
 )
 from .specials import (
-    bin_dbl_sha256, changebase, decode, encode, from_byte_to_int,
-    from_int_representation_to_bytes, from_int_to_byte, from_string_to_bytes,
+    bin_dbl_sha256,
+    changebase,
+    decode,
+    encode,
+    from_byte_to_int,
+    from_int_representation_to_bytes,
+    from_int_to_byte,
+    from_string_to_bytes,
     safe_hexlify,
 )
 

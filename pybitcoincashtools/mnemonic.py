@@ -1,6 +1,5 @@
 import binascii
 import hashlib
-
 import random
 from bisect import bisect_left
 

@@ -1066,18 +1066,3 @@ class objectProcessor(threading.Thread):
         else:
             return "[" + mailingListName + "] " + subject
 
-    def decodeType2Message(self, message):
-        bodyPositionIndex = message.find(b"\nBody:")
-        if bodyPositionIndex > 1:
-            subject = message[8:bodyPositionIndex]
-            # Only save and show the first 500 characters of the subject.
-            # Any more is probably an attack.
-            subject = subject[:500]
-            body = message[bodyPositionIndex + 6 :]
-        else:
-            subject = ""
-            body = message
-        # Throw away any extra lines (headers) after the subject.
-        if subject:
-            subject = subject.splitlines()[0]
-        return subject, body

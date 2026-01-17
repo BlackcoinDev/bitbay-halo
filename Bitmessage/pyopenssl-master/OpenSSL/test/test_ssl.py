@@ -39,7 +39,6 @@ from OpenSSL.SSL import (
     SESS_CACHE_NO_INTERNAL_STORE,
     SESS_CACHE_OFF,
     SESS_CACHE_SERVER,
-
     VERIFY_CLIENT_ONCE,
     VERIFY_FAIL_IF_NO_PEER_CERT,
     VERIFY_NONE,
@@ -117,7 +116,6 @@ from OpenSSL.SSL import (
     SSL_CB_READ_ALERT,
     SSL_CB_WRITE,
     SSL_CB_WRITE_ALERT,
-
 )
 
 # openssl dhparam 128 -out dh-128.pem (note that 128 is a small number of bits
@@ -350,7 +348,6 @@ class ContextTests(TestCase, _LoopbackMixin):
         self.assertRaises(TypeError, Context, "")
         self.assertRaises(ValueError, Context, 10)
 
-
     def test_type(self):
         """
         :py:obj:`Context` and :py:obj:`ContextType` refer to the same type object and can be
@@ -465,8 +462,6 @@ class ContextTests(TestCase, _LoopbackMixin):
         ctx = Context(TLSv1_METHOD)
         ctx.use_certificate_file(pem_filename)
 
-
-
     def test_set_app_data_wrong_args(self):
         """
         :py:obj:`Context.set_app_data` raises :py:obj:`TypeError` if called with other than
@@ -512,8 +507,6 @@ class ContextTests(TestCase, _LoopbackMixin):
         options = context.set_options(OP_NO_SSLv2)
         self.assertTrue(OP_NO_SSLv2 & options)
 
-
-
     def test_set_mode_wrong_args(self):
         """
         :py:obj:`Context.set`mode} raises :py:obj:`TypeError` if called with the wrong
@@ -533,8 +526,6 @@ class ContextTests(TestCase, _LoopbackMixin):
             """
             context = Context(TLSv1_METHOD)
             self.assertTrue(MODE_RELEASE_BUFFERS & context.set_mode(MODE_RELEASE_BUFFERS))
-
-
 
     else:
         "MODE_RELEASE_BUFFERS unavailable - OpenSSL version may be too old"
@@ -565,7 +556,6 @@ class ContextTests(TestCase, _LoopbackMixin):
         context = Context(TLSv1_METHOD)
         context.set_timeout(1234)
         self.assertEqual(context.get_timeout(), 1234)
-
 
     def test_set_verify_depth_wrong_args(self):
         """
@@ -1140,8 +1130,6 @@ class ContextTests(TestCase, _LoopbackMixin):
         off = context.set_session_cache_mode(SESS_CACHE_BOTH)
         self.assertEqual(SESS_CACHE_OFF, off)
         self.assertEqual(SESS_CACHE_BOTH, context.get_session_cache_mode())
-
-
 
     def test_get_cert_store(self):
         """
@@ -2005,8 +1993,6 @@ class ConnectionSendallTests(TestCase, _LoopbackMixin):
             server.sendall(memoryview(b("x")))
             self.assertEqual(client.recv(1), b("x"))
 
-
-
     def test_long(self):
         """
         :py:obj:`Connection.sendall` transmits all of the bytes in the string passed to
@@ -2662,7 +2648,6 @@ class InfoConstantTests(TestCase):
         info callback matches up with the constant exposed by OpenSSL.SSL.
         """
         for const in [
-
             SSL_CB_LOOP,
             SSL_CB_EXIT,
             SSL_CB_READ,

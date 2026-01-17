@@ -5,10 +5,25 @@ import re
 import time
 
 from .main import (
-    b58check_to_hex, bin_dbl_sha256, bin_to_b58check, changebase, dbl_sha256,
-    decode, ecdsa_raw_recover, ecdsa_raw_sign, ecdsa_raw_verify, encode,
-    encode_pubkey, get_code_string, hash160, hex_to_b58check, num_to_var_int,
-    privkey_to_pubkey, pubkey_to_address, safe_hexlify, safe_unhexlify,
+    b58check_to_hex,
+    bin_dbl_sha256,
+    bin_to_b58check,
+    changebase,
+    dbl_sha256,
+    decode,
+    ecdsa_raw_recover,
+    ecdsa_raw_sign,
+    ecdsa_raw_verify,
+    encode,
+    encode_pubkey,
+    get_code_string,
+    hash160,
+    hex_to_b58check,
+    num_to_var_int,
+    privkey_to_pubkey,
+    pubkey_to_address,
+    safe_hexlify,
+    safe_unhexlify,
 )
 
 # Hex to bin converter and vice versa for objects
@@ -57,7 +72,7 @@ def deserialize(tx):
 
     def read_as_int(bytez):
         pos[0] += bytez
-        return decode(tx[pos[0] - bytez:pos[0]][::-1], 256)
+        return decode(tx[pos[0] - bytez : pos[0]][::-1], 256)
 
     def read_var_int():
         pos[0] += 1
@@ -67,7 +82,7 @@ def deserialize(tx):
 
     def read_bytes(bytez):
         pos[0] += bytez
-        return tx[pos[0] - bytez:pos[0]]
+        return tx[pos[0] - bytez : pos[0]]
 
     def read_var_string():
         size = read_var_int()
@@ -187,9 +202,9 @@ def der_encode_sig(v, r, s):
 
 def der_decode_sig(sig):
     leftlen = decode(sig[6:8], 16) * 2
-    left = sig[8:8 + leftlen]
-    rightlen = decode(sig[10 + leftlen:12 + leftlen], 16) * 2
-    right = sig[12 + leftlen:12 + leftlen + rightlen]
+    left = sig[8 : 8 + leftlen]
+    rightlen = decode(sig[10 + leftlen : 12 + leftlen], 16) * 2
+    right = sig[12 + leftlen : 12 + leftlen + rightlen]
     return (None, decode(left, 16), decode(right, 16))
 
 
@@ -271,12 +286,12 @@ def deserialize_script(script):
             out.append(None)
             pos += 1
         elif code <= 75:
-            out.append(script[pos + 1:pos + 1 + code])
+            out.append(script[pos + 1 : pos + 1 + code])
             pos += 1 + code
         elif code <= 78:
             szsz = pow(2, code - 76)
-            sz = decode(script[pos + szsz:pos:-1], 256)
-            out.append(script[pos + 1 + szsz:pos + 1 + szsz + sz])
+            sz = decode(script[pos + szsz : pos : -1], 256)
+            out.append(script[pos + 1 + szsz : pos + 1 + szsz + sz])
             pos += 1 + szsz + sz
         elif code <= 96:
             out.append(code - 80)
@@ -410,7 +425,7 @@ def mktx(tm=time.time(), *args):  # [in0, in1.],[out0, out1.] or in0, in1 . out0
             txobj["ins"].append({"outpoint": {"hash": i[:64], "index": int(i[65:])}, "script": "", "sequence": 4294967295})
     for o in outs:
         if isinstance(o, str):
-            o = {"address": o[:o.find(":")], "value": int(o[o.find(":") + 1:])}
+            o = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}
         txobj["outs"].append({"script": address_to_script(o["address"]), "value": o["value"]})
     return serialize(txobj)
 
@@ -447,7 +462,7 @@ def mksend(*args):
     osum, outputs2 = 0, []
     for o in outs:
         if isinstance(o, str):
-            o2 = {"address": o[:o.find(":")], "value": int(o[o.find(":") + 1:])}
+            o2 = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}
         else:
             o2 = o
         outputs2.append(o2)

@@ -1,5 +1,6 @@
-from setuptools import setup
 from typing import Any, Dict
+
+from setuptools import setup
 
 name = "Bitmessage"
 version = "0.4.4"

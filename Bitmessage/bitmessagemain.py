@@ -113,9 +113,9 @@ def _fixWinsock():
 
     # These sockopts are needed on for IPv6 support
     if not hasattr(socket, "IPPROTO_IPV6"):
-        socket.IPPROTO_IPV6 = 41
+        setattr(socket, "IPPROTO_IPV6", 41)
     if not hasattr(socket, "IPV6_V6ONLY"):
-        socket.IPV6_V6ONLY = 27
+        setattr(socket, "IPV6_V6ONLY", 27)
 
 
 # This thread, of which there is only one, runs the API.
@@ -139,7 +139,7 @@ class singleAPI(threading.Thread):
 
 
 # This is a list of current connections (the thread pointers at least)
-selfInitiatedConnections = {}
+selfInitiatedConnections: dict[int, dict[str, object]] = {}
 
 if shared.useVeryEasyProofOfWorkForTesting:
     shared.networkDefaultProofOfWorkNonceTrialsPerByte = int(shared.networkDefaultProofOfWorkNonceTrialsPerByte / 100)

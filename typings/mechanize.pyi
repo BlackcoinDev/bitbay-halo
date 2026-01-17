@@ -1,6 +1,5 @@
 from typing import Any, List
 
-
 class Browser:
     def __init__(
         self,
@@ -15,18 +14,9 @@ class Browser:
         allow_handle_redirect: bool = ...,
         allow_handle_gzip: bool = ...,
     ) -> None: ...
-
     def open(self, url: str, data: Any = ..., timeout: Any = ...) -> Any: ...
     def follow_link(self, link: Any = ..., nr: int = ..., **kwargs: Any) -> Any: ...
-
-    def select_form(
-        self,
-        name: str = ...,
-        predicate: Any = ...,
-        nr: int = ...,
-        **kwargs: Any
-    ) -> None: ...
-
+    def select_form(self, name: str = ..., predicate: Any = ..., nr: int = ..., **kwargs: Any) -> None: ...
     def submit(self, label: str = ..., *args: Any, **kwargs: Any) -> Any: ...
     def back(self, n: int = ...) -> None: ...
     def reload(self) -> Any: ...

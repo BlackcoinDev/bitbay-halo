@@ -13,8 +13,6 @@ from OpenSSL.crypto import FILETYPE_PEM, X509, PKey, X509Name, X509Store, _Passp
 _unspecified = object()
 
 
-
-
 OPENSSL_VERSION_NUMBER = _lib.OPENSSL_VERSION_NUMBER
 
 
@@ -1409,4 +1407,3 @@ ConnectionType = Connection
 
 # This is similar to the initialization calls at the end of OpenSSL/crypto.py
 # but is exercised mostly by the Context initializer.
-

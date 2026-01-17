@@ -1,9 +1,10 @@
 import ctypes
 import hashlib
 
-from . import protocol
 from pyelliptic import arithmetic
 from pyelliptic.openssl import OpenSSL
+
+from . import protocol
 
 BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 

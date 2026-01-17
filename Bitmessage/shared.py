@@ -11,6 +11,7 @@ useVeryEasyProofOfWorkForTesting = False  # If you set this to True while on the
 # Libraries.
 import collections
 import configparser as ConfigParser
+import hashlib
 import os
 import pickle
 import queue as Queue
@@ -22,7 +23,8 @@ import threading
 import time
 import traceback
 from os import environ, path
-from struct import Struct
+from struct import Struct, pack, unpack
+from typing import Any
 
 from . import highlevelcrypto, shared
 
@@ -33,18 +35,18 @@ from .addresses import *
 from .helper_sql import *
 
 config = ConfigParser.ConfigParser()
-myECCryptorObjects = {}
-MyECSubscriptionCryptorObjects = {}
-myAddressesByHash = {}  # The key in this dictionary is the RIPE hash which is encoded in an address and value is the address itself.
-myAddressesByTag = {}  # The key in this dictionary is the tag generated from the address.
-broadcastSendersForWhichImWatching = {}
-workerQueue = Queue.Queue()
-UISignalQueue = Queue.Queue()
-addressGeneratorQueue = Queue.Queue()
+myECCryptorObjects: dict[bytes, Any] = {}
+MyECSubscriptionCryptorObjects: dict[bytes, Any] = {}
+myAddressesByHash: dict[bytes, str] = {}  # The key in this dictionary is the RIPE hash which is encoded in an address and value is the address itself.
+myAddressesByTag: dict[bytes, str] = {}  # The key in this dictionary is the tag generated from the address.
+broadcastSendersForWhichImWatching: dict[bytes, int] = {}
+workerQueue: Queue.Queue[Any] = Queue.Queue()
+UISignalQueue: Queue.Queue[tuple[str, Any]] = Queue.Queue()
+addressGeneratorQueue: Queue.Queue[Any] = Queue.Queue()
 knownNodesLock = threading.Lock()
-knownNodes = {}
-sendDataQueues = []  # each sendData thread puts its queue in this list.
-inventory = {}  # of objects (like msg payloads and pubkey payloads) Does not include protocol headers (the first 24 bytes of each packet).
+knownNodes: dict[int, dict[Any, Any]] = {}
+sendDataQueues: list[Queue.Queue[Any]] = []  # each sendData thread puts its queue in this list.
+inventory: dict[bytes, tuple[int, int, bytes, int, str]] = {}  # of objects (like msg payloads and pubkey payloads) Does not include protocol headers (the first 24 bytes of each packet).
 inventoryLock = threading.Lock()  # Guarantees that two receiveDataThreads don't receive and process the same message concurrently (probably sent by a malicious individual)
 printLock = threading.Lock()
 objectProcessorQueueSizeLock = threading.Lock()
@@ -54,19 +56,19 @@ objectProcessorQueueSize = (
 appdata = ""  # holds the location of the application data storage directory
 workingdir = ""
 statusIconColor = "red"
-connectedHostsList = {}  # List of hosts to which we are connected. Used to guarantee that the outgoingSynSender threads won't connect to the same remote node twice.
+connectedHostsList: dict[str, int] = {}  # List of hosts to which we are connected. Used to guarantee that the outgoingSynSender threads won't connect to the same remote node twice.
 shutdown = 0  # Set to 1 by the doCleanShutdown function. Used to tell the proof of work worker threads to exit.
-alreadyAttemptedConnectionsList = {}  # This is a list of nodes to which we have already attempted a connection
+alreadyAttemptedConnectionsList: dict[str, int] = {}  # This is a list of nodes to which we have already attempted a connection
 alreadyAttemptedConnectionsListLock = threading.Lock()
 alreadyAttemptedConnectionsListResetTime = int(
     time.time()
 )  # used to clear out the alreadyAttemptedConnectionsList periodically so that we will retry connecting to hosts to which we have already tried to connect.
-numberOfObjectsThatWeHaveYetToGetPerPeer = {}
-neededPubkeys = {}
+numberOfObjectsThatWeHaveYetToGetPerPeer: dict[str, int] = {}
+neededPubkeys: dict[bytes, tuple[str, Any]] = {}
 eightBytesOfRandomDataUsedToDetectConnectionsToSelf = pack(">Q", random.randrange(1, 18446744073709551615))
-successfullyDecryptMessageTimings = []  # A list of the amounts of time it took to successfully decrypt msg messages
-apiAddressGeneratorReturnQueue = Queue.Queue()  # The address generator thread uses this queue to get information back to the API thread.
-ackdataForWhichImWatching = {}
+successfullyDecryptMessageTimings: list[float] = []  # A list of the amounts of time it took to successfully decrypt msg messages
+apiAddressGeneratorReturnQueue: Queue.Queue[Any] = Queue.Queue()  # The address generator thread uses this queue to get information back to the API thread.
+ackdataForWhichImWatching: dict[bytes, int] = {}
 clientHasReceivedIncomingConnections = False  # used by API command clientStatus
 numberOfMessagesProcessed = 0
 numberOfBroadcastsProcessed = 0
@@ -81,13 +83,13 @@ lastTimeWeResetBytesSent = 0  # used for the bandwidth rate limit
 sendDataLock = threading.Lock()  # used for the bandwidth rate limit
 receiveDataLock = threading.Lock()  # used for the bandwidth rate limit
 daemon = False
-inventorySets = (
+inventorySets: dict[int, set[bytes]] = (
     {}
 )  # key = streamNumer, value = a set which holds the inventory object hashes that we are aware of. This is used whenever we receive an inv message from a peer to check to see what items are new to us. We don't delete things out of it; instead, the singleCleaner thread clears and refills it every couple hours.
 needToWriteKnownNodesToDisk = False  # If True, the singleCleaner will write it to disk eventually.
 maximumLengthOfTimeToBotherResendingMessages = 0
-objectProcessorQueue = Queue.Queue()  # receiveDataThreads dump objects they hear on the network into this queue to be processed.
-streamsInWhichIAmParticipating = {}
+objectProcessorQueue: Queue.Queue[tuple[str, Any]] = Queue.Queue()  # receiveDataThreads dump objects they hear on the network into this queue to be processed.
+streamsInWhichIAmParticipating: dict[int, int] = {}
 
 # If changed, these values will cause particularly unexpected behavior: You won't be able to either send or receive messages because the proof of work you do (or demand) won't match that done or demanded by others. Don't change them!
 networkDefaultProofOfWorkNonceTrialsPerByte = 1000  # The amount of work that should be performed (and demanded) per byte of the payload.
