@@ -40,12 +40,20 @@ from .specialaddressbehavior import *
 try:
     from PyQt6 import QtCore, QtGui, QtWidgets
     from PyQt6.QtCore import *
-    from PyQt6.QtGui import *
+    # Explicit imports from QtGui to avoid qFuzzyCompare redefinition
+    # (qFuzzyCompare exists in both QtCore and QtGui)
+    from PyQt6.QtGui import (
+        QImage, QPixmap, QFont, QIcon, QPainter, QColor, QBrush, QPen,
+        QAction, QShortcut, QKeySequence, QCloseEvent, QCursor
+    )
     from PyQt6.QtWidgets import *
+    from PyQt6.QtCore import QThread, pyqtSignal
 
 except Exception as err:
     print(
-        "PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. You can download it from http://www.riverbankcomputing.com/software/pyqt/download or by searching Google for 'PyQt Download' (without quotes)."
+        "PyBitmessage requires PyQt unless you want to run it as a daemon and interact with it using the API. "
+        "You can download it from http://www.riverbankcomputing.com/software/pyqt/download "
+        "or by searching Google for 'PyQt Download' (without quotes)."
     )
     print("Error message:", err)
     sys.exit()
@@ -3747,7 +3755,7 @@ class myTableWidgetItem(QtWidgets.QTableWidgetItem):
         return int(self.data(33)) < int(other.data(33))
 
 
-from PyQt6.QtCore import QThread, pyqtSignal
+
 
 
 class UISignaler(QThread):
