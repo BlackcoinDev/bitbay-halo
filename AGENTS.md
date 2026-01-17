@@ -14,7 +14,7 @@
 
 ## Conventions
 
-- **Line length:** 120 chars (black, flake8, pylint)
+- **Line length:** 180 chars (black, flake8, pylint)
 - **Indentation:** 4 spaces
 - **Naming:** `snake_case` (vars/functions), `PascalCase` (classes), `type_name` (GUI)
 - **Imports:** isort with black profile
@@ -32,7 +32,7 @@
 ```bash
 uv run --active python3 Halo.py           # App
 uv run --active pytest tests/             # Tests
-uv run --active black . --line-length 120 # Format
+uv run --active black . --line-length 180 # Format
 uv run --active pyinstaller Halo.py       # Build
 ```
 
