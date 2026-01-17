@@ -91,7 +91,6 @@ from pyblackcointools import (
     privtopub,
     pubkey_to_address,
     pubtoaddr,
-    raw,
     safe_hexlify,
     safe_unhexlify,
     scriptaddr,
