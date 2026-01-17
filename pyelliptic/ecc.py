@@ -114,26 +114,34 @@ bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pub
     @staticmethod
     def _decode_pubkey(pubkey):
         i = 0
-        curve = unpack("!H", pubkey[i : i + 2])[0]
+        end_idx = i + 2
+        curve = unpack("!H", pubkey[i:end_idx])[0]
         i += 2
-        tmplen = unpack("!H", pubkey[i : i + 2])[0]
+        end_idx = i + 2
+        tmplen = unpack("!H", pubkey[i:end_idx])[0]
         i += 2
-        pubkey_x = pubkey[i : i + tmplen]
+        end_idx = i + tmplen
+        pubkey_x = pubkey[i:end_idx]
         i += tmplen
-        tmplen = unpack("!H", pubkey[i : i + 2])[0]
+        end_idx = i + 2
+        tmplen = unpack("!H", pubkey[i:end_idx])[0]
         i += 2
-        pubkey_y = pubkey[i : i + tmplen]
+        end_idx = i + tmplen
+        pubkey_y = pubkey[i:end_idx]
         i += tmplen
         return curve, pubkey_x, pubkey_y, i
 
     @staticmethod
     def _decode_privkey(privkey):
         i = 0
-        curve = unpack("!H", privkey[i : i + 2])[0]
+        end_idx = i + 2
+        curve = unpack("!H", privkey[i:end_idx])[0]
         i += 2
-        tmplen = unpack("!H", privkey[i : i + 2])[0]
+        end_idx = i + 2
+        tmplen = unpack("!H", privkey[i:end_idx])[0]
         i += 2
-        privkey = privkey[i : i + tmplen]
+        end_idx = i + tmplen
+        privkey = privkey[i:end_idx]
         i += tmplen
         return curve, privkey, i
 
@@ -442,7 +450,8 @@ bob.get_ecdh_key(alice.get_pubkey()).encode('hex')bob.get_ecdh_key(alice.get_pub
         i = blocksize
         curve, pubkey_x, pubkey_y, i2 = ECC._decode_pubkey(data[i:])
         i += i2
-        ciphertext = data[i : len(data) - 32]
+        end_idx = len(data) - 32
+        ciphertext = data[i:end_idx]
         i += len(ciphertext)
         mac = data[i:]
         key = sha512(self.raw_get_ecdh_key(pubkey_x, pubkey_y)).digest()

@@ -71,8 +71,10 @@ def deserialize(tx):
     pos = [0]
 
     def read_as_int(bytez):
+        start_idx = pos[0]
         pos[0] += bytez
-        return decode(tx[pos[0] - bytez : pos[0]][::-1], 256)
+        end_idx = pos[0]
+        return decode(tx[start_idx:end_idx][::-1], 256)
 
     def read_var_int():
         pos[0] += 1
@@ -81,8 +83,10 @@ def deserialize(tx):
         return read_as_int(pow(2, ord(tx[pos[0] - 1]) - 252))
 
     def read_bytes(bytez):
+        start_idx = pos[0]
         pos[0] += bytez
-        return tx[pos[0] - bytez : pos[0]]
+        end_idx = pos[0]
+        return tx[start_idx:end_idx]
 
     def read_var_string():
         size = read_var_int()
@@ -201,10 +205,18 @@ def der_encode_sig(v, r, s):
 
 
 def der_decode_sig(sig):
+    sig_r_start = 8
     leftlen = decode(sig[6:8], 16) * 2
-    left = sig[8 : 8 + leftlen]
-    rightlen = decode(sig[10 + leftlen : 12 + leftlen], 16) * 2
-    right = sig[12 + leftlen : 12 + leftlen + rightlen]
+    sig_r_end = sig_r_start + leftlen
+    left = sig[sig_r_start:sig_r_end]
+
+    sig_s_len_start = 10 + leftlen
+    sig_s_len_end = 12 + leftlen
+    rightlen = decode(sig[sig_s_len_start:sig_s_len_end], 16) * 2
+
+    sig_s_start = 12 + leftlen
+    sig_s_end = sig_s_start + rightlen
+    right = sig[sig_s_start:sig_s_end]
     return (None, decode(left, 16), decode(right, 16))
 
 
@@ -286,12 +298,17 @@ def deserialize_script(script):
             out.append(None)
             pos += 1
         elif code <= 75:
-            out.append(script[pos + 1 : pos + 1 + code])
+            start_idx = pos + 1
+            end_idx = start_idx + code
+            out.append(script[start_idx:end_idx])
             pos += 1 + code
         elif code <= 78:
             szsz = pow(2, code - 76)
-            sz = decode(script[pos + szsz : pos : -1], 256)
-            out.append(script[pos + 1 + szsz : pos + 1 + szsz + sz])
+            start_idx = pos + szsz
+            sz = decode(script[start_idx:pos:-1], 256)
+            data_start = pos + 1 + szsz
+            data_end = data_start + sz
+            out.append(script[data_start:data_end])
             pos += 1 + szsz + sz
         elif code <= 96:
             out.append(code - 80)
@@ -425,7 +442,10 @@ def mktx(tm=time.time(), *args):  # [in0, in1.],[out0, out1.] or in0, in1 . out0
             txobj["ins"].append({"outpoint": {"hash": i[:64], "index": int(i[65:])}, "script": "", "sequence": 4294967295})
     for o in outs:
         if isinstance(o, str):
-            o = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}
+            colon_idx = o.find(":")
+            addr = o[:colon_idx]
+            val_start = colon_idx + 1
+            o = {"address": addr, "value": int(o[val_start:])}
         txobj["outs"].append({"script": address_to_script(o["address"]), "value": o["value"]})
     return serialize(txobj)
 
@@ -462,7 +482,10 @@ def mksend(*args):
     osum, outputs2 = 0, []
     for o in outs:
         if isinstance(o, str):
-            o2 = {"address": o[: o.find(":")], "value": int(o[o.find(":") + 1 :])}
+            colon_idx = o.find(":")
+            addr = o[:colon_idx]
+            val_start = colon_idx + 1
+            o2 = {"address": addr, "value": int(o[val_start:])}
         else:
             o2 = o
         outputs2.append(o2)
