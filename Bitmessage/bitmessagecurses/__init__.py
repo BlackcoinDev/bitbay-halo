@@ -16,12 +16,12 @@ from textwrap import *
 from threading import Timer
 from time import localtime, strftime
 
-import dialog
-import l10n
-import shared
-from addresses import *
-from dialog import Dialog
-from helper_sql import *
+import dialog  # type: ignore
+from .. import l10n
+from .. import shared
+from ..addresses import *
+from dialog import Dialog  # type: ignore
+from ..helper_sql import *
 
 from pyelliptic.openssl import OpenSSL
 

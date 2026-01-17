@@ -6,16 +6,16 @@ import time
 from struct import pack, unpack
 from subprocess import call  # used when the API must execute an outside program
 
-import helper_inbox
-import l10n
-import proofofwork
-import shared
-import tr
-from addresses import calculateInventoryHash, decodeAddress, decodeVarint, encodeVarint
-from debug import logger
-from helper_sql import sqlExecute, sqlQuery
+from . import helper_inbox
+from . import l10n
+from . import proofofwork
+from . import shared
+from . import tr
+from .addresses import calculateInventoryHash, decodeAddress, decodeVarint, encodeVarint
+from .debug import logger
+from .helper_sql import sqlExecute, sqlQuery
 
-import highlevelcrypto
+from . import highlevelcrypto
 
 # This thread, of which there is only one, does the heavy lifting:
 # calculating POWs.
