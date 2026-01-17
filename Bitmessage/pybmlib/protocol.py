@@ -1,4 +1,5 @@
 import struct
+from typing import Dict, Any
 
 from . import crypt
 
@@ -151,7 +152,7 @@ class Header:
         return s
 
 
-MSG_TYPES = {}
+MSG_TYPES: Dict[bytes, Any] = {}
 
 
 def encode(msg):
