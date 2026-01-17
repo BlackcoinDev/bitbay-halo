@@ -29,7 +29,7 @@ if __name__ == "__main__":
                 data[1] = f.readline().strip()
                 try:
                     data[2] = f.readline().strip()
-                except:
+                except Exception:
                     print("")
                 f.close()
         except Exception as e:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                         f.write("Send1" + "\n")
                         f.write(str(ret) + "\n")
                         f.close()
-                except:
+                except Exception:
                     print("error")
             if ch == "GetMessages":
                 # Gets messages
@@ -59,7 +59,7 @@ if __name__ == "__main__":
                         f.write("GetMessages1" + "\n")
                         f.write(str(a) + "\n")
                         f.close()
-                except:
+                except Exception:
                     sys.stderr.write("BitMHalo-error")
             if ch == "new":
                 # Make a new address and return it
@@ -70,5 +70,5 @@ if __name__ == "__main__":
                         f.write("new1" + "\n")
                         f.write(addr + "\n")
                         f.close()
-                except:
+                except Exception:
                     sys.stderr.write("BitMHalo-error")
