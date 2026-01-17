@@ -1,3 +1,3 @@
 [flake8]
 max-line-length = 180
-exclude = venv,.venv,__pycache__,BUILD SCRIPTS ETC,.git,bridge,data,agent,BitMData,images,.tox
+exclude = venv,.venv,__pycache__,.git,.tox
