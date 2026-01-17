@@ -7,26 +7,17 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-
-    def _fromUtf8(s):
-        return s
+from PyQt6 import QtCore, QtWidgets
 
 
-try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
+# Qt6/Python3: strings are already Unicode, no QString.fromUtf8 needed
+def _fromUtf8(s: str) -> str:
+    return s
 
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 
-except AttributeError:
-
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig)
+# Qt6: translate() no longer takes an encoding parameter
+def _translate(context: str, text: str, disambig: str | None) -> str:
+    return QtWidgets.QApplication.translate(context, text, disambig)
 
 
 class Ui_NewSubscriptionDialog(object):

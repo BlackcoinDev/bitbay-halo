@@ -7,12 +7,12 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
+
+# Qt6/Python3: strings are already Unicode, no QString.fromUtf8 needed
+def _fromUtf8(s: str) -> str:
+    return s
 
 
 class Ui_SpecialAddressBehaviorDialog(object):
