@@ -1,6 +1,6 @@
 withMessagingMenu = False
 try:
-    from gi.repository import MessagingMenu, Notify
+    from gi.repository import MessagingMenu, Notify  # type: ignore
 
     withMessagingMenu = True
 except ImportError:
@@ -100,7 +100,7 @@ def identiconize(address):
     elif identicon_lib == "pydenticon":
         # print identicon_lib
         # Here you could load pydenticon.py (just put it in the "src" folder of your Bitmessage source)
-        from pydenticon import Pydenticon
+        from pydenticon import Pydenticon  # type: ignore
 
         # It is not included in the source, because it is licensed under GPLv3
         # GPLv3 is a copyleft license that would influence our licensing

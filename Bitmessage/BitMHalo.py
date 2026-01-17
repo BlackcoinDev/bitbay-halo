@@ -3,7 +3,7 @@ import os
 import sys
 import time
 
-import rpyc  # For communication between the server and BitHalo for now not being used
+# import rpyc  # type: ignore  # For communication between the server and BitHalo for now not being used
 
 from . import class_api, parallelTestModule
 
