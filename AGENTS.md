@@ -7,25 +7,27 @@
 
 | Task | Location |
 |------|----------|
-| Main app | `./Halo.py` (1570 lines) |
-| Build | `./build.py` |
-| Tests | `./tests/` |
-| GUI | `./gui/` ||
+| Main app | `./Halo.py` (~47k lines) |
+| Build | `./build.py` (~400 lines) |
+| Tests | `./tests/` (12 files) |
+| GUI | `./gui/` (~100 files) |
 
 ## Conventions
 
 - **Line length:** 180 chars (black, flake8, pylint)
 - **Indentation:** 4 spaces
-- **Naming:** `snake_case` (vars/functions), `PascalCase` (classes), `type_name` (GUI)
+- **Naming:** Mixed `snake_case` (vars) and `camelCase` (functions/legacy), `PascalCase` (classes)
 - **Imports:** isort with black profile
 - **Testing:** pytest, `test_*.py` pattern
+- **Defensive Programming:** MANDATORY. Validate all inputs, handle all edge cases explicitly.
 
-## Anti-Patterns (Forbidden)
+## Strict Standards (Zero Tolerance)
 
-- `# type: ignore`, `# noqa:`, `# pylint: disable:` — Fix root cause
-- Python 2 syntax: `print "x"`, `except E, e:`, `unicode(x)`
-- `urllib2` — use `urllib.request`
-- Empty `except:` blocks
+- **NO IGNORES:** `# type: ignore`, `# noqa`, `# pylint: disable` are STRICTLY FORBIDDEN. Fix the root cause.
+- **NO EXCLUDES:** Do not use `exclude` patterns in `pyproject.toml` or other configs. All code must pass.
+- **NO BACKWARDS COMPATIBILITY:** Do not compromise code quality for legacy support.
+- **NO COMPATIBILITY FILES:** Do not use shims like `six.py` or `future`.
+- **NO DEPRECATED APIS:** e.g. use `urllib.request` or `requests` instead of `urllib2`.
 
 ## Run Commands
 
@@ -41,3 +43,4 @@ uv run --active pyinstaller Halo.py       # Build
 - **Dual build system:** Modern (UV/PyInstaller) + Legacy (2014 C++ daemons)
 - **Cross-compilation:** Windows/macOS/Linux/ARM64 via PyInstaller
 - **Crypto priority:** BlackCoin → BitBay → Bitcoin (legacy)
+- **Monolith:** `Halo.py` is a massive legacy monolithic file containing core logic, networking, and legacy UI code.
