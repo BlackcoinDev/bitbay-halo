@@ -1231,11 +1231,7 @@ class MyForm(QtWidgets.QMainWindow):
                         _translate("MainWindow", "Bad address version number"),
                         _translate("MainWindow", "Your address version number must be either 3 or 4."),
                     )
-                # self.addressGenerator = addressGenerator()
-                # self.addressGenerator.setup(addressVersionNumber,streamNumberForAddress,"unused address",self.regenerateAddressesDialogInstance.ui.spinBoxNumberOfAddressesToMake.value(),self.regenerateAddressesDialogInstance.ui.lineEditPassphrase.text().toUtf8(),self.regenerateAddressesDialogInstance.ui.checkBoxEighteenByteRipe.isChecked())
-                # QtCore.QObject.connect(self.addressGenerator, SIGNAL("writeNewAddressToTable(PyQt_PyObject,PyQt_PyObject,PyQt_PyObject)"), self.writeNewAddressToTable)
-                # self.addressGenerator.updateStatusBar.addressVersionNumber.connect( streamNumberForAddress, "regenerated deterministic address", self.regenerateAddressesDialogInstance.ui.spinBoxNumberOfAddressesToMake.value(
-                # ), self.regenerateAddressesDialogInstance.ui.lineEditPassphrase.text().toUtf8(), self.regenerateAddressesDialogInstance.ui.checkBoxEighteenByteRipe.isChecked())
+
                 self.ui.tabWidget.setCurrentIndex(3)
 
     def click_actionJoinChan(self):
