@@ -47,7 +47,7 @@ def decodeVarStr(data):
     if length == 0:
         return ("", size)
 
-    return (data[size : size + length], size + length)
+    return (data[size:size + length], size + length)
 
 
 def encodeVarStr(s):
@@ -62,14 +62,14 @@ def decodeVarList(data):
     if length == 0:
         return ([], size)
 
-    l = []
+    result_list = []
 
     for i in range(length):
         (item, isize) = decodeVarInt(data[size:])
-        l.append(item)
+        result_list.append(item)
         size += isize
 
-    return (l, size)
+    return (result_list, size)
 
 
 def encodeVarList(*items):
@@ -128,7 +128,7 @@ class Header:
 
         if len(data) < header_size + length:
             raise HeaderException("Data size < Header size + Payload length")
-        payload = data[header_size : header_size + length]
+        payload = data[header_size:header_size + length]
 
         if crypt.checksum(payload) != csum:
             raise ChecksumException("Checksums didn't correspond.")
