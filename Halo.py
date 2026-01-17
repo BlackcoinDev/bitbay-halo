@@ -474,7 +474,7 @@ global skipBM
 reqsession = ""
 
 # session = requesocks.session()
-# session.proxies = {'http':  'socks5://127.0.0.1:9150','https': 'socks5://127.0.0.1:9150'}
+# session.proxies = {'http':  'socks5://127.0.0.1:9050','https': 'socks5://127.0.0.1:9050'}
 
 
 def create_connection(address, timeout=None, source_address=None):
@@ -483,7 +483,7 @@ def create_connection(address, timeout=None, source_address=None):
     return sock
 
 
-socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9150)
+socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
 # backup original method, since if proxy is requested we might monkey patch
 socket_original = socket.socket
 connection_original = socket.create_connection
@@ -33402,7 +33402,7 @@ class Settings(QtWidgets.QWidget):
 
     def ProxyInfo(self, event):
         QuestionBox(
-            "Enter the proxy in this format:\nIP:port\n\nFor example TOR would look like this...\n127.0.0.1:9150",
+            "Enter the proxy in this format:\nIP:port\n\nFor example TOR would look like this...\n127.0.0.1:9050",
             "OK",
         )
 
