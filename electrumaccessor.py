@@ -137,7 +137,7 @@ def get_from_electrum(inputs, t="a"):
                     if x == -1:
                         break
                     c = out[0:x]
-                    out = out[x + 1 :]
+                    out = out[x + 1:]
                     # ast.literal_eval is the best way to read this json stuff into python
                     # don't ask me why json.loads() doesn't work, but right now it doesn't
                     try:
@@ -445,7 +445,7 @@ def script_GetOp(byte_data):
             elif opcode == opcodes.OP_PUSHDATA4:
                 (nSize,) = struct.unpack_from("<I", byte_data, i)
                 i += 4
-            vch = byte_data[i : i + nSize]
+            vch = byte_data[i: i + nSize]
             i += nSize
 
         yield (opcode, vch, i)

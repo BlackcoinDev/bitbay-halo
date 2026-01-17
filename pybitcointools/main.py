@@ -100,7 +100,7 @@ def multiaccess(obj, prop):
 
 
 def slice(obj, start=0, end=2**200):
-    return obj[int(start) : int(end)]
+    return obj[int(start): int(end)]
 
 
 def count(obj):
