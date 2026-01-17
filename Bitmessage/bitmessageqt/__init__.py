@@ -2213,7 +2213,7 @@ class MyForm(QtWidgets.QMainWindow):
 
     def click_pushButtonStatusIcon(self):
         print("click_pushButtonStatusIcon")
-        self.iconGlossaryInstance = iconGlossaryDialog(self)
+        self.iconGlossaryInstance = IconGlossaryDialogWidget(self)
         if self.iconGlossaryInstance.exec():
             pass
 
@@ -3746,7 +3746,7 @@ class newChanDialog(QtWidgets.QDialog):
         QtWidgets.QWidget.resize(self, QtWidgets.QWidget.sizeHint(self))
 
 
-class iconGlossaryDialog(QtWidgets.QDialog):
+class IconGlossaryDialogWidget(QtWidgets.QDialog):
 
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
