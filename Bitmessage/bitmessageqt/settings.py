@@ -507,7 +507,10 @@ class Ui_settingsDialog(object):
         self.label_20.setText(_translate("settingsDialog", "and", None))
         self.label_22.setText(_translate("settingsDialog", "days", None))
         self.label_23.setText(_translate("settingsDialog", "months.", None))
-        self.tabWidgetSettings.setTabText(self.tabWidgetSettings.indexOf(self.tabResendsExpire), _translate("settingsDialog", "Resends Expire", None))
+        self.tabWidgetSettings.setTabText(
+            self.tabWidgetSettings.indexOf(self.tabResendsExpire),
+            _translate("settingsDialog", "Resends Expire", None),
+        )
 
 
-from . import bitmessage_icons_rc
+from . import bitmessage_icons_rc  # noqa: E402,F401

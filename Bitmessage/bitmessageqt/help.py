@@ -43,13 +43,12 @@ class Ui_helpDialog(object):
         QtCore.QMetaObject.connectSlotsByName(helpDialog)
 
     def retranslateUi(self, helpDialog):
-        helpDialog.setWindowTitle(QtWidgets.QApplication.translate("helpDialog", "Help", None, QtWidgets.QApplication.UnicodeUTF8))
+        helpDialog.setWindowTitle(QtWidgets.QApplication.translate("helpDialog", "Help", None))
         self.labelHelpURI.setText(
             QtWidgets.QApplication.translate(
                 "helpDialog",
                 '<a href="http://Bitmessage.org/wiki/PyBitmessage_Help">http://Bitmessage.org/wiki/PyBitmessage_Help</a>',
                 None,
-                QtWidgets.QApplication.UnicodeUTF8,
             )
         )
         self.label.setText(
@@ -57,6 +56,5 @@ class Ui_helpDialog(object):
                 "helpDialog",
                 "As Bitmessage is a collaborative project, help can be found online in the Bitmessage Wiki:",
                 None,
-                QtWidgets.QApplication.UnicodeUTF8,
             )
         )

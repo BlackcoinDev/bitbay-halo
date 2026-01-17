@@ -58,17 +58,16 @@ class Ui_SpecialAddressBehaviorDialog(object):
 
     def retranslateUi(self, SpecialAddressBehaviorDialog):
         SpecialAddressBehaviorDialog.setWindowTitle(
-            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Special Address Behavior", None, QtWidgets.QApplication.UnicodeUTF8)
+            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Special Address Behavior", None)
         )
         self.radioButtonBehaveNormalAddress.setText(
-            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Behave as a normal address", None, QtWidgets.QApplication.UnicodeUTF8)
+            QtWidgets.QApplication.translate("SpecialAddressBehaviorDialog", "Behave as a normal address", None)
         )
         self.radioButtonBehaviorMailingList.setText(
             QtWidgets.QApplication.translate(
                 "SpecialAddressBehaviorDialog",
                 "Behave as a pseudo-mailing-list address",
                 None,
-                QtWidgets.QApplication.UnicodeUTF8,
             )
         )
         self.label.setText(
@@ -76,7 +75,6 @@ class Ui_SpecialAddressBehaviorDialog(object):
                 "SpecialAddressBehaviorDialog",
                 "Mail received to a pseudo-mailing-list address will be automatically broadcast to subscribers (and thus will be public).",
                 None,
-                QtWidgets.QApplication.UnicodeUTF8,
             )
         )
         self.label_2.setText(
@@ -84,6 +82,5 @@ class Ui_SpecialAddressBehaviorDialog(object):
                 "SpecialAddressBehaviorDialog",
                 "Name of the pseudo-mailing-list:",
                 None,
-                QtWidgets.QApplication.UnicodeUTF8,
             )
         )
