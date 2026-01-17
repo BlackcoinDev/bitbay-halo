@@ -1,90 +1,110 @@
 #! /usr/bin/env python3
 
-import re
+import argparse
+import logging
+import time
 import urllib.request
-from typing import Any
+from typing import List, Optional
 
-debug = False
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 
 class bitcoinapi:
 
-    def _debug(self, message):
-        if debug:
-            print(message)
-
-    def _grabapi(self, apipaths):
-        # This will attempt to grab the information using blockchain first, then blockexplorer.
-        sources = ["http://blockchain.info", "http://blockexplorer.com"]
+    def _grabapi(self, apipaths: List[str]) -> Optional[str]:
+        # Using blockchain.info only as blockexplorer is deprecated/unreliable
+        sources = ["https://blockchain.info"]
         urls = ["".join(t) for t in zip(sources, apipaths)]
-        # print(urls)
+
         for url in urls:
             try:
-                self._debug("Getting: " + url)
+                logger.debug(f"Getting: {url}")
                 user_agent = "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)"
                 headers = {"User-Agent": user_agent}
                 bitOpen = urllib.request.Request(url, None, headers)
-                data = urllib.request.urlopen(bitOpen).read().decode("utf-8")
-                # data = urlopen(url, timeout=5).read()
+                # Timeout set to 10s
+                data = urllib.request.urlopen(bitOpen, timeout=10).read().decode("utf-8")
+
                 if data == "":
-                    self._debug("Got a blank response")
+                    logger.debug("Got a blank response")
                     continue
-                self._debug("Got: " + data)
+                logger.debug(f"Got: {data}")
                 return data
             except Exception as e:
-                self._debug(e)
+                logger.error(f"Error fetching {url}: {e}")
                 continue
         return None
 
-    def get_interval(self):
-        # Average time between blocks in seconds
-        currentint = self._grabapi(["/q/interval"] * 2)
+    def get_interval(self) -> Optional[float]:
+        # Average time between blocks in seconds (Approximate or fetched)
+        # Blockchain.info doesn't have a direct "interval" endpoint in q/api strictly documented as stable,
+        # but we preserve legacy endpoint or defaulting if missing.
+        # Actually /q/interval exists on blockchain.info.
+        currentint = self._grabapi(["/q/interval"])
         if currentint is None or currentint == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(currentint)
+            logger.error("Failed to get interval")
+            return None
+        try:
+            return float(currentint)
+        except ValueError:
+            return None
 
-    def get_currentblock(self):
+    def get_currentblock(self) -> Optional[int]:
         # Current block height in the longest chain
-        currentblock = self._grabapi(["/q/getblockcount"] * 2)
+        currentblock = self._grabapi(["/q/getblockcount"])
         if currentblock is None or currentblock == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(currentblock)
+            logger.error("Failed to get block count")
+            return None
+        try:
+            return int(float(currentblock))
+        except ValueError:
+            return None
 
-    def get_hashrate(self):
+    def get_hashrate(self) -> Optional[float]:
         # Estimated network hash rate in gigahash
-        hashrate = self._grabapi(["/q/hashrate"] * 2)
+        hashrate = self._grabapi(["/q/hashrate"])
         if hashrate is None or hashrate == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(hashrate)
+            logger.error("Failed to get hashrate")
+            return None
+        try:
+            return float(hashrate)
+        except ValueError:
+            return None
 
-    def get_nextdifficulty(self):
-        # Get the next difficulty (Only available from blockexplorer)
-        nextdiff = self._grabapi(["/q/estimate"] * 2)
-        if nextdiff is None or nextdiff == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(nextdiff)
-
-    def get_difficulty(self):
+    def get_difficulty(self) -> Optional[float]:
         # Current difficulty target as a decimal number
-        currentdiff = self._grabapi(["/q/getdifficulty"] * 2)
+        currentdiff = self._grabapi(["/q/getdifficulty"])
         if currentdiff is None or currentdiff == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(currentdiff)
+            logger.error("Failed to get difficulty")
+            return None
+        try:
+            return float(currentdiff)
+        except ValueError:
+            return None
 
-    def get_nextretarget(self):
+    def get_nextretarget(self) -> Optional[int]:
         # Block height of the next difficulty retarget
-        nextretarget = self._grabapi(["/q/nextretarget"] * 2)
-        if nextretarget is None or nextretarget == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return float(nextretarget)
+        # Deterministic calculation: (current_block // 2016 + 1) * 2016
+        current_block = self.get_currentblock()
+        if current_block is None:
+            logger.error("Failed to get current block for retarget calculation")
+            return None
+        return (current_block // 2016 + 1) * 2016
 
-    def stat_hash(self):
+    def get_bcperblock(self) -> Optional[float]:
+        # Block reward
+        reward = self._grabapi(["/q/bcperblock"])
+        if reward is None or reward == "":
+            logger.error("Failed to get block reward")
+            return None
+        try:
+            return float(reward)
+        except ValueError:
+            return None
+
+    def stat_hash(self) -> str:
         # Hash Stats
         currentint = self.get_interval()
         currentblock = self.get_currentblock()
@@ -93,7 +113,8 @@ class bitcoinapi:
         if currentint is None or currentblock is None or hashrate is None:
             return "There was an error, please try again later"
 
-        m, s = divmod(currentint, 60)
+        # Fix: divmod works on floats in Py3, returning float. Cast to int for %d formatting.
+        m, s = divmod(int(currentint), 60)
         abouttime = "%02d Minutes %02d Seconds" % (m, s)
         data = "Estimated interval between blocks: %s | Current Block: %d | Global Hashrate: %.2f GH/s " % (
             abouttime,
@@ -102,58 +123,88 @@ class bitcoinapi:
         )
         return data
 
-    def stat_diff(self):
+    def stat_diff(self) -> str:
         # Difficulty Stats
         nextretarget = self.get_nextretarget()
         currentblock = self.get_currentblock()
-        nextdiff = self.get_nextdifficulty()
         currentdiff = self.get_difficulty()
         currentint = self.get_interval()
 
-        if nextretarget is None or currentblock is None or nextdiff is None or currentdiff is None or currentint is None:
+        if nextretarget is None or currentblock is None or currentdiff is None or currentint is None:
             return "There was an error, please try again later"
 
         nextin = nextretarget - currentblock
-        diffchange = (nextdiff - currentdiff) / currentdiff * 100
+        # We omitted get_nextdifficulty because /q/estimate is unreliable.
+        # We will omit "Est Next" and "Diff change" percent from the output if we don't have it.
+        # Or we could calculate it if we had reliable time data, but simpler is safer.
+
         timetochange = nextin * currentint
-        m, s = divmod(timetochange, 60)
+        # Fix: Cast to int for formatting
+        m, s = divmod(int(timetochange), 60)
         h, m = divmod(m, 60)
         d, h = divmod(h, 24)
         abouttime = "%d Days %d Hours %02d Minutes %02d Seconds" % (d, h, m, s)
-        data = "Cur Dif: %.2f | Est Next: %.2f (%.2f%%) | Next Diff change in: %d Blocks (~%s)" % (
+
+        data = "Cur Dif: %.2f | Next Diff change in: %d Blocks (~%s)" % (
             currentdiff,
-            nextdiff,
-            diffchange,
             nextin,
             abouttime,
         )
         return data
 
-    def gettxid(self, txid):
-        # For now we will just use blockchain.info since block explorers is a bit different. Besides, soon I will be downloading the blockchain
-        tx = urllib.request.urlopen("http://blockchain.info/rawtx/" + txid)
-        tx = tx.read().decode("utf-8")
-        print(tx)
-        if tx is None or tx == "":
-            self._debug("Opps, there was an error, try later")
-            return
-        return tx
+    def gettxid(self, txid: str) -> Optional[str]:
+        # Use HTTPS
+        url = "https://blockchain.info/rawtx/" + txid
+        try:
+            response = urllib.request.urlopen(url, timeout=10)
+            tx = response.read().decode("utf-8")
+            logger.debug(f"Transaction data for {txid} fetched.")
+            if tx == "":
+                logger.error("Got blank response for txid")
+                return None
+            return tx
+        except Exception as e:
+            logger.error(f"Error fetching txid {txid}: {e}")
+            return None
 
-    def stat_estimate(self, hashrate, quote=0):
+    def stat_estimate(self, hashrate: float, quote: float = 0.0) -> str:
         currentdiff = self.get_difficulty()
+        reward = self.get_bcperblock()
 
-        if currentdiff is None:
-            return "There was an error, please try again later"
+        if currentdiff is None or reward is None:
+            return "There was an error (missing difficulty or reward), please try again later"
 
-        estimate = 24 / (currentdiff * 2**32 / (hashrate * 10**6) / 60 / 60) * 25
+        # Standard Mining Formula:
+        # Earnings (BTC/day) = (Hashrate (MH/s) * 1e6 * Reward * 86400) / (Difficulty * 2^32)
+        # Note: input hashrate is usually MH/s in valid mining calcs or script usage.
+        # Reference Code used: 24 / (currentdiff * 2**32 / (hashrate * 10**6) / 60 / 60) * 25
+        # The input hashrate seems to be in MH/s based on the string "At %d MH/s".
+
+        # New Formula:
+        # difficulty * 2^32 = hashes per block
+        # hashrate * 10^6 = hashes per second
+        # (diff * 2^32) / (hashrate * 10^6) = seconds per block for this user
+        # blocks per day = 86400 / seconds per block
+        # BTC per day = blocks per day * reward
+
+        hashes_per_block = currentdiff * (2**32)
+        hashes_per_sec = hashrate * (10**6)
+
+        if hashes_per_sec == 0:
+            return "Hashrate cannot be zero."
+
+        seconds_per_block = hashes_per_block / hashes_per_sec
+        blocks_per_day = 86400 / seconds_per_block
+        estimate = blocks_per_day * reward
+
         if quote == 0:
-            data = "At %d MH/s, you should earn on avg ~%f BTC/day or %f BTC/hr." % (
+            data = "At %.2f MH/s, you should earn on avg ~%.8f BTC/day or %.8f BTC/hr." % (
                 hashrate,
                 estimate,
                 (estimate / 24),
             )
         else:
-            data = "At %d MH/s, you should earn on avg ~%f BTC/day ($%f USD) or %f BTC/hr." % (
+            data = "At %.2f MH/s, you should earn on avg ~%.8f BTC/day ($%.2f USD) or %.8f BTC/hr." % (
                 hashrate,
                 estimate,
                 (estimate * quote),
@@ -162,68 +213,35 @@ class bitcoinapi:
         return data
 
 
-if __name__ == "__main__":
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Bitcoin Network Stats")
+    parser.add_argument("--watch", action="store_true", help="Monitor stats continuously (ctrl-c to exit)")
+    parser.add_argument("--interval", type=int, default=60, help="Refresh interval in seconds (default: 60)")
+    args = parser.parse_args()
+
     btcapi = bitcoinapi()
-    # Unit tests
-    ch = ""
-    t = 0
-    r = 0
-    m: Any
-    try:
-        import msvcrt as m
-    except ImportError:
-        m = None
-    import calendar
-    import datetime
-    import time
 
-    print((calendar.isleap(2014)))
-    try:
-        timex = urllib.request.urlopen("http://just-the-time.appspot.com/").read().decode("utf-8")
-        matchObj = re.match(r"(.*)-(.*?)-(.*?) (.*?):(.*?):(.*?) UTC", timex, re.M | re.I)
-        if matchObj:
-            HaloTimeHour = datetime.datetime(
-                int(matchObj.group(1)),
-                int(matchObj.group(2)),
-                int(matchObj.group(3)),
-                int(matchObj.group(4)),
-                int(matchObj.group(5)),
-                int(matchObj.group(6)),
-            )
-            print(HaloTimeHour)
-            print(timex)
-        else:
-            print("Time format not matched: " + timex)
-    except Exception as e:
-        print(("Time fetch failed:", e))
+    # Initial print
+    current_block = btcapi.get_currentblock()
+    print("Block:", current_block if current_block else "N/A")
+    print(btcapi.stat_hash())
+    print(btcapi.stat_diff())
 
-    print((datetime.date.today))
-    print((datetime.datetime))
-    try:
-        print((btcapi.gettxid("59e0a90ebe8fa15a9ee828fa67d417d391338b01d87bdfc7d0482b3f74af9932")))
-    except Exception as e:
-        print(("Tx fetch failed:", e))
+    # Modern hash rate example: 140 TH/s = 140 * 10**6 MH/s
+    modern_hashrate = 140 * 10**6
+    print(btcapi.stat_estimate(modern_hashrate))
+    print(btcapi.stat_estimate(modern_hashrate, 100000.0))  # Example Price
 
-    if m:
-        m.getch()
-    else:
-        # Compatibility for Linux
+    if args.watch:
         try:
-            eval(input("Press Enter to continue."))
-        except Exception:
-            pass
+            print(f"\nWatching network status (Interval: {args.interval}s)... Press Ctrl-C to stop.")
+            while True:
+                time.sleep(args.interval)
+                current_block = btcapi.get_currentblock()
+                print(f"[{time.strftime('%H:%M:%S')}] Block: {current_block if current_block else 'N/A'}")
+        except KeyboardInterrupt:
+            print("\nExiting watch mode.")
 
-    print(("block:", btcapi.get_currentblock(), "  interval:", r))
-    while ch == "":
-        time.sleep(60)
-        t += 1
-        if t == 10:
-            r += 1
-            t = 0
-            print(("block:", btcapi.get_currentblock(), "  interval:", r))
-    print((btcapi.get_currentblock()))
-    print((btcapi.get_nextretarget()))
-    print((btcapi.stat_hash()))
-    print((btcapi.stat_diff()))
-    print((btcapi.stat_estimate(100)))
-    print((btcapi.stat_estimate(100, 118.4)))
+
+if __name__ == "__main__":
+    main()
