@@ -224,7 +224,7 @@ CoinSelect = {}
 
 if IS_WIN32:
     try:
-        import msvcrt  # noqa: F401
+        import msvcrt
 
         _WIN32_IMPORTS_OK = True
     except ImportError:

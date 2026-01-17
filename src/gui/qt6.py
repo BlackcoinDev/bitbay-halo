@@ -34,7 +34,7 @@ class BlackHaloQt6App:
     @classmethod
     def is_qt6_available(cls) -> bool:
         try:
-            import PyQt6.QtCore  # noqa: F401
+            import PyQt6.QtCore
 
             return True
         except ImportError:
@@ -121,7 +121,7 @@ class BlackHaloQt6App:
 
     def run_event_loop(self) -> int:
         try:
-            import PyQt6.QtWidgets  # noqa: F401
+            import PyQt6.QtWidgets
 
             if self._app is None:
                 return 1
@@ -131,7 +131,7 @@ class BlackHaloQt6App:
 
     def quit(self) -> None:
         try:
-            import PyQt6.QtWidgets  # noqa: F401
+            import PyQt6.QtWidgets
 
             if self._app is not None:
                 self._app.quit()
