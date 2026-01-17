@@ -354,29 +354,80 @@ def RMD160Update(ctx: RMDContext, inp: Union[bytes, str, List[int]], inplen: int
     if inplen >= need:
         if have:
             for i in range(need):
-                ctx.buffer[have + i] = inp[i]
+                ctx.buffer[have + i] = input_data[i]
             RMD160Transform(ctx.state, ctx.buffer)
             off = need
             have = 0
         while off + 64 <= inplen:
-            RMD160Transform(ctx.state, inp[off:])  # <---
+            RMD160Transform(ctx.state, input_data[off:off+64])  # type: ignore # slice of list/bytes
             off += 64
     if off < inplen:
         # memcpy(ctx->buffer + have, input+off, len-off);
         for i in range(inplen - off):
-            ctx.buffer[have + i] = inp[off + i]
+            ctx.buffer[have + i] = input_data[off + i]
 
 
-def RMD160Final(ctx):
+def RMD160Final(ctx: RMDContext) -> bytes:
     size = struct.pack("<Q", ctx.count)
     padlen = 64 - ((ctx.count // 8) % 64)
     if padlen < 1 + 8:
         padlen += 64
     RMD160Update(ctx, PADDING, padlen - 8)
-    RMD160Update(ctx, size, 8)
+    RMD160Update(ctx, list(size), 8)  # size is bytes, convert to list for consistency if needed, but RMD160Update handles bytes
     return struct.pack("<5L", *ctx.state)
 
 
-assert "37f332f68db77bd9d7edd4969571ad671cf9dd3b" == new("The quick brown fox jumps over the lazy dog").hexdigest()
-assert "132072df690933835eb8b6ad0b77e7b6f14acad7" == new("The quick brown fox jumps over the lazy cog").hexdigest()
-assert "9c1185a5c5e9fc54612808977ee8f548b2258d31" == new("").hexdigest()
+class RIPEMD160:
+    """Return a new RIPEMD160 object. An optional string argument
+    may be provided; if present, this string will be automatically
+    hashed."""
+
+    def __init__(self, arg: Optional[Union[bytes, str]] = None) -> None:
+        super().__init__()
+        self.ctx = RMDContext()
+        self.dig: Optional[bytes] = None
+        if arg:
+            self.update(arg)
+
+    def update(self, arg: Union[bytes, str]) -> None:
+        """update(arg)"""
+        RMD160Update(self.ctx, arg, len(arg))
+        self.dig = None
+
+    def digest(self) -> bytes:
+        """digest()"""
+        if self.dig:
+            return self.dig
+        ctx = self.ctx.copy()
+        self.dig = RMD160Final(self.ctx)
+        self.ctx = ctx
+        return self.dig
+
+    def hexdigest(self) -> str:
+        """hexdigest()"""
+        dig = self.digest()
+        hex_digest = ""
+        for d in dig:
+            # Python 3: bytes iteration yields ints
+            hex_digest += "%02x" % d
+        return hex_digest
+
+    def copy(self) -> "RIPEMD160":
+        """copy()"""
+        import copy
+
+        return copy.deepcopy(self)
+
+
+def new(arg: Optional[Union[bytes, str]] = None) -> RIPEMD160:
+    """Return a new RIPEMD160 object. An optional string argument
+    may be provided; if present, this string will be automatically
+    hashed."""
+    return RIPEMD160(arg)
+
+
+if __name__ == "__main__":
+    assert "37f332f68db77bd9d7edd4969571ad671cf9dd3b" == new(b"The quick brown fox jumps over the lazy dog").hexdigest()
+    assert "132072df690933835eb8b6ad0b77e7b6f14acad7" == new(b"The quick brown fox jumps over the lazy cog").hexdigest()
+    assert "9c1185a5c5e9fc54612808977ee8f548b2258d31" == new(b"").hexdigest()
+    print("Self-test passed.")
