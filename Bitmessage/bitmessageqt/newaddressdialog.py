@@ -171,15 +171,27 @@ class Ui_NewAddressDialog(object):
         self.label.setText(
             _translate(
                 "NewAddressDialog",
-                'Here you may generate as many addresses as you like. Indeed, creating and abandoning addresses is encouraged. You may generate addresses by using either random numbers or by using a passphrase. If you use a passphrase, the address is called a "deterministic" address.\n'
-                "The 'Random Number' option is selected by default but deterministic addresses have several pros and cons:",
+                'Here you may generate as many addresses as you like. Indeed, creating and '
+                'abandoning addresses is encouraged. You may generate addresses by using either '
+                'random numbers or by using a passphrase. If you use a passphrase, the address is '
+                'called a "deterministic" address.\n'
+                "The 'Random Number' option is selected by default but deterministic addresses "
+                "have several pros and cons:",
                 None,
             )
         )
         self.label_5.setText(
             _translate(
                 "NewAddressDialog",
-                '<html><head/><body><p><span style=" font-weight:600;">Pros:<br/></span>You can recreate your addresses on any computer from memory. <br/>You need-not worry about backing up your keys.dat file as long as you can remember your passphrase. <br/><span style=" font-weight:600;">Cons:<br/></span>You must remember (or write down) your passphrase if you expect to be able to recreate your keys if they are lost. <br/>You must remember the address version number and the stream number along with your passphrase. <br/>If you choose a weak passphrase and someone on the Internet can brute-force it, they can read your messages and send messages as you.</p></body></html>',
+                '<html><head/><body><p><span style=" font-weight:600;">Pros:<br/></span>'
+                'You can recreate your addresses on any computer from memory. <br/>'
+                'You need-not worry about backing up your keys.dat file as long as you can '
+                'remember your passphrase. <br/><span style=" font-weight:600;">Cons:<br/></span>'
+                'You must remember (or write down) your passphrase if you expect to be able to '
+                'recreate your keys if they are lost. <br/>You must remember the address version '
+                'number and the stream number along with your passphrase. <br/>If you choose a '
+                'weak passphrase and someone on the Internet can brute-force it, they can read '
+                'your messages and send messages as you.</p></body></html>',
                 None,
             )
         )

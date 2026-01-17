@@ -564,7 +564,8 @@ class Ui_MainWindow(object):
                 '<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
                 "p, li { white-space: pre-wrap; }\n"
                 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p></body></html>',
+                '<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; '
+                'margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p></body></html>',
                 None,
             )
         )
@@ -608,7 +609,8 @@ class Ui_MainWindow(object):
         self.label_5.setText(
             _translate(
                 "MainWindow",
-                "Here you can subscribe to 'broadcast messages' that are sent by other users. Messages will appear in your Inbox. Addresses here override those on the Blacklist tab.",
+                "Here you can subscribe to 'broadcast messages' that are sent by other users. "
+                "Messages will appear in your Inbox. Addresses here override those on the Blacklist tab.",
                 None,
             )
         )
@@ -622,7 +624,9 @@ class Ui_MainWindow(object):
         self.label_6.setText(
             _translate(
                 "MainWindow",
-                "The Address book is useful for adding names or labels to other people's Bitmessage addresses so that you can recognize them more easily in your inbox. You can add entries here using the 'Add' button, or from your inbox by right-clicking on a message.",
+                "The Address book is useful for adding names or labels to other people's Bitmessage "
+                "addresses so that you can recognize them more easily in your inbox. You can add entries "
+                "here using the 'Add' button, or from your inbox by right-clicking on a message.",
                 None,
             )
         )

@@ -76,7 +76,8 @@ def identiconize(address):
         # default to qidenticon_two_x
         identicon_lib = "qidenticon_two_x"
 
-    # As an 'identiconsuffix' you could put "@bitmessge.ch" or "@bm.addr" to make it compatible with other identicon generators. (Note however, that E-Mail programs might convert the BM-address to lowercase first.)
+    # As an 'identiconsuffix' you could put "@bitmessge.ch" or "@bm.addr" to make it compatible with other identicon generators.
+    # (Note however, that E-Mail programs might convert the BM-address to lowercase first.)
     # It can be used as a pseudo-password to salt the generation of the identicons to decrease the risk
     # of attacks where someone creates an address to mimic someone else's identicon.
     identiconsuffix = shared.config.get("bitmessagesettings", "identiconsuffix")
@@ -1166,7 +1167,9 @@ class MyForm(QtWidgets.QMainWindow):
                     _translate("MainWindow", "Open keys.dat?"),
                     _translate(
                         "MainWindow",
-                        "You may manage your keys by editing the keys.dat file stored in the same directory as this program. It is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)",
+                        "You may manage your keys by editing the keys.dat file stored in the same directory as this program. "
+                        "It is important that you back up this file. Would you like to open the file now? "
+                        "(Be sure to close Bitmessage before making any changes.)",
                     ),
                     QtWidgets.QMessageBox.Yes,
                     QtWidgets.QMessageBox.No,
@@ -1177,7 +1180,8 @@ class MyForm(QtWidgets.QMainWindow):
                     _translate("MainWindow", "Open keys.dat?"),
                     _translate(
                         "MainWindow",
-                        "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file. Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)",
+                        "You may manage your keys by editing the keys.dat file stored in\n %1 \nIt is important that you back up this file. "
+                        "Would you like to open the file now? (Be sure to close Bitmessage before making any changes.)",
                     ).replace("%1", shared.appdata),
                     QtWidgets.QMessageBox.Yes,
                     QtWidgets.QMessageBox.No,
@@ -1270,7 +1274,8 @@ class MyForm(QtWidgets.QMainWindow):
                     _translate("MainWindow", "Success"),
                     _translate(
                         "MainWindow",
-                        "Successfully created chan. To let others join your chan, give them the chan name and this Bitmessage address: %1. This address also appears in 'Your Identities'.",
+                        "Successfully created chan. To let others join your chan, give them the chan name and this Bitmessage address: %1. "
+                        "This address also appears in 'Your Identities'.",
                     ).replace("%1", createdAddress),
                 )
                 self.ui.tabWidget.setCurrentIndex(3)
@@ -1410,7 +1415,9 @@ class MyForm(QtWidgets.QMainWindow):
 
     def updateNetworkStatusTab(self):
         # print 'updating network status tab'
-        totalNumberOfConnectionsFromAllStreams = 0  # One would think we could use len(sendDataQueues) for this but the number doesn't always match: just because we have a sendDataThread running doesn't mean that the connection has been fully established (with the exchange of version messages).
+        totalNumberOfConnectionsFromAllStreams = 0
+        # One would think we could use len(sendDataQueues) for this but the number doesn't always match:
+        # just because we have a sendDataThread running doesn't mean that the connection has been fully established (with the exchange of version messages).
         streamNumberTotals = {}
         for host, streamNumber in shared.connectedHostsList.items():
             if not streamNumber in streamNumberTotals:
@@ -1595,7 +1602,9 @@ class MyForm(QtWidgets.QMainWindow):
                 self.ui.tableWidgetSent.item(i, 3).setToolTip(textToDisplay)
                 try:
                     newlinePosition = textToDisplay.indexOf("\n")
-                except:  # If someone misses adding a "_translate" to a string before passing it to this function, this function won't receive a qstring which will cause an exception.
+                except:
+                    # If someone misses adding a "_translate" to a string before passing it to this function,
+                    # this function won't receive a qstring which will cause an exception.
                     newlinePosition = 0
                 if newlinePosition > 1:
                     self.ui.tableWidgetSent.item(i, 3).setText(textToDisplay[:newlinePosition])
@@ -1736,7 +1745,9 @@ class MyForm(QtWidgets.QMainWindow):
             toAddressesList = [s.strip() for s in toAddresses.replace(",", ";").split(";")]
             toAddressesList = list(
                 set(toAddressesList)
-            )  # remove duplicate addresses. If the user has one address with a BM- and the same address without the BM-, this will not catch it. They'll send the message to the person twice.
+            )
+            # remove duplicate addresses. If the user has one address with a BM- and the same address without the BM-, this will not catch it.
+            # They'll send the message to the person twice.
             for toAddress in toAddressesList:
                 if toAddress != "":
                     status, addressVersionNumber, streamNumber, ripe = decodeAddress(toAddress)
@@ -2152,7 +2163,8 @@ class MyForm(QtWidgets.QMainWindow):
                 self.statusBar().showMessage(_translate("MainWindow", "The address you entered was invalid. Ignoring it."))
                 return
             address = addBMIfNotPresent(str(self.NewSubscriptionDialogInstance.ui.lineEditSubscriptionAddress.text()))
-            # We must check to see if the address is already in the subscriptions list. The user cannot add it again or else it will cause problems when updating and deleting the entry.
+            # We must check to see if the address is already in the subscriptions list.
+            # The user cannot add it again or else it will cause problems when updating and deleting the entry.
             if shared.isAddressInMySubscriptionsList(address):
                 self.statusBar().showMessage(
                     _translate(
@@ -2364,7 +2376,8 @@ class MyForm(QtWidgets.QMainWindow):
                             _translate("MainWindow", "Will not resend ever"),
                             _translate(
                                 "MainWindow",
-                                "Note that the time limit you entered is less than the amount of time Bitmessage waits for the first resend attempt therefore your messages will never be resent.",
+                                "Note that the time limit you entered is less than the amount of time Bitmessage waits for the first resend attempt "
+                                "therefore your messages will never be resent.",
                             ),
                         )
                         shared.config.set("bitmessagesettings", "stopresendingafterxdays", "0")

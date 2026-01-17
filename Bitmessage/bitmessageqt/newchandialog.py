@@ -98,7 +98,11 @@ class Ui_newChanDialog(object):
         self.label_4.setText(
             _translate(
                 "newChanDialog",
-                "<html><head/><body><p>Enter a name for your chan. If you choose a sufficiently complex chan name (like a strong and unique passphrase) and none of your friends share it publicly then the chan will be secure and private. If you and someone else both create a chan with the same chan name then it is currently very likely that they will be the same chan.</p></body></html>",
+                "<html><head/><body><p>Enter a name for your chan. If you choose a sufficiently "
+                "complex chan name (like a strong and unique passphrase) and none of your friends "
+                "share it publicly then the chan will be secure and private. If you and someone "
+                "else both create a chan with the same chan name then it is currently very likely "
+                "that they will be the same chan.</p></body></html>",
                 None,
             )
         )
@@ -107,7 +111,11 @@ class Ui_newChanDialog(object):
         self.label.setText(
             _translate(
                 "newChanDialog",
-                "<html><head/><body><p>A chan exists when a group of people share the same decryption keys. The keys and bitmessage address used by a chan are generated from a human-friendly word or phrase (the chan name). To send a message to everyone in the chan, send a normal person-to-person message to the chan address.</p><p>Chans are experimental and completely unmoderatable.</p></body></html>",
+                "<html><head/><body><p>A chan exists when a group of people share the same "
+                "decryption keys. The keys and bitmessage address used by a chan are generated "
+                "from a human-friendly word or phrase (the chan name). To send a message to "
+                "everyone in the chan, send a normal person-to-person message to the chan address."
+                "</p><p>Chans are experimental and completely unmoderatable.</p></body></html>",
                 None,
             )
         )

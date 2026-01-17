@@ -73,7 +73,10 @@ class Ui_aboutDialog(object):
         self.label_3.setText(
             _translate(
                 "aboutDialog",
-                '<html><head/><body><p>Distributed under the MIT/X11 software license; see <a href="http://www.opensource.org/licenses/mit-license.php"><span style=" text-decoration: underline; color:#0000ff;">http://www.opensource.org/licenses/mit-license.php</span></a></p></body></html>',
+                '<html><head/><body><p>Distributed under the MIT/X11 software license; see '
+                '<a href="http://www.opensource.org/licenses/mit-license.php">'
+                '<span style=" text-decoration: underline; color:#0000ff;">'
+                'http://www.opensource.org/licenses/mit-license.php</span></a></p></body></html>',
                 None,
             )
         )

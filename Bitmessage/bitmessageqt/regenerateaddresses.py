@@ -132,7 +132,10 @@ class Ui_regenerateAddressesDialog(object):
         self.label.setText(
             _translate(
                 "regenerateAddressesDialog",
-                "If you have previously made deterministic addresses but lost them due to an accident (like hard drive failure), you can regenerate them here. If you used the random number generator to make your addresses then this form will be of no use to you.",
+                "If you have previously made deterministic addresses but lost them due to an "
+                "accident (like hard drive failure), you can regenerate them here. If you used "
+                "the random number generator to make your addresses then this form will be of no "
+                "use to you.",
                 None,
             )
         )

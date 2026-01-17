@@ -405,7 +405,9 @@ class Ui_settingsDialog(object):
         self.PortableModeDescription.setText(
             _translate(
                 "settingsDialog",
-                "In Portable Mode, messages and config files are stored in the same directory as the program rather than the normal application-data folder. This makes it convenient to run Bitmessage from a USB thumb drive.",
+                "In Portable Mode, messages and config files are stored in the same directory "
+                "as the program rather than the normal application-data folder. This makes it "
+                "convenient to run Bitmessage from a USB thumb drive.",
                 None,
             )
         )
@@ -452,14 +454,22 @@ class Ui_settingsDialog(object):
         self.label_8.setText(
             _translate(
                 "settingsDialog",
-                "When someone sends you a message, their computer must first complete some work. The difficulty of this work, by default, is 1. You may raise this default for new addresses you create by changing the values here. Any new addresses you create will require senders to meet the higher difficulty. There is one exception: if you add a friend or acquaintance to your address book, Bitmessage will automatically notify them when you next send a message that they need only complete the minimum amount of work: difficulty 1. ",
+                "When someone sends you a message, their computer must first complete some "
+                "work. The difficulty of this work, by default, is 1. You may raise this default "
+                "for new addresses you create by changing the values here. Any new addresses you "
+                "create will require senders to meet the higher difficulty. There is one exception: "
+                "if you add a friend or acquaintance to your address book, Bitmessage will "
+                "automatically notify them when you next send a message that they need only "
+                "complete the minimum amount of work: difficulty 1. ",
                 None,
             )
         )
         self.label_12.setText(
             _translate(
                 "settingsDialog",
-                "The 'Small message difficulty' mostly only affects the difficulty of sending small messages. Doubling this value makes it almost twice as difficult to send a small message but doesn't really affect large messages.",
+                "The 'Small message difficulty' mostly only affects the difficulty of sending "
+                "small messages. Doubling this value makes it almost twice as difficult to send "
+                "a small message but doesn't really affect large messages.",
                 None,
             )
         )
@@ -470,7 +480,9 @@ class Ui_settingsDialog(object):
         self.label_15.setText(
             _translate(
                 "settingsDialog",
-                "Here you may set the maximum amount of work you are willing to do to send a message to another person. Setting these values to 0 means that any value is acceptable.",
+                "Here you may set the maximum amount of work you are willing to do to send a "
+                "message to another person. Setting these values to 0 means that any value is "
+                "acceptable.",
                 None,
             )
         )
@@ -483,7 +495,13 @@ class Ui_settingsDialog(object):
         self.label_16.setText(
             _translate(
                 "settingsDialog",
-                '<html><head/><body><p>Bitmessage can utilize a different Bitcoin-based program called Namecoin to make addresses human-friendly. For example, instead of having to tell your friend your long Bitmessage address, you can simply tell him to send a message to <span style=" font-style:italic;">test. </span></p><p>(Getting your own Bitmessage address into Namecoin is still rather difficult).</p><p>Bitmessage can use either namecoind directly or a running nmcontrol instance.</p></body></html>',
+                '<html><head/><body><p>Bitmessage can utilize a different Bitcoin-based program '
+                'called Namecoin to make addresses human-friendly. For example, instead of '
+                'having to tell your friend your long Bitmessage address, you can simply tell '
+                'him to send a message to <span style=" font-style:italic;">test. </span></p>'
+                '<p>(Getting your own Bitmessage address into Namecoin is still rather difficult).'
+                '</p><p>Bitmessage can use either namecoind directly or a running nmcontrol '
+                'instance.</p></body></html>',
                 None,
             )
         )
@@ -499,7 +517,13 @@ class Ui_settingsDialog(object):
         self.label_7.setText(
             _translate(
                 "settingsDialog",
-                "<html><head/><body><p>By default, if you send a message to someone and he is offline for more than two days, Bitmessage will send the message again after an additional two days. This will be continued with exponential backoff forever; messages will be resent after 5, 10, 20 days ect. until the receiver acknowledges them. Here you may change that behavior by having Bitmessage give up after a certain number of days or months.</p><p>Leave these input fields blank for the default behavior. </p></body></html>",
+                "<html><head/><body><p>By default, if you send a message to someone and he is "
+                "offline for more than two days, Bitmessage will send the message again after "
+                "an additional two days. This will be continued with exponential backoff forever; "
+                "messages will be resent after 5, 10, 20 days ect. until the receiver acknowledges "
+                "them. Here you may change that behavior by having Bitmessage give up after a "
+                "certain number of days or months.</p><p>Leave these input fields blank for the "
+                "default behavior. </p></body></html>",
                 None,
             )
         )
