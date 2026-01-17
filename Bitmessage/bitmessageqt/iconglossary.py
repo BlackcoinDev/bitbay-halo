@@ -99,8 +99,7 @@ class Ui_iconGlossaryDialog(object):
         )
 
 
-from . import bitmessage_icons_rc
-
+from . import bitmessage_icons_rc  # noqa: E402,F401
 if __name__ == "__main__":
     import sys
 
