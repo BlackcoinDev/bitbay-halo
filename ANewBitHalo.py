@@ -87,6 +87,8 @@ class myQLabel(QtWidgets.QLabel):
 
 
 class Ui_MainWindow(object):
+    ApplicationPath = ""
+
     def _translate(self, context, text, disambig):
         if self.language != "DEFAULT" and self.language != "en":
             if self.language not in self.translations:
@@ -7719,10 +7721,12 @@ class Ui_MainWindow(object):
 if __name__ == "__main__":
     import sys
 
+    import os
     app = QtWidgets.QApplication(sys.argv)
     # app.setStyle('cleanlooks')
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
+    ui.ApplicationPath = os.path.abspath(os.path.dirname(__file__))
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec())

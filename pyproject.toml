@@ -50,6 +50,7 @@ dependencies = [
     "attrs>=25.4.0",
     "stopit>=1.1.2",
     "six>=1.17.0",
+    "setuptools>=75.8.0",
 ]
 
 [project.optional-dependencies]
@@ -112,4 +113,6 @@ dev = [
     "types-requests>=2.32.4.20260107",
     "types-setuptools>=80.9.0.20251223",
     "types-PySocks>=1.7.1",
+    "types-ujson>=5.10.0.20250822",
+    "types-qrcode>=8.2.0.20250914",
 ]

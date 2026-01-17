@@ -98,6 +98,7 @@ dependencies = [
     { name = "requests" },
     { name = "rpyc" },
     { name = "selenium" },
+    { name = "setuptools" },
     { name = "six" },
     { name = "sniffio" },
     { name = "sortedcontainers" },
@@ -146,8 +147,10 @@ dev = [
     { name = "tox-uv" },
     { name = "types-pysocks" },
     { name = "types-pywin32" },
+    { name = "types-qrcode" },
     { name = "types-requests" },
     { name = "types-setuptools" },
+    { name = "types-ujson" },
 ]
 
 [package.metadata]
@@ -200,6 +203,7 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.5" },
     { name = "rpyc", specifier = ">=6.0.2" },
     { name = "selenium", specifier = ">=4.39.0" },
+    { name = "setuptools", specifier = ">=75.8.0" },
     { name = "six", specifier = ">=1.17.0" },
     { name = "sniffio", specifier = ">=1.3.1" },
     { name = "sortedcontainers", specifier = ">=2.4.0" },
@@ -228,8 +232,10 @@ dev = [
     { name = "tox-uv", specifier = ">=1.29.0" },
     { name = "types-pysocks", specifier = ">=1.7.1" },
     { name = "types-pywin32", specifier = ">=311.0.0.20251008" },
+    { name = "types-qrcode", specifier = ">=8.2.0.20250914" },
     { name = "types-requests", specifier = ">=2.32.4.20260107" },
     { name = "types-setuptools", specifier = ">=80.9.0.20251223" },
+    { name = "types-ujson", specifier = ">=5.10.0.20250822" },
 ]
 
 [[package]]
@@ -1235,6 +1241,18 @@ wheels = [
 ]
 
 [[package]]
+name = "types-qrcode"
+version = "8.2.0.20250914"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a6/1b/b662d2baa355df5739ca084b0d959a5ce8d0e1bea742ee3e027372f89a56/types_qrcode-8.2.0.20250914.tar.gz", hash = "sha256:fc82e0112095c60c0ef3e403ab2a604a9ae1929c70fb0e708bc1ebfe8ca5c45e", size = 14988, upload-time = "2025-09-14T02:56:59.106Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/46/47/9105e9949a83789b6982bcbab4874ce7804f74fd27e6ab83d0186805b0aa/types_qrcode-8.2.0.20250914-py3-none-any.whl", hash = "sha256:6b992d62f05c2df0422507c5307ddd969c0a4d2ab23863c4217f96226710c308", size = 19849, upload-time = "2025-09-14T02:56:58.353Z" },
+]
+
+[[package]]
 name = "types-requests"
 version = "2.32.4.20260107"
 source = { registry = "https://pypi.org/simple" }
@@ -1253,6 +1271,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/00/07/d1b605230730990de20477150191d6dccf6aecc037da94c9960a5d563bc8/types_setuptools-80.9.0.20251223.tar.gz", hash = "sha256:d3411059ae2f5f03985217d86ac6084efea2c9e9cacd5f0869ef950f308169b2", size = 42420, upload-time = "2025-12-23T03:18:26.752Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/78/5c/b8877da94012dbc6643e4eeca22bca9b99b295be05d161f8a403ae9387c0/types_setuptools-80.9.0.20251223-py3-none-any.whl", hash = "sha256:1b36db79d724c2287d83dc052cf887b47c0da6a2fff044378be0b019545f56e6", size = 64318, upload-time = "2025-12-23T03:18:25.868Z" },
+]
+
+[[package]]
+name = "types-ujson"
+version = "5.10.0.20250822"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/bd/d372d44534f84864a96c19a7059d9b4d29db8541828b8b9dc3040f7a46d0/types_ujson-5.10.0.20250822.tar.gz", hash = "sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006", size = 8437, upload-time = "2025-08-22T03:02:19.433Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/f2/d812543c350674d8b3f6e17c8922248ee3bb752c2a76f64beb8c538b40cf/types_ujson-5.10.0.20250822-py3-none-any.whl", hash = "sha256:3e9e73a6dc62ccc03449d9ac2c580cd1b7a8e4873220db498f7dd056754be080", size = 7657, upload-time = "2025-08-22T03:02:18.699Z" },
 ]
 
 [[package]]
