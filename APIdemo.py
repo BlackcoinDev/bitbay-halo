@@ -5,7 +5,8 @@ if sys.version_info.major >= 3:
 else:
     xmlrpclib = __import__("xmlrpclib")
 
-from pyblackcointools import *
+import time
+from pyblackcointools import privkey_to_address
 
 # This is only a demo! The RPC calls were done during testing and this is only
 # to give you some ideas on how to interact with the exchange. You should become
@@ -21,18 +22,18 @@ HaloRPC = xmlrpclib.ServerProxy("http://localhost:55779")
 
 
 def GenerateAddress():
-    key, res = HaloRPC.GenerateDepositAddress("pw")
+    key, _ = HaloRPC.GenerateDepositAddress("pw")
     address = privkey_to_address(key, 25)
     return key, address
 
 
 def LoadExchange():
-    res = HaloRPC.SetPassword("pw", "")
-    res = HaloRPC.StartExchange("pw")
+    HaloRPC.SetPassword("pw", "")
+    HaloRPC.StartExchange("pw")
     exchangeaddress = "BQWPRHbTKbo6VJwCjtvLaUg4fykPmiWZdN"
     feeaccount = "B65aJgkuAinZ35Rt1EnqVB3yX8gESe9ogV"
     time.sleep(0.2)
-    res = HaloRPC.ExchangeSettings([exchangeaddress], feeaccount, {"min": 10000000, "max": 1000000000, "percent": 0.001}, "", "pw")
+    HaloRPC.ExchangeSettings([exchangeaddress], feeaccount, {"min": 10000000, "max": 1000000000, "percent": 0.001}, "", "pw")
 
 
 # It's recommended to iterate and ask for specific addresses instead of all at once
@@ -53,7 +54,7 @@ def ScanForDeposits():
         return
     res = HaloRPC.Deposit("alice", d, "pw")
     print(str(res))
-    if res == True:
+    if res is True:
         for s in d:
             alicetxids[s] = 1
 
